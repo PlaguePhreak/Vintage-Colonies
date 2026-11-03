@@ -123,6 +123,7 @@ public partial class GuiDialogHut : GuiDialog
         if (snapshot.IsTavern) tabs.Add((RecruitsTab, "tab-recruits"));
         if (snapshot.IsResidence) tabs.Add((ResidentsTab, "tab-residents"));
         if (snapshot.IsChurch) tabs.Add((ChurchTab, "tab-church"));
+        if (snapshot.IsArchive) tabs.Add((ResearchTab, "tab-research"));
         if (snapshot.IsOreHut) tabs.Add((OreTab, "tab-ore"));
         if (snapshot.IsQuarry) tabs.Add((QuarryTab, "tab-quarry"));
         if (snapshot.MarkerGroups.Count > 0) tabs.Add((MarkersTab, "tab-markers"));
@@ -178,6 +179,7 @@ public partial class GuiDialogHut : GuiDialog
             case RecruitsTab: ComposeRecruits(composer); break;
             case ResidentsTab: ComposeResidents(composer); break;
             case ChurchTab: ComposeChurch(composer); break;
+            case ResearchTab: ComposeResearch(composer); break;
             case OreTab: ComposeOre(composer); break;
             case QuarryTab: ComposeQuarry(composer); break;
             case MarkersTab: ComposeMarkers(composer); break;

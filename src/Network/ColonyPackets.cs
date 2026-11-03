@@ -326,6 +326,24 @@ public class MineLevelView
     [ProtoMember(5)] public bool Working;
 }
 
+/// <summary>One research node on the Archive's Research tab.</summary>
+[ProtoContract]
+public class ResearchView
+{
+    [ProtoMember(1)] public string Code = "";
+    [ProtoMember(2)] public string Branch = "";
+    [ProtoMember(3)] public int Tier;
+    /// <summary>0 locked, 1 open, 2 paused, 3 running, 4 done.</summary>
+    [ProtoMember(4)] public int State;
+    [ProtoMember(5)] public string Cost = "";
+    /// <summary>What it still waits for (locked), or why it is not moving (running).</summary>
+    [ProtoMember(6)] public string Note = "";
+    [ProtoMember(7)] public int Points;
+    [ProtoMember(8)] public int PointsNeeded;
+    /// <summary>Running at another Archive of the colony.</summary>
+    [ProtoMember(9)] public bool Elsewhere;
+}
+
 /// <summary>Everything a hut window shows.</summary>
 [ProtoContract]
 public class HutSnapshot
@@ -523,6 +541,18 @@ public class HutSnapshot
     [ProtoMember(342)] public bool IsCourierStation;
     [ProtoMember(343)] public List<CourierView> Couriers = new();
     [ProtoMember(344)] public int CourierJobs;
+    // 400-419: the Archive's Research tab (ColonyManager.Research.cs).
+    [ProtoMember(400)] public bool IsArchive;
+    [ProtoMember(401)] public List<ResearchView> Research = new();
+    [ProtoMember(402)] public int KnowledgeTokens;
+    /// <summary>Nodes this Archive runs at once, and how many run now.</summary>
+    [ProtoMember(403)] public int ResearchSlots;
+    [ProtoMember(404)] public int ResearchRunning;
+    /// <summary>Research speed at this Archive in percent (100 = normal).</summary>
+    [ProtoMember(405)] public int ResearchSpeed;
+    /// <summary>What slows research here: a missing table, shelf or light, noisy huts nearby.</summary>
+    [ProtoMember(406)] public List<string> ResearchNotes = new();
+    [ProtoMember(407)] public int ArchiveTier;
 }
 
 /// <summary>One row of a hut's Requests tab.</summary>
@@ -921,7 +951,11 @@ public enum ColonyAction
     /// <summary>Repair button on a hut's Main tab: a builder puts the building back as its blueprint has it.</summary>
     Repair = 250,
     /// <summary>A Church's Church tab (officers): Text is the tithe in percent (0, 5 or 10).</summary>
-    SetTithe = 300
+    SetTithe = 300,
+    /// <summary>The Archive's Research tab (officers): starts or resumes the node with code Text at the Archive BuildingId.</summary>
+    StartResearch = 400,
+    /// <summary>Pauses the node with code Text; it keeps its points.</summary>
+    PauseResearch = 401
 }
 
 /// <summary>One Miner's Hut on a Mineshaft Entrance's Main tab.</summary>

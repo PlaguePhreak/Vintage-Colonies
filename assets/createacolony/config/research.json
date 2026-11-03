@@ -1,0 +1,41 @@
+{
+	// The colony's research tree (ColonyManager.Research.cs). Researchers at an Archive make Research Points;
+	// a node is done when it has "points". Before work starts, couriers bring its "cost" items to the Archive.
+	// Gates: "needs" (finished research), "townHall" (level), "settlers" (how many), "building" (a building type the
+	// colony must have, at "buildingLevel" or more; 0 = placed is enough). "tokens" are Knowledge Tokens taken when
+	// it starts; "givesTokens" are given when it is done.
+	// "effects" (all colony-wide, once done):
+	//   researchSpeed  x research speed          courierWalk  x couriers' walking speed with a load
+	//   farmYield      + share of each harvest   guardHealth  + guards' max health
+	//   restHeal       x healing in bed          explorerRange x how far explorers go
+	//   wateringCan    x how far a can's water goes   crafterSpeed x crafting jobs' work speed
+	//   guardDamage    x guards' damage          explorerWalk x explorers' walking speed
+	//   popPerTownHall + settlers per Town Hall level   claimGrow + blocks the Town Hall's claim grows each way
+	// Names and descriptions are in lang/en.json: "research-<code>" and "research-<code>-desc".
+	"research": [
+		{ "code": "scribetraining", "branch": "population", "tier": 1, "points": 200,
+			"cost": [ { "code": "game:paper-parchment", "quantity": 8 } ], "effects": { "researchSpeed": 1.2 } },
+		{ "code": "organizedstorage", "branch": "settlement", "tier": 1, "points": 300, "building": "warehouse",
+			"cost": [ { "code": "game:chest-*", "quantity": 4, "name": "createacolony:research-item-chests" } ], "effects": { "courierWalk": 1.2 } },
+		{ "code": "croprotation", "branch": "production", "tier": 1, "points": 300, "building": "farmer",
+			"cost": [ { "code": "game:seeds-*", "quantity": 32, "name": "createacolony:research-item-seeds" } ], "effects": { "farmYield": 0.1 } },
+		{ "code": "basicfortifications", "branch": "defence", "tier": 1, "points": 300, "building": "guardtower",
+			"cost": [ { "code": "game:log-*", "quantity": 32, "name": "createacolony:research-item-logs" } ], "effects": { "guardHealth": 2 } },
+		{ "code": "herbalremedies", "branch": "population", "tier": 1, "points": 300, "building": "healer",
+			"cost": [ { "code": "game:flower-horsetail-*", "quantity": 16, "name": "createacolony:research-item-horsetail" } ], "effects": { "restHeal": 2 } },
+		{ "code": "fieldnotes", "branch": "exploration", "tier": 1, "points": 300, "building": "explorer",
+			"cost": [ { "code": "game:paper-parchment", "quantity": 8 } ], "effects": { "explorerRange": 1.25 } },
+		{ "code": "irrigation", "branch": "production", "tier": 2, "points": 600, "needs": ["croprotation"],
+			"cost": [ { "code": "game:plank-*", "quantity": 32, "name": "createacolony:research-item-planks" } ], "effects": { "wateringCan": 2 } },
+		{ "code": "specializedcraftsmen", "branch": "production", "tier": 2, "points": 600, "townHall": 3,
+			"cost": [ { "code": "game:ingot-copper", "quantity": 8 } ], "effects": { "crafterSpeed": 1.15 } },
+		{ "code": "guardtraining", "branch": "defence", "tier": 2, "points": 600, "needs": ["basicfortifications"],
+			"cost": [ { "code": "game:spear-*", "quantity": 8, "name": "createacolony:research-item-spears" } ], "effects": { "guardDamage": 1.15 } },
+		{ "code": "cartographersguild", "branch": "exploration", "tier": 2, "points": 600, "needs": ["fieldnotes"], "givesTokens": 1,
+			"cost": [ { "code": "game:paper-parchment", "quantity": 16 } ], "effects": { "explorerWalk": 1.15 } },
+		{ "code": "biggervillage", "branch": "population", "tier": 2, "points": 800, "settlers": 15,
+			"cost": [ { "code": "game:linen-*", "quantity": 16, "name": "createacolony:research-item-linen" } ], "effects": { "popPerTownHall": 2 } },
+		{ "code": "colonyexpansion", "branch": "settlement", "tier": 2, "points": 800, "townHall": 3, "tokens": 1,
+			"effects": { "claimGrow": 16 } }
+	]
+}

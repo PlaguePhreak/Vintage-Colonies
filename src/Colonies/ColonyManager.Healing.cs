@@ -268,10 +268,11 @@ public partial class ColonyManager
     }
 
     /// <summary>Health back for this much rest in bed (config RestHealPerHour).</summary>
-    public void Rest(EntityAgent settler, double hours)
+    public void Rest(Colony colony, EntityAgent settler, double hours)
     {
         if (hours <= 0 || settler.GetBehavior<EntityBehaviorHealth>() is not { } hp) return;
-        hp.Health = Math.Min(hp.MaxHealth, hp.Health + (float)(Config.RestHealPerHour * hours));
+        // Herbal Remedies heals faster (ColonyManager.Research.cs).
+        hp.Health = Math.Min(hp.MaxHealth, hp.Health + (float)(Config.RestHealPerHour * hours * ResearchMult(colony, "restHeal")));
     }
 
     public void EndRest(CitizenRecord c) => Recovering.Remove(c.CitizenId);

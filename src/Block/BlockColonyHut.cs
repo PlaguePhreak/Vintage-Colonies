@@ -41,6 +41,8 @@ public class BlockColonyHut : Block, IWandPlaceable
         var colony = manager.GetAt(pos);
         if (colony == null || colony.RoleOf(player.PlayerUID) < ColonyRole.Member) return "createacolony:marker-outside";
         if (!world.BlockAccessor.GetBlock(pos).IsReplacableBy(this)) return "createacolony:wand-spot-taken";
+        // The Archive needs a Town Hall of config ArchiveTownHallLevel (ColonyManager.Research.cs).
+        if (BuildingType == BuildingTypes.Archive && !manager.ArchiveAllowed(colony)) return "createacolony:archive-needs-townhall";
 
         world.BlockAccessor.SetBlock(BlockId, pos);
         manager.AddBuilding(colony, BuildingType, pos, rotation);
@@ -58,7 +60,7 @@ public class BlockColonyHut : Block, IWandPlaceable
             ? Lang.GetL(player.LanguageCode, "createacolony:hut-placed-guardtower", name)
             : BuildingType == BuildingTypes.Barracks
             ? Lang.GetL(player.LanguageCode, "createacolony:hut-placed-barracks", name)
-            : BuildingType is BuildingTypes.Prospector or BuildingTypes.Miner or BuildingTypes.Quarry or BuildingTypes.Smelter or BuildingTypes.Blacksmith or BuildingTypes.Armourer or BuildingTypes.Weaponsmith or BuildingTypes.Sawmill or BuildingTypes.Craftsman or BuildingTypes.Tailor or BuildingTypes.Jeweller or BuildingTypes.Healer or BuildingTypes.Mint
+            : BuildingType is BuildingTypes.Prospector or BuildingTypes.Miner or BuildingTypes.Quarry or BuildingTypes.Smelter or BuildingTypes.Blacksmith or BuildingTypes.Armourer or BuildingTypes.Weaponsmith or BuildingTypes.Sawmill or BuildingTypes.Craftsman or BuildingTypes.Tailor or BuildingTypes.Jeweller or BuildingTypes.Healer or BuildingTypes.Mint or BuildingTypes.Archive
                 or BuildingTypes.Explorer or BuildingTypes.Gatherer or BuildingTypes.Hunter or BuildingTypes.MineshaftEntrance
             ? Lang.GetL(player.LanguageCode, "createacolony:hut-placed-" + BuildingType, name)
             : BuildingType is BuildingTypes.Forester or BuildingTypes.Farmer

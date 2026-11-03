@@ -69,7 +69,8 @@ public partial class ColonyManager
         // Pour until the soil is soaked (100%), as a player would: the game adds half the moisture range per second.
         float needed = Math.Max(WateringSeconds, (1 - farmland.MoistureLevel) * 2 + 0.1f);
         float pour = Math.Min(left, needed);
-        block.SetRemainingWateringSeconds(can, Math.Max(0, left - pour));
+        // Irrigation Systems: the water goes further, so the can empties slower.
+        block.SetRemainingWateringSeconds(can, Math.Max(0, left - pour / Math.Max(0.1f, ResearchMult(colony, "wateringCan"))));
         if (inHand) hand!.MarkDirty();
         else SavePack(colony, worker, items);
 

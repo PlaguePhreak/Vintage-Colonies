@@ -368,6 +368,7 @@ public class ColonyConfig
         ["jeweller"] = 30,
         ["healer"] = 30,
         ["mint"] = 30,
+        ["archive"] = 30,
         ["barracks"] = 40,
         ["explorer"] = 30,
         ["gatherer"] = 30,
@@ -863,6 +864,7 @@ public class ColonyConfig
         ["weaponsmith"] = 8,
         ["jeweller"] = 8,
         ["minter"] = 6,
+        ["researcher"] = 7,
         ["priest"] = 5,
         ["bailiff"] = 10
     };
@@ -873,6 +875,25 @@ public class ColonyConfig
     public int MintCoinsPerIngot = 10;
     /// <summary>No taxes or wages, and no moods about them, until the Town Hall is this level.</summary>
     public int EconomyTownHallLevel = 3;
+
+    // Research (ColonyManager.Research.cs; the nodes are in config/research.json)
+    /// <summary>The Town Hall level needed to place an Archive.</summary>
+    public int ArchiveTownHallLevel = 2;
+    /// <summary>Seconds of study for one piece of a researcher's work (skill and mood shorten it), and the Research Points it gives.</summary>
+    public float ResearchSecondsPerWork = 20f;
+    public float ResearchPointsPerWork = 1f;
+    /// <summary>Most researchers on one research node at a time.</summary>
+    public int ResearchMaxPerNode = 3;
+    /// <summary>Each Archive tier above 1 makes research this much faster (0.25 = 25%).</summary>
+    public float ArchiveSpeedPerTier = 0.25f;
+    /// <summary>How far round the Archive's hut block it looks for a table, a shelf with books and a light.</summary>
+    public int ArchiveRoomRadius = 6;
+    /// <summary>Research is this much slower for each of the table, shelf and light that is missing.</summary>
+    public float ArchiveMissingPenalty = 0.15f;
+    /// <summary>Huts this close make the Archive noisy: research is ArchiveNoisePenalty slower for each.</summary>
+    public int ArchiveNoiseRadius = 16;
+    public float ArchiveNoisePenalty = 0.1f;
+    public string[] ArchiveNoisyHuts = { "smelter", "blacksmith", "armourer", "weaponsmith", "sawmill", "quarry" };
     /// <summary>Other mods' coins, as item codes with wildcards. Any of them can be picked as a colony's coin on the Bailiff tab.</summary>
     public string[] OtherCoins = { "coinage:coin", "coinage:coin-*" };
     /// <summary>Mood points a settler loses per percent of tax while the bailiff collects taxes (10% is -2).</summary>

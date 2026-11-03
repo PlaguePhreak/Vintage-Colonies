@@ -88,6 +88,7 @@
 					{ "code": "settlertailor", "animation": "walk", "priority": 1.2, "movespeed": 0.02 },
 					{ "code": "settlerjeweller", "animation": "walk", "priority": 1.2, "movespeed": 0.02 },
 					{ "code": "settlerminter", "animation": "walk", "priority": 1.2, "movespeed": 0.02 },
+					{ "code": "settlerresearcher", "animation": "walk", "priority": 1.2, "movespeed": 0.02 },
 					{ "code": "settlerhealer", "animation": "walk", "priority": 1.2, "movespeed": 0.022 },
 					{ "code": "settlerpriest", "animation": "walk", "priority": 1.2, "movespeed": 0.018 },
 					{ "code": "settlerexplorer", "animation": "walk", "priority": 1.2, "movespeed": 0.022 },

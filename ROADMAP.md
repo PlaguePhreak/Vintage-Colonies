@@ -80,7 +80,7 @@ Everything listed under "What we have" and "Partly done" has been tested in game
 4. **Animal herders and a Tanner**: chickens, pigs, sheep and goats in pens for meat, eggs and hides, and a Tanner who makes leather in barrels
 5. **Ranged guards and a rally banner** (the Barracks came in 0.54.0), then **Raids**: now and then, enemies turn up and attack the player's colony. The player is warned in chat and on the Town Hall window. There are several raid factions, from bandits (who use the settler models) to the game's own monsters such as drifters and shivers.
 6. **Graveyard**: an undertaker who buries the dead (the Healer, bandages and poultices came in 0.117.0)
-7. **School, Library and University** with a **research tree** that unlocks faster work and new huts
+7. **Research**: started in 0.166.0. The Archive, researchers, Research Points, Knowledge Tokens and the first 12 research nodes are in (not tested yet). Still to do: tier 3 and higher nodes, nodes that unlock new buildings, handing in books, gears and relics at the Archive, field research quests for the Explorer, failed experiments, and researchers sitting and writing at a table
 8. **Blacksmith** (started in 0.50.0): still to do are repairs, armor, and making the tools workers ask for
 
 **Later**
