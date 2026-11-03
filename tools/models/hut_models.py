@@ -234,6 +234,14 @@ mint=shape(["sides","planks","metal","coin"], base+[
   box("Coins3",[10,10.2,9],[13,10.8,12],"coin"), box("Coin",[4.5,9,10.5],[6.5,9.4,12.5],"coin"),
   box("Handle",[9,9,4],[14,9.8,4.8],"planks"), box("Head",[13,9,3.2],[14.6,10.6,5.6],"metal"),
 ])
+# Archive: an open book on a stand, a candle and a rolled scroll.
+archive=shape(["sides","planks","paper","cover","wax"], base+[
+  box("Stand",[4,9,5],[11,10,11],"planks"),
+  box("CoverL",[3.6,10,4.6],[7.5,10.4,11.4],"cover"), box("CoverR",[7.5,10,4.6],[11.4,10.4,11.4],"cover"),
+  box("PagesL",[4,10.4,5],[7.4,10.9,11],"paper"), box("PagesR",[7.6,10.4,5],[11,10.9,11],"paper"),
+  box("Candle",[12,9,2],[13.5,12.5,3.5],"wax"), box("Wick",[12.6,12.5,2.6],[12.9,13.1,2.9],"cover"),
+  box("Scroll",[2,9,12.5],[13,10.6,14.1],"paper"), box("ScrollEnd",[13,8.9,12.4],[13.6,10.7,14.2],"planks"),
+])
 # Mineshaft Entrance: a timber frame over a dark hole, with a ladder going down.
 entrance=shape(["sides","planks","log","dark","ladder"], base+[
   box("Hole",[4,9,4],[12,9.2,12],"dark"),
@@ -266,5 +274,5 @@ if __name__ == "__main__":
     out = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(__file__), "../../assets/createacolony/shapes/block")
     for name, (tex, el) in models.items():
         json.dump(shape(tex, base + el), open(f"{out}/{name}.json", "w"), indent=1)
-    for name, model in {"hut-smelter": smelter, "hut-blacksmith": smith, "hut-sawmill": saw, "hut-barracks": barracks, "hut-explorer": explorer, "hut-gatherer": gatherer, "hut-hunter": hunter, "hut-craftsman": craftsman, "hut-tailor": tailor, "hut-jeweller": jeweller, "hut-healer": healer, "hut-armourer": armourer, "hut-weaponsmith": weaponsmith, "hut-mint": mint, "hut-church": church, "workstation-healer": station_healer, "hut-mineshaftentrance": entrance, "supplycamp": camp, "fieldmarker": crow}.items():
+    for name, model in {"hut-smelter": smelter, "hut-blacksmith": smith, "hut-sawmill": saw, "hut-barracks": barracks, "hut-explorer": explorer, "hut-gatherer": gatherer, "hut-hunter": hunter, "hut-craftsman": craftsman, "hut-tailor": tailor, "hut-jeweller": jeweller, "hut-healer": healer, "hut-armourer": armourer, "hut-weaponsmith": weaponsmith, "hut-mint": mint, "hut-archive": archive, "hut-church": church, "workstation-healer": station_healer, "hut-mineshaftentrance": entrance, "supplycamp": camp, "fieldmarker": crow}.items():
         json.dump(model, open(f"{out}/{name}.json", "w"), indent=1)

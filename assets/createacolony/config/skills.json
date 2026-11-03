@@ -21,6 +21,7 @@
 		{ "code": "knapping", "job": "craftsman", "xpPerWork": 2, "workSpeedPerLevel": 0.04 },
 		{ "code": "tailoring", "job": "tailor", "xpPerWork": 2, "workSpeedPerLevel": 0.04 },
 		{ "code": "jewelcrafting", "job": "jeweller", "xpPerWork": 3, "workSpeedPerLevel": 0.04 },
+		{ "code": "research", "job": "researcher", "xpPerWork": 2, "workSpeedPerLevel": 0.03 },
 		{ "code": "theology", "job": "priest", "xpPerWork": 3, "workSpeedPerLevel": 0.04 },
 		{ "code": "medicine", "job": "healer", "xpPerWork": 3, "workSpeedPerLevel": 0.04 },
 		{ "code": "exploring", "job": "explorer", "xpPerWork": 3, "workSpeedPerLevel": 0.04 },

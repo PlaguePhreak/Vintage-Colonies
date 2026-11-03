@@ -57,6 +57,7 @@ public partial class ColonyManager
         BuildingTypes.Jeweller => Jobs.Jeweller,
         BuildingTypes.Healer => Jobs.Healer,
         BuildingTypes.Mint => Jobs.Minter,
+        BuildingTypes.Archive => Jobs.Researcher,
         BuildingTypes.Church => Jobs.Priest,
         BuildingTypes.GuardTower => Jobs.Guard,
         BuildingTypes.Barracks => Jobs.Guard,
@@ -65,7 +66,7 @@ public partial class ColonyManager
 
     /// <summary>How many settlers can work from this building at once.</summary>
     public static int WorkerSlots(Building hut) => IsGuardPost(hut.Type) ? GuardSlots(hut)
-        : hut.Type == BuildingTypes.Prospector ? ProspectorSlots : hut.Type == BuildingTypes.Church ? ChurchSlots(hut) : JobOf(hut.Type) == null ? 0 : 1;
+        : hut.Type == BuildingTypes.Prospector ? ProspectorSlots : hut.Type == BuildingTypes.Church ? ChurchSlots(hut) : hut.Type == BuildingTypes.Archive ? ArchiveSlots(hut) : JobOf(hut.Type) == null ? 0 : 1;
 
     /// <summary>A Prospector's Hut takes two prospectors, each finding ore or mining it (CitizenRecord.WorkRole).</summary>
     public const int ProspectorSlots = 2;
@@ -159,6 +160,7 @@ public partial class ColonyManager
         if (hut.Type == BuildingTypes.Jeweller) return JewellerHutJunk(colony, hut);
         if (hut.Type == BuildingTypes.Healer) return HealerHutJunk(colony, hut);
         if (hut.Type == BuildingTypes.Mint) return MintHutJunk(colony, hut);
+        if (hut.Type == BuildingTypes.Archive) return ArchiveJunk(colony, hut);
         if (hut.Type == BuildingTypes.Church) return ChurchJunk(colony, hut);
         if (IsGuardPost(hut.Type)) return GuardTowerJunk(hut);
         var kind = GatherHuts[hut.Type];
@@ -247,6 +249,15 @@ public partial class ColonyManager
         // A skilled farmer, forester, miner or potter sometimes gets one more of the biggest stack (yield perk).
         var list = drops.Where(d => d != null && d.StackSize > 0).ToList();
         if (list.Count > 0 && RollPerk(colony, worker, "yield")) list.OrderByDescending(d => d.StackSize).First().StackSize++;
+        // Crop Rotation: farmers harvest more. A part of one more item is a chance of one.
+        if (worker.JobCode == Jobs.Farmer && ResearchAdd(colony, "farmYield") is float more and > 0)
+        {
+            foreach (var d in list)
+            {
+                double extra = d.StackSize * more;
+                d.StackSize += (int)extra + (sapi.World.Rand.NextDouble() < extra - (int)extra ? 1 : 0);
+            }
+        }
         drops = list;
         foreach (var drop in drops)
         {
@@ -327,6 +338,7 @@ public partial class ColonyManager
         if (hut.Type == BuildingTypes.Tailor) lines.Add(TailorInfo(colony, hut));
         if (hut.Type == BuildingTypes.Healer) lines.Add(HealerInfo(colony, hut));
         if (hut.Type == BuildingTypes.Mint) lines.Add(MintInfo(colony));
+        if (hut.Type == BuildingTypes.Archive) lines.Add(ArchiveInfo(colony, hut));
         if (hut.Type == BuildingTypes.Church) lines.AddRange(ChurchInfo(colony, hut));
         if (hut.IsStation) lines.Add(StationInfo(colony, hut));
         if (HasHutRecipes(hut.Type) && hut.RecipeKeep.Count > 0) lines.Add(HutRecipesInfo(colony, hut));

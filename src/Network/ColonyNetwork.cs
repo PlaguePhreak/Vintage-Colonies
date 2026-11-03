@@ -187,6 +187,7 @@ public partial class ColonyNetwork : ModSystem
             ColonyAction.SetSelfDefence or ColonyAction.SetSupportAllies => SetMilitia(colony, role, packet),
             ColonyAction.SetBailiffRule => SetBailiffRule(player, colony, role, packet.Text),
             ColonyAction.SetTithe => SetTithe(colony, role, packet.Text),
+            ColonyAction.StartResearch or ColonyAction.PauseResearch => ResearchAction(colony, role, packet),
             ColonyAction.HireRecruit => HireAction(player, colony, role, packet),
             ColonyAction.RemoveHut => RemoveHut(player, colony, role, packet),
             ColonyAction.LinkMineHut or ColonyAction.UnlinkMineHut => LinkMineAction(colony, role, packet),
@@ -1237,6 +1238,7 @@ public partial class ColonyNetwork : ModSystem
             }
         }
         if (building.Type == BuildingTypes.Church) AddChurch(snapshot, colony, building);
+        if (building.Type == BuildingTypes.Archive) AddResearch(snapshot, colony, building);
         if (building.IsStation)
         {
             snapshot.IsStation = true;

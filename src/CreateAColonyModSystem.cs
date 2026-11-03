@@ -81,6 +81,7 @@ public class CreateAColonyModSystem : ModSystem
         AiTaskRegistry.Register<AiTaskSettlerTailor>("settlertailor");
         AiTaskRegistry.Register<AiTaskSettlerJeweller>("settlerjeweller");
         AiTaskRegistry.Register<AiTaskSettlerMinter>("settlerminter");
+        AiTaskRegistry.Register<AiTaskSettlerResearcher>("settlerresearcher");
         AiTaskRegistry.Register<AiTaskSettlerHealer>("settlerhealer");
         AiTaskRegistry.Register<AiTaskSettlerPriest>("settlerpriest");
         AiTaskRegistry.Register<AiTaskSettlerWorship>("settlerworship");

@@ -733,6 +733,20 @@ public class CustomRecipePart
     [ProtoMember(4)] public bool Tool;
 }
 
+/// <summary>One research node started at an Archive (ColonyManager.Research.cs).</summary>
+[ProtoContract]
+public class ResearchProgress
+{
+    [ProtoMember(1)] public string Code = "";
+    /// <summary>The Archive it runs at.</summary>
+    [ProtoMember(2)] public int ArchiveId;
+    [ProtoMember(3)] public double Points;
+    /// <summary>True once its items were taken from the Archive's storage.</summary>
+    [ProtoMember(4)] public bool Paid;
+    /// <summary>False while paused: it keeps its points and items but takes no slot.</summary>
+    [ProtoMember(5, IsRequired = true)] public bool Running = true;
+}
+
 [ProtoContract]
 public class Colony
 {
@@ -832,6 +846,13 @@ public class Colony
     // 320-329: recipes players taught the huts (ColonyManager.CustomRecipes.cs).
     [ProtoMember(320)] public List<CustomRecipe> CustomRecipes = new();
     [ProtoMember(321, IsRequired = true)] public int NextCustomRecipeId = 1;
+    // 400-409: research (ColonyManager.Research.cs).
+    /// <summary>The research nodes the colony has finished, by code (config/research.json).</summary>
+    [ProtoMember(400)] public List<string> ResearchDone = new();
+    /// <summary>Research started at an Archive: running, or paused with its progress kept.</summary>
+    [ProtoMember(401)] public List<ResearchProgress> Research = new();
+    /// <summary>Knowledge Tokens: a second research currency for high-tier nodes.</summary>
+    [ProtoMember(402)] public int KnowledgeTokens;
     /// <summary>Houses of traders who joined the colony, for a builder to take down (ColonyManager.Traders.cs).</summary>
     [ProtoMember(240)] public List<TeardownOrder> Teardowns = new();
     [ProtoMember(241, IsRequired = true)] public int NextTeardownId = 1;

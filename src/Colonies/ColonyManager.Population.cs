@@ -15,7 +15,8 @@ public partial class ColonyManager
 
     /// <summary>How many settlers the colony can hold; 0 or less in the config means no limit.</summary>
     public int PopulationCap(Colony colony) =>
-        Config.PopulationBase <= 0 ? 0 : Config.PopulationBase + Math.Max(0, Config.PopulationPerTownHallLevel) * TownHallLevel(colony);
+        Config.PopulationBase <= 0 ? 0 : Config.PopulationBase
+            + (Math.Max(0, Config.PopulationPerTownHallLevel) + (int)ResearchAdd(colony, "popPerTownHall")) * TownHallLevel(colony); // Bigger Village
 
     /// <summary>Everyone who lives here: settlers and children, not visitors or the dead.</summary>
     public int Population(Colony colony) => colony.Citizens.Count(c => c.Alive && !c.Visitor && !c.WaitingForRoom);

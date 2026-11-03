@@ -75,7 +75,7 @@ public class AiTaskSettlerRecover : SettlerTaskBase
             return true;
         }
         double now = entity.World.Calendar.TotalHours;
-        manager.Rest(entity, System.Math.Clamp(now - lastHours, 0, 1));
+        manager.Rest(colony, entity, System.Math.Clamp(now - lastHours, 0, 1));
         lastHours = now;
         HoldStill();
         return true;

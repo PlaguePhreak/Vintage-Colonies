@@ -236,6 +236,29 @@ These work well with Vintage Colonies. Install them separately.
 - **Smithing Plus** (jayu): smith with metal bits, repair tool heads on the anvil and other smithing tweaks. Our smiths still use the game's anvil and recipes beside it; not tested together in game yet.
 - **Coinage** (Xel): design your own coins. One can be the colony's money (Bailiff tab, Taxes & wages).
 
+## Research and the Archive (0.166.0)
+
+Research belongs to the whole colony. Once the Town Hall is level 2, place an **Archive** (Education tab of the Builder's Wand; recipe: planks around 2 parchment) and give settlers the new **Researcher** job. The Archive has 3 tiers. Each tier runs one more research at once (1, 2, 3) and takes two more researchers (2, 4, 6). Its placeholder build is a plain box until Aaron's own builds replace it.
+
+On the Archive's **Research** tab, officers pick a branch (Settlement, Production, Population, Defence, Exploration) and press **Start**. Couriers bring the research's items to the Archive, then researchers study there and make Research Points. Up to 3 researchers work on one research. Research is faster with a table, a shelf or books and a light within 6 blocks of the hut block, and slower with smelters, forges, saws or a quarry within 16 blocks. **Pause** keeps the points and items. Finished research is kept even if the Archive is removed. Nothing you could build before is locked by research.
+
+| Research | Branch | Tier | Needs | Cost | Does |
+| --- | --- | --- | --- | --- | --- |
+| Scribe Training | Population | 1 | - | 200 points, 8 parchment | Researchers work 20% faster |
+| Organized Storage | Settlement | 1 | Warehouse | 300 points, 4 chests | Couriers walk 20% faster with a load |
+| Crop Rotation | Production | 1 | Farmer's Hut | 300 points, 32 seeds | Farmers harvest 10% more |
+| Basic Fortifications | Defence | 1 | Guard Tower | 300 points, 32 logs | Guards get 2 more health |
+| Herbal Remedies | Population | 1 | Healer's Station | 300 points, 16 horsetail | Settlers heal twice as fast in bed |
+| Field Notes | Exploration | 1 | Explorer's Hut | 300 points, 8 parchment | Explorers go 25% further |
+| Irrigation Systems | Production | 2 | Crop Rotation | 600 points, 32 planks | Watering cans last twice as long |
+| Specialized Craftsmen | Production | 2 | Town Hall 3 | 600 points, 8 copper ingots | Crafting jobs work 15% faster |
+| Guard Training Regimen | Defence | 2 | Basic Fortifications | 600 points, 8 spears | Guards hit 15% harder |
+| Cartographer's Guild | Exploration | 2 | Field Notes | 600 points, 16 parchment | Explorers walk 15% faster, gives 1 Knowledge Token |
+| Bigger Village | Population | 2 | 15 settlers | 800 points, 16 linen | 2 more settlers per Town Hall level |
+| Colony Expansion Protocols | Settlement | 2 | Town Hall 3 | 800 points, 1 Knowledge Token | Town Hall claim grows 16 blocks each way |
+
+One researcher makes about 100 points a day. The nodes live in `assets/createacolony/config/research.json`; speeds and the Archive's rules are in the config (`ArchiveTownHallLevel`, `ResearchSecondsPerWork`, `ResearchPointsPerWork`, `ResearchMaxPerNode`, `ArchiveSpeedPerTier`, `ArchiveRoomRadius`, `ArchiveMissingPenalty`, `ArchiveNoiseRadius`, `ArchiveNoisePenalty`, `ArchiveNoisyHuts`).
+
 ## Farmers lay better soil (0.156.0)
 - **Poor field soil gets swapped for better soil.** Put better soil in the Farmer's Hut storage (very low, low, medium, compost, high, as in the game). The farmer digs out the poor soil on bare spots of its fields and lays the better soil as fresh farmland. The worst spots go first.
 - Only spots with nothing growing are swapped. After a harvest, a farmer carrying better soil lays it before sowing again. It works in winter too.

@@ -910,6 +910,8 @@ public static class BuildingTypes
     public const string Church = "church";
     /// <summary>The Royal Mint: a minter strikes the colony's coins (ColonyManager.Economy.cs).</summary>
     public const string Mint = "mint";
+    /// <summary>The Archive: researchers study the colony's research tree (ColonyManager.Research.cs).</summary>
+    public const string Archive = "archive";
     public const string Explorer = "explorer";
     public const string Gatherer = "gatherer";
     public const string Hunter = "hunter";
