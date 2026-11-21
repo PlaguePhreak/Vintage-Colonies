@@ -542,6 +542,12 @@ public class RequestView
     [ProtoMember(8)] public int Color;
     /// <summary>"Builder's Hut: Smelter 2" when it is for a building job, else empty.</summary>
     [ProtoMember(9)] public string For = "";
+    /// <summary>The request, for the give button (0.167.0).</summary>
+    [ProtoMember(10)] public int RequestId;
+    /// <summary>How many the viewer carries that would do; the give button shows when above 0.</summary>
+    [ProtoMember(11)] public int PlayerHas;
+    /// <summary>How many the hut still needs, not counting the spare.</summary>
+    [ProtoMember(12)] public int Needed;
 }
 
 /// <summary>One courier on a Courier's Station.</summary>
@@ -921,7 +927,9 @@ public enum ColonyAction
     /// <summary>Repair button on a hut's Main tab: a builder puts the building back as its blueprint has it.</summary>
     Repair = 250,
     /// <summary>A Church's Church tab (officers): Text is the tithe in percent (0, 5 or 10).</summary>
-    SetTithe = 300
+    SetTithe = 300,
+    /// <summary>Requests tab give button (0.167.0): Text holds request ids, comma separated; each is filled from the player's inventory.</summary>
+    FillRequests = 333
 }
 
 /// <summary>One Miner's Hut on a Mineshaft Entrance's Main tab.</summary>
