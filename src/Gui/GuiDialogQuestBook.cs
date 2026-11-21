@@ -318,6 +318,36 @@ public class GuiDialogQuestBook : GuiDialog
             case ObjectiveTypes.Deliver:
             case ObjectiveTypes.Stock:
                 return Lang.Get("createacolony:objective-" + o.Type, count, ItemName(capi, o.Code));
+            case ObjectiveTypes.Holds:
+                return Lang.Get("createacolony:objective-holds", ItemName(capi, o.Code));
+            case ObjectiveTypes.Meal:
+                if (o.Level >= 1) return Lang.Get("createacolony:objective-meal-sealed");
+                if (count > 1) return Lang.Get("createacolony:objective-meal-servings", count);
+                return o.Code is "" or "*" ? Lang.Get("createacolony:objective-meal-any") : Lang.Get("createacolony:objective-meal", Plain(o.Code));
+            case ObjectiveTypes.BlockNear:
+                return Lang.Get("createacolony:objective-blocknear", count, ItemName(capi, o.Code));
+            case ObjectiveTypes.EntityNear:
+                return o.Level > 0
+                    ? Lang.Get("createacolony:objective-entitynear-generation", count, Plain(o.Code), o.Level)
+                    : Lang.Get("createacolony:objective-entitynear", count, Plain(o.Code));
+            case ObjectiveTypes.Room:
+                return Lang.Get("createacolony:objective-room" + (o.Code.Length > 0 ? "-" + o.Code : ""));
+            case ObjectiveTypes.Break:
+            {
+                int at = o.Code.IndexOf('@');
+                string tool = at < 0 ? "" : o.Code[..at], target = at < 0 ? o.Code : o.Code[(at + 1)..];
+                if (target.Length == 0) return Lang.Get("createacolony:objective-break-tool", count, ItemName(capi, tool));
+                return tool.Length == 0
+                    ? Lang.Get("createacolony:objective-break", count, ItemName(capi, target))
+                    : Lang.Get("createacolony:objective-break-with", count, ItemName(capi, target), ItemName(capi, tool));
+            }
+            case ObjectiveTypes.AverageLevel:
+                return Lang.Get("createacolony:objective-averagelevel", Lang.Get("createacolony:building-" + o.Code), (count / 10.0).ToString("0.#"));
+            case ObjectiveTypes.WorkHuts:
+                return Lang.Get(o.Code.Length > 0 ? "createacolony:objective-workhuts-of" : "createacolony:objective-workhuts", count, Math.Max(1, o.Level),
+                    string.Join(", ", o.Code.Split('|', StringSplitOptions.RemoveEmptyEntries).Select(c => Lang.Get("createacolony:building-" + c))));
+            case ObjectiveTypes.TopSkill:
+                return Lang.Get(o.Level > 0 ? "createacolony:objective-topskill-level" : "createacolony:objective-topskill", count, o.Level);
             case ObjectiveTypes.Building:
                 return o.Level > 1
                     ? Lang.Get("createacolony:objective-building-level", Lang.Get("createacolony:building-" + o.Code), o.Level)
@@ -335,6 +365,14 @@ public class GuiDialogQuestBook : GuiDialog
             default:
                 return Lang.Get("createacolony:objective-" + o.Type, count);
         }
+    }
+
+    /// <summary>A plain word from a code list: the first code without its domain, wildcards and dashes.</summary>
+    static string Plain(string code)
+    {
+        string first = code.Split('|')[0];
+        if (first.Contains(':')) first = first[(first.IndexOf(':') + 1)..];
+        return first.Replace("*", " ").Replace("-", " ").Trim();
     }
 
     /// <summary>A readable name for an item code or wildcard, from the first matching item.</summary>

@@ -132,6 +132,19 @@ public partial class ColonyManager
     public bool IsManual(QuestObjectiveDef o)
     {
         if (o.Type == ObjectiveTypes.Manual) return true;
+        if (o.Type is ObjectiveTypes.BlockNear or ObjectiveTypes.EntityNear or ObjectiveTypes.Holds)
+        {
+            string id = o.Type + ":" + o.Code;
+            if (!knownItems.TryGetValue(id, out bool found))
+            {
+                found = o.Type == ObjectiveTypes.EntityNear
+                    ? sapi.World.EntityTypes.Any(t => QuestItems.Matches(o.Code, t.Code))
+                    : o.Code.Split('|').Any(part => part.Length > 0 && (sapi.World.SearchBlocks(Loc(part)).Length > 0 || sapi.World.SearchItems(Loc(part)).Length > 0));
+                knownItems[id] = found;
+                if (!found) Mod.Logger.Warning("Quest task {0} {1} matches nothing in the game; the task counts as done", o.Type, o.Code);
+            }
+            return !found;
+        }
         if (o.Type is not (ObjectiveTypes.Obtain or ObjectiveTypes.Deliver or ObjectiveTypes.Stock)) return false;
         if (!knownItems.TryGetValue(o.Code, out bool known))
         {
@@ -140,6 +153,8 @@ public partial class ColonyManager
         }
         return !known;
     }
+
+    static AssetLocation Loc(string part) => new(part.Contains(':') ? part : "game:" + part);
 
     /// <summary>Marks the tasks the game cannot check as done, from the quest card's button.</summary>
     public string? CheckQuest(IServerPlayer player, Colony? colony, QuestDef q)
@@ -192,6 +207,8 @@ public partial class ColonyManager
     int Progress(IServerPlayer player, Colony? colony, QuestObjectiveDef o)
     {
         if (o.Type == ObjectiveTypes.Kill) return QuestsOf(player.PlayerUID).Counters.GetValueOrDefault(o.Code);
+        if (o.Type == ObjectiveTypes.Place) return QuestsOf(player.PlayerUID).Counters.GetValueOrDefault("place:" + o.Code);
+        if (o.Type == ObjectiveTypes.Tour) return colony == null ? 0 : TourProgress(player, colony);
         if (o.Type == ObjectiveTypes.Break) return QuestsOf(player.PlayerUID).Counters.GetValueOrDefault("break:" + o.Code);
         if (o.Type is ObjectiveTypes.Research or ObjectiveTypes.Happiness or ObjectiveTypes.AverageLevel or ObjectiveTypes.WorkHuts or ObjectiveTypes.TopSkill)
             return colony == null ? 0 : ColonyNumber(colony, o);

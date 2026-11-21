@@ -170,6 +170,45 @@ public partial class ColonyManager
     }
 
     List<string>? breakTasks;
+    List<string>? placeTasks;
+
+    /// <summary>Counts a block the player placed towards every place task it fits.</summary>
+    void OnQuestPlace(IServerPlayer player, int oldBlockId, BlockSelection selection, ItemStack withItemStack)
+    {
+        if (player == null || selection?.Position == null) return;
+        placeTasks ??= Quests.All.SelectMany(q => q.Objectives).Where(o => o.Type == ObjectiveTypes.Place).Select(o => o.Code).Distinct().ToList();
+        if (placeTasks.Count == 0) return;
+        var block = sapi.World.BlockAccessor.GetBlock(selection.Position);
+        if (block?.Code == null) return;
+        bool counted = false;
+        foreach (string code in placeTasks)
+        {
+            if (code.Length > 0 && !QuestItems.Matches(code, block.Code)) continue;
+            var counters = QuestsOf(player.PlayerUID).Counters;
+            counters["place:" + code] = counters.GetValueOrDefault("place:" + code) + 1;
+            counted = true;
+        }
+        if (counted) SavePlayerQuests(player.PlayerUID);
+    }
+
+    /// <summary>The Grand Tour: remembers each kind of hut the player has stood beside, and returns how many kinds so far.</summary>
+    int TourProgress(IServerPlayer player, Colony colony)
+    {
+        var counters = QuestsOf(player.PlayerUID).Counters;
+        if (player.Entity != null)
+        {
+            var at = player.Entity.Pos.AsBlockPos;
+            bool found = false;
+            foreach (var b in colony.Buildings)
+            {
+                if (b.Level < 1 || b.HutPos.DistanceTo(at) > 8 || counters.ContainsKey("tour:" + b.Type)) continue;
+                counters["tour:" + b.Type] = 1;
+                found = true;
+            }
+            if (found) SavePlayerQuests(player.PlayerUID);
+        }
+        return counters.Keys.Count(k => k.StartsWith("tour:"));
+    }
 
     /// <summary>The colony's own numbers a quest can ask for.</summary>
     int ColonyNumber(Colony colony, QuestObjectiveDef o)
@@ -188,10 +227,11 @@ public partial class ColonyManager
             }
             case ObjectiveTypes.WorkHuts:
                 // Different kinds of hut, other than homes and the Town Hall, at the level asked for.
+                if (o.Code.Length > 0) return colony.Buildings.Where(b => b.Level >= Math.Max(1, o.Level) && o.Code.Split('|').Contains(b.Type)).Select(b => b.Type).Distinct().Count();
                 return colony.Buildings.Where(b => b.Level >= Math.Max(1, o.Level) && b.Type is not ("townhall" or "residence" or "boardinghouse" or "tavern"))
                     .Select(b => b.Type).Distinct().Count();
             case ObjectiveTypes.TopSkill:
-                return colony.Citizens.Count(c => c.Alive && !c.Visitor && c.SkillXp.Values.Any(xp => LevelOf(xp) >= Math.Max(1, o.Level)));
+                return colony.Citizens.Count(c => c.Alive && !c.Visitor && c.SkillXp.Values.Any(xp => LevelOf(xp) >= (o.Level > 0 ? o.Level : MaxLevel)));
         }
         return 0;
     }

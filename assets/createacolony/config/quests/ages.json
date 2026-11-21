@@ -15,8 +15,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:flint",
-              "count": 3
+              "count": 3,
+              "code": "game:flint"
             }
           ]
         },
@@ -27,7 +27,8 @@
           "shape": "square",
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "game:fruit-*|game:mushroom-*|game:cattailroot|game:vegetable-*|game:insect-*"
             }
           ]
         },
@@ -42,8 +43,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:stick",
-              "count": 8
+              "count": 8,
+              "code": "game:stick"
             }
           ]
         },
@@ -57,7 +58,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "blocknear",
+              "code": "groundstorage"
             }
           ]
         },
@@ -193,8 +195,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:firewood",
-              "count": 8
+              "count": 8,
+              "code": "game:firewood"
             }
           ]
         },
@@ -239,8 +241,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:drygrass",
-              "count": 8
+              "count": 8,
+              "code": "game:drygrass"
             }
           ]
         },
@@ -255,8 +257,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:cattailtops",
-              "count": 8
+              "count": 8,
+              "code": "game:cattailtops"
             }
           ]
         },
@@ -286,7 +288,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "blocknear",
+              "code": "firepit-*"
             }
           ]
         },
@@ -332,7 +335,7 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:cookedcattailroot"
+              "code": "game:vegetable-cookedcattailroot"
             }
           ]
         },
@@ -437,8 +440,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:soil-*",
-              "count": 16
+              "count": 16,
+              "code": "game:soil-*"
             }
           ]
         },
@@ -453,8 +456,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:packeddirt",
-              "count": 8
+              "count": 8,
+              "code": "game:packeddirt"
             }
           ]
         },
@@ -468,7 +471,7 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "room"
             }
           ]
         }
@@ -485,8 +488,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:clay-*",
-              "count": 16
+              "count": 16,
+              "code": "game:clay-*"
             }
           ]
         },
@@ -578,7 +581,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "blocknear",
+              "code": "pitkiln*"
             }
           ]
         },
@@ -683,7 +687,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "meal",
+              "code": "*"
             }
           ]
         },
@@ -697,7 +702,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "holds",
+              "code": "game:grain-*|game:vegetable-*|game:fruit-*|game:redmeat-*|game:bushmeat-*|game:poultry-*|game:bread-*|game:flour-*"
             }
           ]
         },
@@ -711,7 +717,9 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "meal",
+              "level": 1,
+              "code": "*"
             }
           ]
         },
@@ -755,7 +763,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "blocknear",
+              "code": "clayoven*"
             }
           ]
         }
@@ -798,7 +807,12 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "game:pan-*"
+            },
+            {
+              "type": "obtain",
+              "code": "game:nugget-nativecopper|game:nugget-malachite"
             }
           ]
         },
@@ -815,8 +829,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:nugget-nativecopper|game:nugget-malachite",
-              "count": 20
+              "count": 20,
+              "code": "game:nugget-nativecopper|game:nugget-malachite"
             }
           ]
         },
@@ -827,7 +841,8 @@
           "shape": "square",
           "objectives": [
             {
-              "type": "manual"
+              "type": "blocknear",
+              "code": "charcoalpit|charcoalpile-*"
             }
           ]
         },
@@ -842,8 +857,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:charcoal",
-              "count": 8
+              "count": 8,
+              "code": "game:charcoal"
             }
           ]
         },
@@ -860,7 +875,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "game:ingot-copper|game:*head-copper|game:knifeblade-copper"
             }
           ]
         },
@@ -929,7 +945,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "break",
+              "code": "game:prospectingpick-*@"
             }
           ]
         },
@@ -1019,8 +1036,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:ingot-copper",
-              "count": 4
+              "count": 4,
+              "code": "game:ingot-copper"
             }
           ]
         },
@@ -1136,7 +1153,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "game:hoovedwearables-*-bridle*|game:metalbit-copper"
             }
           ]
         },
@@ -1150,7 +1168,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "game:armor-*-copper"
             }
           ]
         },
@@ -1229,8 +1248,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:nugget-nativecopper|game:nugget-malachite",
-              "count": 40
+              "count": 40,
+              "code": "game:nugget-nativecopper|game:nugget-malachite"
             }
           ]
         },
@@ -1244,7 +1263,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "depth",
+              "count": 15
             }
           ]
         },

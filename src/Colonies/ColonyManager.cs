@@ -70,6 +70,7 @@ public partial class ColonyManager : ModSystem
         api.Event.OnEntityDeath += OnMonsterDeath;
         api.Event.OnEntityDeath += OnQuestKill;
         api.Event.DidBreakBlock += OnQuestBreak;
+        api.Event.DidPlaceBlock += OnQuestPlace;
         api.Event.RegisterGameTickListener(OnFarWorkTick, FarWorkTickMs);
         api.Event.RegisterGameTickListener(_ => SaveDirty(), DirtySaveMs, DirtySaveMs);
         StartDoors();

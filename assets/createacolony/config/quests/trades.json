@@ -14,7 +14,8 @@
           "shape": "square",
           "objectives": [
             {
-              "type": "manual"
+              "type": "meal",
+              "code": "*"
             }
           ]
         },
@@ -28,7 +29,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "meal",
+              "code": "scrambledeggs"
             }
           ]
         },
@@ -42,7 +44,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "meal",
+              "code": "soup"
             }
           ]
         },
@@ -56,7 +59,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "meal",
+              "code": "porridge"
             }
           ]
         },
@@ -70,7 +74,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "meal",
+              "code": "meatystew"
             }
           ]
         },
@@ -84,7 +89,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "meal",
+              "code": "vegetablestew"
             }
           ]
         },
@@ -102,7 +108,9 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "meal",
+              "count": 6,
+              "code": "*"
             }
           ]
         },
@@ -113,7 +121,8 @@
           "shape": "square",
           "objectives": [
             {
-              "type": "manual"
+              "type": "holds",
+              "code": "game:milkportion"
             }
           ]
         },
@@ -128,7 +137,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "holds",
+              "code": "game:curdledmilkportion"
             }
           ]
         },
@@ -146,7 +156,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "holds",
+              "code": "game:cottagecheeseportion"
             }
           ]
         },
@@ -236,7 +247,12 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "game:crock-*"
+            },
+            {
+              "type": "meal",
+              "code": "*"
             }
           ]
         },
@@ -250,7 +266,9 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "meal",
+              "level": 1,
+              "code": "*"
             }
           ]
         },
@@ -264,7 +282,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "meal",
+              "code": "jam"
             }
           ]
         },
@@ -287,7 +306,8 @@
           "shape": "square",
           "objectives": [
             {
-              "type": "manual"
+              "type": "room",
+              "code": "cellar"
             }
           ]
         },
@@ -316,7 +336,12 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "room",
+              "code": "cellar"
+            },
+            {
+              "type": "blocknear",
+              "code": "storagevessel-*|shelf-*|crock-*"
             }
           ]
         },
@@ -343,7 +368,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "game:redmeat-cured|game:bushmeat-cured|game:poultry-cured"
             }
           ]
         },
@@ -358,7 +384,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "holds",
+              "code": "game:brineportion"
             }
           ]
         },
@@ -372,7 +399,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "game:pickledvegetable-*|game:pickledlegume-*"
             }
           ]
         },
@@ -456,7 +484,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "holds",
+              "code": "game:juiceportion*"
             }
           ]
         },
@@ -471,7 +500,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "holds",
+              "code": "game:ciderportion*"
             }
           ]
         },
@@ -482,7 +512,8 @@
           "shape": "square",
           "objectives": [
             {
-              "type": "manual"
+              "type": "blocknear",
+              "code": "boiler*"
             }
           ]
         },
@@ -498,7 +529,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "holds",
+              "code": "game:spiritportion*"
             }
           ]
         },
@@ -529,7 +561,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "aculinaryartillery:saucepan-*"
             }
           ]
         },
@@ -544,7 +577,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "holds",
+              "code": "expandedfoods:brothportion-*"
             }
           ]
         },
@@ -559,7 +593,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "expandedfoods:lard"
             }
           ]
         },
@@ -574,7 +609,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "meal",
+              "code": "*"
             }
           ]
         },
@@ -589,7 +625,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "meal",
+              "code": "augratin"
             }
           ]
         },
@@ -604,7 +641,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "game:salt"
             }
           ]
         },
@@ -619,7 +657,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "aculinaryartillery:spile-*"
             }
           ]
         },
@@ -634,7 +673,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "blocknear",
+              "code": "aculinaryartillery:spile-*"
             }
           ]
         },
@@ -649,7 +689,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "holds",
+              "code": "expandedfoods:treesyrupportion-*"
             }
           ]
         },
@@ -664,7 +705,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "efchefstricks:softresin|efchefstricks:hardresin"
             }
           ]
         },
@@ -679,7 +721,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "aculinaryartillery:mixingbowl-*"
             }
           ]
         },
@@ -694,7 +737,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "aculinaryartillery:eggyolk-*|aculinaryartillery:eggshell*"
             }
           ]
         },
@@ -709,7 +753,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "expandedfoods:pasta-*"
             }
           ]
         },
@@ -724,7 +769,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "meal",
+              "code": "pastahot"
             }
           ]
         },
@@ -739,7 +785,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "meal",
+              "code": "pastacold"
             }
           ]
         },
@@ -754,7 +801,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "expandedfoods:meatnugget-*"
             }
           ]
         },
@@ -773,7 +821,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "expandedfoods:sausage-*"
             }
           ]
         },
@@ -788,7 +837,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "blocknear",
+              "code": "aculinaryartillery:meathooks-*"
             }
           ]
         },
@@ -803,7 +853,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "expandedfoods:agedmeat-*"
             }
           ]
         },
@@ -822,7 +873,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "expandedfoods:dumpling-*"
             }
           ]
         },
@@ -837,7 +889,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "meal",
+              "code": "*salad*"
             }
           ]
         },
@@ -852,7 +905,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "holds",
+              "code": "expandedfoods:yogurt-*"
             }
           ]
         },
@@ -867,7 +921,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "meal",
+              "code": "yogurtmeal"
             }
           ]
         },
@@ -882,7 +937,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "holds",
+              "code": "expandedfoods:breadstarter-*"
             }
           ]
         },
@@ -897,7 +953,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "expandedfoods:breaded*-*"
             }
           ]
         },
@@ -912,7 +969,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "expandedfoods:berrybread-*"
             }
           ]
         },
@@ -927,7 +985,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "aculinaryartillery:bottle-*"
             }
           ]
         },
@@ -942,7 +1001,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "holds",
+              "code": "game:vinegarportion"
             }
           ]
         },
@@ -957,7 +1017,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "holds",
+              "code": "expandedfoods:fruitsyrupportion-*"
             }
           ]
         },
@@ -972,7 +1033,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "meal",
+              "code": "compote"
             }
           ]
         },
@@ -987,7 +1049,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "expandedfoods:candy-*"
             }
           ]
         },
@@ -1006,7 +1069,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "expandedfoods:hardtack-*"
             }
           ]
         },
@@ -1021,7 +1085,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "expandedfoods:gozinaki-*"
             }
           ]
         },
@@ -1036,7 +1101,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "expandedfoods:pemmican-*|game:pemmican-*"
             }
           ]
         },
@@ -1051,7 +1117,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "expandedfoods:trailmix-*|expandedfoods:trailmixvegetarian-*"
             }
           ]
         },
@@ -1066,7 +1133,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "expandedfoods:sushi-*|expandedfoods:sushiveg-*"
             }
           ]
         },
@@ -1081,7 +1149,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "expandedfoods:stuffedpepper-*"
             }
           ]
         },
@@ -1096,7 +1165,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "expandedfoods:muffin-*"
             }
           ]
         },
@@ -1111,7 +1181,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "expandedfoods:plaindoughball-*|expandedfoods:pasta-dough"
             }
           ]
         },
@@ -1130,7 +1201,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "holds",
+              "code": "expandedfoods:pasteurizedmilkportion"
             }
           ]
         },
@@ -1145,7 +1217,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "holds",
+              "code": "expandedfoods:yogurt-starter"
             }
           ]
         },
@@ -1160,7 +1233,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "efchefstricks:saltcrystal-damp|efchefstricks:saltcrystal-dry"
             }
           ]
         },
@@ -1175,7 +1249,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "efchefstricks:saltcrystal-dry"
             }
           ]
         },
@@ -1190,7 +1265,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "holds",
+              "code": "expandedfoods:fermentedfish-*"
             }
           ]
         },
@@ -1205,7 +1281,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "holds",
+              "code": "expandedfoods:fishsauce"
             }
           ]
         },
@@ -1220,7 +1297,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "holds",
+              "code": "expandedfoods:strongwineportion-*"
             }
           ]
         },
@@ -1235,7 +1313,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "holds",
+              "code": "expandedfoods:potentwineportion-*"
             }
           ]
         },
@@ -1250,7 +1329,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "holds",
+              "code": "expandedfoods:strongspiritportion-*"
             }
           ]
         },
@@ -1265,7 +1345,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "holds",
+              "code": "expandedfoods:potentspiritportion-*"
             }
           ]
         },
@@ -1280,7 +1361,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "aculinaryartillery:bottlerack-*|aculinaryartillery:bottlerackcorner-*"
             }
           ]
         },
@@ -1291,7 +1373,8 @@
           "shape": "square",
           "objectives": [
             {
-              "type": "manual"
+              "type": "blocknear",
+              "code": "condenser*"
             }
           ]
         },
@@ -1306,7 +1389,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "expandedfoods:breadcrumbs-*"
             }
           ]
         },
@@ -1321,7 +1405,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "efchefstricks:breadcrumbfeed"
             }
           ]
         },
@@ -1336,7 +1421,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "expandedfoods:roastedgrain-*"
             }
           ]
         }
@@ -1367,7 +1453,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "blocknear",
+              "code": "farmland-*"
             }
           ]
         },
@@ -1379,8 +1466,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:seeds-*",
-              "count": 4
+              "count": 4,
+              "code": "game:seeds-*"
             }
           ]
         },
@@ -1395,7 +1482,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "blocknear",
+              "code": "crop-*"
             }
           ]
         },
@@ -1409,7 +1497,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "game:grain-*|game:vegetable-*|game:legume-*"
             }
           ]
         },
@@ -1444,8 +1533,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:grain-spelt",
-              "count": 8
+              "count": 8,
+              "code": "game:grain-spelt"
             }
           ]
         },
@@ -1460,8 +1549,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:grain-rye",
-              "count": 8
+              "count": 8,
+              "code": "game:grain-rye"
             }
           ]
         },
@@ -1476,8 +1565,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:grain-flax",
-              "count": 8
+              "count": 8,
+              "code": "game:grain-flax"
             }
           ]
         },
@@ -1492,8 +1581,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:grain-rice",
-              "count": 8
+              "count": 8,
+              "code": "game:grain-rice"
             }
           ]
         },
@@ -1508,8 +1597,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:grain-amaranth",
-              "count": 8
+              "count": 8,
+              "code": "game:grain-amaranth"
             }
           ]
         },
@@ -1524,8 +1613,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:grain-sunflower",
-              "count": 8
+              "count": 8,
+              "code": "game:grain-sunflower"
             }
           ]
         },
@@ -1540,8 +1629,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:grain-cassava",
-              "count": 8
+              "count": 8,
+              "code": "game:grain-cassava"
             }
           ]
         },
@@ -1556,8 +1645,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:vegetable-carrot",
-              "count": 8
+              "count": 8,
+              "code": "game:vegetable-carrot"
             }
           ]
         },
@@ -1572,8 +1661,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:vegetable-onion",
-              "count": 8
+              "count": 8,
+              "code": "game:vegetable-onion"
             }
           ]
         },
@@ -1588,8 +1677,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:vegetable-turnip",
-              "count": 8
+              "count": 8,
+              "code": "game:vegetable-turnip"
             }
           ]
         },
@@ -1604,8 +1693,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:vegetable-parsnip",
-              "count": 8
+              "count": 8,
+              "code": "game:vegetable-parsnip"
             }
           ]
         },
@@ -1620,8 +1709,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:vegetable-cabbage",
-              "count": 8
+              "count": 8,
+              "code": "game:vegetable-cabbage"
             }
           ]
         },
@@ -1636,8 +1725,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:vegetable-pumpkin",
-              "count": 4
+              "count": 4,
+              "code": "game:vegetable-pumpkin"
             }
           ]
         },
@@ -1652,8 +1741,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:vegetable-bellpepper",
-              "count": 8
+              "count": 8,
+              "code": "game:vegetable-bellpepper"
             }
           ]
         },
@@ -1669,13 +1758,13 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:grain-*",
-              "count": 64
+              "count": 64,
+              "code": "game:grain-*"
             },
             {
               "type": "obtain",
-              "code": "game:vegetable-*",
-              "count": 32
+              "count": 32,
+              "code": "game:vegetable-*"
             }
           ]
         },
@@ -1689,7 +1778,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "game:compost"
             }
           ]
         },
@@ -1704,7 +1794,9 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "count": 8,
+              "code": "game:legume-soybean"
             }
           ]
         },
@@ -1719,7 +1811,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "expandedfoods:soyprep-soaked"
             }
           ]
         },
@@ -1734,7 +1827,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "expandedfoods:soyprep-powdered"
             }
           ]
         },
@@ -1749,7 +1843,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "holds",
+              "code": "expandedfoods:soymilk-*"
             }
           ]
         },
@@ -1764,7 +1859,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "expandedfoods:soyprep-cultured"
             }
           ]
         },
@@ -1779,7 +1875,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "holds",
+              "code": "expandedfoods:soysauce"
             }
           ]
         },
@@ -1823,7 +1920,12 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "game:wateringcan-*"
+            },
+            {
+              "type": "blocknear",
+              "code": "farmland-*"
             }
           ]
         },
@@ -1852,7 +1954,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "game:soil-high-*|game:soil-compost-*"
             }
           ]
         },
@@ -1882,8 +1985,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:legume-peanut",
-              "count": 8
+              "count": 8,
+              "code": "game:legume-peanut"
             }
           ]
         },
@@ -1898,7 +2001,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "expandedfoods:peanut-cooked"
             }
           ]
         },
@@ -1913,7 +2017,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "holds",
+              "code": "expandedfoods:peanutliquid-paste"
             }
           ]
         },
@@ -1928,7 +2033,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "holds",
+              "code": "expandedfoods:peanutliquid-butter"
             }
           ]
         },
@@ -1993,7 +2099,12 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "blocknear",
+              "code": "farmland-*"
+            },
+            {
+              "type": "obtain",
+              "code": "game:bonemeal|game:potash|game:saltpeter|game:compost"
             }
           ]
         },
@@ -2007,7 +2118,9 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "blocknear",
+              "count": 12,
+              "code": "crop-*"
             }
           ]
         },
@@ -2021,7 +2134,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "room",
+              "code": "greenhouse"
             }
           ]
         },
@@ -2052,7 +2166,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "holds",
+              "code": "expandedfoods:foodoilportion-*"
             }
           ]
         },
@@ -2066,7 +2181,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "game:*cutting*|game:clipping-*"
             }
           ]
         },
@@ -2080,7 +2196,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "blocknear",
+              "code": "*berrybush*|fruitingbush-*"
             }
           ]
         },
@@ -2094,7 +2211,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "game:fruittreecutting-*"
             }
           ]
         },
@@ -2108,7 +2226,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "blocknear",
+              "code": "fruittree-*"
             }
           ]
         },
@@ -2134,7 +2253,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "game:fruit-*berry|game:fruit-*currant"
             }
           ]
         },
@@ -2148,7 +2268,12 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "blocknear",
+              "code": "fruittree-*"
+            },
+            {
+              "type": "obtain",
+              "code": "game:knife-*"
             }
           ]
         },
@@ -2162,7 +2287,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "game:fruit-*apple|game:fruit-cherry|game:fruit-peach|game:fruit-pear|game:fruit-orange|game:fruit-mango|game:fruit-breadfruit|game:fruit-lychee|game:fruit-pomegranate"
             }
           ]
         },
@@ -2177,7 +2303,9 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "blocknear",
+              "count": 4,
+              "code": "fruittree-*"
             }
           ]
         },
@@ -2191,7 +2319,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "holds",
+              "code": "game:seeds-*"
             }
           ]
         },
@@ -2206,7 +2335,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "expandedfoods:dryfruit-*"
             }
           ]
         },
@@ -2221,7 +2351,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "expandedfoods:fruitleather-*"
             }
           ]
         },
@@ -2236,7 +2367,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "expandedfoods:candiedfruit-*"
             }
           ]
         },
@@ -2251,7 +2383,8 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "expandedfoods:fruitbar-*|expandedfoods:fruitbar"
             }
           ]
         },
@@ -2266,8 +2399,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:fruit-blueberry",
-              "count": 8
+              "count": 8,
+              "code": "game:fruit-blueberry"
             }
           ]
         },
@@ -2282,8 +2415,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:fruit-cranberry",
-              "count": 8
+              "count": 8,
+              "code": "game:fruit-cranberry"
             }
           ]
         },
@@ -2298,8 +2431,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:fruit-redcurrant",
-              "count": 8
+              "count": 8,
+              "code": "game:fruit-redcurrant"
             }
           ]
         },
@@ -2314,8 +2447,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:fruit-blackcurrant",
-              "count": 8
+              "count": 8,
+              "code": "game:fruit-blackcurrant"
             }
           ]
         },
@@ -2330,8 +2463,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:fruit-whitecurrant",
-              "count": 8
+              "count": 8,
+              "code": "game:fruit-whitecurrant"
             }
           ]
         },
@@ -2492,7 +2625,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "blocknear",
+              "code": "skep-populated-*"
             }
           ]
         },
@@ -2536,7 +2670,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "holds",
+              "code": "game:honeyportion"
             }
           ]
         },
@@ -2552,7 +2687,12 @@
           "mod": "fromgoldencombs",
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "fromgoldencombs:ceramicbroodpot-*"
+            },
+            {
+              "type": "obtain",
+              "code": "fromgoldencombs:hivetop-*"
             }
           ]
         },
@@ -2567,7 +2707,8 @@
           "mod": "fromgoldencombs",
           "objectives": [
             {
-              "type": "manual"
+              "type": "blocknear",
+              "code": "fromgoldencombs:ceramicbroodpot-*"
             }
           ]
         },
@@ -2582,7 +2723,12 @@
           "mod": "fromgoldencombs",
           "objectives": [
             {
-              "type": "manual"
+              "type": "blocknear",
+              "code": "fromgoldencombs:ceramicbroodpot-*"
+            },
+            {
+              "type": "obtain",
+              "code": "game:honeycomb"
             }
           ]
         },
@@ -2597,7 +2743,13 @@
           "mod": "fromgoldencombs",
           "objectives": [
             {
-              "type": "manual"
+              "type": "blocknear",
+              "code": "fromgoldencombs:ceramicbroodpot-*|fromgoldencombs:langstroth*"
+            },
+            {
+              "type": "blocknear",
+              "count": 4,
+              "code": "crop-*"
             }
           ]
         },
@@ -2612,7 +2764,8 @@
           "mod": "fromgoldencombs",
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "fromgoldencombs:langstrothside-*|fromgoldencombs:langstrothbroodtop-*"
             }
           ]
         },
@@ -2627,7 +2780,8 @@
           "mod": "fromgoldencombs",
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "fromgoldencombs:framerack-*"
             }
           ]
         },
@@ -2642,7 +2796,12 @@
           "mod": "fromgoldencombs",
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "fromgoldencombs:beeframe-*"
+            },
+            {
+              "type": "obtain",
+              "code": "fromgoldencombs:frameliner"
             }
           ]
         },
@@ -2657,7 +2816,8 @@
           "mod": "fromgoldencombs",
           "objectives": [
             {
-              "type": "manual"
+              "type": "blocknear",
+              "code": "fromgoldencombs:langstrothbase-*|fromgoldencombs:langstrothstack-*|fromgoldencombs:langstrothsuper-*"
             }
           ]
         },
@@ -2672,7 +2832,12 @@
           "mod": "fromgoldencombs",
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "fromgoldencombs:beeframe-*"
+            },
+            {
+              "type": "obtain",
+              "code": "game:honeycomb"
             }
           ]
         },
@@ -2687,7 +2852,8 @@
           "mod": "fromgoldencombs",
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "fromgoldencombs:waxedflaxtwine"
             }
           ]
         }
@@ -2718,7 +2884,12 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "blocknear",
+              "code": "sapling-*"
+            },
+            {
+              "type": "blocknear",
+              "code": "log-grown-*"
             }
           ]
         },
@@ -2732,7 +2903,9 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "break",
+              "count": 12,
+              "code": "game:axe-*@game:log-grown-*"
             }
           ]
         },
@@ -2774,8 +2947,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:plank-*",
-              "count": 16
+              "count": 16,
+              "code": "game:plank-*"
             }
           ]
         },
@@ -3041,7 +3214,8 @@
           "shape": "square",
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "game:boat-raft-*"
             }
           ]
         },
@@ -3059,7 +3233,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "entitynear",
+              "code": "boat-sailed*|boat-construction*"
             }
           ]
         },
@@ -3156,7 +3331,8 @@
           "shape": "square",
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "game:*baskettrap*|game:trap-*|game:trapcrate-*"
             }
           ]
         },
@@ -3170,7 +3346,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "blocknear",
+              "code": "*baskettrap*|trap-*|trapcrate-*"
             }
           ]
         },
@@ -3184,7 +3361,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "entitynear",
+              "code": "hare-*|chicken-*|raccoon-*|fox-*"
             }
           ]
         },
@@ -3198,7 +3376,13 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "blocknear",
+              "count": 12,
+              "code": "woodenfence-*"
+            },
+            {
+              "type": "blocknear",
+              "code": "woodenfencegate-*"
             }
           ]
         },
@@ -3215,7 +3399,14 @@
           "requiresAny": true,
           "objectives": [
             {
-              "type": "manual"
+              "type": "blocknear",
+              "count": 12,
+              "code": "woodenfence-*"
+            },
+            {
+              "type": "entitynear",
+              "count": 2,
+              "code": "chicken-*|pig-*|sheep-*|goat-*|hare-*"
             }
           ]
         },
@@ -3244,7 +3435,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "holds",
+              "code": "game:grain-*|game:drygrass|game:vegetable-*|game:fruit-*|game:legume-*"
             }
           ]
         },
@@ -3283,7 +3475,9 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "entitynear",
+              "count": 2,
+              "code": "hare-*"
             }
           ]
         },
@@ -3297,7 +3491,9 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "entitynear",
+              "count": 2,
+              "code": "goat-*"
             }
           ]
         },
@@ -3311,7 +3507,9 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "entitynear",
+              "count": 2,
+              "code": "chicken-*"
             }
           ]
         },
@@ -3325,7 +3523,9 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "entitynear",
+              "count": 2,
+              "code": "sheep-*"
             }
           ]
         },
@@ -3339,7 +3539,9 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "entitynear",
+              "count": 2,
+              "code": "pig-*"
             }
           ]
         },
@@ -3383,7 +3585,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "entitynear",
+              "code": "chicken-baby*"
             }
           ]
         },
@@ -3412,7 +3615,9 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "entitynear",
+              "level": 1,
+              "code": "chicken-*|pig-*|sheep-*|goat-*|hare-*"
             }
           ]
         },
@@ -3426,7 +3631,9 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "entitynear",
+              "level": 2,
+              "code": "chicken-*|pig-*|sheep-*|goat-*|hare-*"
             }
           ]
         },
@@ -3440,7 +3647,10 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "entitynear",
+              "level": 3,
+              "count": 3,
+              "code": "chicken-*|pig-*|sheep-*|goat-*|hare-*"
             }
           ]
         },
@@ -3454,7 +3664,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "holds",
+              "code": "game:milkportion"
             }
           ]
         },
@@ -3468,7 +3679,12 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "game:redmeat-raw|game:bushmeat-raw|game:poultry-raw"
+            },
+            {
+              "type": "obtain",
+              "code": "game:hide-raw-*"
             }
           ]
         },
@@ -3514,7 +3730,7 @@
           "requiresAny": true,
           "objectives": [
             {
-              "type": "manual"
+              "type": "mounted"
             }
           ]
         },
@@ -3548,7 +3764,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "entitynear",
+              "code": "*elk*"
             }
           ]
         },
@@ -3562,7 +3779,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "entitynear",
+              "code": "*elk*"
             }
           ]
         },
@@ -3576,7 +3794,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "entitynear",
+              "code": "*elk*tame*"
             }
           ]
         },
@@ -3587,7 +3806,8 @@
           "shape": "square",
           "objectives": [
             {
-              "type": "manual"
+              "type": "entitynear",
+              "code": "*elk*tame*"
             }
           ]
         },
@@ -3601,7 +3821,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "game:*medallion*"
             }
           ]
         },
@@ -3615,7 +3836,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "game:hoovedwearables-*-saddlebags*"
             }
           ]
         },
@@ -3629,7 +3851,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "game:trapcrate-*|game:*cratetrap*"
             }
           ]
         },
@@ -3643,7 +3866,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "entitynear",
+              "code": "pig-*|sheep-*|goat-*|deer-*"
             }
           ]
         }
@@ -3674,7 +3898,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "game:hide-salted-*"
             }
           ]
         },
@@ -3734,7 +3959,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "game:clothes-*-fur*|game:clothes-*-*-fur*|game:armor-*-hide-*"
             }
           ]
         },
@@ -3763,7 +3989,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "holds",
+              "code": "game:limewaterportion"
             }
           ]
         },
@@ -3774,7 +4001,8 @@
           "shape": "square",
           "objectives": [
             {
-              "type": "manual"
+              "type": "holds",
+              "code": "game:weaktanninportion"
             }
           ]
         },
@@ -3788,7 +4016,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "holds",
+              "code": "game:strongtanninportion"
             }
           ]
         },
@@ -3835,7 +4064,7 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:backpack-*|game:backpack"
+              "code": "game:backpack-normal"
             }
           ]
         },
@@ -3861,7 +4090,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "game:hoovedwearables-*-saddle1"
             }
           ]
         },
@@ -3875,7 +4105,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "game:hoovedwearables-*-bridle*"
             }
           ]
         },
@@ -3904,7 +4135,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "game:backpack-sturdy"
             }
           ]
         },
@@ -3918,7 +4150,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "game:armor-*-jerkin-*|game:armor-*-sewn-*|game:armor-*-improvised-*"
             }
           ]
         },
@@ -3932,7 +4165,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "game:hide-prepared-huge|game:hide-scraped-huge|game:hide-soaked-huge"
             }
           ]
         },
@@ -4024,7 +4258,7 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:cloth-*"
+              "code": "game:cloth-plain"
             }
           ]
         },
@@ -4038,7 +4272,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "game:clothes-upperbody-*"
             }
           ]
         },
@@ -4052,7 +4287,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "game:clothes-lowerbody-*"
             }
           ]
         },
@@ -4063,7 +4299,8 @@
           "shape": "square",
           "objectives": [
             {
-              "type": "manual"
+              "type": "holds",
+              "code": "game:dilutedalumportion|game:dilutedboraxportion|game:dilutedcassiteriteportion|game:dilutedchromiteportion"
             }
           ]
         },
@@ -4078,7 +4315,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "game:cloth-mordant"
             }
           ]
         },
@@ -4092,7 +4330,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "holds",
+              "code": "game:dye-yellow"
             }
           ]
         },
@@ -4106,7 +4345,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "game:cloth-yellow"
             }
           ]
         },
@@ -4120,7 +4360,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "holds",
+              "code": "game:dye-woad|game:dye-blue"
             }
           ]
         },
@@ -4134,7 +4375,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "obtain",
+              "code": "game:cloth-blue"
             }
           ]
         }

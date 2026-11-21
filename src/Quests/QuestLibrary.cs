@@ -222,6 +222,10 @@ public static class ObjectiveTypes
     /// <summary>The player broke Count blocks; Code is "tool@block", either side may be empty.</summary>
     public const string Break = "break";
     /// <summary>Count pieces of research are finished.</summary>
+    /// <summary>The player placed Count blocks matching Code (any block when empty).</summary>
+    public const string Place = "place";
+    /// <summary>The player has stood beside Count different kinds of the colony's huts.</summary>
+    public const string Tour = "tour";
     public const string Research = "research";
     /// <summary>The colony's average happiness (0 to 100) is at least Count.</summary>
     public const string Happiness = "happiness";
