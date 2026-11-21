@@ -203,6 +203,8 @@ public static class ObjectiveTypes
     public const string Colony = "colony";
     /// <summary>Something the game cannot check: the player presses "Mark as done" on the quest's card.</summary>
     public const string Manual = "manual";
+    /// <summary>The player killed Count creatures that have any of the entity tags in Code ("animal|huntable|predator").</summary>
+    public const string Kill = "kill";
 }
 
 public class QuestObjectiveDef

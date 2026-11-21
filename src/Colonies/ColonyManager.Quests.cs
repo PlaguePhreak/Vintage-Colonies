@@ -1,3 +1,5 @@
+using Vintagestory.API.Common.Entities;
+using Vintagestory.API.Datastructures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -147,9 +149,47 @@ public partial class ColonyManager
         return null;
     }
 
+    Dictionary<string, TagSetFast>? killTags;
+
+    /// <summary>Counts a player's kill towards every kill task whose tags the dead creature has.</summary>
+    void OnQuestKill(Entity entity, DamageSource? source)
+    {
+        if (source == null || (source.CauseEntity ?? source.SourceEntity) is not EntityPlayer { PlayerUID: { } uid }) return;
+        if (killTags == null)
+        {
+            killTags = new Dictionary<string, TagSetFast>();
+            foreach (var o in Quests.All.SelectMany(q => q.Objectives).Where(o => o.Type == ObjectiveTypes.Kill && o.Code.Length > 0))
+            {
+                if (killTags.ContainsKey(o.Code)) continue;
+                // Tags the game does not know are left out, so one wrong name does not spoil the rest.
+                var set = TagSetFast.Empty;
+                foreach (string tag in o.Code.Split('|', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+                {
+                    if (sapi.EntityTagRegistry.TryCreateTagSet(out var one, new[] { tag }) == TagRegistryError.None)
+                        set = sapi.EntityTagRegistry.CreateMergedTagSet(set, one);
+                    else Mod.Logger.Warning("Quest kill task: the game has no entity tag {0}", tag);
+                }
+                killTags[o.Code] = set;
+            }
+        }
+        if (killTags.Count == 0) return;
+        var tags = entity.Tags;
+        bool counted = false;
+        foreach (var (code, set) in killTags)
+        {
+            var wanted = set;
+            if (wanted.IsEmpty || !tags.Overlaps(ref wanted)) continue;
+            var counters = QuestsOf(uid).Counters;
+            counters[code] = counters.GetValueOrDefault(code) + 1;
+            counted = true;
+        }
+        if (counted) SavePlayerQuests(uid);
+    }
+
     /// <summary>How far along one objective is, from what the player carries and what the colony has.</summary>
     int Progress(IServerPlayer player, Colony? colony, QuestObjectiveDef o)
     {
+        if (o.Type == ObjectiveTypes.Kill) return QuestsOf(player.PlayerUID).Counters.GetValueOrDefault(o.Code);
         double now = sapi.World.Calendar.TotalDays;
         switch (o.Type)
         {

@@ -101,7 +101,8 @@
           ],
           "objectives": [
             {
-              "type": "manual"
+              "type": "kill",
+              "code": "animal|huntable|predator"
             }
           ]
         },

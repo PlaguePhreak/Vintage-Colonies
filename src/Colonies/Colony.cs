@@ -674,6 +674,8 @@ public class PlayerQuests
     [ProtoMember(1)] public Dictionary<string, QuestRecord> Quests = new();
     /// <summary>Quest codes the player chose to track in the quest book.</summary>
     [ProtoMember(2)] public List<string> Tracked = new();
+    /// <summary>Running counts for kill tasks, keyed by the task's tag list.</summary>
+    [ProtoMember(3)] public Dictionary<string, int> Counters = new();
 }
 
 /// <summary>
