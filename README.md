@@ -365,6 +365,27 @@ These work well with Vintage Colonies. Install them separately.
 - Settlers keep their coins in their purse, shown on the settler's Stats tab with their wage. Spending them comes later.
 - The page shows the treasury, what wages cost a month and the next payday. The **Ledger** now has columns for taxes and wages.
 
+## Bronze and iron: alloys and the bloomery (0.169.0)
+No new buildings: this is only how the smelter and blacksmith work. Nothing here is tested in game yet.
+- **Alloys.** The Smelting tab now lists every alloy the game knows (tin bronze, bismuth bronze, black bronze,
+  brass and the rest), next to the plain metals. Set "Keep" on one and the smelter mixes nuggets of each metal
+  in one crucible, in the shares the game asks for (tin bronze: about 90% copper and 10% tin), melts it and
+  pours the ingots like any other metal. It makes whole ingots only, as many as the crucible holds (up to 4).
+  It fetches the nuggets from the hut storage, or asks couriers for them from the warehouse.
+- **Iron from the bloomery.** Build the game's bloomery (with its chimney) within 8 blocks of the Smelter's Hut.
+  The Smelting tab lists **Iron bloom**. Set "Keep" on it and the smelter fills the bloomery with iron nuggets
+  and charcoal (the share the game allows), lights it, and when it has burnt (about half a day) takes the bloom
+  out. A player has to break the bloomery for the bloom; the smelter takes it out without breaking anything.
+  The bloomery works at the same time as the fire pit, and a Smelter's Hut with only a bloomery works too.
+- **Blooms into iron ingots.** The Blacksmith's Smithing tab now lists **Iron ingot** (from a bloom). Set "Keep"
+  on it and the blacksmith heats a bloom in the forge and hammers it into an iron ingot on the anvil (the anvil
+  must be good enough for iron, as for a player). It asks for blooms even when the warehouse has none, so the
+  smelter makes them for it: you only need to set Keep on the Blacksmith.
+- **What to put in storage:** iron nuggets, copper and tin nuggets (or the other metals for an alloy),
+  charcoal, fired crucibles and fired ingot molds.
+- Config: `BloomeryOutputs` (what the bloomery may make, default anything with "bloom" in its code),
+  `BloomIngots` (the ingot a bloom becomes when the game has no smithing recipe for it), `BloomExtraStrikes` (4).
+
 ## Generated packs removed (0.163.0)
 The Oak & Shale pack (0.162.0) and the stretched Dev's Builds levels (0.161.0) are gone: Aaron is designing
 every building himself. The pack list is Medieval Oak and Dev's Builds again; players and buildings saved on
@@ -816,8 +837,8 @@ Smithing skill grows with both jobs.
   copper; it asks couriers for `SmelterFuelCode`, charcoal, when the warehouse has none), lets the game melt it,
   and pours the metal into the molds. Cooled ingots come out of the molds into the hut storage. Metal that
   cools in the crucible goes back on the fire. The Smelting tab lists every metal with ingots ready (warehouse,
-  hut, smelter, molds and crucible) and how many to keep (`SmelterDefaultKeep`: 4 copper, others 0). No
-  alloys (bronze) and no bloomery yet.
+  hut, smelter, molds and crucible) and how many to keep (`SmelterDefaultKeep`: 4 copper, others 0). Alloys
+  and the bloomery came in 0.169.0 (see "Bronze and iron").
 - **Blacksmith's Hut** (2 ingots + 7 planks). The blacksmith needs a hammer, the game's forge (in the
   blueprint) and an anvil placed by a player, both within `BlacksmithRadius` (8). It heats the ingots for a
   piece in the forge with charcoal, takes them out once they are hot enough to work, and strikes the anvil

@@ -12,14 +12,15 @@ namespace CreateAColony.Settlers;
 
 /// <summary>
 /// A smelter works from a Smelter's Hut with the game's own fire pit, crucible and ingot molds: it sets
-/// fired ingot molds out beside the fire pit, fills a crucible with nuggets, puts it on the fire with
-/// charcoal and lights it, pours the molten metal into the molds once the game has melted it, and takes
-/// the ingots out when they have cooled. Ore, fuel, crucibles and molds come from the hut storage, which
+/// fired ingot molds out beside the fire pit, fills a crucible with nuggets (or a mix of nuggets for an
+/// alloy such as bronze), puts it on the fire with charcoal and lights it, pours the molten metal into the molds once the game has melted it, and takes
+/// the ingots out when they have cooled. With a bloomery by the hut it also makes iron blooms from iron
+/// nuggets and charcoal, for the blacksmith to hammer into iron ingots. Ore, fuel, crucibles and molds come from the hut storage, which
 /// couriers fill from the warehouse.
 /// </summary>
 public class AiTaskSettlerSmelter : AiTaskSettlerWorker
 {
-    enum Work { PlaceMold, Load, Fuel, Pour, Collect, Reheat }
+    enum Work { PlaceMold, Load, Fuel, Pour, Collect, Reheat, Alloy, Bloomery, TakeBloom }
 
     Work work;
     ColonyManager.SmeltKind? kind;
@@ -35,7 +36,7 @@ public class AiTaskSettlerSmelter : AiTaskSettlerWorker
     protected override ItemMatch Stock => manager!.IsSmeltable;
     protected override float WorkSeconds => manager!.Config.SmelterSecondsPerStep;
 
-    /// <summary>It carries fuel, crucibles and molds; ingots go to the hut.</summary>
+    /// <summary>It carries fuel, crucibles and molds; ingots and blooms go to the hut.</summary>
     protected override bool AlsoKeeps(ItemStack stack) =>
         ColonyManager.IsEmptyCrucible(stack) || ColonyManager.IsFullCrucible(stack) || ColonyManager.IsIngotMold(stack)
         || ColonyManager.IsSmeltFuel(stack, manager!.Config.SmelterKeepFuelTemperature) || ColonyManager.IsFirewood(stack);
@@ -46,48 +47,76 @@ public class AiTaskSettlerSmelter : AiTaskSettlerWorker
     {
         var m = manager!;
         var pit = m.SmelterFirepit(hut);
-        if (pit == null)
+        var bloomery = m.SmelterBloomery(hut);
+        if (pit == null && bloomery == null)
         {
             SetStatus("no-firepit");
             return false;
         }
 
-        // Cooled ingots come out of the molds first, so the molds are free again.
+        // Cooled ingots come out of the molds first, so the molds are free again; then a finished bloom.
         if (!m.PackFull(citizen) && m.MoldWithIngot(hut) is { } done) return Go(Work.Collect, done.Pos, "smelter-collecting");
+        if (bloomery != null && !m.PackFull(citizen) && ColonyManager.BloomReady(bloomery)) return Go(Work.TakeBloom, bloomery.Pos, "smelter-taking-bloom");
 
-        // Molten metal waiting: pour it while it is hot.
-        if (ColonyManager.FullCrucibleSlot(pit) is { } full)
+        // Why the fire pit cannot take a new crucible right now (null when it can).
+        string? pitBusy = pit == null ? "no-firepit" : null;
+        if (pit != null && ColonyManager.FullCrucibleSlot(pit) is { } full)
         {
+            // Molten metal waiting: pour it while it is hot.
             bool molten = m.IsMolten(full.Itemstack);
             if (molten && m.FreeMoldSides(hut) > 0) return Go(Work.Pour, pit.Pos, "smelter-pouring");
             if (m.FreeMoldSides(hut) == 0 && PlanMolds(colony, citizen, hut, storage, 1) is { } moldPlan) return moldPlan;
             // Cooled in the crucible: back on the fire to melt again.
             if (!molten && full == pit.outputSlot && pit.inputSlot.Empty) return Go(Work.Reheat, pit.Pos, "smelter-reheating");
             if (!molten && full == pit.inputSlot && !pit.IsBurning) return PlanFuel(colony, citizen, hut, storage, pit, m.SmelterHeatNeeded(pit));
-            SetStatus(molten ? "smelter-needs-molds" : full == pit.outputSlot ? "smelter-cooled" : "smelter-reheating");
-            return false;
+            pitBusy = molten ? "smelter-needs-molds" : full == pit.outputSlot ? "smelter-cooled" : "smelter-reheating";
         }
-
-        if (!pit.inputSlot.Empty)
+        else if (pit != null && !pit.inputSlot.Empty)
         {
             // Something a player put there is theirs: leave the fire pit alone.
-            if (!ColonyManager.IsEmptyCrucible(pit.inputSlot.Itemstack))
-            {
-                SetStatus("smelter-firepit-busy");
-                return false;
-            }
-            if (pit.IsBurning)
-            {
-                SetStatus("smelter-melting");
-                return false;
-            }
-            return PlanFuel(colony, citizen, hut, storage, pit, m.SmelterHeatNeeded(pit));
+            if (!ColonyManager.IsEmptyCrucible(pit.inputSlot.Itemstack)) pitBusy = "smelter-firepit-busy";
+            else if (pit.IsBurning) pitBusy = "smelter-melting";
+            else return PlanFuel(colony, citizen, hut, storage, pit, m.SmelterHeatNeeded(pit));
         }
 
         var wanted = m.WantedIngots(colony, hut, citizen);
         if (wanted.Count == 0)
         {
-            SetStatus("smelter-stocked");
+            SetStatus(pitBusy ?? "smelter-stocked");
+            return false;
+        }
+
+        // The bloomery works beside the fire pit: fill it whenever blooms are wanted and it is free.
+        string? bloomWait = null;
+        foreach (var want in wanted.Where(w => w.Bloomery))
+        {
+            if (bloomery == null)
+            {
+                bloomWait ??= "smelter-no-bloomery";
+                break;
+            }
+            if (!m.HasChimney(bloomery))
+            {
+                bloomWait = "smelter-bloomery-nochimney";
+                break;
+            }
+            if (bloomery.IsBurning)
+            {
+                bloomWait = "smelter-bloomery-burning";
+                break;
+            }
+            if (!m.BloomeryFree(bloomery, want))
+            {
+                bloomWait = "smelter-bloomery-busy";
+                break;
+            }
+            if (PlanBloomery(colony, citizen, hut, storage, bloomery, want, ref bloomWait) is { } acted) return acted;
+        }
+
+        var crucibleWants = wanted.Where(w => !w.Bloomery).ToList();
+        if (pitBusy != null || crucibleWants.Count == 0)
+        {
+            SetStatus(crucibleWants.Count == 0 || pitBusy == "no-firepit" ? bloomWait ?? pitBusy ?? "smelter-stocked" : pitBusy!);
             return false;
         }
 
@@ -113,10 +142,15 @@ public class AiTaskSettlerSmelter : AiTaskSettlerWorker
             return false;
         }
 
-        foreach (var want in wanted)
+        foreach (var want in crucibleWants)
         {
             int shortBy = m.CraftWant(colony, hut, want.Key) - m.SmeltStock(colony, hut, want, citizen);
             int ingots = System.Math.Max(1, System.Math.Min(shortBy, System.Math.Min(free, m.Config.SmelterIngotsPerBatch)));
+            if (want.Alloy != null)
+            {
+                if (PlanAlloy(colony, citizen, hut, storage, pit!, want, ingots) is { } alloyPlan) return alloyPlan;
+                continue;
+            }
             var pack = m.PackItems(citizen);
             var ore = pack.Where(want.IsOre).GroupBy(s => s.Collectible.Code).OrderByDescending(g => g.Sum(s => s.StackSize)).FirstOrDefault();
             int perIngot = ore == null ? 20 : ColonyManager.PiecesPerIngot(want, ore.Key);
@@ -126,7 +160,7 @@ public class AiTaskSettlerSmelter : AiTaskSettlerWorker
                 kind = want;
                 batch = System.Math.Min(ingots, have / perIngot);
                 int heat = ColonyManager.MeltTemperature(want, pack);
-                if (m.PackCount(citizen, s => ColonyManager.IsSmeltFuel(s, heat)) > 0) return Go(Work.Load, pit.Pos, "smelter-loading");
+                if (m.PackCount(citizen, s => ColonyManager.IsSmeltFuel(s, heat)) > 0) return Go(Work.Load, pit!.Pos, "smelter-loading");
                 return FetchFuel(colony, hut, storage, heat);
             }
             var oreChest = storage.FirstOrDefault(c => c.Inventory.Any(s => !s.Empty && want.IsOre(s.Itemstack)));
@@ -143,8 +177,103 @@ public class AiTaskSettlerSmelter : AiTaskSettlerWorker
                 return false;
             }
         }
-        SetStatus("smelter-needs-ore");
+        SetStatus(bloomWait ?? "smelter-needs-ore");
         return false;
+    }
+
+    /// <summary>
+    /// The next step for an alloy: load the crucible when the mix is on hand, else fetch the ore it is short of from
+    /// the hut storage or ask couriers for it. Null when the colony has none of some metal, so the next metal is tried.
+    /// </summary>
+    bool? PlanAlloy(Colony colony, CitizenRecord citizen, Building hut, List<BlockEntityContainer> storage, BlockEntityFirepit pit, ColonyManager.SmeltKind want, int ingots)
+    {
+        var m = manager!;
+        var pack = m.PackItems(citizen);
+        var crucible = pack.FirstOrDefault(ColonyManager.IsEmptyCrucible);
+        var (slots, size) = ColonyManager.CrucibleRoom(pit, crucible);
+        var plan = m.AlloyPlan(want, pack, ingots, slots, size);
+        if (plan != null)
+        {
+            kind = want;
+            batch = plan.Sum(p => p.Pieces * want.UnitsPer[p.Code]) / 100;
+            int heat = ColonyManager.MeltTemperature(want, pack.Where(want.IsOre));
+            if (m.PackCount(citizen, s => ColonyManager.IsSmeltFuel(s, heat)) > 0) return Go(Work.Alloy, pit.Pos, "smelter-mixing");
+            return FetchFuel(colony, hut, storage, heat);
+        }
+
+        // Short of some metal: from the hut storage first, then from the warehouse by courier.
+        var stored = storage.SelectMany(c => c.Inventory).Where(s => !s.Empty).Select(s => s.Itemstack!).ToList();
+        bool asked = false;
+        foreach (var (part, units) in m.AlloyShort(want, pack, ingots))
+        {
+            int pieces = (int)System.Math.Ceiling(units / (double)System.Math.Max(1, part.UnitsPer.Values.Min()));
+            var chest = storage.FirstOrDefault(c => c.Inventory.Any(s => !s.Empty && part.IsOre(s.Itemstack)));
+            if (chest != null && !m.PackFull(citizen))
+            {
+                SetStatus("smelter-fetching-ore");
+                return FetchSupplies(chest.Pos, part.IsOre, pieces);
+            }
+            if (m.CodeInWarehouse(colony, part.IsOre) is { } code)
+            {
+                m.EnsureCraftRequest(colony, hut, code, pieces);
+                asked = true;
+                continue;
+            }
+            if (!stored.Any(part.IsOre)) return null;
+        }
+        if (asked)
+        {
+            SetStatus("smelter-waiting-ore");
+            return false;
+        }
+        // Enough of each metal but not in shares the game takes (say too much tin): try the next metal.
+        return null;
+    }
+
+    /// <summary>
+    /// The next step for the bloomery: fill and light it when the ore and fuel are on hand, else fetch them or ask
+    /// couriers. Null when the colony has no ore for it (wait says why), so other work can go on.
+    /// </summary>
+    bool? PlanBloomery(Colony colony, CitizenRecord citizen, Building hut, List<BlockEntityContainer> storage,
+        BlockEntityBloomery bloomery, ColonyManager.SmeltKind want, ref string? wait)
+    {
+        var m = manager!;
+        int blooms = System.Math.Max(1, m.CraftWant(colony, hut, want.Key) - m.SmeltStock(colony, hut, want, citizen));
+        var pack = m.PackItems(citizen);
+        var ore = pack.Where(want.IsOre).GroupBy(s => s.Collectible.Code).OrderByDescending(g => g.Sum(s => s.StackSize)).FirstOrDefault();
+        int per = ore == null ? 20 : ColonyManager.PiecesPerIngot(want, ore.Key);
+        // Ore already in the bloomery (it ran out of fuel last time) only needs fuel.
+        if ((ore != null && ore.Sum(s => s.StackSize) >= per) || ColonyManager.BloomeryOre(bloomery) > 0)
+        {
+            kind = want;
+            batch = blooms;
+            if (m.PackCount(citizen, ColonyManager.IsBloomeryFuel) > 0) return Go(Work.Bloomery, bloomery.Pos, "smelter-filling-bloomery");
+            var fuelChest = storage.FirstOrDefault(c => c.Inventory.Any(s => !s.Empty && ColonyManager.IsBloomeryFuel(s.Itemstack)));
+            if (fuelChest != null && !m.PackFull(citizen))
+            {
+                SetStatus("smelter-fetching-fuel");
+                return FetchSupplies(fuelChest.Pos, ColonyManager.IsBloomeryFuel, m.Config.SmelterFuel * 2);
+            }
+            string code = m.CodeInWarehouse(colony, ColonyManager.IsBloomeryFuel) ?? m.Config.SmelterFuelCode;
+            m.EnsureCraftRequest(colony, hut, code, m.Config.SmelterFuel * 4);
+            wait = "smelter-needs-fuel";
+            return null;
+        }
+        var oreChest = storage.FirstOrDefault(c => c.Inventory.Any(s => !s.Empty && want.IsOre(s.Itemstack)));
+        if (oreChest != null && !m.PackFull(citizen))
+        {
+            SetStatus("smelter-fetching-ore");
+            return FetchSupplies(oreChest.Pos, want.IsOre, per * blooms);
+        }
+        if (m.CodeInWarehouse(colony, want.IsOre) is { } oreCode)
+        {
+            int each = ColonyManager.PiecesPerIngot(want, new AssetLocation(oreCode));
+            m.EnsureCraftRequest(colony, hut, oreCode, each * blooms);
+            wait = "smelter-waiting-ore";
+            return null;
+        }
+        wait ??= "smelter-needs-iron";
+        return null;
     }
 
     /// <summary>Sets a mold out, fetching one from the hut first, or asks for some. Null when there are none to be had.</summary>
@@ -225,6 +354,15 @@ public class AiTaskSettlerSmelter : AiTaskSettlerWorker
                 break;
             case Work.Reheat:
                 if (ba.GetBlockEntity(target) is BlockEntityFirepit reheatPit) m.ReheatCrucible(colony, citizen, reheatPit);
+                break;
+            case Work.Alloy:
+                if (ba.GetBlockEntity(target) is BlockEntityFirepit alloyPit && kind != null) m.LoadAlloy(colony, citizen, alloyPit, kind, batch);
+                break;
+            case Work.Bloomery:
+                if (ba.GetBlockEntity(target) is BlockEntityBloomery fillBloomery && kind != null) m.LoadBloomery(colony, citizen, fillBloomery, kind, batch);
+                break;
+            case Work.TakeBloom:
+                if (ba.GetBlockEntity(target) is BlockEntityBloomery doneBloomery) m.TakeBloom(colony, hut, citizen, doneBloomery);
                 break;
             case Work.Pour:
                 if (ba.GetBlockEntity(target) is BlockEntityFirepit pourPit) m.PourCrucible(colony, hut, citizen, pourPit);

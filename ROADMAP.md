@@ -74,7 +74,7 @@ Everything listed under "What we have" and "Partly done" has been tested in game
 ## Not built yet
 
 **Next, in this order**
-1. **Smelter** (started in 0.50.0): still to do are alloys such as bronze, and a bloomery for iron
+1. **Smelter** (started in 0.50.0): alloys such as bronze and the bloomery for iron added in 0.169.0 (not tested yet)
 2. **Happiness** came in 0.61.0. Still to add: safety (raids), health, and how crowded the colony is
 3. **A request list**: seeing what workers need came in 0.142.0 (Requests tab). Still to add: filling a request from the tab
 4. **Animal herders and a Tanner**: chickens, pigs, sheep and goats in pens for meat, eggs and hides, and a Tanner who makes leather in barrels
