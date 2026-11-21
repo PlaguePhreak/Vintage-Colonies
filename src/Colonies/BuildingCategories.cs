@@ -14,12 +14,14 @@ public static class BuildingCategories
     public static readonly Category[] All =
     {
         new("fundamentals", new[] { BuildingTypes.TownHall, BuildingTypes.Builder, BuildingTypes.Tavern, BuildingTypes.Residence }),
-        new("agriculture", new[] { BuildingTypes.Farmer, BuildingTypes.Forester, BuildingTypes.Gatherer, BuildingTypes.Hunter }),
+        Group("agriculture",
+            new("land", new[] { BuildingTypes.Farmer, BuildingTypes.Forester, BuildingTypes.Gatherer, BuildingTypes.Hunter }),
+            new("animals", new[] { BuildingTypes.ChickenCoop, BuildingTypes.Piggery, BuildingTypes.Shepherd, BuildingTypes.Goatherd, BuildingTypes.Herdsman })),
         Group("craftsmanship",
             new("woodworking", new[] { BuildingTypes.Sawmill }),
             new("food", new[] { BuildingTypes.Cook, BuildingTypes.Butcher }),
             new("metallurgy", new[] { BuildingTypes.Smelter, BuildingTypes.Blacksmith, BuildingTypes.Armourer, BuildingTypes.Weaponsmith, BuildingTypes.Mint }),
-            new("primitive", new[] { BuildingTypes.Potter, BuildingTypes.Craftsman }),
+            new("primitive", new[] { BuildingTypes.Potter, BuildingTypes.Craftsman, BuildingTypes.Tannery }),
             new("luxury", new[] { BuildingTypes.Tailor, BuildingTypes.Jeweller })),
         new("mining", new[] { BuildingTypes.Prospector, BuildingTypes.Miner, BuildingTypes.MineshaftEntrance, BuildingTypes.Quarry }),
         new("education", new[] { BuildingTypes.Church, BuildingTypes.Archive }),

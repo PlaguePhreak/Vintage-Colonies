@@ -1151,6 +1151,8 @@ public partial class ColonyNetwork : ModSystem
             or BuildingTypes.Prospector or BuildingTypes.Miner or BuildingTypes.Quarry
             or BuildingTypes.Smelter or BuildingTypes.Blacksmith or BuildingTypes.Armourer or BuildingTypes.Weaponsmith or BuildingTypes.Sawmill or BuildingTypes.Craftsman or BuildingTypes.Tailor or BuildingTypes.Jeweller or BuildingTypes.Healer or BuildingTypes.Mint or BuildingTypes.Church
             or BuildingTypes.Explorer or BuildingTypes.Gatherer or BuildingTypes.Hunter or BuildingTypes.Butcher) snapshot.Info = Manager.WorkerHutInfo(colony, building);
+            or BuildingTypes.Explorer or BuildingTypes.Gatherer or BuildingTypes.Hunter or BuildingTypes.Tannery
+            || ColonyManager.IsHerderHut(building.Type)) snapshot.Info = Manager.WorkerHutInfo(colony, building);
         if (building.Type == BuildingTypes.Tavern)
         {
             snapshot.IsTavern = true;

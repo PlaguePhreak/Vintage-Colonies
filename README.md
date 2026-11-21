@@ -63,6 +63,12 @@ planks of any wood.
 | Blacksmith's Hut | 2 ingots (any metal) + 7 planks |
 | Sawmill | 2 logs (any) + 7 planks |
 | Primitive Craftsman | 2 flint + 7 planks |
+| Chicken Coop | 2 feathers + 7 planks |
+| Piggery | 2 raw red meat + 7 planks |
+| Shepherd's Hut | 2 flax twine + 7 planks |
+| Goatherd's Hut | 2 wooden buckets + 7 planks |
+| Herdsman's Hut | 2 fat + 7 planks |
+| Tannery | 2 raw hides (any) + 7 planks |
 | Supply Camp | 3 firewood over 2 sticks (unchanged) |
 | Colony Ledger | 4 paper (any), 2 leather, 2 charcoal: paper, leather, paper / charcoal, paper, charcoal / paper, leather, paper |
 | Drop-off | stick over a plank (unchanged) |
@@ -1472,6 +1478,45 @@ underground, or in winter. Settlers use that.
 - The Dev's Builds Cook's Hut level 2 basement is full of Food Shelves, so food ends up down there.
 - The Cook's Hut window shows how fast food spoils in its coolest storage (100% is normal speed).
 - `KeepFoodCool: false` turns the moving off. `CoolStoreMaxRateShare` (0.75) is how much cooler a store must be.
+
+### Herders, the Tannery and garden hens (0.171.0)
+
+`src/Colonies/ColonyManager.Herding.cs`, `src/Colonies/ColonyManager.Tanning.cs`, `src/Settlers/AiTaskSettlerHerder.cs`,
+`src/Settlers/AiTaskSettlerTanner.cs`, `src/Settlers/AiTaskSettlerChores.cs`. Mechanics only: the huts have
+placeholder blocks and no buildings yet. Not tested in game yet.
+
+- **Five herder huts** (Builder's Wand, Agriculture tab, Animals): Chicken Coop (Chicken Herder), Piggery (Swineherd),
+  Shepherd's Hut (Shepherd), Goatherd's Hut (Goatherd) and Herdsman's Hut (Herdsman). The Herdsman looks after
+  any animal that breeds, so animals from other mods work too (config `HerdAnimals`; wild game in
+  `HerdsmanSkips` is left alone). New skill: Husbandry.
+- **The pen** is everything up to `HerdRadius` blocks (16) from the hut; change it on the Work area tab. Fence
+  it, put troughs (and nest boxes for hens) inside, and lead two or more animals in.
+- **What a herder does**, in order: skins its culls; fills troughs that are half empty with feed the animals
+  eat (from the hut storage, or it asks couriers to bring feed from the warehouse); collects eggs from nest
+  boxes (fertile eggs stay to hatch until the pen is full); milks sheep and goats that have milk into empty
+  buckets from the hut storage; and once the pen holds more than the herd size it culls a spare grown animal
+  with its knife. It always keeps `HerdKeepMales` males (1) and `HerdKeepFemales` females (2) of each kind,
+  never culls young, named or tamed animals, and brings meat and hides to the hut for the couriers.
+- **Herd size**: `HerdSize` (6) at level 1, plus `HerdSizePerLevel` (3) per level. Without a building the hut
+  counts as level 1.
+- **Butcher hand-off**: culls are tagged on the carcass with `createacolony:huntedBy` like the Hunter's kills.
+  With `HerderLeavesCulls` on, herders leave them for a Butcher instead of skinning them
+  (`ColonyManager.HerderLeavesCulls`, the one place the Butcher's Hut code hooks in).
+- **Tannery** (Craftsmanship tab, Primitive; Tanner job, uses the Tailoring skill). It reads the game's barrel and crafting
+  recipes, so the steps are the game's own: water plus lime (or borax) makes limewater, raw hides soak in it,
+  the tanner scrapes the soaked hides at the hut with its knife, then soaks them in weak tannin (an oak or
+  acacia log in 10 litres of water) and strong tannin until they are leather. It uses barrels up to
+  `TannerBarrelRadius` blocks (8) from the hut that are empty or hold tanning things, carries water from the
+  nearest water in a bucket (`TannerBucketLitres`), and asks couriers for hides, lime, borax and logs.
+  Leather goes to the warehouse.
+- **Garden hens**: settlers without a job feed the chickens kept at their home (troughs and nest boxes in the
+  home or up to `JoblessHenReach` blocks around it) with feed from the home chests or the warehouse, and put
+  the eggs in the home chest. They let eggs hatch until the home has `JoblessHensMax` (4) chickens.
+- Config: `HerdAnimals`, `HerdsmanSkips`, `HerdNeverCull`, `HerdRadius`, `HerdSize`, `HerdSizePerLevel`,
+  `HerdKeepMales`, `HerdKeepFemales`, `HerderSecondsPerTask`, `HerderMilkSeconds`, `HerderLactatingDays`,
+  `HerderFeedTake`, `HerderCullDamageMult`, `HerderLeavesCulls`, `TannerBarrelRadius`, `TannerWaterRadius`,
+  `TannerBucketLitres`, `TannerSecondsPerStep`, `TannerBatches`, `TannerHideTake`, `TannerHideRequest`,
+  `TannerSupplyRequest`, `JoblessKeepHens`, `JoblessHenReach`, `JoblessHensMax`.
 
 ### The Hunter, skinning and cooking at home (0.99.0)
 

@@ -29,7 +29,7 @@ public class AiTaskSettlerChores : SettlerTaskBase
     const float PlotReach = 2f;
     const float WaterReach = 4.5f;
 
-    enum Step { Fetch, Work, Store, Skin, Cook, Collect }
+    enum Step { Fetch, Work, Store, Skin, Cook, Collect, Feed, Eggs }
 
     Step step;
     FieldWork work;
@@ -69,7 +69,7 @@ public class AiTaskSettlerChores : SettlerTaskBase
         // Hands full: put the harvest away first.
         if (manager.PackFull(citizen) && PlanStore(colony, citizen, home)) return true;
         // A carcass rots, so it comes before the plot; the meat is cooked once the plot needs nothing.
-        return PlanSkin(colony, citizen, home) || PlanPlot(colony, citizen, home) || PlanCook(colony, citizen, home) || PlanStore(colony, citizen, home);
+        return PlanSkin(colony, citizen, home) || PlanPlot(colony, citizen, home) || PlanHens(colony, citizen, home) || PlanCook(colony, citizen, home) || PlanStore(colony, citizen, home);
     }
 
     /// <summary>A dead animal on the colony's land to skin, or a knife to fetch for it first.</summary>
@@ -88,6 +88,31 @@ public class AiTaskSettlerChores : SettlerTaskBase
         step = Step.Skin;
         target = carcass.Pos.AsBlockPos;
         return true;
+    }
+
+    /// <summary>
+    /// The household's hens (ColonyManager.Herding.cs): fills their trough from the home chests or the warehouse,
+    /// and collects the eggs. Fertile eggs stay to hatch until the home has config JoblessHensMax chickens.
+    /// </summary>
+    bool PlanHens(Colony colony, CitizenRecord citizen, Building home)
+    {
+        var m = manager!;
+        if (!m.Config.JoblessKeepHens) return false;
+        var hens = m.HomeHens(home);
+        if (hens.Count == 0) return false;
+        var kinds = m.HenKinds();
+        foreach (var trough in m.HomeTroughs(home).Where(t => !IsUnreachable(t.Pos) && m.TroughWantsFeed(t)))
+        {
+            if (m.PackItems(citizen).Any(s => m.FeedFits(trough, s, kinds))) return At(Step.Feed, trough.Pos);
+            if (!m.PackFull(citizen) && m.HomeSupply(colony, home, s => m.FeedFits(trough, s, kinds)) is { } chest)
+            {
+                return Fetch(chest.Pos, s => m.FeedFits(trough, s, kinds), m.Config.JoblessSeedTake * 2);
+            }
+        }
+        if (m.PackFull(citizen)) return false;
+        bool enough = hens.Count >= m.Config.JoblessHensMax;
+        var nest = m.HomeNests(home).FirstOrDefault(n => !IsUnreachable(n.Pos) && ColonyManager.HasEggsToTake(n, enough));
+        return nest != null && At(Step.Eggs, nest.Pos);
     }
 
     /// <summary>Cooks the raw food it brought home on the home's fire pit, or takes cooked food off it.</summary>
@@ -219,7 +244,7 @@ public class AiTaskSettlerChores : SettlerTaskBase
     float Reach => step switch
     {
         Step.Work => work == FieldWork.Refill ? WaterReach : PlotReach,
-        Step.Skin or Step.Cook or Step.Collect => PlotReach,
+        Step.Skin or Step.Cook or Step.Collect or Step.Feed or Step.Eggs => PlotReach,
         _ => 1.5f
     };
 
@@ -276,6 +301,8 @@ public class AiTaskSettlerChores : SettlerTaskBase
             case Step.Skin:
             case Step.Cook:
             case Step.Collect:
+            case Step.Feed:
+            case Step.Eggs:
                 if (workAnim == null)
                 {
                     PrepareHand(colony, citizen);
@@ -343,6 +370,17 @@ public class AiTaskSettlerChores : SettlerTaskBase
                 if (raw == null || m.KitchenKindOf(raw) is not { } kind) return;
                 m.LoadFirepit(colony, citizen, pit, kind);
                 m.GainWorkXp(colony, citizen, Jobs.Cook);
+                break;
+            case Step.Feed:
+                if (entity.World.BlockAccessor.GetBlockEntity(target) is BlockEntityTrough trough) m.FillTrough(colony, citizen, trough, m.HenKinds());
+                break;
+            case Step.Eggs:
+                if (entity.World.BlockAccessor.GetBlockEntity(target) is not BlockEntityHenBox nest) return;
+                if (colony.Buildings.Find(b => b.BuildingId == homeId) is not { } henHome) return;
+                m.TakeEggs(colony, citizen, nest, m.HomeHens(henHome).Count >= m.Config.JoblessHensMax);
+                // The eggs are the household's: they go into the home chest later.
+                foreach (var egg in m.PackItems(citizen).Where(s => s.Collectible.Code.Path.StartsWith("egg-"))) gathered.Add(egg.Collectible.Code.ToString());
+                m.GainWorkXp(colony, citizen, Jobs.Herdsman);
                 break;
             case Step.Collect:
                 if (entity.World.BlockAccessor.GetBlockEntity(target) is not BlockEntityFirepit fire || !ColonyManager.FireHasFood(fire)) return;
@@ -416,7 +454,7 @@ public class AiTaskSettlerChores : SettlerTaskBase
     {
         var hand = Hand;
         if (step == Step.Skin) return "knifecut";
-        if (step is Step.Cook or Step.Collect) return SettlerAnimations.PlayerAnimations.Contains("placeblock") ? "placeblock" : "interactstatic";
+        if (step is Step.Cook or Step.Collect or Step.Feed or Step.Eggs) return SettlerAnimations.PlayerAnimations.Contains("placeblock") ? "placeblock" : "interactstatic";
         return work switch
         {
             FieldWork.Till => hand?.Itemstack?.Collectible.GetHeldTpUseAnimation(hand, entity) ?? "interactstatic",
@@ -445,6 +483,8 @@ public class AiTaskSettlerChores : SettlerTaskBase
         Step.Skin => Lang.Get("createacolony:activity-chores-skin"),
         Step.Cook => Lang.Get("createacolony:activity-chores-cook"),
         Step.Collect => Lang.Get("createacolony:activity-chores-collect"),
+        Step.Feed => Lang.Get("createacolony:activity-chores-feed"),
+        Step.Eggs => Lang.Get("createacolony:activity-chores-eggs"),
         _ => Lang.Get("createacolony:activity-chores-" + work.ToString().ToLowerInvariant())
     };
 }

@@ -249,6 +249,50 @@ archive=shape(["sides","planks","paper","cover","wax"], base+[
   box("PagesL",[4,10.4,5],[7.4,10.9,11],"paper"), box("PagesR",[7.6,10.4,5],[11,10.9,11],"paper"),
   box("Candle",[12,9,2],[13.5,12.5,3.5],"wax"), box("Wick",[12.6,12.5,2.6],[12.9,13.1,2.9],"cover"),
   box("Scroll",[2,9,12.5],[13,10.6,14.1],"paper"), box("ScrollEnd",[13,8.9,12.4],[13.6,10.7,14.2],"planks"),
+# Chicken Coop: a little straw-roofed coop with a hen box and two eggs.
+coop=shape(["sides","planks","log","straw","egg"], base+[
+  box("PostL",[2,9,2],[3,15,3],"log"), box("PostR",[13,9,2],[14,15,3],"log"),
+  box("PostBL",[2,9,9],[3,15,10],"log"), box("PostBR",[13,9,9],[14,15,10],"log"),
+  box("Roof",[1.5,15,1.5],[14.5,16.5,10.5],"straw"),
+  box("Nest",[4,9,3.5],[12,10.5,8.5],"straw"),
+  box("Egg1",[6,10.5,5],[7.5,12.3,6.5],"egg"), box("Egg2",[8.5,10.5,5.5],[10,12.3,7],"egg"),
+  box("Feed",[4,9,11.5],[12,10,14],"planks"),
+])
+# Piggery: a wooden trough with slop and a patch of mud.
+piggery=shape(["sides","planks","log","mud","slop"], base+[
+  box("Mud",[1.5,9,1.5],[14.5,9.3,8],"mud"),
+  box("TroughL",[2,9,9.5],[3,11.5,14.5],"planks"), box("TroughR",[13,9,9.5],[14,11.5,14.5],"planks"),
+  box("TroughF",[3,9,9.5],[13,11.5,10.5],"planks"), box("TroughB",[3,9,13.5],[13,11.5,14.5],"planks"),
+  box("Slop",[3,9,10.5],[13,10.8,13.5],"slop"),
+  box("Post",[7,9,3],[8,14,4],"log"),
+])
+# Shepherd's Hut: a shepherd's crook and a bale of fleece.
+shepherd=shape(["sides","planks","log","wool"], base+[
+  box("Bale",[2,9,6],[9,13,13],"wool"),
+  box("Staff",[11.5,9,7.5],[12.3,21,8.3],"log"),
+  box("Hook1",[12.3,20.2,7.5],[14.3,21,8.3],"log"), box("Hook2",[13.5,18.5,7.5],[14.3,20.2,8.3],"log"),
+])
+# Goatherd's Hut: a milk pail and a stool.
+goatherd=shape(["sides","planks","log","milk","metal"], base+[
+  box("Pail",[3,9,3],[8,14,8],"planks"), box("Milk",[3.5,13.6,3.5],[7.5,13.9,7.5],"milk"),
+  box("Band",[2.9,10.5,2.9],[8.1,11.2,8.1],"metal"),
+  box("Seat",[9,12,9],[14,13,14],"planks"),
+  box("Leg1",[9.5,9,9.5],[10.5,12,10.5],"log"), box("Leg2",[12.5,9,12.5],[13.5,12,13.5],"log"), box("Leg3",[12.5,9,9.5],[13.5,12,10.5],"log"),
+])
+# Herdsman's Hut: a bit of fence, a feed sack and a lead rope.
+herdsman=shape(["sides","planks","log","sack","rope"], base+[
+  box("Post1",[2,9,2],[3.5,16,3.5],"log"), box("Post2",[12.5,9,2],[14,16,3.5],"log"),
+  box("Rail1",[3.5,11,2.3],[12.5,12,3.2],"planks"), box("Rail2",[3.5,14,2.3],[12.5,15,3.2],"planks"),
+  box("Sack",[3,9,7],[9,15,13],"sack"), box("SackTie",[4.5,15,8.5],[7.5,16,11.5],"rope"),
+  box("Rope",[10.5,9,8],[14,9.6,12],"rope"),
+])
+# Tannery: a small barrel and a hide stretched on a frame.
+tannery=shape(["sides","planks","log","hide","metal","liquid"], base+[
+  box("Barrel",[2,9,2],[8,16,8],"planks"), box("Liquid",[2.5,15.6,2.5],[7.5,15.9,7.5],"liquid"),
+  box("Hoop1",[1.9,10,1.9],[8.1,10.7,8.1],"metal"), box("Hoop2",[1.9,14,1.9],[8.1,14.7,8.1],"metal"),
+  box("FrameL",[9,9,12],[10,19,13],"log"), box("FrameR",[14,9,12],[15,19,13],"log"),
+  box("FrameTop",[9,18,12],[15,19,13],"log"),
+  box("Hide",[10,10,12.3],[14,18,12.7],"hide"),
 ])
 # Mineshaft Entrance: a timber frame over a dark hole, with a ladder going down.
 entrance=shape(["sides","planks","log","dark","ladder"], base+[
@@ -284,4 +328,5 @@ if __name__ == "__main__":
         json.dump(shape(tex, base + el), open(f"{out}/{name}.json", "w"), indent=1)
     for name, model in {"hut-smelter": smelter, "hut-blacksmith": smith, "hut-sawmill": saw, "hut-barracks": barracks, "hut-explorer": explorer, "hut-gatherer": gatherer, "hut-hunter": hunter, "hut-craftsman": craftsman, "hut-tailor": tailor, "hut-jeweller": jeweller, "hut-healer": healer, "hut-armourer": armourer, "hut-weaponsmith": weaponsmith, "hut-mint": mint, "hut-archive": archive, "hut-church": church, "workstation-healer": station_healer, "hut-mineshaftentrance": entrance, "supplycamp": camp, "fieldmarker": crow}.items():
     for name, model in {"hut-smelter": smelter, "hut-blacksmith": smith, "hut-sawmill": saw, "hut-barracks": barracks, "hut-explorer": explorer, "hut-gatherer": gatherer, "hut-hunter": hunter, "hut-butcher": butcher, "hut-craftsman": craftsman, "hut-tailor": tailor, "hut-jeweller": jeweller, "hut-healer": healer, "hut-armourer": armourer, "hut-weaponsmith": weaponsmith, "hut-mint": mint, "hut-church": church, "workstation-healer": station_healer, "hut-mineshaftentrance": entrance, "supplycamp": camp, "fieldmarker": crow}.items():
+    for name, model in {"hut-smelter": smelter, "hut-blacksmith": smith, "hut-sawmill": saw, "hut-barracks": barracks, "hut-explorer": explorer, "hut-gatherer": gatherer, "hut-hunter": hunter, "hut-craftsman": craftsman, "hut-tailor": tailor, "hut-jeweller": jeweller, "hut-healer": healer, "hut-armourer": armourer, "hut-weaponsmith": weaponsmith, "hut-mint": mint, "hut-chickencoop": coop, "hut-piggery": piggery, "hut-shepherd": shepherd, "hut-goatherd": goatherd, "hut-herdsman": herdsman, "hut-tannery": tannery, "hut-church": church, "workstation-healer": station_healer, "hut-mineshaftentrance": entrance, "supplycamp": camp, "fieldmarker": crow}.items():
         json.dump(model, open(f"{out}/{name}.json", "w"), indent=1)
