@@ -966,7 +966,7 @@ public partial class GuiDialogHut : GuiDialog
         return Lang.HasTranslation(key) ? Lang.Get(key) : code;
     }
 
-    /// <summary>Settings: the task (Patrol, Guard, Follow), retreat, hire trainee, patrol mode and follow mode.</summary>
+    /// <summary>Settings: the task (Patrol, Guard, Follow), retreat, patrol mode and follow mode.</summary>
     void ComposeSettings(GuiComposer composer)
     {
         int id = BuildingId;
@@ -1010,9 +1010,6 @@ public partial class GuiDialogHut : GuiDialog
         y = composer.Section(Lang.Get("createacolony:settings-retreat"), y + 4, Width);
         y = AddSetting(composer, "retreat", ColonyAction.SetRetreat, snapshot.Retreat, y);
         y = composer.Text(Lang.Get("createacolony:settings-retreat-hint"), GuiKit.Muted(), 0, y, Width, 10);
-
-        y = composer.Section(Lang.Get("createacolony:settings-trainee"), y, Width);
-        composer.Text(Lang.Get("createacolony:settings-trainee-later"), GuiKit.Muted(), 0, y, Width);
     }
 
     /// <summary>A row of buttons, one per choice, the chosen one marked; plain text for non-officers. Returns the y below it.</summary>
