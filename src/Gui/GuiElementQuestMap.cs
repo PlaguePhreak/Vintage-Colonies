@@ -66,7 +66,10 @@ public class GuiElementQuestMap : GuiElement
     public QuestStatus StatusOf(QuestDef q) => states.TryGetValue(q.Code, out var s) ? (QuestStatus)s.Status : QuestStatus.Locked;
 
     /// <summary>Secret quests stay off the map until the quests they need are done.</summary>
-    bool Shown(QuestDef q) => !q.Secret || StatusOf(q) != QuestStatus.Locked;
+    /// <summary>The fog: the book says which quests are still out of sight (the ones before them are not open yet).</summary>
+    public System.Func<QuestDef, bool>? Fogged;
+
+    bool Shown(QuestDef q) => (!q.Secret || StatusOf(q) != QuestStatus.Locked) && Fogged?.Invoke(q) != true;
 
     /// <summary>A quest's centre inside the element, in screen pixels.</summary>
     (double X, double Y) Centre(QuestDef q)

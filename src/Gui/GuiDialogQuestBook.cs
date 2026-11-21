@@ -96,6 +96,17 @@ public class GuiDialogQuestBook : GuiDialog
 
     public QuestStatus StatusOf(QuestDef q) => states.TryGetValue(q.Code, out var s) ? (QuestStatus)s.Status : QuestStatus.Locked;
 
+    /// <summary>
+    /// The fog: a locked quest stays off the map until one of the quests before it is open. Quests that are
+    /// still to come do not count as "before", so they never keep the rest of a branch in the dark.
+    /// </summary>
+    public bool Fogged(QuestDef q)
+    {
+        if (StatusOf(q) != QuestStatus.Locked) return false;
+        var before = q.Requires.Select(r => library.Get(r)).Where(r => r != null && !r.Soon).ToList();
+        return before.Count > 0 && before.All(r => StatusOf(r!) == QuestStatus.Locked);
+    }
+
     public QuestStateView? StateOf(QuestDef q) => states.GetValueOrDefault(q.Code);
 
     (int Done, int Total) ChapterProgress(QuestChapterDef chapter)
@@ -213,6 +224,7 @@ public class GuiDialogQuestBook : GuiDialog
             selectedOf[chapterCode] = code;
             ShowCard(code == null ? null : quests.FirstOrDefault(q => q.Code == code));
         }, Lang.Get("createacolony:chapter-" + chapterCode));
+        mapElement.Fogged = Fogged;
         mapElement.CentreOnQuests(chapterCode);
         composer.AddInteractiveElement(mapElement, "questmap");
 

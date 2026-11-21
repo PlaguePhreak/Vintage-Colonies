@@ -388,6 +388,8 @@ public partial class ColonyManager
             record = EnsureRecord(q, player.PlayerUID, colony!);
             record.Notified = true;
             SaveRecords(q, player.PlayerUID, colony);
+            // The same pop-up the game shows for a lore find.
+            sapi.SendIngameDiscovery(player, "questcompleted", Lang.GetL(player.LanguageCode, "createacolony:quest-completed-popup", Lang.GetL(player.LanguageCode, QuestLibrary.TitleKey(q))));
             player.SendMessage(0, Lang.GetL(player.LanguageCode, "createacolony:quest-ready", Lang.GetL(player.LanguageCode, QuestLibrary.TitleKey(q))), EnumChatType.Notification);
         }
     }

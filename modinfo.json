@@ -5,7 +5,7 @@
   "description": "Found a colony, recruit settlers, and let them build, farm, cut wood, haul and stand guard.",
   "authors": ["Aaron"],
   "contributors": ["DArkHekRoMaNT (Player Corpse, MIT)"],
-  "version": "0.175.3",
+  "version": "0.175.4",
   "side": "universal",
   "requiredOnClient": true,
   "requiredOnServer": true,

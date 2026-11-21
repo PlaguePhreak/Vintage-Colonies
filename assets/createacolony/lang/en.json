@@ -1279,6 +1279,7 @@
 	"quests-chapter-empty": "No quests here yet. This chapter fills in a later update.",
 	"quests-none-loaded": "No quest files were found.",
 	"quest-accept": "Accept",
+	"quest-completed-popup": "Quest completed: {0}",
 	"quest-check": "Mark as done",
 	"objective-kill": "Hunt {0} animal(s)",
 	"objective-manual": "Do it, then press Mark as done",
