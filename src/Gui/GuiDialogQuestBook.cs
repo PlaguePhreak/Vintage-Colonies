@@ -37,6 +37,10 @@ public class GuiDialogQuestBook : GuiDialog
     GuiElementQuestMap? mapElement;
     GuiDialogQuestCard? card;
 
+    /// <summary>Room for the map's item icons and the padlocks drawn above them, so the quest card opens over all of it.</summary>
+
+    public override float ZSize => 500;
+
     public override string? ToggleKeyCombinationCode => null;
 
     public GuiDialogQuestBook(ICoreClientAPI capi, ColonyNetwork network, QuestBookSnapshot snapshot) : base(capi)
