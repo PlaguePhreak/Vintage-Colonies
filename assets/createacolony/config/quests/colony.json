@@ -955,6 +955,48 @@
           "requires": [
             "c-tannery-hut"
           ]
+        },
+        {
+          "code": "c-apiary-hut",
+          "x": 2,
+          "y": 2,
+          "shape": "square",
+          "icon": "createacolony:hut-apiary",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "apiary",
+              "level": 0
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:drygrass",
+              "count": 8
+            }
+          ]
+        },
+        {
+          "code": "c-beekeeper-job",
+          "x": 3,
+          "y": 2,
+          "shape": "round",
+          "objectives": [
+            {
+              "type": "job",
+              "code": "beekeeper",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ],
+          "requires": [
+            "c-apiary-hut"
+          ]
         }
       ]
     },

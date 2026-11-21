@@ -16,7 +16,7 @@ public static class BuildingCategories
         new("fundamentals", new[] { BuildingTypes.TownHall, BuildingTypes.Builder, BuildingTypes.Tavern, BuildingTypes.Residence, BuildingTypes.BoardingHouse }),
         Group("agriculture",
             new("land", new[] { BuildingTypes.Farmer, BuildingTypes.Forester, BuildingTypes.Gatherer, BuildingTypes.Hunter }),
-            new("animals", new[] { BuildingTypes.ChickenCoop, BuildingTypes.Piggery, BuildingTypes.Shepherd, BuildingTypes.Goatherd, BuildingTypes.Herdsman })),
+            new("animals", new[] { BuildingTypes.ChickenCoop, BuildingTypes.Piggery, BuildingTypes.Shepherd, BuildingTypes.Goatherd, BuildingTypes.Herdsman, BuildingTypes.Apiary })),
         Group("craftsmanship",
             new("woodworking", new[] { BuildingTypes.Sawmill }),
             new("food", new[] { BuildingTypes.Cook, BuildingTypes.Butcher }),

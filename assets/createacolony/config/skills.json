@@ -21,6 +21,7 @@
 		{ "code": "knapping", "job": "craftsman", "xpPerWork": 2, "workSpeedPerLevel": 0.04 },
 		{ "code": "tailoring", "job": "tailor", "alsoJobs": ["tanner"], "xpPerWork": 2, "workSpeedPerLevel": 0.04 },
 		{ "code": "husbandry", "job": "herdsman", "alsoJobs": ["chickenherder", "swineherd", "shepherd", "goatherd"], "xpPerWork": 2, "workSpeedPerLevel": 0.04, "perks": { "yield": [0.05, 0.1, 0.15, 0.25] } },
+		{ "code": "beekeeping", "job": "beekeeper", "xpPerWork": 2, "workSpeedPerLevel": 0.04, "perks": { "yield": [0.05, 0.1, 0.15, 0.25] } },
 		{ "code": "jewelcrafting", "job": "jeweller", "xpPerWork": 3, "workSpeedPerLevel": 0.04 },
 		{ "code": "research", "job": "researcher", "xpPerWork": 2, "workSpeedPerLevel": 0.03 },
 		{ "code": "theology", "job": "priest", "xpPerWork": 3, "workSpeedPerLevel": 0.04 },

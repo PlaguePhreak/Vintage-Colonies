@@ -188,6 +188,10 @@ public class Building
 {
     /// <summary>The order a crafting hut makes things in (keys of what it keeps), set on its Priorities tab. Empty: most wanted first.</summary>
     [ProtoMember(240)] public List<string> Priorities = new();
+    /// <summary>An Apiary: the beekeeper never harvests the last skep with bees (Work area tab).</summary>
+    [ProtoMember(2700, IsRequired = true)] public bool KeepLastColony = true;
+    /// <summary>An Apiary: empty skeps its beekeeper set out by wild hives, to catch their swarms and bring them home.</summary>
+    [ProtoMember(2701)] public List<BlockPos> WildSkeps = new();
     [ProtoMember(1)] public int BuildingId;
     /// <summary>Building type, also the blueprint folder name: "builder", "townhall", "warehouse".</summary>
     [ProtoMember(2)] public string Type = "";

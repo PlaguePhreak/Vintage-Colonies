@@ -79,6 +79,7 @@ Everything listed under "What we have" and "Partly done" has been tested in game
 2. **Happiness** came in 0.61.0. Safety (monsters, guards, attacks), health and crowded homes came in 0.168.0 (not tested yet). Still to add: raids, when raids are in
 3. **A request list**: seeing what workers need came in 0.142.0 (Requests tab), and giving them what you carry straight from that tab in 0.167.0
 4. **Animal herders and a Tanner**: chickens, pigs, sheep and goats in pens for meat, eggs and hides, and a Tanner who makes leather in barrels Started in 0.171.0: five herder huts (Chicken Coop, Piggery, Shepherd's Hut, Goatherd's Hut, Herdsman's Hut for any farm animal) feed troughs, collect eggs, milk, and cull spare animals; a Tannery makes leather in barrels; jobless settlers keep hens at home (mechanics only, placeholder models, no buildings yet, not tested yet).
+4b. **Apiary and Beekeeper**: started in 0.174.0. The beekeeper harvests full skeps (Keep the last colony switch), sets out empty skeps for swarms, brings in wild hives the gatherer marked, and works From Golden Combs ceramic hives when that mod is installed (placeholder model, no building yet, not tested yet). Still to do: Langstroth hives and frames (From Golden Combs), second update.
 5. **Ranged guards and a rally banner** (the Barracks came in 0.54.0), then **Raids**: now and then, enemies turn up and attack the player's colony. The player is warned in chat and on the Town Hall window. There are several raid factions, from bandits (who use the settler models) to the game's own monsters such as drifters and shivers.
 6. **Graveyard**: an undertaker who buries the dead (the Healer, bandages and poultices came in 0.117.0)
 7. **Research**: started in 0.166.0. The Archive, researchers, Research Points, Knowledge Tokens and the first 12 research nodes are in (not tested yet). Still to do: tier 3 and higher nodes, nodes that unlock new buildings, handing in books, gears and relics at the Archive, field research quests for the Explorer, failed experiments, and researchers sitting and writing at a table
@@ -86,7 +87,7 @@ Everything listed under "What we have" and "Partly done" has been tested in game
 
 **Later**
 - **Economy**: settlers spend their coins (a market, the Tavern, buying furniture and clothes), coins of other metals, fines and market fees for the Bailiff. The Royal Mint, taxes and wages came in 0.136.0.
-- More huts from MineColonies: Stonemason, Baker, Fisher, Beekeeper, Plantation (reeds and cattails), Composter, Crusher and Sifter (quern and panning), Florist, Dyer, Fletcher and Mechanic (windmills and gears)
+- More huts from MineColonies: Stonemason, Baker, Fisher, Plantation (reeds and cattails), Composter, Crusher and Sifter (quern and panning), Florist, Dyer, Fletcher and Mechanic (windmills and gears)
 - A Combat Academy and an archery range to train guards
 - **Stonemason carving**: a Stonemason adds chiseled detail to buildings by copying carvings you made yourself (builders place chiseled blocks from builds since 0.159.0)
 - Charcoal burner for the Smelter and Blacksmith

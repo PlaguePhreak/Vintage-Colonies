@@ -939,6 +939,8 @@ public static class BuildingTypes
     public const string Herdsman = "herdsman";
     /// <summary>The Tannery: a tanner makes leather in barrels (ColonyManager.Tanning.cs).</summary>
     public const string Tannery = "tannery";
+    /// <summary>The Apiary: a beekeeper looks after the beehives near it (ColonyManager.Beekeeping.cs).</summary>
+    public const string Apiary = "apiary";
     public const string Barracks = "barracks";
     /// <summary>Put at a mine's entrance; several Miner's Huts can work the one mine through it.</summary>
     public const string MineshaftEntrance = "mineshaftentrance";
