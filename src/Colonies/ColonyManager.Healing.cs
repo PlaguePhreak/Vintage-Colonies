@@ -318,6 +318,7 @@ public partial class ColonyManager
         ApplyHealing(body, item, Config.HealerHealBonus);
         Recovering[patient.CitizenId] = (r.Bed, true);
         AddStat(hut, "treated");
+        AddThought(patient, "treated");
         LogEvent(colony, "event-treated", healer.Name, patient.Name, item.GetName());
         return true;
     }

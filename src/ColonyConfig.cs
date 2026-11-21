@@ -1200,6 +1200,23 @@ public class ColonyConfig
     /// <summary>In-game hours a breakdown lasts (rolled between the two).</summary>
     public double HappinessBreakHoursMin = 2;
     public double HappinessBreakHoursMax = 4;
+    // Safety, health and crowding in happiness (see ColonyManager.Wellbeing.cs)
+    /// <summary>Blocks around the Town Hall where a monster makes settlers feel unsafe.</summary>
+    public float DangerRadius = 48;
+    /// <summary>In-game hours settlers stay uneasy after a monster was near or attacked someone.</summary>
+    public double DangerHours = 6;
+    /// <summary>Blocks within which settlers are upset to see a monster hurt another settler.</summary>
+    public float WitnessRadius = 16;
+    /// <summary>Grown-ups one guard keeps safe; with that many guards or more, settlers feel safe.</summary>
+    public int SettlersPerGuard = 8;
+    /// <summary>With this many grown-ups and no guard at all, settlers worry. 0 turns it off.</summary>
+    public int UnguardedFrom = 6;
+    /// <summary>Below this share of their health a settler is unhappy about being hurt...</summary>
+    public float HurtMoodBelow = 0.5f;
+    /// <summary>...and below this, very unhappy.</summary>
+    public float BadlyHurtMoodBelow = 0.25f;
+    /// <summary>Room (floor blocks times storeys) each person in a Residence needs; less makes it crowded, under half very crowded.</summary>
+    public float HomeSpacePerSettler = 16;
 
     // Settler animations (see Settlers/SettlerBody.cs and Settlers/SettlerSeats.cs)
     /// <summary>Settlers hold a torch or lantern up the way a player does.</summary>

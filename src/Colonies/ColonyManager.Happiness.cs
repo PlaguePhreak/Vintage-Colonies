@@ -37,7 +37,13 @@ public partial class ColonyManager
         ["service"] = (8, 24),
         ["missedservice"] = (-4, 48),
         ["funeral"] = (4, 24),
-        ["alms"] = (5, 24)
+        ["alms"] = (5, 24),
+        // Safety, health (ColonyManager.Wellbeing.cs).
+        ["attacked"] = (-6, 24),
+        ["sawattack"] = (-3, 12),
+        ["monsterkill"] = (-8, 96),
+        ["monsterslain"] = (3, 24),
+        ["treated"] = (4, 24)
     };
 
     /// <summary>Mood bands from the top: the lowest happiness each starts at, and the word for it.</summary>
@@ -132,6 +138,10 @@ public partial class ColonyManager
         ChurchThoughts(colony, c, Standing);
         // In rags, cold, wearing jewellery (ColonyManager.Clothing.cs).
         ClothesThoughts(c, Standing);
+        // Safety, health and crowding (ColonyManager.Wellbeing.cs).
+        SafetyThoughts(colony, Standing);
+        HealthThoughts(c, Standing);
+        CrowdingThoughts(colony, c, Standing);
         // Sanguine and Melancholic.
         Standing("temperament", (int)Math.Round(TraitAdd(c, "mood")));
         return list;
@@ -160,6 +170,7 @@ public partial class ColonyManager
         if (hours < 0.1) return;
         colony.LastMoodTotalHours = nowHours;
         WearClothes(colony, hours);
+        CheckDanger(colony);
 
         foreach (var c in colony.Citizens)
         {

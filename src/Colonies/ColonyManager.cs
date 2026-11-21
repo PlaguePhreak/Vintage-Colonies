@@ -66,6 +66,7 @@ public partial class ColonyManager : ModSystem
         api.Event.RegisterGameTickListener(OnScanTick, ScanTickMs);
         api.Event.OnEntitySpawn += OnCreatureReady;
         api.Event.OnEntityLoaded += OnCreatureReady;
+        api.Event.OnEntityDeath += OnMonsterDeath;
         api.Event.RegisterGameTickListener(OnFarWorkTick, FarWorkTickMs);
         api.Event.RegisterGameTickListener(_ => SaveDirty(), DirtySaveMs, DirtySaveMs);
         StartDoors();
