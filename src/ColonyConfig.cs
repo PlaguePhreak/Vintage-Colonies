@@ -214,6 +214,60 @@ public class ColonyConfig
     /// <summary>Animals the hunter leaves alone: born in a pen (bred by players), or a baby.</summary>
     public bool HunterSparesLivestock = true;
 
+    // Herders (ColonyManager.Herding.cs)
+    /// <summary>The animals each herder hut keeps, as code patterns. The Herdsman's Hut keeps any animal that breeds; add other mods' animals here.</summary>
+    public Dictionary<string, string[]> HerdAnimals = new()
+    {
+        ["chickencoop"] = new[] { "chicken-*" },
+        ["piggery"] = new[] { "pig-*" },
+        ["shepherd"] = new[] { "sheep-*" },
+        ["goatherd"] = new[] { "goat-*" },
+        ["herdsman"] = new[] { "*" }
+    };
+    /// <summary>Wild animals the Herdsman leaves alone even near its hut.</summary>
+    public string[] HerdsmanSkips = { "deer-*", "moose-*", "gazelle-*", "hare-*", "fox-*", "raccoon-*", "hyena-*", "bear-*", "wolf-*", "elk-*" };
+    /// <summary>Animals no herder ever culls (ridden elk); named and tamed animals are never culled either.</summary>
+    public string[] HerdNeverCull = { "tameddeer-*" };
+    /// <summary>How far from a herder hut, in blocks, its pen reaches (change it on the Work area tab).</summary>
+    public int HerdRadius = 16;
+    /// <summary>How many animals a level 1 herder hut keeps before it culls the spare ones.</summary>
+    public int HerdSize = 6;
+    /// <summary>How many more animals it keeps for each hut level above 1.</summary>
+    public int HerdSizePerLevel = 3;
+    /// <summary>Grown males of each kind a herder never culls.</summary>
+    public int HerdKeepMales = 1;
+    /// <summary>Grown females of each kind a herder never culls.</summary>
+    public int HerdKeepFemales = 2;
+    /// <summary>Seconds a herder takes to fill a trough or empty a nest box.</summary>
+    public float HerderSecondsPerTask = 2f;
+    /// <summary>Seconds a herder takes to milk an animal.</summary>
+    public float HerderMilkSeconds = 4f;
+    /// <summary>Days after giving birth that sheep and goats give milk (the game's own default).</summary>
+    public float HerderLactatingDays = 21f;
+    /// <summary>How much feed a herder fetches at once, and asks couriers for.</summary>
+    public int HerderFeedTake = 32;
+    /// <summary>A herder's knife hits this many times harder than its attack power, so a cull is quick.</summary>
+    public float HerderCullDamageMult = 3f;
+    /// <summary>Herders leave their culls on the ground for a Butcher instead of skinning them.</summary>
+    public bool HerderLeavesCulls = false;
+
+    // Tanner (ColonyManager.Tanning.cs)
+    /// <summary>How far from the Tannery, in blocks, the tanner uses barrels.</summary>
+    public int TannerBarrelRadius = 8;
+    /// <summary>How far from a barrel, in blocks, the tanner looks for water.</summary>
+    public int TannerWaterRadius = 32;
+    /// <summary>Litres of water the tanner carries in its bucket each trip.</summary>
+    public float TannerBucketLitres = 10f;
+    /// <summary>Seconds the tanner takes to fill, load, empty a barrel or scrape a hide.</summary>
+    public float TannerSecondsPerStep = 3f;
+    /// <summary>At most this many batches go into a barrel for a new liquid (10 lime makes 10 litres of limewater).</summary>
+    public int TannerBatches = 20;
+    /// <summary>How many hides the tanner takes from the hut storage at once, and asks couriers for.</summary>
+    public int TannerHideTake = 8;
+    public int TannerHideRequest = 8;
+    /// <summary>How many of lime, logs or borax the tanner asks couriers for.</summary>
+    public int TannerSupplyRequest = 10;
+
     // Gatherer
     /// <summary>How far from the Gatherer's Hut, in blocks, the gatherer forages (change it on the Work area tab).</summary>
     public int GathererRadius = 48;
@@ -372,6 +426,12 @@ public class ColonyConfig
         ["explorer"] = 30,
         ["gatherer"] = 30,
         ["hunter"] = 30,
+        ["chickencoop"] = 30,
+        ["piggery"] = 30,
+        ["shepherd"] = 30,
+        ["goatherd"] = 30,
+        ["herdsman"] = 30,
+        ["tannery"] = 30,
     };
     /// <summary>
     /// How many blocks each side of a hut's square grows for every hut level above 1, so a hut near the edge of the
@@ -1174,6 +1234,12 @@ public class ColonyConfig
     public bool JoblessCookAtHome = true;
     /// <summary>How far outside its home, in blocks, a household's fire pit may stand.</summary>
     public int JoblessFirepitReach = 4;
+    /// <summary>Settlers without a job feed the hens kept at their home (troughs and nest boxes in or by the home) and collect the eggs.</summary>
+    public bool JoblessKeepHens = true;
+    /// <summary>How many blocks around the home its hen troughs and nest boxes may stand.</summary>
+    public int JoblessHenReach = 6;
+    /// <summary>A household lets fertile eggs hatch until it has this many chickens; then it eats them all.</summary>
+    public int JoblessHensMax = 4;
 
     // Home decorations (see ColonyManager.Decor.cs)
     /// <summary>

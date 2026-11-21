@@ -36,6 +36,12 @@ public partial class ColonyManager
         [BuildingTypes.Gatherer] = new WorkerHutKind(Jobs.Gatherer, EnumTool.Knife, _ => false, _ => false),
         // The hunter hunts with a spear (any weapon does) and keeps a knife for skinning.
         [BuildingTypes.Hunter] = new WorkerHutKind(Jobs.Hunter, EnumTool.Spear, _ => false, IsKnife),
+        // Herders cull with a knife (and skin with it) and keep empty buckets for milking (ColonyManager.Herding.cs).
+        [BuildingTypes.ChickenCoop] = new WorkerHutKind(Jobs.ChickenHerder, EnumTool.Knife, _ => false, IsEmptyBucket),
+        [BuildingTypes.Piggery] = new WorkerHutKind(Jobs.Swineherd, EnumTool.Knife, _ => false, IsEmptyBucket),
+        [BuildingTypes.Shepherd] = new WorkerHutKind(Jobs.Shepherd, EnumTool.Knife, _ => false, IsEmptyBucket),
+        [BuildingTypes.Goatherd] = new WorkerHutKind(Jobs.Goatherd, EnumTool.Knife, _ => false, IsEmptyBucket),
+        [BuildingTypes.Herdsman] = new WorkerHutKind(Jobs.Herdsman, EnumTool.Knife, _ => false, IsEmptyBucket),
     };
 
     /// <summary>Huts a settler works from, whose chests are never warehouse storage.</summary>
@@ -57,6 +63,7 @@ public partial class ColonyManager
         BuildingTypes.Jeweller => Jobs.Jeweller,
         BuildingTypes.Healer => Jobs.Healer,
         BuildingTypes.Mint => Jobs.Minter,
+        BuildingTypes.Tannery => Jobs.Tanner,
         BuildingTypes.Church => Jobs.Priest,
         BuildingTypes.GuardTower => Jobs.Guard,
         BuildingTypes.Barracks => Jobs.Guard,
@@ -159,6 +166,8 @@ public partial class ColonyManager
         if (hut.Type == BuildingTypes.Jeweller) return JewellerHutJunk(colony, hut);
         if (hut.Type == BuildingTypes.Healer) return HealerHutJunk(colony, hut);
         if (hut.Type == BuildingTypes.Mint) return MintHutJunk(colony, hut);
+        if (hut.Type == BuildingTypes.Tannery) return TannerHutJunk(colony, hut);
+        if (IsHerderHut(hut.Type)) return HerderHutJunk(colony, hut);
         if (hut.Type == BuildingTypes.Church) return ChurchJunk(colony, hut);
         if (IsGuardPost(hut.Type)) return GuardTowerJunk(hut);
         var kind = GatherHuts[hut.Type];
@@ -336,6 +345,8 @@ public partial class ColonyManager
         if (hut.Type == BuildingTypes.Explorer) lines.Add(ExplorerInfo(colony, hut));
         if (hut.Type == BuildingTypes.Gatherer) lines.Add(GathererInfo(colony, hut));
         if (hut.Type == BuildingTypes.Hunter) lines.Add(HunterInfo(hut));
+        if (IsHerderHut(hut.Type)) lines.Add(HerderInfo(hut));
+        if (hut.Type == BuildingTypes.Tannery) lines.Add(TannerInfo(hut));
         lines.Add("");
         lines.Add(Lang.Get("createacolony:hint-" + hut.Type + (hut.IsStation ? "-station" : ""), GatherRadius(hut)));
         return string.Join("<br>", lines);

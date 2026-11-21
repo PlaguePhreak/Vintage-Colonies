@@ -1,0 +1,45 @@
+{
+	"code": "hut-tannery",
+	"class": "BlockColonyHut",
+	"entityClass": "ColonyHut",
+	"attributes": {
+		"buildingType": "tannery",
+		// The hut's own storage; chests next to it add more.
+		"defaultType": "hut",
+		"inventoryClassName": "colonyhut",
+		"quantitySlots": { "hut": 25 },
+		"quantityColumns": { "hut": 5 },
+		"dialogTitleLangCode": { "hut": "createacolony:hut-storage" }
+	},
+	"creativeinventory": { "general": ["*"], "vintagecolonies": ["*"] },
+	"blockmaterial": "Wood",
+	"drawtype": "json",
+	// The seed of the Tannery. Simple placeholder model: a small barrel and a hide on a frame. No building yet: Aaron designs those.
+	"shape": { "base": "createacolony:block/hut-tannery" },
+	"textures": {
+	 "sides": {
+	  "base": "game:block/wood/table/aged/sides"
+	 },
+	 "planks": {
+	  "base": "game:block/wood/planks/aged1"
+	 },
+	 "log": {
+	  "base": "game:block/wood/debarked/aged"
+	 },
+	 "hide": {
+	  "base": "game:block/cloth/rawhide"
+	 },
+	 "metal": {
+	  "base": "game:block/metal/ingot/iron"
+	 },
+	 "liquid": {
+	  "base": "game:block/cloth/basic/brown"
+	 }
+	},
+	"sideopaque": { "all": false },
+	"sidesolid": { "all": false },
+	"emitSideAo": { "all": false },
+	"lightAbsorption": 0,
+	"resistance": 2,
+	"sounds": { "place": "game:block/planks", "break": "game:block/planks", "hit": "game:block/planks" }
+}

@@ -913,6 +913,14 @@ public static class BuildingTypes
     public const string Explorer = "explorer";
     public const string Gatherer = "gatherer";
     public const string Hunter = "hunter";
+    /// <summary>The herder huts (ColonyManager.Herding.cs): each keeps one kind of animal in a pen; the Herdsman's Hut keeps any.</summary>
+    public const string ChickenCoop = "chickencoop";
+    public const string Piggery = "piggery";
+    public const string Shepherd = "shepherd";
+    public const string Goatherd = "goatherd";
+    public const string Herdsman = "herdsman";
+    /// <summary>The Tannery: a tanner makes leather in barrels (ColonyManager.Tanning.cs).</summary>
+    public const string Tannery = "tannery";
     public const string Barracks = "barracks";
     /// <summary>Put at a mine's entrance; several Miner's Huts can work the one mine through it.</summary>
     public const string MineshaftEntrance = "mineshaftentrance";

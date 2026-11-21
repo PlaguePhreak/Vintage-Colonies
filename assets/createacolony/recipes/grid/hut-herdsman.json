@@ -1,0 +1,19 @@
+{
+	"ingredientPattern": "PXP,PXP,PPP",
+	"ingredients": {
+		"P": {
+			"type": "item",
+			"code": "game:plank-*"
+		},
+		"X": {
+			"type": "item",
+			"code": "game:fat"
+		}
+	},
+	"width": 3,
+	"height": 3,
+	"output": {
+		"type": "block",
+		"code": "createacolony:hut-herdsman"
+	}
+}
