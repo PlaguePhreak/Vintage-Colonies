@@ -525,6 +525,10 @@ public class HutSnapshot
     [ProtoMember(308)] public List<string> Stations = new();
     /// <summary>This is a work station; HostName is the building it stands in ("" when that is gone).</summary>
     [ProtoMember(309)] public bool IsStation;
+    /// <summary>The level Force upgrade would raise this hut to, 0 when it can't (ColonyManager.ForceUpgradeLevel).</summary>
+    [ProtoMember(2601)] public int ForceUpgradeTo;
+    /// <summary>The highest level any hut can have (BlueprintLibrary.MaxLevels).</summary>
+    [ProtoMember(2602)] public int TopLevel;
     [ProtoMember(310)] public string HostName = "";
     /// <summary>Orphans the church looks after and settlers sleeping in its beds.</summary>
     [ProtoMember(311)] public int Orphans;
@@ -963,7 +967,9 @@ public enum ColonyAction
     /// <summary>Pauses the node with code Text; it keeps its points.</summary>
     PauseResearch = 401,
     /// <summary>Requests tab give button (0.167.0): Text holds request ids, comma separated; each is filled from the player's inventory.</summary>
-    FillRequests = 333
+    FillRequests = 333,
+    /// <summary>Upgrade tab (officers): raises a hut with no blueprint for its next level up one level, without a build.</summary>
+    ForceUpgrade = 2600
 }
 
 /// <summary>One Miner's Hut on a Mineshaft Entrance's Main tab.</summary>

@@ -290,6 +290,12 @@ the hut block on its own. Not tested in game yet.
   `ButcherSecondsBySize`, `ButcherYieldBonus`, `ButcherBonesBySize`, `ButcherBoneCode`, `ButcherKnifeWear`,
   `ButcheringModId`, `ButcheringStations`, `ButcheringStationBonus`, `ButcheringBloodCode`,
   `ButcheringBloodLitresBySize`.
+## Upgrade tab and Force upgrade (0.172.0)
+- Every hut window has an **Upgrade** tab. It shows the hut's level (out of 5) and which levels its pack has blueprints for.
+- When the next level has a blueprint, the tab has the normal Upgrade button, and a builder builds it.
+- When it has none, officers get **Force upgrade**. Press it twice (it asks "Sure?"). The hut gets the next level at once and nothing is built. It gets what a level gives: more workers, more land and higher skill caps. Add to the building yourself if you like.
+- A force-upgraded hut is still the last blueprint its pack has, so Repair and upkeep use that one.
+- The Main tab says when Force upgrade is there. Not on work stations or the Mineshaft Entrance. Turn it off with `AllowForceUpgrade: false`.
 
 ## Recommended mods
 These work well with Vintage Colonies. Install them separately.

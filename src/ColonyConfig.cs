@@ -57,6 +57,11 @@ public class ColonyConfig
     /// blueprint's, picked from where the block stands, so the same building looks a little different each time.
     /// </summary>
     public bool RandomDaubStages = true;
+    /// <summary>
+    /// Officers can press Force upgrade on a hut's Upgrade tab when its pack has no blueprint for the next level: the
+    /// hut goes up a level at once, without a build (Aaron, 0.172.0). Up to level 5, like every hut.
+    /// </summary>
+    public bool AllowForceUpgrade = true;
     /// <summary>Seconds a builder takes per block placed or cleared.</summary>
     public float BuilderSecondsPerBlock = 0.75f;
     /// <summary>

@@ -111,6 +111,7 @@ public partial class GuiDialogHut : GuiDialog
     List<(int Id, string Lang)> Tabs()
     {
         var tabs = new List<(int, string)> { (0, "tab-main") };
+        if (HasUpgradeTab) tabs.Add((UpgradeTab, "tab-upgrade"));
         if (snapshot.IsCourierStation) tabs.Add((CouriersTab, "tab-couriers"));
         if (snapshot.HasRecipes) tabs.Add((RecipesTab, "tab-recipes"));
         if (snapshot.IsBuilderHut) tabs.Add((1, "tab-priorities"));
@@ -158,7 +159,7 @@ public partial class GuiDialogHut : GuiDialog
         if (tabs.Count > 1)
         {
             var guiTabs = tabs.Select(t => new GuiTab { Name = Lang.Get("createacolony:" + t.Lang), DataInt = t.Id, Active = t.Id == activeTab }).ToArray();
-            composer.AddVerticalTabs(guiTabs, ElementBounds.Fixed(-160, 35, 160, guiTabs.Length * 30), (id, tab) => { currentTab = tab.DataInt; page = 0; renaming = false; Compose(); }, "tabs");
+            composer.AddVerticalTabs(guiTabs, ElementBounds.Fixed(-160, 35, 160, guiTabs.Length * 30), (id, tab) => { currentTab = tab.DataInt; page = 0; renaming = false; confirmForce = false; Compose(); }, "tabs");
         }
 
         composer.BeginChildElements(bgBounds);
@@ -188,6 +189,7 @@ public partial class GuiDialogHut : GuiDialog
             case HostilesTab: ComposeHostiles(composer); break;
             case SettingsTab: if (snapshot.IsMiner) ComposeMineSettings(composer); else ComposeSettings(composer); break;
             case RequestsTab: ComposeRequests(composer); break;
+            case UpgradeTab: ComposeUpgrade(composer); break;
             case CouriersTab: ComposeCouriers(composer); break;
             case MinStockTab: ComposeMinStock(composer); break;
             case StatsTab: ComposeStats(composer); break;
@@ -302,6 +304,7 @@ public partial class GuiDialogHut : GuiDialog
         {
             y = composer.Section(Lang.Get("createacolony:hut-build-options"), y, Width);
             y = AddOrderButtons(composer, b, y);
+            if (snapshot.ForceUpgradeTo > 0) y = composer.Text(Lang.Get("createacolony:upgrade-main-hint", snapshot.ForceUpgradeTo), GuiKit.Muted(), 0, y, Width, 6);
             if (removable && !b.Removing)
             {
                 string label = Lang.Get(confirmRemove ? "createacolony:remove-confirm" : "createacolony:remove-hut");
