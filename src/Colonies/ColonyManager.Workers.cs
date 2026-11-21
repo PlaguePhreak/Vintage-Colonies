@@ -36,6 +36,14 @@ public partial class ColonyManager
         [BuildingTypes.Gatherer] = new WorkerHutKind(Jobs.Gatherer, EnumTool.Knife, _ => false, _ => false),
         // The hunter hunts with a spear (any weapon does) and keeps a knife for skinning.
         [BuildingTypes.Hunter] = new WorkerHutKind(Jobs.Hunter, EnumTool.Spear, _ => false, IsKnife),
+        // The butcher cuts up carcasses with a knife; carcasses waiting and empty buckets (for blood, with the Butchering mod) stay at the hut.
+        [BuildingTypes.Butcher] = new WorkerHutKind(Jobs.Butcher, EnumTool.Knife, _ => false, s => IsCarcass(s) || IsEmptyBucketForBlood(s)),
+        // Herders cull with a knife (and skin with it) and keep empty buckets for milking (ColonyManager.Herding.cs).
+        [BuildingTypes.ChickenCoop] = new WorkerHutKind(Jobs.ChickenHerder, EnumTool.Knife, _ => false, IsEmptyBucket),
+        [BuildingTypes.Piggery] = new WorkerHutKind(Jobs.Swineherd, EnumTool.Knife, _ => false, IsEmptyBucket),
+        [BuildingTypes.Shepherd] = new WorkerHutKind(Jobs.Shepherd, EnumTool.Knife, _ => false, IsEmptyBucket),
+        [BuildingTypes.Goatherd] = new WorkerHutKind(Jobs.Goatherd, EnumTool.Knife, _ => false, IsEmptyBucket),
+        [BuildingTypes.Herdsman] = new WorkerHutKind(Jobs.Herdsman, EnumTool.Knife, _ => false, IsEmptyBucket),
     };
 
     /// <summary>Huts a settler works from, whose chests are never warehouse storage.</summary>
@@ -57,6 +65,8 @@ public partial class ColonyManager
         BuildingTypes.Jeweller => Jobs.Jeweller,
         BuildingTypes.Healer => Jobs.Healer,
         BuildingTypes.Mint => Jobs.Minter,
+        BuildingTypes.Archive => Jobs.Researcher,
+        BuildingTypes.Tannery => Jobs.Tanner,
         BuildingTypes.Church => Jobs.Priest,
         BuildingTypes.GuardTower => Jobs.Guard,
         BuildingTypes.Barracks => Jobs.Guard,
@@ -65,7 +75,7 @@ public partial class ColonyManager
 
     /// <summary>How many settlers can work from this building at once.</summary>
     public static int WorkerSlots(Building hut) => IsGuardPost(hut.Type) ? GuardSlots(hut)
-        : hut.Type == BuildingTypes.Prospector ? ProspectorSlots : hut.Type == BuildingTypes.Church ? ChurchSlots(hut) : JobOf(hut.Type) == null ? 0 : 1;
+        : hut.Type == BuildingTypes.Prospector ? ProspectorSlots : hut.Type == BuildingTypes.Church ? ChurchSlots(hut) : hut.Type == BuildingTypes.Archive ? ArchiveSlots(hut) : JobOf(hut.Type) == null ? 0 : 1;
 
     /// <summary>A Prospector's Hut takes two prospectors, each finding ore or mining it (CitizenRecord.WorkRole).</summary>
     public const int ProspectorSlots = 2;
@@ -95,7 +105,7 @@ public partial class ColonyManager
     }
 
     /// <summary>Huts with their own storage (and a Storage button): the worker huts, the Tavern, where gears can be left for hiring, and the Residence.</summary>
-    public static bool HasOwnStorage(string type) => IsWorkerHut(type) || type == BuildingTypes.Tavern || type == BuildingTypes.Residence;
+    public static bool HasOwnStorage(string type) => IsWorkerHut(type) || type == BuildingTypes.Tavern || IsHome(type);
 
     /// <summary>What each forester's or farmer's hut is waiting on, for the hut window. Not saved: workers refresh it.</summary>
     public readonly Dictionary<int, string> WorkStatus = new();
@@ -159,6 +169,9 @@ public partial class ColonyManager
         if (hut.Type == BuildingTypes.Jeweller) return JewellerHutJunk(colony, hut);
         if (hut.Type == BuildingTypes.Healer) return HealerHutJunk(colony, hut);
         if (hut.Type == BuildingTypes.Mint) return MintHutJunk(colony, hut);
+        if (hut.Type == BuildingTypes.Archive) return ArchiveJunk(colony, hut);
+        if (hut.Type == BuildingTypes.Tannery) return TannerHutJunk(colony, hut);
+        if (IsHerderHut(hut.Type)) return HerderHutJunk(colony, hut);
         if (hut.Type == BuildingTypes.Church) return ChurchJunk(colony, hut);
         if (IsGuardPost(hut.Type)) return GuardTowerJunk(hut);
         var kind = GatherHuts[hut.Type];
@@ -247,6 +260,15 @@ public partial class ColonyManager
         // A skilled farmer, forester, miner or potter sometimes gets one more of the biggest stack (yield perk).
         var list = drops.Where(d => d != null && d.StackSize > 0).ToList();
         if (list.Count > 0 && RollPerk(colony, worker, "yield")) list.OrderByDescending(d => d.StackSize).First().StackSize++;
+        // Crop Rotation: farmers harvest more. A part of one more item is a chance of one.
+        if (worker.JobCode == Jobs.Farmer && ResearchAdd(colony, "farmYield") is float more and > 0)
+        {
+            foreach (var d in list)
+            {
+                double extra = d.StackSize * more;
+                d.StackSize += (int)extra + (sapi.World.Rand.NextDouble() < extra - (int)extra ? 1 : 0);
+            }
+        }
         drops = list;
         foreach (var drop in drops)
         {
@@ -327,6 +349,7 @@ public partial class ColonyManager
         if (hut.Type == BuildingTypes.Tailor) lines.Add(TailorInfo(colony, hut));
         if (hut.Type == BuildingTypes.Healer) lines.Add(HealerInfo(colony, hut));
         if (hut.Type == BuildingTypes.Mint) lines.Add(MintInfo(colony));
+        if (hut.Type == BuildingTypes.Archive) lines.Add(ArchiveInfo(colony, hut));
         if (hut.Type == BuildingTypes.Church) lines.AddRange(ChurchInfo(colony, hut));
         if (hut.IsStation) lines.Add(StationInfo(colony, hut));
         if (HasHutRecipes(hut.Type) && hut.RecipeKeep.Count > 0) lines.Add(HutRecipesInfo(colony, hut));
@@ -336,6 +359,9 @@ public partial class ColonyManager
         if (hut.Type == BuildingTypes.Explorer) lines.Add(ExplorerInfo(colony, hut));
         if (hut.Type == BuildingTypes.Gatherer) lines.Add(GathererInfo(colony, hut));
         if (hut.Type == BuildingTypes.Hunter) lines.Add(HunterInfo(hut));
+        if (hut.Type == BuildingTypes.Butcher) lines.AddRange(ButcherInfo(colony, hut));
+        if (IsHerderHut(hut.Type)) lines.Add(HerderInfo(hut));
+        if (hut.Type == BuildingTypes.Tannery) lines.Add(TannerInfo(hut));
         lines.Add("");
         lines.Add(Lang.Get("createacolony:hint-" + hut.Type + (hut.IsStation ? "-station" : ""), GatherRadius(hut)));
         return string.Join("<br>", lines);

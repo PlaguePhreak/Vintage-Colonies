@@ -1,0 +1,10 @@
+{
+	"ingredientPattern": "P_P,PKP,PPP",
+	"ingredients": {
+		"P": { "type": "item", "code": "game:plank-*" },
+		"K": { "type": "item", "code": "game:knife-*", "isTool": true }
+	},
+	"width": 3,
+	"height": 3,
+	"output": { "type": "block", "code": "createacolony:hut-butcher" }
+}

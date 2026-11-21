@@ -46,7 +46,7 @@ public partial class ColonyManager
     /// </summary>
     public Building? ZoneAt(Colony colony, BlockPos pos) => Zones(colony)
         .Where(z => InBox(pos, z.Min, z.Max))
-        .OrderByDescending(z => z.B.Type == BuildingTypes.Residence)
+        .OrderByDescending(z => IsHome(z.B.Type))
         .ThenBy(z => (long)(z.Max.X - z.Min.X + 1) * (z.Max.Y - z.Min.Y + 1) * (z.Max.Z - z.Min.Z + 1))
         .Select(z => z.B)
         .FirstOrDefault();

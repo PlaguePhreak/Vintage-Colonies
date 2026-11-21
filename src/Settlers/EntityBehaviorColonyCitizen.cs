@@ -222,6 +222,7 @@ public class EntityBehaviorColonyCitizen : EntityBehavior
                 record.DeathCause = DeathCause(damageSourceForDeath);
                 manager.LogEvent(colony, "event-died", record.Name);
                 manager.MournDeath(colony, record);
+                manager.FearMonsterKill(colony, record, damageSourceForDeath);
                 manager.MarkFallen(colony, record, fellAt ?? entity.Pos.XYZ, died: true);
             }
             else

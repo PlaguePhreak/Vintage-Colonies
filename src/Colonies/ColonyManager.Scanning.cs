@@ -43,9 +43,11 @@ public partial class ColonyManager
             BuildingTypes.Forester => Config.ForesterRadius,
             BuildingTypes.Prospector => Config.ProspectorRadius,
             BuildingTypes.Miner => Config.MinerRadius,
-            BuildingTypes.Explorer => Config.ExplorerRadius,
+            BuildingTypes.Explorer => (int)(Config.ExplorerRadius * ResearchMult(ColonyOfBuilding(hut), "explorerRange")), // Field Notes
             BuildingTypes.Gatherer => Config.GathererRadius,
             BuildingTypes.Hunter => Config.HunterRadius,
+            BuildingTypes.Butcher => Config.ButcherRadius,
+            BuildingTypes.ChickenCoop or BuildingTypes.Piggery or BuildingTypes.Shepherd or BuildingTypes.Goatherd or BuildingTypes.Herdsman => Config.HerdRadius,
             _ => Config.FarmerOrchardRadius
         };
     }

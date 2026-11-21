@@ -1,0 +1,42 @@
+{
+	"code": "hut-goatherd",
+	"class": "BlockColonyHut",
+	"entityClass": "ColonyHut",
+	"attributes": {
+		"buildingType": "goatherd",
+		// The hut's own storage; chests next to it add more.
+		"defaultType": "hut",
+		"inventoryClassName": "colonyhut",
+		"quantitySlots": { "hut": 25 },
+		"quantityColumns": { "hut": 5 },
+		"dialogTitleLangCode": { "hut": "createacolony:hut-storage" }
+	},
+	"creativeinventory": { "general": ["*"], "vintagecolonies": ["*"] },
+	"blockmaterial": "Wood",
+	"drawtype": "json",
+	// The seed of the Goatherd's Hut. Simple placeholder model: a milk pail and a stool. No building yet: Aaron designs those.
+	"shape": { "base": "createacolony:block/hut-goatherd" },
+	"textures": {
+	 "sides": {
+	  "base": "game:block/wood/table/aged/sides"
+	 },
+	 "planks": {
+	  "base": "game:block/wood/planks/aged1"
+	 },
+	 "log": {
+	  "base": "game:block/wood/debarked/aged"
+	 },
+	 "milk": {
+	  "base": "game:block/cloth/linen/white"
+	 },
+	 "metal": {
+	  "base": "game:block/metal/ingot/iron"
+	 }
+	},
+	"sideopaque": { "all": false },
+	"sidesolid": { "all": false },
+	"emitSideAo": { "all": false },
+	"lightAbsorption": 0,
+	"resistance": 2,
+	"sounds": { "place": "game:block/planks", "break": "game:block/planks", "hit": "game:block/planks" }
+}

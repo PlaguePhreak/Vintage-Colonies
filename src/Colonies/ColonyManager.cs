@@ -61,11 +61,13 @@ public partial class ColonyManager : ModSystem
         PathDebug = Config.PathDebug;
 
         api.Event.SaveGameLoaded += OnSaveGameLoaded;
+        api.Event.SaveGameLoaded += () => _ = ButcheringMod; // remembers whether the Butchering mod is installed
         api.Event.GameWorldSave += OnGameWorldSave;
         api.Event.RegisterGameTickListener(OnColonyTick, ColonyTickMs, 1000);
         api.Event.RegisterGameTickListener(OnScanTick, ScanTickMs);
         api.Event.OnEntitySpawn += OnCreatureReady;
         api.Event.OnEntityLoaded += OnCreatureReady;
+        api.Event.OnEntityDeath += OnMonsterDeath;
         api.Event.RegisterGameTickListener(OnFarWorkTick, FarWorkTickMs);
         api.Event.RegisterGameTickListener(_ => SaveDirty(), DirtySaveMs, DirtySaveMs);
         StartDoors();
@@ -174,7 +176,8 @@ public partial class ColonyManager : ModSystem
             .Where(b => BedPlaces(b) > taken.GetValueOrDefault(b.Pos))
             // Beds in a Church are the poorhouse: for those with nowhere else.
             .OrderBy(b => IsChurchBed(colony, b.Pos))
-            .ThenBy(b => family == null && ResidenceAt(colony, b.Pos, boxes) == null)
+            // A Residence first, then a Boarding House, then a bed outside any home.
+            .ThenBy(b => family == null ? HomeRank(ResidenceAt(colony, b.Pos, boxes)) : 0)
             // Someone on their own takes an empty bed before half of a stranger's double bed.
             .ThenBy(b => family == null && taken.GetValueOrDefault(b.Pos) > 0)
             .ThenBy(b => b.Pos.DistanceSqTo(anchor.X, anchor.Y, anchor.Z))

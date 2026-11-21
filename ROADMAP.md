@@ -10,6 +10,7 @@ Everything listed under "What we have" and "Partly done" has been tested in game
 - Town Hall: founds the colony, claims land, levels, a MineColonies-style window *(tested)*
 - Builder's Hut: work orders, an items-needed list, tools that wear down, VS Roofing roofs *(tested)*
 - Residence: beds per level, couples and children *(tested)*
+- Boarding House: many beds and two levels at most; boarders are a little unhappy, have no children and move into a Residence when one has room (0.173.0, no building yet, not tested yet)
 - Warehouse, drop-off points and the Courier *(tested)*
 - Tavern: recruits for rusty gears, and wanderers who ask to join *(tested)*
 - Supply Camp with a starter kit and the Colony Ledger *(tested)*
@@ -61,26 +62,26 @@ Everything listed under "What we have" and "Partly done" has been tested in game
 ## Partly done
 
 - **Cook's Hut**: baking comes from the Stone Bake Oven mod (0.55.0); still no place where the Cook serves food, no food-mod cooking stations *(tested)*
-- **Town Hall window**: alliances, happiness, reordering work orders, custom ranks, permission logs, auto hiring and housing, and enter and leave messages say "Coming later" *(tested)*
+- **Town Hall window**: alliances, custom ranks, permission logs, auto housing, and enter and leave messages are not built (the "Coming later" lines were removed in 0.173.0) *(tested)*
 - **Permissions**: no custom ranks, no hostile or neutral list, no log of who did what *(tested)*
 - **Requests**: no list players can see and fill, and no crafter huts that make what is asked for *(tested)*
 - **Hiring and housing**: no auto-hire switch, and homes can't be picked by hand *(tested)*
 - **Guards**: no ranged guards yet; the Barracks came in 0.54.0 *(not tested yet)*
 - **Blueprints**: no in-game scan tool for your own buildings, and the wand's Education, Walls and Decoration tabs are still empty *(tested)*
 - **Death**: dead settlers are listed, but there are no graves or mourning *(tested)*
-- **Quests**: the quest book works, but Tavern jobs and settler requests are not in it yet *(tested)*
+- **Quests**: the quest book fills the screen in the FTB Quests style and has quests for the newer huts (0.173.0, not tested yet); Tavern jobs and settler requests are not in it yet
 - **Stash and Postbox**: drop-off points exist, but there is no postbox to order items to the player *(tested)*
 
 ## Not built yet
 
 **Next, in this order**
-1. **Smelter** (started in 0.50.0): still to do are alloys such as bronze, and a bloomery for iron
-2. **Happiness** came in 0.61.0. Still to add: safety (raids), health, and how crowded the colony is
-3. **A request list**: seeing what workers need came in 0.142.0 (Requests tab). Still to add: filling a request from the tab
-4. **Animal herders and a Tanner**: chickens, pigs, sheep and goats in pens for meat, eggs and hides, and a Tanner who makes leather in barrels
+1. **Smelter** (started in 0.50.0): alloys such as bronze and the bloomery for iron added in 0.169.0 (not tested yet)
+2. **Happiness** came in 0.61.0. Safety (monsters, guards, attacks), health and crowded homes came in 0.168.0 (not tested yet). Still to add: raids, when raids are in
+3. **A request list**: seeing what workers need came in 0.142.0 (Requests tab), and giving them what you carry straight from that tab in 0.167.0
+4. **Animal herders and a Tanner**: chickens, pigs, sheep and goats in pens for meat, eggs and hides, and a Tanner who makes leather in barrels Started in 0.171.0: five herder huts (Chicken Coop, Piggery, Shepherd's Hut, Goatherd's Hut, Herdsman's Hut for any farm animal) feed troughs, collect eggs, milk, and cull spare animals; a Tannery makes leather in barrels; jobless settlers keep hens at home (mechanics only, placeholder models, no buildings yet, not tested yet).
 5. **Ranged guards and a rally banner** (the Barracks came in 0.54.0), then **Raids**: now and then, enemies turn up and attack the player's colony. The player is warned in chat and on the Town Hall window. There are several raid factions, from bandits (who use the settler models) to the game's own monsters such as drifters and shivers.
 6. **Graveyard**: an undertaker who buries the dead (the Healer, bandages and poultices came in 0.117.0)
-7. **School, Library and University** with a **research tree** that unlocks faster work and new huts
+7. **Research**: started in 0.166.0. The Archive, researchers, Research Points, Knowledge Tokens and the first 12 research nodes are in (not tested yet). Still to do: tier 3 and higher nodes, nodes that unlock new buildings, handing in books, gears and relics at the Archive, field research quests for the Explorer, failed experiments, and researchers sitting and writing at a table
 8. **Blacksmith** (started in 0.50.0): still to do are repairs, armor, and making the tools workers ask for
 
 **Later**

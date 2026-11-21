@@ -33,11 +33,18 @@ public partial class ColonyManager
         ["catharsis"] = (20, 24),
         ["decorated"] = (5, 48),
         ["payday"] = (3, 24),
+        ["newhome"] = (8, 48),
         // The church (ColonyManager.Church.cs): a service (more when the bishop leads it), a missed one, a funeral.
         ["service"] = (8, 24),
         ["missedservice"] = (-4, 48),
         ["funeral"] = (4, 24),
-        ["alms"] = (5, 24)
+        ["alms"] = (5, 24),
+        // Safety, health (ColonyManager.Wellbeing.cs).
+        ["attacked"] = (-6, 24),
+        ["sawattack"] = (-3, 12),
+        ["monsterkill"] = (-8, 96),
+        ["monsterslain"] = (3, 24),
+        ["treated"] = (4, 24)
     };
 
     /// <summary>Mood bands from the top: the lowest happiness each starts at, and the word for it.</summary>
@@ -122,7 +129,11 @@ public partial class ColonyManager
         if (c.RecentFood.Skip(Math.Max(0, c.RecentFood.Count - 6)).Distinct().Count() >= 3) Standing("variety", (int)Math.Round(6 * fussy));
 
         if (c.HomeBedPos == null) Standing("nobed", -10);
-        else if (ResidenceAt(colony, c.HomeBedPos) is { } home) Standing("bed", 3 + Math.Max(0, home.Level - 1));
+        else if (ResidenceAt(colony, c.HomeBedPos) is { } home)
+        {
+            if (home.Type == BuildingTypes.BoardingHouse) Standing("boarding", BoardingMood(home));
+            else Standing("bed", 3 + Math.Max(0, home.Level - 1));
+        }
         if (c.PartnerId != 0 && colony.Citizens.Find(p => p.CitizenId == c.PartnerId) is { Alive: true }) Standing("partner", 6);
         Standing("townhall", TownHallLevel(colony));
         if (c.JobCode == null) Standing("nojob", -4);
@@ -132,6 +143,10 @@ public partial class ColonyManager
         ChurchThoughts(colony, c, Standing);
         // In rags, cold, wearing jewellery (ColonyManager.Clothing.cs).
         ClothesThoughts(c, Standing);
+        // Safety, health and crowding (ColonyManager.Wellbeing.cs).
+        SafetyThoughts(colony, Standing);
+        HealthThoughts(c, Standing);
+        CrowdingThoughts(colony, c, Standing);
         // Sanguine and Melancholic.
         Standing("temperament", (int)Math.Round(TraitAdd(c, "mood")));
         return list;
@@ -160,6 +175,7 @@ public partial class ColonyManager
         if (hours < 0.1) return;
         colony.LastMoodTotalHours = nowHours;
         WearClothes(colony, hours);
+        CheckDanger(colony);
 
         foreach (var c in colony.Citizens)
         {

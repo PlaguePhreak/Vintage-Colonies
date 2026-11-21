@@ -57,6 +57,11 @@ public class ColonyConfig
     /// blueprint's, picked from where the block stands, so the same building looks a little different each time.
     /// </summary>
     public bool RandomDaubStages = true;
+    /// <summary>
+    /// Officers can press Force upgrade on a hut's Upgrade tab when its pack has no blueprint for the next level: the
+    /// hut goes up a level at once, without a build (Aaron, 0.172.0). Up to level 5, like every hut.
+    /// </summary>
+    public bool AllowForceUpgrade = true;
     /// <summary>Seconds a builder takes per block placed or cleared.</summary>
     public float BuilderSecondsPerBlock = 0.75f;
     /// <summary>
@@ -214,6 +219,92 @@ public class ColonyConfig
     /// <summary>Animals the hunter leaves alone: born in a pen (bred by players), or a baby.</summary>
     public bool HunterSparesLivestock = true;
 
+    // Butcher (ColonyManager.Butchery.cs)
+    /// <summary>How far from the Butcher's Hut, in blocks, the butcher goes to pick up dead animals (change it on the Work area tab).</summary>
+    public int ButcherRadius = 48;
+    /// <summary>While the colony has a butcher, the hunter brings its kills home whole instead of skinning them.</summary>
+    public bool HunterBringsCarcasses = true;
+    /// <summary>How many carcasses a hunter or butcher carries at once.</summary>
+    public int CarcassLoad = 2;
+    /// <summary>Seconds it takes to pick up a dead animal.</summary>
+    public float CarcassPickUpSeconds = 2f;
+    /// <summary>Seconds the butcher takes to cut up a small, medium, large and huge animal (before skill).</summary>
+    public float[] ButcherSecondsBySize = { 6f, 10f, 15f, 20f };
+    /// <summary>Extra meat and fat a butcher gets compared to skinning with a knife in the field (0.25 = a quarter more).</summary>
+    public float ButcherYieldBonus = 0.25f;
+    /// <summary>Bones the butcher gets from a small, medium, large and huge animal, when the animal gives none already.</summary>
+    public int[] ButcherBonesBySize = { 1, 2, 3, 4 };
+    /// <summary>The bone item the butcher gets. Left out if the game has no such item.</summary>
+    public string ButcherBoneCode = "game:bone";
+    /// <summary>Knife wear for each animal cut up.</summary>
+    public int ButcherKnifeWear = 3;
+
+    // Butchering mod by CaptainOats (optional; nothing of it is copied or bundled). The codes below are guesses
+    // that can be fixed here if the mod uses other names; the Butcher's Hut window says what was found.
+    /// <summary>The Butchering mod's mod id.</summary>
+    public string ButcheringModId = "butchering";
+    /// <summary>Blocks of the Butchering mod the butcher works at when one is in or near the Butcher's Hut: hooks and tables.</summary>
+    public string[] ButcheringStations = { "butchering:*hook*", "butchering:*table*" };
+    /// <summary>Extra meat and fat when the butcher works at a hook or table, on top of ButcherYieldBonus.</summary>
+    public float ButcheringStationBonus = 0.15f;
+    /// <summary>The Butchering mod's blood liquid. The butcher fills empty buckets in the hut storage with it.</summary>
+    public string ButcheringBloodCode = "butchering:bloodportion";
+    /// <summary>Litres of blood from a small, medium, large and huge animal.</summary>
+    public float[] ButcheringBloodLitresBySize = { 0.5f, 1f, 2f, 3f };
+    // Herders (ColonyManager.Herding.cs)
+    /// <summary>The animals each herder hut keeps, as code patterns. The Herdsman's Hut keeps any animal that breeds; add other mods' animals here.</summary>
+    public Dictionary<string, string[]> HerdAnimals = new()
+    {
+        ["chickencoop"] = new[] { "chicken-*" },
+        ["piggery"] = new[] { "pig-*" },
+        ["shepherd"] = new[] { "sheep-*" },
+        ["goatherd"] = new[] { "goat-*" },
+        ["herdsman"] = new[] { "*" }
+    };
+    /// <summary>Wild animals the Herdsman leaves alone even near its hut.</summary>
+    public string[] HerdsmanSkips = { "deer-*", "moose-*", "gazelle-*", "hare-*", "fox-*", "raccoon-*", "hyena-*", "bear-*", "wolf-*", "elk-*" };
+    /// <summary>Animals no herder ever culls (ridden elk); named and tamed animals are never culled either.</summary>
+    public string[] HerdNeverCull = { "tameddeer-*" };
+    /// <summary>How far from a herder hut, in blocks, its pen reaches (change it on the Work area tab).</summary>
+    public int HerdRadius = 16;
+    /// <summary>How many animals a level 1 herder hut keeps before it culls the spare ones.</summary>
+    public int HerdSize = 6;
+    /// <summary>How many more animals it keeps for each hut level above 1.</summary>
+    public int HerdSizePerLevel = 3;
+    /// <summary>Grown males of each kind a herder never culls.</summary>
+    public int HerdKeepMales = 1;
+    /// <summary>Grown females of each kind a herder never culls.</summary>
+    public int HerdKeepFemales = 2;
+    /// <summary>Seconds a herder takes to fill a trough or empty a nest box.</summary>
+    public float HerderSecondsPerTask = 2f;
+    /// <summary>Seconds a herder takes to milk an animal.</summary>
+    public float HerderMilkSeconds = 4f;
+    /// <summary>Days after giving birth that sheep and goats give milk (the game's own default).</summary>
+    public float HerderLactatingDays = 21f;
+    /// <summary>How much feed a herder fetches at once, and asks couriers for.</summary>
+    public int HerderFeedTake = 32;
+    /// <summary>A herder's knife hits this many times harder than its attack power, so a cull is quick.</summary>
+    public float HerderCullDamageMult = 3f;
+    /// <summary>Herders leave their culls on the ground for a Butcher instead of skinning them.</summary>
+    public bool HerderLeavesCulls = false;
+
+    // Tanner (ColonyManager.Tanning.cs)
+    /// <summary>How far from the Tannery, in blocks, the tanner uses barrels.</summary>
+    public int TannerBarrelRadius = 8;
+    /// <summary>How far from a barrel, in blocks, the tanner looks for water.</summary>
+    public int TannerWaterRadius = 32;
+    /// <summary>Litres of water the tanner carries in its bucket each trip.</summary>
+    public float TannerBucketLitres = 10f;
+    /// <summary>Seconds the tanner takes to fill, load, empty a barrel or scrape a hide.</summary>
+    public float TannerSecondsPerStep = 3f;
+    /// <summary>At most this many batches go into a barrel for a new liquid (10 lime makes 10 litres of limewater).</summary>
+    public int TannerBatches = 20;
+    /// <summary>How many hides the tanner takes from the hut storage at once, and asks couriers for.</summary>
+    public int TannerHideTake = 8;
+    public int TannerHideRequest = 8;
+    /// <summary>How many of lime, logs or borax the tanner asks couriers for.</summary>
+    public int TannerSupplyRequest = 10;
+
     // Gatherer
     /// <summary>How far from the Gatherer's Hut, in blocks, the gatherer forages (change it on the Work area tab).</summary>
     public int GathererRadius = 48;
@@ -354,6 +445,7 @@ public class ColonyConfig
         ["forester"] = 60,
         ["potter"] = 30,
         ["residence"] = 30,
+        ["boardinghouse"] = 30,
         ["cook"] = 30,
         ["prospector"] = 30,
         ["miner"] = 30,
@@ -368,10 +460,18 @@ public class ColonyConfig
         ["jeweller"] = 30,
         ["healer"] = 30,
         ["mint"] = 30,
+        ["archive"] = 30,
         ["barracks"] = 40,
         ["explorer"] = 30,
         ["gatherer"] = 30,
         ["hunter"] = 30,
+        ["butcher"] = 30,
+        ["chickencoop"] = 30,
+        ["piggery"] = 30,
+        ["shepherd"] = 30,
+        ["goatherd"] = 30,
+        ["herdsman"] = 30,
+        ["tannery"] = 30,
     };
     /// <summary>
     /// How many blocks each side of a hut's square grows for every hut level above 1, so a hut near the edge of the
@@ -555,6 +655,16 @@ public class ColonyConfig
     {
         ["game:ingot-copper"] = 4
     };
+
+    /// <summary>What the smelter makes in the bloomery by the hut, by the code of what comes out (wildcards allowed).</summary>
+    public string[] BloomeryOutputs = { "*:*bloom*" };
+    /// <summary>The ingot a bloom is hammered into when the game has no smithing recipe for it, by bloom code.</summary>
+    public System.Collections.Generic.Dictionary<string, string> BloomIngots = new()
+    {
+        ["game:ironbloom"] = "game:ingot-iron"
+    };
+    /// <summary>Extra hammer strikes a blacksmith takes to beat the slag out of a bloom, on top of those for its size.</summary>
+    public int BloomExtraStrikes = 4;
 
     // Blacksmith
     /// <summary>Seconds a blacksmith takes to load or fuel the forge, or take the hot ingots out.</summary>
@@ -863,6 +973,7 @@ public class ColonyConfig
         ["weaponsmith"] = 8,
         ["jeweller"] = 8,
         ["minter"] = 6,
+        ["researcher"] = 7,
         ["priest"] = 5,
         ["bailiff"] = 10
     };
@@ -873,6 +984,25 @@ public class ColonyConfig
     public int MintCoinsPerIngot = 10;
     /// <summary>No taxes or wages, and no moods about them, until the Town Hall is this level.</summary>
     public int EconomyTownHallLevel = 3;
+
+    // Research (ColonyManager.Research.cs; the nodes are in config/research.json)
+    /// <summary>The Town Hall level needed to place an Archive.</summary>
+    public int ArchiveTownHallLevel = 2;
+    /// <summary>Seconds of study for one piece of a researcher's work (skill and mood shorten it), and the Research Points it gives.</summary>
+    public float ResearchSecondsPerWork = 20f;
+    public float ResearchPointsPerWork = 1f;
+    /// <summary>Most researchers on one research node at a time.</summary>
+    public int ResearchMaxPerNode = 3;
+    /// <summary>Each Archive tier above 1 makes research this much faster (0.25 = 25%).</summary>
+    public float ArchiveSpeedPerTier = 0.25f;
+    /// <summary>How far round the Archive's hut block it looks for a table, a shelf with books and a light.</summary>
+    public int ArchiveRoomRadius = 6;
+    /// <summary>Research is this much slower for each of the table, shelf and light that is missing.</summary>
+    public float ArchiveMissingPenalty = 0.15f;
+    /// <summary>Huts this close make the Archive noisy: research is ArchiveNoisePenalty slower for each.</summary>
+    public int ArchiveNoiseRadius = 16;
+    public float ArchiveNoisePenalty = 0.1f;
+    public string[] ArchiveNoisyHuts = { "smelter", "blacksmith", "armourer", "weaponsmith", "sawmill", "quarry" };
     /// <summary>Other mods' coins, as item codes with wildcards. Any of them can be picked as a colony's coin on the Bailiff tab.</summary>
     public string[] OtherCoins = { "coinage:coin", "coinage:coin-*" };
     /// <summary>Mood points a settler loses per percent of tax while the bailiff collects taxes (10% is -2).</summary>
@@ -945,6 +1075,19 @@ public class ColonyConfig
     public int FamilyMaxChildren = 4;
     /// <summary>In-game days a child takes to grow up into an adult settler who can work.</summary>
     public double FamilyChildGrowDays = 6;
+    // Boarding House (ColonyManager.Boarding.cs)
+    /// <summary>The standing mood of a settler who lives in a level 1 Boarding House (a Residence bed gives +3).</summary>
+    public int BoardingMood = -4;
+    /// <summary>How much better each Boarding House level above 1 makes that mood.</summary>
+    public int BoardingMoodPerLevel = 1;
+    /// <summary>Boarders move into a Residence by themselves once one has room for their whole household.</summary>
+    public bool BoardersMoveOut = true;
+    /// <summary>In-game hours between a colony's boarders looking for a free Residence.</summary>
+    public double BoardersLookEveryHours = 6;
+    /// <summary>Couples living in a Boarding House have children.</summary>
+    public bool BoardersHaveChildren = false;
+    /// <summary>The mood of a household that just moved from a Boarding House into a Residence, for two days.</summary>
+    public int NewHomeMood = 8;
     /// <summary>Children are only born while the colony has a bed nobody sleeps in, so housing limits growth.</summary>
     public bool FamilyChildNeedsFreeBed = true;
     /// <summary>No children are born once the colony has this many living settlers (children count); 0 means no limit.</summary>
@@ -1174,6 +1317,12 @@ public class ColonyConfig
     public bool JoblessCookAtHome = true;
     /// <summary>How far outside its home, in blocks, a household's fire pit may stand.</summary>
     public int JoblessFirepitReach = 4;
+    /// <summary>Settlers without a job feed the hens kept at their home (troughs and nest boxes in or by the home) and collect the eggs.</summary>
+    public bool JoblessKeepHens = true;
+    /// <summary>How many blocks around the home its hen troughs and nest boxes may stand.</summary>
+    public int JoblessHenReach = 6;
+    /// <summary>A household lets fertile eggs hatch until it has this many chickens; then it eats them all.</summary>
+    public int JoblessHensMax = 4;
 
     // Home decorations (see ColonyManager.Decor.cs)
     /// <summary>
@@ -1200,6 +1349,23 @@ public class ColonyConfig
     /// <summary>In-game hours a breakdown lasts (rolled between the two).</summary>
     public double HappinessBreakHoursMin = 2;
     public double HappinessBreakHoursMax = 4;
+    // Safety, health and crowding in happiness (see ColonyManager.Wellbeing.cs)
+    /// <summary>Blocks around the Town Hall where a monster makes settlers feel unsafe.</summary>
+    public float DangerRadius = 48;
+    /// <summary>In-game hours settlers stay uneasy after a monster was near or attacked someone.</summary>
+    public double DangerHours = 6;
+    /// <summary>Blocks within which settlers are upset to see a monster hurt another settler.</summary>
+    public float WitnessRadius = 16;
+    /// <summary>Grown-ups one guard keeps safe; with that many guards or more, settlers feel safe.</summary>
+    public int SettlersPerGuard = 8;
+    /// <summary>With this many grown-ups and no guard at all, settlers worry. 0 turns it off.</summary>
+    public int UnguardedFrom = 6;
+    /// <summary>Below this share of their health a settler is unhappy about being hurt...</summary>
+    public float HurtMoodBelow = 0.5f;
+    /// <summary>...and below this, very unhappy.</summary>
+    public float BadlyHurtMoodBelow = 0.25f;
+    /// <summary>Room (floor blocks times storeys) each person in a Residence needs; less makes it crowded, under half very crowded.</summary>
+    public float HomeSpacePerSettler = 16;
 
     // Settler animations (see Settlers/SettlerBody.cs and Settlers/SettlerSeats.cs)
     /// <summary>Settlers hold a torch or lantern up the way a player does.</summary>

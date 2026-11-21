@@ -163,11 +163,6 @@ public class GuiDialogTownHall : GuiDialog
         return y + 40;
     }
 
-    /// <summary>A greyed "Coming later: ..." line for the MineColonies features this mod has no system for yet.</summary>
-    double ComingLater(GuiComposer composer, string langKey, double y)
-    {
-        return composer.Text(Lang.Get("createacolony:townhall-coming-later", Lang.Get("createacolony:" + langKey)), GuiKit.Muted(), 0, y, Width, 6);
-    }
 
     // ---- Prospecting tab ------------------------------------------------------------------
 
@@ -286,7 +281,6 @@ public class GuiDialogTownHall : GuiDialog
         composer.AddSmallButton("?", () => Open(HelpView), ElementBounds.Fixed(0, y, 40, 28));
         composer.AddHoverText(Lang.Get("createacolony:townhall-help-hover"), GuiKit.Detail(), 220, ElementBounds.Fixed(0, y, 40, 28));
         y += 38;
-        ComingLater(composer, "townhall-later-actions", y);
     }
 
     /// <summary>Upgrade or Cancel, and Turn until the first level is built. Returns the y below them.</summary>
@@ -567,7 +561,6 @@ public class GuiDialogTownHall : GuiDialog
         if (orders.Count == 0)
         {
             y = composer.Text(Lang.Get("createacolony:hut-no-orders"), GuiKit.Body(), 0, y, Width, 10);
-            ComingLater(composer, "townhall-later-orders", y);
             return;
         }
         int pages = (orders.Count + OrdersPerPage - 1) / OrdersPerPage;
@@ -599,7 +592,6 @@ public class GuiDialogTownHall : GuiDialog
         composer.Pager(page, pages, y + 12, Width, p => { page = p; Compose(); });
         y += pages > 1 ? 52 : 16;
         y = composer.Text(Lang.Get("createacolony:townhall-orders-hint"), GuiKit.Muted(), 0, y, Width, 6);
-        ComingLater(composer, "townhall-later-orders", y);
     }
 
     // ---- Citizens tab ---------------------------------------------------------------------
@@ -662,7 +654,6 @@ public class GuiDialogTownHall : GuiDialog
             composer.Pager(page, pages, y + 14, Width, p => { page = p; Compose(); });
             y += pages > 1 ? 54 : 16;
         }
-        ComingLater(composer, "townhall-later-burial", y);
     }
 
     /// <summary>What killed a settler, in words: "Wolf (male)", a player's name, or "Starved".</summary>
@@ -696,8 +687,7 @@ public class GuiDialogTownHall : GuiDialog
         var citizens = snapshot.Citizens.Where(c => c.State != "dead").OrderByDescending(c => c.Visitor).ThenBy(c => c.Name).ToList();
         if (citizens.Count == 0)
         {
-            double empty = composer.Text(Lang.Get("createacolony:no-citizens"), GuiKit.Body(), 0, top, Width);
-            ComingLater(composer, "townhall-later-citizens", empty);
+            composer.Text(Lang.Get("createacolony:no-citizens"), GuiKit.Body(), 0, top, Width);
             return;
         }
 
@@ -759,7 +749,6 @@ public class GuiDialogTownHall : GuiDialog
         composer.Pager(page, pages, y + 14, Width, p => { page = p; Compose(); });
         y += pages > 1 ? 54 : 16;
         if (Officer) y = composer.Text(Lang.Get("createacolony:townhall-recall-hint"), GuiKit.Muted(), 0, y, Width, 6);
-        ComingLater(composer, "townhall-later-citizens", y);
     }
 
     /// <summary>A wanderer's row: who, how long it still waits, and Welcome / Turn away buttons for officers.</summary>
@@ -850,7 +839,6 @@ public class GuiDialogTownHall : GuiDialog
             }
             y += 12;
         }
-        ComingLater(composer, "townhall-later-stats", y);
     }
 
     // ---- Permissions tab ------------------------------------------------------------------
@@ -891,7 +879,6 @@ public class GuiDialogTownHall : GuiDialog
 
         y = composer.Text(Lang.Get("createacolony:invite-hint"), GuiKit.Muted(), 0, y + 12, Width, 8);
         y = composer.Text(Lang.Get("createacolony:townhall-roles-hint"), GuiKit.Muted(), 0, y, Width, 8);
-        ComingLater(composer, "townhall-later-permissions", y);
     }
 
     // ---- Colony militia tab ---------------------------------------------------------------
@@ -1172,7 +1159,6 @@ public class GuiDialogTownHall : GuiDialog
             ? Lang.Get("createacolony:overview-warehouse", snapshot.WarehouseChests, snapshot.DropOffs, snapshot.OpenRequests)
             : Lang.Get("createacolony:overview-no-warehouse"), GuiKit.Detail(), 0, y, Width, 12);
 
-        ComingLater(composer, "townhall-later-settings", y);
     }
 
     // ---- Sending --------------------------------------------------------------------------

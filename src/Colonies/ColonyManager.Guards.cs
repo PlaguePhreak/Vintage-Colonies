@@ -279,6 +279,7 @@ public partial class ColonyManager
         if (attacker != null && IsThreat(attacker)) RaiseAlarm(colony, attacker, settler.Pos.XYZ);
         if (IsAttackerToFlee(attacker) && (FleesWhenHurt(citizen) || FightsBack(colony, citizen, settler))) StartFleeing(colony, citizen, settler, attacker!);
         if (IsAttackerToFlee(attacker) && citizen.JobCode != Jobs.Guard) CallAllies(colony, citizen, settler, attacker!);
+        if (IsAttackerToFlee(attacker) && damage > 0) FeelAttacked(colony, citizen, settler, attacker!);
 
         damage = ShieldBlock(colony, citizen, settler, source, damage);
         damage = ArmorAbsorb(colony, citizen, settler, source, damage);

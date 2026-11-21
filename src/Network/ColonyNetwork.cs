@@ -162,7 +162,7 @@ public partial class ColonyNetwork : ModSystem
             ColonyAction.SetJob => SetJob(colony, role, packet.CitizenId, packet.Text),
             ColonyAction.SetRole => SetRole(colony, role, packet.PlayerUid, (ColonyRole)packet.Role),
             ColonyAction.RemoveMember => SetRole(colony, role, packet.PlayerUid, ColonyRole.Visitor),
-            ColonyAction.Build or ColonyAction.CancelBuild or ColonyAction.Rotate or ColonyAction.Repair => BuildAction(colony, role, packet),
+            ColonyAction.Build or ColonyAction.CancelBuild or ColonyAction.Rotate or ColonyAction.Repair or ColonyAction.ForceUpgrade => BuildAction(colony, role, packet),
             ColonyAction.CancelTeardown => CancelTeardown(colony, role, packet.BuildingId),
             ColonyAction.MovePriority => MovePriority(colony, role, packet),
             ColonyAction.SetAnyWoodOrStone => SetAnyWoodOrStone(colony, role, packet.Text == "1"),
@@ -187,6 +187,8 @@ public partial class ColonyNetwork : ModSystem
             ColonyAction.SetSelfDefence or ColonyAction.SetSupportAllies => SetMilitia(colony, role, packet),
             ColonyAction.SetBailiffRule => SetBailiffRule(player, colony, role, packet.Text),
             ColonyAction.SetTithe => SetTithe(colony, role, packet.Text),
+            ColonyAction.StartResearch or ColonyAction.PauseResearch => ResearchAction(colony, role, packet),
+            ColonyAction.FillRequests => FillRequests(player, colony, role, packet),
             ColonyAction.HireRecruit => HireAction(player, colony, role, packet),
             ColonyAction.RemoveHut => RemoveHut(player, colony, role, packet),
             ColonyAction.LinkMineHut or ColonyAction.UnlinkMineHut => LinkMineAction(colony, role, packet),
@@ -427,6 +429,8 @@ public partial class ColonyNetwork : ModSystem
                 return Manager.StartWorkOrder(colony, building);
             case ColonyAction.Repair:
                 return Manager.StartRepair(colony, building);
+            case ColonyAction.ForceUpgrade:
+                return Manager.ForceUpgrade(colony, building);
             case ColonyAction.CancelBuild:
                 if (building.Removing) Manager.CancelRemoval(colony, building);
                 else Manager.CancelWorkOrder(colony, building);
@@ -1126,7 +1130,7 @@ public partial class ColonyNetwork : ModSystem
             snapshot.RemovedMarkerCount = Manager.RemovedMarkerCount(colony, building);
             if (building.Type == BuildingTypes.Gatherer) snapshot.GatherMode = building.GatherMode;
         }
-        if (building.Type == BuildingTypes.Residence) AddResidence(snapshot, colony, building);
+        if (ColonyManager.IsHome(building.Type)) AddResidence(snapshot, colony, building);
 
         if (ColonyManager.IsGatherHut(building.Type))
         {
@@ -1148,7 +1152,8 @@ public partial class ColonyNetwork : ModSystem
         if (building.Type is BuildingTypes.Forester or BuildingTypes.Farmer or BuildingTypes.Potter or BuildingTypes.Cook
             or BuildingTypes.Prospector or BuildingTypes.Miner or BuildingTypes.Quarry
             or BuildingTypes.Smelter or BuildingTypes.Blacksmith or BuildingTypes.Armourer or BuildingTypes.Weaponsmith or BuildingTypes.Sawmill or BuildingTypes.Craftsman or BuildingTypes.Tailor or BuildingTypes.Jeweller or BuildingTypes.Healer or BuildingTypes.Mint or BuildingTypes.Church
-            or BuildingTypes.Explorer or BuildingTypes.Gatherer or BuildingTypes.Hunter) snapshot.Info = Manager.WorkerHutInfo(colony, building);
+            or BuildingTypes.Explorer or BuildingTypes.Gatherer or BuildingTypes.Hunter or BuildingTypes.Butcher or BuildingTypes.Tannery
+            || ColonyManager.IsHerderHut(building.Type)) snapshot.Info = Manager.WorkerHutInfo(colony, building);
         if (building.Type == BuildingTypes.Tavern)
         {
             snapshot.IsTavern = true;
@@ -1237,12 +1242,15 @@ public partial class ColonyNetwork : ModSystem
             }
         }
         if (building.Type == BuildingTypes.Church) AddChurch(snapshot, colony, building);
+        if (building.Type == BuildingTypes.Archive) AddResearch(snapshot, colony, building);
         if (building.IsStation)
         {
             snapshot.IsStation = true;
             snapshot.HostName = Manager.HostOf(colony, building) is { } host ? ColonyManager.BuildingName(host) : "";
         }
-        AddRequests(snapshot, colony, building);
+        snapshot.ForceUpgradeTo = Manager.ForceUpgradeLevel(building);
+        snapshot.TopLevel = BuildingTypes.TopLevel(building.Type);
+        AddRequests(snapshot, colony, building, viewerUid);
         if (building.Type == BuildingTypes.CourierStation) AddCouriers(snapshot, colony);
         if (ColonyManager.CraftTabOf(building.Type) is { } craftTab) AddCraftRows(snapshot, colony, building, craftTab);
         if (Manager.HasHutRecipes(building.Type)) AddRecipeRows(snapshot, colony, building);

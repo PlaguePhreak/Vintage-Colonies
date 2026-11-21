@@ -70,7 +70,7 @@ public partial class ColonyNetwork
     {
         if (role < ColonyRole.Officer) return "createacolony:denied-officer";
         var residence = colony.Buildings.Find(b => b.BuildingId == packet.BuildingId);
-        if (residence == null || residence.Type != BuildingTypes.Residence) return "createacolony:bad-building";
+        if (residence == null || !ColonyManager.IsHome(residence.Type)) return "createacolony:bad-building";
         var citizen = colony.Citizens.Find(c => c.CitizenId == packet.CitizenId);
         if (citizen == null || !citizen.Alive || citizen.Visitor) return "createacolony:bad-citizen";
         return packet.Action == ColonyAction.MoveInResidence

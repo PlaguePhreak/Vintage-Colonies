@@ -12,6 +12,25 @@ domain (`assets/createacolony/`, block and item codes like `createacolony:townha
 (`ModConfig/createacolony.json`), the release zips (`createacolony_<version>.zip`) and all save data keys.
 Changing any of those would stop old worlds from loading their colonies, so leave them as they are.
 
+## Combined release, Boarding House and the new quest book (0.173.0)
+
+This version puts 0.166.0 to 0.172.0 together (Research, giving requests from the Requests tab, safety, health and crowding, Smelter alloys and the bloomery, the Butcher, herders and the Tannery, and Force upgrade) and adds the following.
+
+- **Boarding House** (Fundamentals tab; planks, dry grass and a stick). A home with many beds and two levels at most. Every bed inside the building is a place to sleep, and it has a Residents tab like a Residence. It has no building of its own yet: place the block and build around it.
+  - Boarders have a standing "Lives in a boarding house" thought of -4 at level 1 and -3 at level 2 (`BoardingMood`, `BoardingMoodPerLevel`), where a Residence bed gives +3 or more. The crowded-home thought does not count there.
+  - A settler looking for a bed takes a Residence bed first, then a Boarding House bed, then a bed outside any home.
+  - Every 6 in-game hours (`BoardersLookEveryHours`) boarders move into a Residence that has room for their whole household, families first, and get a "Moved into a home of their own" thought (+8 for two days, `NewHomeMood`). Turn it off with `BoardersMoveOut: false`.
+  - Couples have no children while either of them boards (`BoardersHaveChildren`).
+- **Quest book in the FTB Quests style.** The book now fills most of the screen.
+  - Every group and chapter is in a list down the left. Click a group to fold it. Each chapter shows an icon and how many quests are done, and a red "!" when a reward is waiting.
+  - The map has bigger icons in solid frames, thick lines that turn green when done, a padlock on quests that are not open yet, a tick on finished ones and the chapter's name across the top. Drag to move it, scroll to zoom.
+  - Clicking a quest pops up a card over the map with Tasks on the left, Rewards on the right and the story under them. Clicking empty map closes it.
+  - **Claim all** at the top takes every waiting reward at once.
+  - Chapters with no quests are hidden until they have some.
+  - Quest text may use the game's text tags for coloured words, such as `<font color="#ffd966">Town Hall</font>`.
+- **Quests for the newer huts.** The Colony group has 7 new chapters: Gathering and hunting, Animals and leather, Mines and quarries, Workshops, Clothes and finery, Town life, and a Barracks quest under Guards. Each hut has a quest for placing it and one for giving it a worker.
+- **Tidying.** The "Coming later" lines are gone from the Town Hall window, and so is the Guard Tower's "Hire trainee" section, which did nothing.
+
 ## Build
 1. Install the .NET 10 SDK and set `VINTAGE_STORY` to your game folder.
 2. Run `dotnet build CreateAColony.csproj -c Release`.
@@ -63,6 +82,12 @@ planks of any wood.
 | Blacksmith's Hut | 2 ingots (any metal) + 7 planks |
 | Sawmill | 2 logs (any) + 7 planks |
 | Primitive Craftsman | 2 flint + 7 planks |
+| Chicken Coop | 2 feathers + 7 planks |
+| Piggery | 2 raw red meat + 7 planks |
+| Shepherd's Hut | 2 flax twine + 7 planks |
+| Goatherd's Hut | 2 wooden buckets + 7 planks |
+| Herdsman's Hut | 2 fat + 7 planks |
+| Tannery | 2 raw hides (any) + 7 planks |
 | Supply Camp | 3 firewood over 2 sticks (unchanged) |
 | Colony Ledger | 4 paper (any), 2 leather, 2 charcoal: paper, leather, paper / charcoal, paper, charcoal / paper, leather, paper |
 | Drop-off | stick over a plank (unchanged) |
@@ -226,6 +251,71 @@ All three are on the new Mining tab of the Builder's Wand and use placeholder bl
 - Chests, beds, racks, shelves, signs and paintings stay where they are. The builder asks couriers for the blocks it needs, as for any build.
 - **Stop repair** cancels it. The colony gets a message when it is done. A Mineshaft Entrance has no Repair; use the Levels tab's Repair for mines.
 
+## Safety, health and crowding in happiness (0.168.0)
+
+Settlers now also care about how safe they are, how hurt they are, and how much room they have at home. You see these on the settler's happiness hover, like the other thoughts.
+
+**Safety**
+- **Monsters about** (-6): a monster came within 48 blocks of the Town Hall (`DangerRadius`), or attacked a settler, in the last 6 hours (`DangerHours`). Only -2 when the colony has enough guards.
+- **Feels safe with the guards** (+3): at least one guard for every 8 grown-ups (`SettlersPerGuard`).
+- **No guards to keep them safe** (-3): 6 or more grown-ups (`UnguardedFrom`) and no guard at all.
+- **Was attacked** (-6, 1 day): a creature hurt them.
+- **Saw a settler attacked** (-3, 12 hours): a monster hurt someone within 16 blocks (`WitnessRadius`).
+- **A monster killed a settler** (-8, 4 days): everyone, when a monster kills a settler for good.
+- **A monster was killed** (+3, 1 day): everyone, when a guard or other settler kills a monster.
+- Raids are not in the mod yet. When they come, they will add to this.
+
+**Health**
+- **Hurt** (-5): below half health (`HurtMoodBelow`).
+- **Badly hurt** (-12): below a quarter (`BadlyHurtMoodBelow`).
+- **Treated by the healer** (+4, 1 day): the Healer looked after them in bed.
+
+**Crowding** (in a Residence)
+- Each person needs 16 blocks of room (`HomeSpacePerSettler`): the floor inside the building times its storeys (one storey for every 5 blocks of height).
+- **Crowded home** (-4): less room than that. **Very crowded home** (-8): less than half.
+- **A home just for family** (+2): enough room, and everyone sleeping there is family.
+
+**How to test**
+1. Open a settler's window and hover the happiness bar to see their thoughts.
+2. Let a drifter or wolf come near the Town Hall: "Monsters about" shows up.
+3. Hire a guard for a small colony: "Feels safe with the guards" shows up.
+4. Hit a settler's health down (or let a monster do it): "Hurt" shows up.
+5. Put many settlers' beds in one small Residence: "Crowded home" shows up.
+## Butcher's Hut (0.170.0)
+`src/Colonies/ColonyManager.Butchery.cs`, `src/Settlers/AiTaskSettlerButcher.cs`, `src/Item/ItemCarcass.cs`,
+and changes to `src/Settlers/AiTaskSettlerHunter.cs`. Mechanics only: there is no building for it yet, so place
+the hut block on its own. Not tested in game yet.
+
+- **Butcher's Hut** (Builder's Wand, Craftsmanship > Food tab; recipe: a knife in the middle of 7 planks, the
+  knife is not used up). Give a settler the Butcher job and put a knife in the hut storage.
+- **Hunters bring kills home whole.** While the colony has a butcher, the hunter skins nothing. It picks up its
+  kills as a **carcass** (no knife needed) and carries them to the Butcher's Hut, two at a time
+  (`CarcassLoad`). If it can't get there, it leaves them in its own hut. Settlers without a job also leave
+  un-skinned animals for the butcher.
+- **The butcher** cuts each carcass up at the hut block with its knife. It gets a quarter more meat and fat than
+  skinning (`ButcherYieldBonus` 0.25), plus bones (1 to 4 by animal size) if the animal gives none. The new
+  Butchery skill makes it faster and sometimes gives one more piece. What it cuts goes in the hut storage,
+  food in the coolest chest first, and couriers take it to the warehouse and cellar.
+- When no carcass is waiting, the butcher picks up dead animals on your land or within its Work area
+  (`ButcherRadius` 48), including animals herders cull (they carry the same `createacolony:huntedBy` tag), and
+  fetches carcasses left at a Hunter's Hut or in the warehouse.
+- Carcasses spoil like meat: fresh for 2 days, then rot within a day.
+- **Butchering mod (optional).** Nothing of the mod is copied or bundled. When it is installed, a hook or table
+  from it in or by the hut is where the butcher works, for 15% more meat and fat (`ButcheringStationBonus`).
+  Empty buckets in the hut storage get filled with blood. The mod's block and blood codes are guesses
+  (`ButcheringStations`, `ButcheringBloodCode`); the hut window says whether a hook or table was found, so
+  they can be fixed in the config if needed. Smoking racks are not used yet.
+- Config: `ButcherRadius`, `HunterBringsCarcasses`, `CarcassLoad`, `CarcassPickUpSeconds`,
+  `ButcherSecondsBySize`, `ButcherYieldBonus`, `ButcherBonesBySize`, `ButcherBoneCode`, `ButcherKnifeWear`,
+  `ButcheringModId`, `ButcheringStations`, `ButcheringStationBonus`, `ButcheringBloodCode`,
+  `ButcheringBloodLitresBySize`.
+## Upgrade tab and Force upgrade (0.172.0)
+- Every hut window has an **Upgrade** tab. It shows the hut's level (out of 5) and which levels its pack has blueprints for.
+- When the next level has a blueprint, the tab has the normal Upgrade button, and a builder builds it.
+- When it has none, officers get **Force upgrade**. Press it twice (it asks "Sure?"). The hut gets the next level at once and nothing is built. It gets what a level gives: more workers, more land and higher skill caps. Add to the building yourself if you like.
+- A force-upgraded hut is still the last blueprint its pack has, so Repair and upkeep use that one.
+- The Main tab says when Force upgrade is there. Not on work stations or the Mineshaft Entrance. Turn it off with `AllowForceUpgrade: false`.
+
 ## Recommended mods
 These work well with Vintage Colonies. Install them separately.
 - **Tailor's Delight** (Tels and Phiwa): more tools and materials for the Tailor.
@@ -235,6 +325,29 @@ These work well with Vintage Colonies. Install them separately.
 - **C&N Jewelry Adornments** (KenigVovan): more jewellery for the Jeweller to make and settlers to wear for Happiness.
 - **Smithing Plus** (jayu): smith with metal bits, repair tool heads on the anvil and other smithing tweaks. Our smiths still use the game's anvil and recipes beside it; not tested together in game yet.
 - **Coinage** (Xel): design your own coins. One can be the colony's money (Bailiff tab, Taxes & wages).
+
+## Research and the Archive (0.166.0)
+
+Research belongs to the whole colony. Once the Town Hall is level 2, place an **Archive** (Education tab of the Builder's Wand; recipe: planks around 2 parchment) and give settlers the new **Researcher** job. The Archive has 3 tiers. Each tier runs one more research at once (1, 2, 3) and takes two more researchers (2, 4, 6). Its placeholder build is a plain box until Aaron's own builds replace it.
+
+On the Archive's **Research** tab, officers pick a branch (Settlement, Production, Population, Defence, Exploration) and press **Start**. Couriers bring the research's items to the Archive, then researchers study there and make Research Points. Up to 3 researchers work on one research. Research is faster with a table, a shelf or books and a light within 6 blocks of the hut block, and slower with smelters, forges, saws or a quarry within 16 blocks. **Pause** keeps the points and items. Finished research is kept even if the Archive is removed. Nothing you could build before is locked by research.
+
+| Research | Branch | Tier | Needs | Cost | Does |
+| --- | --- | --- | --- | --- | --- |
+| Scribe Training | Population | 1 | - | 200 points, 8 parchment | Researchers work 20% faster |
+| Organized Storage | Settlement | 1 | Warehouse | 300 points, 4 chests | Couriers walk 20% faster with a load |
+| Crop Rotation | Production | 1 | Farmer's Hut | 300 points, 32 seeds | Farmers harvest 10% more |
+| Basic Fortifications | Defence | 1 | Guard Tower | 300 points, 32 logs | Guards get 2 more health |
+| Herbal Remedies | Population | 1 | Healer's Station | 300 points, 16 horsetail | Settlers heal twice as fast in bed |
+| Field Notes | Exploration | 1 | Explorer's Hut | 300 points, 8 parchment | Explorers go 25% further |
+| Irrigation Systems | Production | 2 | Crop Rotation | 600 points, 32 planks | Watering cans last twice as long |
+| Specialized Craftsmen | Production | 2 | Town Hall 3 | 600 points, 8 copper ingots | Crafting jobs work 15% faster |
+| Guard Training Regimen | Defence | 2 | Basic Fortifications | 600 points, 8 spears | Guards hit 15% harder |
+| Cartographer's Guild | Exploration | 2 | Field Notes | 600 points, 16 parchment | Explorers walk 15% faster, gives 1 Knowledge Token |
+| Bigger Village | Population | 2 | 15 settlers | 800 points, 16 linen | 2 more settlers per Town Hall level |
+| Colony Expansion Protocols | Settlement | 2 | Town Hall 3 | 800 points, 1 Knowledge Token | Town Hall claim grows 16 blocks each way |
+
+One researcher makes about 100 points a day. The nodes live in `assets/createacolony/config/research.json`; speeds and the Archive's rules are in the config (`ArchiveTownHallLevel`, `ResearchSecondsPerWork`, `ResearchPointsPerWork`, `ResearchMaxPerNode`, `ArchiveSpeedPerTier`, `ArchiveRoomRadius`, `ArchiveMissingPenalty`, `ArchiveNoiseRadius`, `ArchiveNoisePenalty`, `ArchiveNoisyHuts`).
 
 ## Farmers lay better soil (0.156.0)
 - **Poor field soil gets swapped for better soil.** Put better soil in the Farmer's Hut storage (very low, low, medium, compost, high, as in the game). The farmer digs out the poor soil on bare spots of its fields and lays the better soil as fresh farmland. The worst spots go first.
@@ -304,6 +417,12 @@ These work well with Vintage Colonies. Install them separately.
 - Config: `CarryTorches` (on/off) and `LightFetchRange` (64 blocks: how far a settler walks for its light).
 - Not tested in game.
 
+## Give requests from the Requests tab (0.167.0)
+- **A give button on each request.** When you carry something a hut asked for, the row says "You carry ..." in green and gets a **^** button. Press it to put what the hut still needs (not the spare) straight into the chest it asked for. The request counts as brought, so couriers stop bringing it.
+- **Give all** at the top gives everything you carry that the hut asked for, in one go.
+- Works for tools too (any axe will do when the hut asked for an axe). Uses your hotbar and backpack. You need to be a colony member.
+- Not tested in game.
+
 ## Requests tab, Courier's Station and better fuel (0.142.0)
 - **Requests tab on every hut.** It lists what the hut and its worker asked the couriers for (the potter's firewood, dry grass and sticks, a builder's planks, a tool). Each row shows how many were brought, how many are in the warehouse, and what is happening: a courier bringing it, waiting for a courier, the Gatherer cutting grass for it, another hut making it, or nobody has it.
 - **Huts ask for a few spare.** A hut asks for about a quarter more than it needs, at least 1 and at most 8 (a potter needing 4 firewood asks for 5). Once what it needs is there, it does not wait for the spare. Not for tools, Minimum stock or your own requests. Config: `RequestSparePercent` (25, 0 turns it off) and `RequestSpareMax` (8).
@@ -364,6 +483,27 @@ These work well with Vintage Colonies. Install them separately.
 - **Wages**: each settler with a job gets a wage from the treasury: 5 coins by default, 4 for couriers and gatherers, 7 to 8 for builders, guards, healers and smiths, 10 for the bailiff (`Wages`, `WageDefault`). A settler who gets paid has a "Got paid" thought for a day. One who doesn't get their full wage has "Wasn't paid", -4 mood (`UnpaidMood`), until a payday pays them.
 - Settlers keep their coins in their purse, shown on the settler's Stats tab with their wage. Spending them comes later.
 - The page shows the treasury, what wages cost a month and the next payday. The **Ledger** now has columns for taxes and wages.
+
+## Bronze and iron: alloys and the bloomery (0.169.0)
+No new buildings: this is only how the smelter and blacksmith work. Nothing here is tested in game yet.
+- **Alloys.** The Smelting tab now lists every alloy the game knows (tin bronze, bismuth bronze, black bronze,
+  brass and the rest), next to the plain metals. Set "Keep" on one and the smelter mixes nuggets of each metal
+  in one crucible, in the shares the game asks for (tin bronze: about 90% copper and 10% tin), melts it and
+  pours the ingots like any other metal. It makes whole ingots only, as many as the crucible holds (up to 4).
+  It fetches the nuggets from the hut storage, or asks couriers for them from the warehouse.
+- **Iron from the bloomery.** Build the game's bloomery (with its chimney) within 8 blocks of the Smelter's Hut.
+  The Smelting tab lists **Iron bloom**. Set "Keep" on it and the smelter fills the bloomery with iron nuggets
+  and charcoal (the share the game allows), lights it, and when it has burnt (about half a day) takes the bloom
+  out. A player has to break the bloomery for the bloom; the smelter takes it out without breaking anything.
+  The bloomery works at the same time as the fire pit, and a Smelter's Hut with only a bloomery works too.
+- **Blooms into iron ingots.** The Blacksmith's Smithing tab now lists **Iron ingot** (from a bloom). Set "Keep"
+  on it and the blacksmith heats a bloom in the forge and hammers it into an iron ingot on the anvil (the anvil
+  must be good enough for iron, as for a player). It asks for blooms even when the warehouse has none, so the
+  smelter makes them for it: you only need to set Keep on the Blacksmith.
+- **What to put in storage:** iron nuggets, copper and tin nuggets (or the other metals for an alloy),
+  charcoal, fired crucibles and fired ingot molds.
+- Config: `BloomeryOutputs` (what the bloomery may make, default anything with "bloom" in its code),
+  `BloomIngots` (the ingot a bloom becomes when the game has no smithing recipe for it), `BloomExtraStrikes` (4).
 
 ## Generated packs removed (0.163.0)
 The Oak & Shale pack (0.162.0) and the stretched Dev's Builds levels (0.161.0) are gone: Aaron is designing
@@ -816,8 +956,8 @@ Smithing skill grows with both jobs.
   copper; it asks couriers for `SmelterFuelCode`, charcoal, when the warehouse has none), lets the game melt it,
   and pours the metal into the molds. Cooled ingots come out of the molds into the hut storage. Metal that
   cools in the crucible goes back on the fire. The Smelting tab lists every metal with ingots ready (warehouse,
-  hut, smelter, molds and crucible) and how many to keep (`SmelterDefaultKeep`: 4 copper, others 0). No
-  alloys (bronze) and no bloomery yet.
+  hut, smelter, molds and crucible) and how many to keep (`SmelterDefaultKeep`: 4 copper, others 0). Alloys
+  and the bloomery came in 0.169.0 (see "Bronze and iron").
 - **Blacksmith's Hut** (2 ingots + 7 planks). The blacksmith needs a hammer, the game's forge (in the
   blueprint) and an anvil placed by a player, both within `BlacksmithRadius` (8). It heats the ingots for a
   piece in the forge with charcoal, takes them out once they are hot enough to work, and strikes the anvil
@@ -1363,6 +1503,45 @@ underground, or in winter. Settlers use that.
 - The Dev's Builds Cook's Hut level 2 basement is full of Food Shelves, so food ends up down there.
 - The Cook's Hut window shows how fast food spoils in its coolest storage (100% is normal speed).
 - `KeepFoodCool: false` turns the moving off. `CoolStoreMaxRateShare` (0.75) is how much cooler a store must be.
+
+### Herders, the Tannery and garden hens (0.171.0)
+
+`src/Colonies/ColonyManager.Herding.cs`, `src/Colonies/ColonyManager.Tanning.cs`, `src/Settlers/AiTaskSettlerHerder.cs`,
+`src/Settlers/AiTaskSettlerTanner.cs`, `src/Settlers/AiTaskSettlerChores.cs`. Mechanics only: the huts have
+placeholder blocks and no buildings yet. Not tested in game yet.
+
+- **Five herder huts** (Builder's Wand, Agriculture tab, Animals): Chicken Coop (Chicken Herder), Piggery (Swineherd),
+  Shepherd's Hut (Shepherd), Goatherd's Hut (Goatherd) and Herdsman's Hut (Herdsman). The Herdsman looks after
+  any animal that breeds, so animals from other mods work too (config `HerdAnimals`; wild game in
+  `HerdsmanSkips` is left alone). New skill: Husbandry.
+- **The pen** is everything up to `HerdRadius` blocks (16) from the hut; change it on the Work area tab. Fence
+  it, put troughs (and nest boxes for hens) inside, and lead two or more animals in.
+- **What a herder does**, in order: skins its culls; fills troughs that are half empty with feed the animals
+  eat (from the hut storage, or it asks couriers to bring feed from the warehouse); collects eggs from nest
+  boxes (fertile eggs stay to hatch until the pen is full); milks sheep and goats that have milk into empty
+  buckets from the hut storage; and once the pen holds more than the herd size it culls a spare grown animal
+  with its knife. It always keeps `HerdKeepMales` males (1) and `HerdKeepFemales` females (2) of each kind,
+  never culls young, named or tamed animals, and brings meat and hides to the hut for the couriers.
+- **Herd size**: `HerdSize` (6) at level 1, plus `HerdSizePerLevel` (3) per level. Without a building the hut
+  counts as level 1.
+- **Butcher hand-off**: culls are tagged on the carcass with `createacolony:huntedBy` like the Hunter's kills.
+  With `HerderLeavesCulls` on, herders leave them for a Butcher instead of skinning them
+  (`ColonyManager.HerderLeavesCulls`, the one place the Butcher's Hut code hooks in).
+- **Tannery** (Craftsmanship tab, Primitive; Tanner job, uses the Tailoring skill). It reads the game's barrel and crafting
+  recipes, so the steps are the game's own: water plus lime (or borax) makes limewater, raw hides soak in it,
+  the tanner scrapes the soaked hides at the hut with its knife, then soaks them in weak tannin (an oak or
+  acacia log in 10 litres of water) and strong tannin until they are leather. It uses barrels up to
+  `TannerBarrelRadius` blocks (8) from the hut that are empty or hold tanning things, carries water from the
+  nearest water in a bucket (`TannerBucketLitres`), and asks couriers for hides, lime, borax and logs.
+  Leather goes to the warehouse.
+- **Garden hens**: settlers without a job feed the chickens kept at their home (troughs and nest boxes in the
+  home or up to `JoblessHenReach` blocks around it) with feed from the home chests or the warehouse, and put
+  the eggs in the home chest. They let eggs hatch until the home has `JoblessHensMax` (4) chickens.
+- Config: `HerdAnimals`, `HerdsmanSkips`, `HerdNeverCull`, `HerdRadius`, `HerdSize`, `HerdSizePerLevel`,
+  `HerdKeepMales`, `HerdKeepFemales`, `HerderSecondsPerTask`, `HerderMilkSeconds`, `HerderLactatingDays`,
+  `HerderFeedTake`, `HerderCullDamageMult`, `HerderLeavesCulls`, `TannerBarrelRadius`, `TannerWaterRadius`,
+  `TannerBucketLitres`, `TannerSecondsPerStep`, `TannerBatches`, `TannerHideTake`, `TannerHideRequest`,
+  `TannerSupplyRequest`, `JoblessKeepHens`, `JoblessHenReach`, `JoblessHensMax`.
 
 ### The Hunter, skinning and cooking at home (0.99.0)
 

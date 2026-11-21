@@ -218,6 +218,7 @@ public partial class ColonyManager
         speed *= SkillPerk(colony, c, "workSpeed"); // Prospecting's faster readings
         speed *= MoodWorkFactor(c); // Joyful works faster, Miserable slower
         speed *= BailiffWorkFactor(colony, c); // a bailiff on duty keeps everyone at it
+        if (Jobs.IsCrafter(c.JobCode)) speed *= ResearchMult(colony, "crafterSpeed"); // Specialized Craftsmen
         return ClampEffect(1f / speed);
     }
 
@@ -232,19 +233,23 @@ public partial class ColonyManager
 
     /// <summary>Multiply a guard's damage by this: Fighting and Strength each add 3% a level.</summary>
     public float DamageFactor(Colony colony, CitizenRecord c) =>
-        ClampEffect(1f + 0.03f * UsableLevel(colony, c, "fighting") + 0.03f * UsableLevel(colony, c, Strength));
+        ClampEffect((1f + 0.03f * UsableLevel(colony, c, "fighting") + 0.03f * UsableLevel(colony, c, Strength))
+            * (c.JobCode == Jobs.Guard ? ResearchMult(colony, "guardDamage") : 1f)); // Guard Training Regimen
 
     /// <summary>Multiply a settler's walking speed by this: Fitness adds 1.5% a level, Hauling 4% a level while a courier carries a load.</summary>
     public float WalkFactor(Colony colony, CitizenRecord c, bool carrying)
     {
         float f = 1f + 0.015f * UsableLevel(colony, c, Fitness);
         if (carrying && c.JobCode == Jobs.Courier) f += 0.04f * UsableLevel(colony, c, "hauling");
+        if (carrying && c.JobCode == Jobs.Courier) f *= ResearchMult(colony, "courierWalk"); // Organized Storage
+        if (c.JobCode == Jobs.Explorer) f *= ResearchMult(colony, "explorerWalk"); // Cartographer's Guild
         f *= TraitMult(c, "walkSpeed"); // Fleet-footed, Sluggish
         return ClampEffect(f);
     }
 
     /// <summary>Extra max health from Fitness: one point for every two usable levels.</summary>
-    public float HealthBonus(Colony colony, CitizenRecord c) => UsableLevel(colony, c, Fitness) / 2 + (float)Math.Round(TraitAdd(c, "maxHealth")); // plus Tough, minus Frail
+    public float HealthBonus(Colony colony, CitizenRecord c) => UsableLevel(colony, c, Fitness) / 2 + (float)Math.Round(TraitAdd(c, "maxHealth")) // plus Tough, minus Frail
+        + (c.JobCode == Jobs.Guard ? ResearchAdd(colony, "guardHealth") : 0f); // Basic Fortifications
 
     /// <summary>Sets a settler's max health from their Fitness; the game's health behavior adds it to the base.</summary>
     public void ApplyHealthBonus(Colony colony, CitizenRecord c, Entity entity) =>

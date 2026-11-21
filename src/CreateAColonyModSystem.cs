@@ -60,6 +60,7 @@ public class CreateAColonyModSystem : ModSystem
         api.RegisterItemClass("ItemBuildersWand", typeof(Items.ItemBuildersWand));
         api.RegisterItemClass("ItemGuardScepter", typeof(Items.ItemGuardScepter));
         api.RegisterItemClass("ItemColonyLedger", typeof(Items.ItemColonyLedger));
+        api.RegisterItemClass("ItemCarcass", typeof(Items.ItemCarcass));
 
         AiTaskRegistry.Register<AiTaskSettlerFlee>("settlerflee");
         AiTaskRegistry.Register<AiTaskSettlerDefend>("settlerdefend");
@@ -81,6 +82,7 @@ public class CreateAColonyModSystem : ModSystem
         AiTaskRegistry.Register<AiTaskSettlerTailor>("settlertailor");
         AiTaskRegistry.Register<AiTaskSettlerJeweller>("settlerjeweller");
         AiTaskRegistry.Register<AiTaskSettlerMinter>("settlerminter");
+        AiTaskRegistry.Register<AiTaskSettlerResearcher>("settlerresearcher");
         AiTaskRegistry.Register<AiTaskSettlerHealer>("settlerhealer");
         AiTaskRegistry.Register<AiTaskSettlerPriest>("settlerpriest");
         AiTaskRegistry.Register<AiTaskSettlerWorship>("settlerworship");
@@ -90,6 +92,13 @@ public class CreateAColonyModSystem : ModSystem
         AiTaskRegistry.Register<AiTaskSettlerExplorer>("settlerexplorer");
         AiTaskRegistry.Register<AiTaskSettlerGatherer>("settlergatherer");
         AiTaskRegistry.Register<AiTaskSettlerHunter>("settlerhunter");
+        AiTaskRegistry.Register<AiTaskSettlerButcher>("settlerbutcher");
+        AiTaskRegistry.Register<AiTaskSettlerChickenHerder>("settlerchickenherder");
+        AiTaskRegistry.Register<AiTaskSettlerSwineherd>("settlerswineherd");
+        AiTaskRegistry.Register<AiTaskSettlerShepherd>("settlershepherd");
+        AiTaskRegistry.Register<AiTaskSettlerGoatherd>("settlergoatherd");
+        AiTaskRegistry.Register<AiTaskSettlerHerdsman>("settlerherdsman");
+        AiTaskRegistry.Register<AiTaskSettlerTanner>("settlertanner");
         AiTaskRegistry.Register<AiTaskSettlerCook>("settlercook");
         AiTaskRegistry.Register<AiTaskSettlerProspector>("settlerprospector");
         AiTaskRegistry.Register<AiTaskSettlerMiner>("settlerminer");

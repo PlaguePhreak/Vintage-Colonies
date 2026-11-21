@@ -238,7 +238,17 @@ public class BlueprintLibrary
 
     /// <summary>The building's blueprint for a level, in its own style, variant and turn.</summary>
     /// <summary>A work station never has one: it is only its block.</summary>
-    public Blueprint? Get(Building building, int level) => building.IsStation ? null : Get(StyleFor(building), building.Type, level, building.Rotation, building.Variant);
+    /// <summary>
+    /// The building's blueprint at a level. A hut raised with Force upgrade (ColonyManager.ForceUpgrade.cs) can be above
+    /// the last level its pack has; it then still stands as that last level, so that blueprint is the one returned.
+    /// </summary>
+    public Blueprint? Get(Building building, int level)
+    {
+        if (building.IsStation) return null;
+        int max = MaxLevel(building);
+        if (max > 0 && level > max) level = max;
+        return Get(StyleFor(building), building.Type, level, building.Rotation, building.Variant);
+    }
 
     string? FindJson(string style, string type, string variant, int level)
     {
@@ -891,6 +901,10 @@ public static class BuildingTypes
     public const string Cook = "cook";
     public const string GuardTower = "guardtower";
     public const string Residence = "residence";
+    /// <summary>The Boarding House (ColonyManager.Boarding.cs): many beds, at most two levels; boarders would rather have a home of their own.</summary>
+    public const string BoardingHouse = "boardinghouse";
+    /// <summary>The highest level a building of this type can reach.</summary>
+    public static int TopLevel(string type) => type == BoardingHouse ? 2 : BlueprintLibrary.MaxLevels;
     public const string Prospector = "prospector";
     public const string Miner = "miner";
     public const string Quarry = "quarry";
@@ -910,9 +924,21 @@ public static class BuildingTypes
     public const string Church = "church";
     /// <summary>The Royal Mint: a minter strikes the colony's coins (ColonyManager.Economy.cs).</summary>
     public const string Mint = "mint";
+    /// <summary>The Archive: researchers study the colony's research tree (ColonyManager.Research.cs).</summary>
+    public const string Archive = "archive";
     public const string Explorer = "explorer";
     public const string Gatherer = "gatherer";
     public const string Hunter = "hunter";
+    /// <summary>The Butcher's Hut: its butcher cuts up the animals hunters and herders bring home (ColonyManager.Butchery.cs).</summary>
+    public const string Butcher = "butcher";
+    /// <summary>The herder huts (ColonyManager.Herding.cs): each keeps one kind of animal in a pen; the Herdsman's Hut keeps any.</summary>
+    public const string ChickenCoop = "chickencoop";
+    public const string Piggery = "piggery";
+    public const string Shepherd = "shepherd";
+    public const string Goatherd = "goatherd";
+    public const string Herdsman = "herdsman";
+    /// <summary>The Tannery: a tanner makes leather in barrels (ColonyManager.Tanning.cs).</summary>
+    public const string Tannery = "tannery";
     public const string Barracks = "barracks";
     /// <summary>Put at a mine's entrance; several Miner's Huts can work the one mine through it.</summary>
     public const string MineshaftEntrance = "mineshaftentrance";

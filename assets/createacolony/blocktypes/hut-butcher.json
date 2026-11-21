@@ -1,0 +1,34 @@
+{
+	"code": "hut-butcher",
+	"class": "BlockColonyHut",
+	"entityClass": "ColonyHut",
+	"attributes": {
+		"buildingType": "butcher",
+		// The hut's own storage; chests next to it add more.
+		"defaultType": "hut",
+		"inventoryClassName": "colonyhut",
+		"quantitySlots": { "hut": 25 },
+		"quantityColumns": { "hut": 5 },
+		"dialogTitleLangCode": { "hut": "createacolony:hut-storage" }
+	},
+	"creativeinventory": { "general": ["*"], "vintagecolonies": ["*"] },
+	"blockmaterial": "Wood",
+	"drawtype": "json",
+	// The seed of the Butcher's Hut. Simple placeholder model: a chopping block with a cleaver, a hanging ham and a bone.
+	"shape": { "base": "createacolony:block/hut-butcher" },
+	"textures": {
+		"sides": { "base": "game:block/wood/table/aged/sides" },
+		"planks": { "base": "game:block/wood/planks/aged1" },
+		"log": { "base": "game:block/wood/debarked/aged" },
+		"metal": { "base": "game:block/metal/ingot/iron" },
+		"top": { "base": "game:block/wood/debarked/aged" },
+		"meat": { "base": "game:block/cloth/linen/red" },
+		"bone": { "base": "game:block/cloth/linen/white" }
+	},
+	"sideopaque": { "all": false },
+	"sidesolid": { "all": false },
+	"emitSideAo": { "all": false },
+	"lightAbsorption": 0,
+	"resistance": 2,
+	"sounds": { "place": "game:block/planks", "break": "game:block/planks", "hit": "game:block/planks" }
+}

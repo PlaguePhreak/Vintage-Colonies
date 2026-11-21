@@ -13,16 +13,18 @@ public static class BuildingCategories
     /// <summary>Tabs with no types yet still show, as placeholders for buildings to come.</summary>
     public static readonly Category[] All =
     {
-        new("fundamentals", new[] { BuildingTypes.TownHall, BuildingTypes.Builder, BuildingTypes.Tavern, BuildingTypes.Residence }),
-        new("agriculture", new[] { BuildingTypes.Farmer, BuildingTypes.Forester, BuildingTypes.Gatherer, BuildingTypes.Hunter }),
+        new("fundamentals", new[] { BuildingTypes.TownHall, BuildingTypes.Builder, BuildingTypes.Tavern, BuildingTypes.Residence, BuildingTypes.BoardingHouse }),
+        Group("agriculture",
+            new("land", new[] { BuildingTypes.Farmer, BuildingTypes.Forester, BuildingTypes.Gatherer, BuildingTypes.Hunter }),
+            new("animals", new[] { BuildingTypes.ChickenCoop, BuildingTypes.Piggery, BuildingTypes.Shepherd, BuildingTypes.Goatherd, BuildingTypes.Herdsman })),
         Group("craftsmanship",
             new("woodworking", new[] { BuildingTypes.Sawmill }),
-            new("food", new[] { BuildingTypes.Cook }),
+            new("food", new[] { BuildingTypes.Cook, BuildingTypes.Butcher }),
             new("metallurgy", new[] { BuildingTypes.Smelter, BuildingTypes.Blacksmith, BuildingTypes.Armourer, BuildingTypes.Weaponsmith, BuildingTypes.Mint }),
-            new("primitive", new[] { BuildingTypes.Potter, BuildingTypes.Craftsman }),
+            new("primitive", new[] { BuildingTypes.Potter, BuildingTypes.Craftsman, BuildingTypes.Tannery }),
             new("luxury", new[] { BuildingTypes.Tailor, BuildingTypes.Jeweller })),
         new("mining", new[] { BuildingTypes.Prospector, BuildingTypes.Miner, BuildingTypes.MineshaftEntrance, BuildingTypes.Quarry }),
-        new("education", new[] { BuildingTypes.Church }),
+        new("education", new[] { BuildingTypes.Church, BuildingTypes.Archive }),
         new("infrastructure", new[] { BuildingTypes.Warehouse, BuildingTypes.Explorer }),
         new("military", new[] { BuildingTypes.GuardTower, BuildingTypes.Barracks }),
         new("walls", System.Array.Empty<string>()),

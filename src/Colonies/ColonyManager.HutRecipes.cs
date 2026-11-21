@@ -24,7 +24,7 @@ public partial class ColonyManager
     /// Builders, guards and priests have their own work.
     /// </summary>
     public bool HasHutRecipes(string type) => JobOf(type) != null
-        && type is not (BuildingTypes.Builder or BuildingTypes.GuardTower or BuildingTypes.Barracks or BuildingTypes.Church);
+        && type is not (BuildingTypes.Builder or BuildingTypes.GuardTower or BuildingTypes.Barracks or BuildingTypes.Church or BuildingTypes.Archive);
 
     /// <summary>
     /// Everything a hut of this type can craft from the game's grid recipes (and other mods' with config

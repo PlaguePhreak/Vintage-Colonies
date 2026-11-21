@@ -185,7 +185,7 @@ public partial class ColonyManager
             groups.Add((warehouse, all));
             foreach (var kitchen in kitchens) groups.Add((HutStorage(colony, kitchen).ToList(), KitchenStores(colony, kitchen).ToList()));
             // A home's food stays in that home, in its cellar if it has one.
-            foreach (var home in colony.Buildings.Where(b => b.Type == BuildingTypes.Residence && b.Level >= 1))
+            foreach (var home in colony.Buildings.Where(b => IsHome(b.Type) && b.Level >= 1))
             {
                 var chests = HomeChests(home);
                 groups.Add((chests, chests));

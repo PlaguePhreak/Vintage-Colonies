@@ -50,6 +50,10 @@ public partial class ColonyManager
         return Math.Clamp(size, min, Math.Max(min, Config.TownHallClaimSizeMax));
     }
 
+    /// <summary>Colony Expansion Protocols: the Town Hall's square grows by claimGrow blocks each way (ColonyManager.Research.cs).</summary>
+    int TownHallClaimBonus(Colony colony, Building building) =>
+        building.Type == BuildingTypes.TownHall ? 2 * (int)ResearchAdd(colony, "claimGrow") : 0;
+
     static bool IsMilitary(string type) =>
         BuildingCategories.All.Any(c => c.Code == "military" && Array.IndexOf(c.Types, type) >= 0);
 
@@ -105,7 +109,7 @@ public partial class ColonyManager
         foreach (var building in colony.Buildings.OrderBy(b => b.Type == BuildingTypes.TownHall ? 0 : 1).ThenBy(b => b.BuildingId))
         {
             if (!ClaimsLand(building)) continue;
-            var area = FitClaim(building.HutPos, ClaimSize(building), mine);
+            var area = FitClaim(building.HutPos, ClaimSize(building) + TownHallClaimBonus(colony, building), mine);
             sizes[building.BuildingId] = area == null ? 0 : area.SizeX;
             if (area != null && !areas.Any(a => a.Equals(area))) areas.Add(area);
         }
@@ -117,7 +121,7 @@ public partial class ColonyManager
         claim.Areas = areas;
         sapi.World.Claims.Add(claim);
         var townHall = colony.Buildings.FirstOrDefault(b => b.Type == BuildingTypes.TownHall);
-        colony.ClaimRadius = (townHall == null ? ClaimSize(BuildingTypes.TownHall) : ClaimSize(townHall)) / 2;
+        colony.ClaimRadius = (townHall == null ? ClaimSize(BuildingTypes.TownHall) : ClaimSize(townHall) + TownHallClaimBonus(colony, townHall)) / 2;
         MarkDirty(colony);
     }
 

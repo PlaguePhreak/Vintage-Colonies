@@ -326,6 +326,24 @@ public class MineLevelView
     [ProtoMember(5)] public bool Working;
 }
 
+/// <summary>One research node on the Archive's Research tab.</summary>
+[ProtoContract]
+public class ResearchView
+{
+    [ProtoMember(1)] public string Code = "";
+    [ProtoMember(2)] public string Branch = "";
+    [ProtoMember(3)] public int Tier;
+    /// <summary>0 locked, 1 open, 2 paused, 3 running, 4 done.</summary>
+    [ProtoMember(4)] public int State;
+    [ProtoMember(5)] public string Cost = "";
+    /// <summary>What it still waits for (locked), or why it is not moving (running).</summary>
+    [ProtoMember(6)] public string Note = "";
+    [ProtoMember(7)] public int Points;
+    [ProtoMember(8)] public int PointsNeeded;
+    /// <summary>Running at another Archive of the colony.</summary>
+    [ProtoMember(9)] public bool Elsewhere;
+}
+
 /// <summary>Everything a hut window shows.</summary>
 [ProtoContract]
 public class HutSnapshot
@@ -507,6 +525,10 @@ public class HutSnapshot
     [ProtoMember(308)] public List<string> Stations = new();
     /// <summary>This is a work station; HostName is the building it stands in ("" when that is gone).</summary>
     [ProtoMember(309)] public bool IsStation;
+    /// <summary>The level Force upgrade would raise this hut to, 0 when it can't (ColonyManager.ForceUpgradeLevel).</summary>
+    [ProtoMember(2601)] public int ForceUpgradeTo;
+    /// <summary>The highest level any hut can have (BlueprintLibrary.MaxLevels).</summary>
+    [ProtoMember(2602)] public int TopLevel;
     [ProtoMember(310)] public string HostName = "";
     /// <summary>Orphans the church looks after and settlers sleeping in its beds.</summary>
     [ProtoMember(311)] public int Orphans;
@@ -523,6 +545,18 @@ public class HutSnapshot
     [ProtoMember(342)] public bool IsCourierStation;
     [ProtoMember(343)] public List<CourierView> Couriers = new();
     [ProtoMember(344)] public int CourierJobs;
+    // 400-419: the Archive's Research tab (ColonyManager.Research.cs).
+    [ProtoMember(400)] public bool IsArchive;
+    [ProtoMember(401)] public List<ResearchView> Research = new();
+    [ProtoMember(402)] public int KnowledgeTokens;
+    /// <summary>Nodes this Archive runs at once, and how many run now.</summary>
+    [ProtoMember(403)] public int ResearchSlots;
+    [ProtoMember(404)] public int ResearchRunning;
+    /// <summary>Research speed at this Archive in percent (100 = normal).</summary>
+    [ProtoMember(405)] public int ResearchSpeed;
+    /// <summary>What slows research here: a missing table, shelf or light, noisy huts nearby.</summary>
+    [ProtoMember(406)] public List<string> ResearchNotes = new();
+    [ProtoMember(407)] public int ArchiveTier;
 }
 
 /// <summary>One row of a hut's Requests tab.</summary>
@@ -542,6 +576,12 @@ public class RequestView
     [ProtoMember(8)] public int Color;
     /// <summary>"Builder's Hut: Smelter 2" when it is for a building job, else empty.</summary>
     [ProtoMember(9)] public string For = "";
+    /// <summary>The request, for the give button (0.167.0).</summary>
+    [ProtoMember(10)] public int RequestId;
+    /// <summary>How many the viewer carries that would do; the give button shows when above 0.</summary>
+    [ProtoMember(11)] public int PlayerHas;
+    /// <summary>How many the hut still needs, not counting the spare.</summary>
+    [ProtoMember(12)] public int Needed;
 }
 
 /// <summary>One courier on a Courier's Station.</summary>
@@ -921,7 +961,15 @@ public enum ColonyAction
     /// <summary>Repair button on a hut's Main tab: a builder puts the building back as its blueprint has it.</summary>
     Repair = 250,
     /// <summary>A Church's Church tab (officers): Text is the tithe in percent (0, 5 or 10).</summary>
-    SetTithe = 300
+    SetTithe = 300,
+    /// <summary>The Archive's Research tab (officers): starts or resumes the node with code Text at the Archive BuildingId.</summary>
+    StartResearch = 400,
+    /// <summary>Pauses the node with code Text; it keeps its points.</summary>
+    PauseResearch = 401,
+    /// <summary>Requests tab give button (0.167.0): Text holds request ids, comma separated; each is filled from the player's inventory.</summary>
+    FillRequests = 333,
+    /// <summary>Upgrade tab (officers): raises a hut with no blueprint for its next level up one level, without a build.</summary>
+    ForceUpgrade = 2600
 }
 
 /// <summary>One Miner's Hut on a Mineshaft Entrance's Main tab.</summary>

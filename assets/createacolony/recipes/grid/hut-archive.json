@@ -1,0 +1,10 @@
+{
+	"ingredientPattern": "PXP,PXP,PPP",
+	"ingredients": {
+		"P": { "type": "item", "code": "game:plank-*" },
+		"X": { "type": "item", "code": "game:paper-parchment" }
+	},
+	"width": 3,
+	"height": 3,
+	"output": { "type": "block", "code": "createacolony:hut-archive" }
+}

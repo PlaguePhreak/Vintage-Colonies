@@ -1,0 +1,42 @@
+{
+	"code": "hut-chickencoop",
+	"class": "BlockColonyHut",
+	"entityClass": "ColonyHut",
+	"attributes": {
+		"buildingType": "chickencoop",
+		// The hut's own storage; chests next to it add more.
+		"defaultType": "hut",
+		"inventoryClassName": "colonyhut",
+		"quantitySlots": { "hut": 25 },
+		"quantityColumns": { "hut": 5 },
+		"dialogTitleLangCode": { "hut": "createacolony:hut-storage" }
+	},
+	"creativeinventory": { "general": ["*"], "vintagecolonies": ["*"] },
+	"blockmaterial": "Wood",
+	"drawtype": "json",
+	// The seed of the Chicken Coop. Simple placeholder model: a little coop with a nest of straw and two eggs. No building yet: Aaron designs those.
+	"shape": { "base": "createacolony:block/hut-chickencoop" },
+	"textures": {
+	 "sides": {
+	  "base": "game:block/wood/table/aged/sides"
+	 },
+	 "planks": {
+	  "base": "game:block/wood/planks/aged1"
+	 },
+	 "log": {
+	  "base": "game:block/wood/debarked/aged"
+	 },
+	 "straw": {
+	  "base": "game:block/hay/normal-top"
+	 },
+	 "egg": {
+	  "base": "game:block/cloth/linen/white"
+	 }
+	},
+	"sideopaque": { "all": false },
+	"sidesolid": { "all": false },
+	"emitSideAo": { "all": false },
+	"lightAbsorption": 0,
+	"resistance": 2,
+	"sounds": { "place": "game:block/planks", "break": "game:block/planks", "hit": "game:block/planks" }
+}

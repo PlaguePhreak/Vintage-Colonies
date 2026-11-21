@@ -1,0 +1,426 @@
+{
+ "textureWidth": 16,
+ "textureHeight": 16,
+ "textures": {
+  "sides": "sides",
+  "planks": "planks",
+  "log": "log",
+  "wool": "wool"
+ },
+ "elements": [
+  {
+   "name": "Crate",
+   "from": [
+    1,
+    0,
+    1
+   ],
+   "to": [
+    15,
+    8,
+    15
+   ],
+   "faces": {
+    "north": {
+     "texture": "#sides",
+     "uv": [
+      0,
+      0,
+      14,
+      8
+     ]
+    },
+    "east": {
+     "texture": "#sides",
+     "uv": [
+      0,
+      0,
+      14,
+      8
+     ]
+    },
+    "south": {
+     "texture": "#sides",
+     "uv": [
+      0,
+      0,
+      14,
+      8
+     ]
+    },
+    "west": {
+     "texture": "#sides",
+     "uv": [
+      0,
+      0,
+      14,
+      8
+     ]
+    },
+    "up": {
+     "texture": "#sides",
+     "uv": [
+      0,
+      0,
+      14,
+      14
+     ]
+    },
+    "down": {
+     "texture": "#sides",
+     "uv": [
+      0,
+      0,
+      14,
+      14
+     ]
+    }
+   }
+  },
+  {
+   "name": "Lid",
+   "from": [
+    0,
+    8,
+    0
+   ],
+   "to": [
+    16,
+    9,
+    16
+   ],
+   "faces": {
+    "north": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      16,
+      1
+     ]
+    },
+    "east": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      16,
+      1
+     ]
+    },
+    "south": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      16,
+      1
+     ]
+    },
+    "west": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      16,
+      1
+     ]
+    },
+    "up": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      16,
+      16
+     ]
+    },
+    "down": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      16,
+      16
+     ]
+    }
+   }
+  },
+  {
+   "name": "Bale",
+   "from": [
+    2,
+    9,
+    6
+   ],
+   "to": [
+    9,
+    13,
+    13
+   ],
+   "faces": {
+    "north": {
+     "texture": "#wool",
+     "uv": [
+      0,
+      0,
+      7,
+      4
+     ]
+    },
+    "east": {
+     "texture": "#wool",
+     "uv": [
+      0,
+      0,
+      7,
+      4
+     ]
+    },
+    "south": {
+     "texture": "#wool",
+     "uv": [
+      0,
+      0,
+      7,
+      4
+     ]
+    },
+    "west": {
+     "texture": "#wool",
+     "uv": [
+      0,
+      0,
+      7,
+      4
+     ]
+    },
+    "up": {
+     "texture": "#wool",
+     "uv": [
+      0,
+      0,
+      7,
+      7
+     ]
+    },
+    "down": {
+     "texture": "#wool",
+     "uv": [
+      0,
+      0,
+      7,
+      7
+     ]
+    }
+   }
+  },
+  {
+   "name": "Staff",
+   "from": [
+    11.5,
+    9,
+    7.5
+   ],
+   "to": [
+    12.3,
+    21,
+    8.3
+   ],
+   "faces": {
+    "north": {
+     "texture": "#log",
+     "uv": [
+      0,
+      0,
+      0.8,
+      12
+     ]
+    },
+    "east": {
+     "texture": "#log",
+     "uv": [
+      0,
+      0,
+      0.8,
+      12
+     ]
+    },
+    "south": {
+     "texture": "#log",
+     "uv": [
+      0,
+      0,
+      0.8,
+      12
+     ]
+    },
+    "west": {
+     "texture": "#log",
+     "uv": [
+      0,
+      0,
+      0.8,
+      12
+     ]
+    },
+    "up": {
+     "texture": "#log",
+     "uv": [
+      0,
+      0,
+      0.8,
+      0.8
+     ]
+    },
+    "down": {
+     "texture": "#log",
+     "uv": [
+      0,
+      0,
+      0.8,
+      0.8
+     ]
+    }
+   }
+  },
+  {
+   "name": "Hook1",
+   "from": [
+    12.3,
+    20.2,
+    7.5
+   ],
+   "to": [
+    14.3,
+    21,
+    8.3
+   ],
+   "faces": {
+    "north": {
+     "texture": "#log",
+     "uv": [
+      0,
+      0,
+      2.0,
+      0.8
+     ]
+    },
+    "east": {
+     "texture": "#log",
+     "uv": [
+      0,
+      0,
+      0.8,
+      0.8
+     ]
+    },
+    "south": {
+     "texture": "#log",
+     "uv": [
+      0,
+      0,
+      2.0,
+      0.8
+     ]
+    },
+    "west": {
+     "texture": "#log",
+     "uv": [
+      0,
+      0,
+      0.8,
+      0.8
+     ]
+    },
+    "up": {
+     "texture": "#log",
+     "uv": [
+      0,
+      0,
+      2.0,
+      0.8
+     ]
+    },
+    "down": {
+     "texture": "#log",
+     "uv": [
+      0,
+      0,
+      2.0,
+      0.8
+     ]
+    }
+   }
+  },
+  {
+   "name": "Hook2",
+   "from": [
+    13.5,
+    18.5,
+    7.5
+   ],
+   "to": [
+    14.3,
+    20.2,
+    8.3
+   ],
+   "faces": {
+    "north": {
+     "texture": "#log",
+     "uv": [
+      0,
+      0,
+      0.8,
+      1.7
+     ]
+    },
+    "east": {
+     "texture": "#log",
+     "uv": [
+      0,
+      0,
+      0.8,
+      1.7
+     ]
+    },
+    "south": {
+     "texture": "#log",
+     "uv": [
+      0,
+      0,
+      0.8,
+      1.7
+     ]
+    },
+    "west": {
+     "texture": "#log",
+     "uv": [
+      0,
+      0,
+      0.8,
+      1.7
+     ]
+    },
+    "up": {
+     "texture": "#log",
+     "uv": [
+      0,
+      0,
+      0.8,
+      0.8
+     ]
+    },
+    "down": {
+     "texture": "#log",
+     "uv": [
+      0,
+      0,
+      0.8,
+      0.8
+     ]
+    }
+   }
+  }
+ ]
+}

@@ -175,7 +175,7 @@ public partial class ColonyManager
         if (building.Type == BuildingTypes.MineshaftEntrance) return StartEntrance(colony, building);
         if (building.IsStation) return "createacolony:station-no-levels";
         int next = building.Level + 1;
-        if (Blueprints.Get(building, next) == null) return "createacolony:build-no-blueprint";
+        if (next > Blueprints.MaxLevel(building) || Blueprints.Get(building, next) == null) return "createacolony:build-no-blueprint";
 
         building.TargetLevel = next;
         building.Cursor = 0;
