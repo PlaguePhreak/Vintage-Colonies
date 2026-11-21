@@ -521,6 +521,29 @@
               "count": 4
             }
           ]
+        },
+        {
+          "code": "c-barracks-hut",
+          "x": 1,
+          "y": 2,
+          "shape": "square",
+          "icon": "createacolony:hut-barracks",
+          "requires": [
+            "c-guard"
+          ],
+          "objectives": [
+            {
+              "type": "building",
+              "code": "barracks",
+              "level": 0
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:spear-copper",
+              "count": 1
+            }
+          ]
         }
       ]
     },
@@ -543,6 +566,1104 @@
               "code": "game:linen-normal-down",
               "count": 8
             }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "gathering",
+      "quests": [
+        {
+          "code": "c-gatherer-hut",
+          "x": 0,
+          "y": 0,
+          "shape": "square",
+          "icon": "createacolony:hut-gatherer",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "gatherer",
+              "level": 0
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:firewood",
+              "count": 8
+            }
+          ]
+        },
+        {
+          "code": "c-gatherer-job",
+          "x": 1,
+          "y": 0,
+          "shape": "round",
+          "objectives": [
+            {
+              "type": "job",
+              "code": "gatherer",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:bread-spelt-perfect",
+              "count": 4
+            }
+          ],
+          "requires": [
+            "c-gatherer-hut"
+          ]
+        },
+        {
+          "code": "c-hunter-hut",
+          "x": 2,
+          "y": 0,
+          "shape": "square",
+          "icon": "createacolony:hut-hunter",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "hunter",
+              "level": 0
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:stick",
+              "count": 16
+            }
+          ]
+        },
+        {
+          "code": "c-hunter-job",
+          "x": 3,
+          "y": 0,
+          "shape": "round",
+          "objectives": [
+            {
+              "type": "job",
+              "code": "hunter",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ],
+          "requires": [
+            "c-hunter-hut"
+          ]
+        },
+        {
+          "code": "c-butcher-hut",
+          "x": 4,
+          "y": 0,
+          "shape": "square",
+          "icon": "createacolony:hut-butcher",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "butcher",
+              "level": 0
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:drygrass",
+              "count": 16
+            }
+          ]
+        },
+        {
+          "code": "c-butcher-job",
+          "x": 5,
+          "y": 0,
+          "shape": "round",
+          "objectives": [
+            {
+              "type": "job",
+              "code": "butcher",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:honeyportion",
+              "count": 4
+            }
+          ],
+          "requires": [
+            "c-butcher-hut"
+          ]
+        },
+        {
+          "code": "c-explorer-hut",
+          "x": 6,
+          "y": 0,
+          "shape": "square",
+          "icon": "createacolony:hut-explorer",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "explorer",
+              "level": 0
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:firewood",
+              "count": 8
+            }
+          ]
+        },
+        {
+          "code": "c-explorer-job",
+          "x": 7,
+          "y": 0,
+          "shape": "round",
+          "objectives": [
+            {
+              "type": "job",
+              "code": "explorer",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:bread-spelt-perfect",
+              "count": 4
+            }
+          ],
+          "requires": [
+            "c-explorer-hut"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "herding",
+      "quests": [
+        {
+          "code": "c-chickencoop-hut",
+          "x": 0,
+          "y": 0,
+          "shape": "square",
+          "icon": "createacolony:hut-chickencoop",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "chickencoop",
+              "level": 0
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:firewood",
+              "count": 8
+            }
+          ]
+        },
+        {
+          "code": "c-chickenherder-job",
+          "x": 1,
+          "y": 0,
+          "shape": "round",
+          "objectives": [
+            {
+              "type": "job",
+              "code": "chickenherder",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:bread-spelt-perfect",
+              "count": 4
+            }
+          ],
+          "requires": [
+            "c-chickencoop-hut"
+          ]
+        },
+        {
+          "code": "c-piggery-hut",
+          "x": 2,
+          "y": 0,
+          "shape": "square",
+          "icon": "createacolony:hut-piggery",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "piggery",
+              "level": 0
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:stick",
+              "count": 16
+            }
+          ]
+        },
+        {
+          "code": "c-swineherd-job",
+          "x": 3,
+          "y": 0,
+          "shape": "round",
+          "objectives": [
+            {
+              "type": "job",
+              "code": "swineherd",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ],
+          "requires": [
+            "c-piggery-hut"
+          ]
+        },
+        {
+          "code": "c-shepherd-hut",
+          "x": 4,
+          "y": 0,
+          "shape": "square",
+          "icon": "createacolony:hut-shepherd",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "shepherd",
+              "level": 0
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:drygrass",
+              "count": 16
+            }
+          ]
+        },
+        {
+          "code": "c-shepherd-job",
+          "x": 5,
+          "y": 0,
+          "shape": "round",
+          "objectives": [
+            {
+              "type": "job",
+              "code": "shepherd",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:honeyportion",
+              "count": 4
+            }
+          ],
+          "requires": [
+            "c-shepherd-hut"
+          ]
+        },
+        {
+          "code": "c-goatherd-hut",
+          "x": 6,
+          "y": 0,
+          "shape": "square",
+          "icon": "createacolony:hut-goatherd",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "goatherd",
+              "level": 0
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:firewood",
+              "count": 8
+            }
+          ]
+        },
+        {
+          "code": "c-goatherd-job",
+          "x": 7,
+          "y": 0,
+          "shape": "round",
+          "objectives": [
+            {
+              "type": "job",
+              "code": "goatherd",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:bread-spelt-perfect",
+              "count": 4
+            }
+          ],
+          "requires": [
+            "c-goatherd-hut"
+          ]
+        },
+        {
+          "code": "c-tannery-hut",
+          "x": 0,
+          "y": 2,
+          "shape": "square",
+          "icon": "createacolony:hut-tannery",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "tannery",
+              "level": 0
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:stick",
+              "count": 16
+            }
+          ]
+        },
+        {
+          "code": "c-tanner-job",
+          "x": 1,
+          "y": 2,
+          "shape": "round",
+          "objectives": [
+            {
+              "type": "job",
+              "code": "tanner",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ],
+          "requires": [
+            "c-tannery-hut"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "mines",
+      "quests": [
+        {
+          "code": "c-prospector-hut",
+          "x": 0,
+          "y": 0,
+          "shape": "square",
+          "icon": "createacolony:hut-prospector",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "prospector",
+              "level": 0
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:firewood",
+              "count": 8
+            }
+          ]
+        },
+        {
+          "code": "c-prospector-job",
+          "x": 1,
+          "y": 0,
+          "shape": "round",
+          "objectives": [
+            {
+              "type": "job",
+              "code": "prospector",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:bread-spelt-perfect",
+              "count": 4
+            }
+          ],
+          "requires": [
+            "c-prospector-hut"
+          ]
+        },
+        {
+          "code": "c-miner-hut",
+          "x": 2,
+          "y": 0,
+          "shape": "square",
+          "icon": "createacolony:hut-miner",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "miner",
+              "level": 0
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:stick",
+              "count": 16
+            }
+          ]
+        },
+        {
+          "code": "c-miner-job",
+          "x": 3,
+          "y": 0,
+          "shape": "round",
+          "objectives": [
+            {
+              "type": "job",
+              "code": "miner",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ],
+          "requires": [
+            "c-miner-hut"
+          ]
+        },
+        {
+          "code": "c-quarry-hut",
+          "x": 4,
+          "y": 0,
+          "shape": "square",
+          "icon": "createacolony:hut-quarry",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "quarry",
+              "level": 0
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:drygrass",
+              "count": 16
+            }
+          ]
+        },
+        {
+          "code": "c-quarrier-job",
+          "x": 5,
+          "y": 0,
+          "shape": "round",
+          "objectives": [
+            {
+              "type": "job",
+              "code": "quarrier",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:honeyportion",
+              "count": 4
+            }
+          ],
+          "requires": [
+            "c-quarry-hut"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "workshops",
+      "quests": [
+        {
+          "code": "c-craftsman-hut",
+          "x": 0,
+          "y": 0,
+          "shape": "square",
+          "icon": "createacolony:hut-craftsman",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "craftsman",
+              "level": 0
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:firewood",
+              "count": 8
+            }
+          ]
+        },
+        {
+          "code": "c-craftsman-job",
+          "x": 1,
+          "y": 0,
+          "shape": "round",
+          "objectives": [
+            {
+              "type": "job",
+              "code": "craftsman",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:bread-spelt-perfect",
+              "count": 4
+            }
+          ],
+          "requires": [
+            "c-craftsman-hut"
+          ]
+        },
+        {
+          "code": "c-potter-hut",
+          "x": 2,
+          "y": 0,
+          "shape": "square",
+          "icon": "createacolony:hut-potter",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "potter",
+              "level": 0
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:stick",
+              "count": 16
+            }
+          ]
+        },
+        {
+          "code": "c-potter-job",
+          "x": 3,
+          "y": 0,
+          "shape": "round",
+          "objectives": [
+            {
+              "type": "job",
+              "code": "potter",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ],
+          "requires": [
+            "c-potter-hut"
+          ]
+        },
+        {
+          "code": "c-sawmill-hut",
+          "x": 4,
+          "y": 0,
+          "shape": "square",
+          "icon": "createacolony:hut-sawmill",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "sawmill",
+              "level": 0
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:drygrass",
+              "count": 16
+            }
+          ]
+        },
+        {
+          "code": "c-sawyer-job",
+          "x": 5,
+          "y": 0,
+          "shape": "round",
+          "objectives": [
+            {
+              "type": "job",
+              "code": "sawyer",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:honeyportion",
+              "count": 4
+            }
+          ],
+          "requires": [
+            "c-sawmill-hut"
+          ]
+        },
+        {
+          "code": "c-smelter-hut",
+          "x": 6,
+          "y": 0,
+          "shape": "square",
+          "icon": "createacolony:hut-smelter",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "smelter",
+              "level": 0
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:firewood",
+              "count": 8
+            }
+          ]
+        },
+        {
+          "code": "c-smelter-job",
+          "x": 7,
+          "y": 0,
+          "shape": "round",
+          "objectives": [
+            {
+              "type": "job",
+              "code": "smelter",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:bread-spelt-perfect",
+              "count": 4
+            }
+          ],
+          "requires": [
+            "c-smelter-hut"
+          ]
+        },
+        {
+          "code": "c-blacksmith-hut",
+          "x": 0,
+          "y": 2,
+          "shape": "square",
+          "icon": "createacolony:hut-blacksmith",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "blacksmith",
+              "level": 0
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:stick",
+              "count": 16
+            }
+          ]
+        },
+        {
+          "code": "c-blacksmith-job",
+          "x": 1,
+          "y": 2,
+          "shape": "round",
+          "objectives": [
+            {
+              "type": "job",
+              "code": "blacksmith",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ],
+          "requires": [
+            "c-blacksmith-hut"
+          ]
+        },
+        {
+          "code": "c-armourer-hut",
+          "x": 2,
+          "y": 2,
+          "shape": "square",
+          "icon": "createacolony:hut-armourer",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "armourer",
+              "level": 0
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:drygrass",
+              "count": 16
+            }
+          ]
+        },
+        {
+          "code": "c-armourer-job",
+          "x": 3,
+          "y": 2,
+          "shape": "round",
+          "objectives": [
+            {
+              "type": "job",
+              "code": "armourer",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:honeyportion",
+              "count": 4
+            }
+          ],
+          "requires": [
+            "c-armourer-hut"
+          ]
+        },
+        {
+          "code": "c-weaponsmith-hut",
+          "x": 4,
+          "y": 2,
+          "shape": "square",
+          "icon": "createacolony:hut-weaponsmith",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "weaponsmith",
+              "level": 0
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:firewood",
+              "count": 8
+            }
+          ]
+        },
+        {
+          "code": "c-weaponsmith-job",
+          "x": 5,
+          "y": 2,
+          "shape": "round",
+          "objectives": [
+            {
+              "type": "job",
+              "code": "weaponsmith",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:bread-spelt-perfect",
+              "count": 4
+            }
+          ],
+          "requires": [
+            "c-weaponsmith-hut"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "finery",
+      "quests": [
+        {
+          "code": "c-tailor-hut",
+          "x": 0,
+          "y": 0,
+          "shape": "square",
+          "icon": "createacolony:hut-tailor",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "tailor",
+              "level": 0
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:firewood",
+              "count": 8
+            }
+          ]
+        },
+        {
+          "code": "c-tailor-job",
+          "x": 1,
+          "y": 0,
+          "shape": "round",
+          "objectives": [
+            {
+              "type": "job",
+              "code": "tailor",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:bread-spelt-perfect",
+              "count": 4
+            }
+          ],
+          "requires": [
+            "c-tailor-hut"
+          ]
+        },
+        {
+          "code": "c-jeweller-hut",
+          "x": 2,
+          "y": 0,
+          "shape": "square",
+          "icon": "createacolony:hut-jeweller",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "jeweller",
+              "level": 0
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:stick",
+              "count": 16
+            }
+          ]
+        },
+        {
+          "code": "c-jeweller-job",
+          "x": 3,
+          "y": 0,
+          "shape": "round",
+          "objectives": [
+            {
+              "type": "job",
+              "code": "jeweller",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ],
+          "requires": [
+            "c-jeweller-hut"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "townlife",
+      "quests": [
+        {
+          "code": "c-tavern-hut",
+          "x": 0,
+          "y": 0,
+          "shape": "square",
+          "icon": "createacolony:hut-tavern",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "tavern",
+              "level": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:firewood",
+              "count": 8
+            }
+          ]
+        },
+        {
+          "code": "c-boardinghouse-hut",
+          "x": 2,
+          "y": 0,
+          "shape": "square",
+          "icon": "createacolony:hut-boardinghouse",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "boardinghouse",
+              "level": 0
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:stick",
+              "count": 16
+            }
+          ]
+        },
+        {
+          "code": "c-church-hut",
+          "x": 4,
+          "y": 0,
+          "shape": "square",
+          "icon": "createacolony:hut-church",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "church",
+              "level": 0
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:drygrass",
+              "count": 16
+            }
+          ]
+        },
+        {
+          "code": "c-priest-job",
+          "x": 5,
+          "y": 0,
+          "shape": "round",
+          "objectives": [
+            {
+              "type": "job",
+              "code": "priest",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:honeyportion",
+              "count": 4
+            }
+          ],
+          "requires": [
+            "c-church-hut"
+          ]
+        },
+        {
+          "code": "c-bailiff-job",
+          "x": 6,
+          "y": 0,
+          "shape": "round",
+          "objectives": [
+            {
+              "type": "job",
+              "code": "bailiff",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:bread-spelt-perfect",
+              "count": 4
+            }
+          ],
+          "icon": "createacolony:townhall"
+        },
+        {
+          "code": "c-mint-hut",
+          "x": 0,
+          "y": 2,
+          "shape": "square",
+          "icon": "createacolony:hut-mint",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "mint",
+              "level": 0
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:stick",
+              "count": 16
+            }
+          ]
+        },
+        {
+          "code": "c-minter-job",
+          "x": 1,
+          "y": 2,
+          "shape": "round",
+          "objectives": [
+            {
+              "type": "job",
+              "code": "minter",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ],
+          "requires": [
+            "c-mint-hut"
+          ]
+        },
+        {
+          "code": "c-archive-hut",
+          "x": 2,
+          "y": 2,
+          "shape": "square",
+          "icon": "createacolony:hut-archive",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "archive",
+              "level": 0
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:drygrass",
+              "count": 16
+            }
+          ]
+        },
+        {
+          "code": "c-researcher-job",
+          "x": 3,
+          "y": 2,
+          "shape": "round",
+          "objectives": [
+            {
+              "type": "job",
+              "code": "researcher",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:honeyportion",
+              "count": 4
+            }
+          ],
+          "requires": [
+            "c-archive-hut"
           ]
         }
       ]
