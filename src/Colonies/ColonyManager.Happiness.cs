@@ -33,6 +33,7 @@ public partial class ColonyManager
         ["catharsis"] = (20, 24),
         ["decorated"] = (5, 48),
         ["payday"] = (3, 24),
+        ["newhome"] = (8, 48),
         // The church (ColonyManager.Church.cs): a service (more when the bishop leads it), a missed one, a funeral.
         ["service"] = (8, 24),
         ["missedservice"] = (-4, 48),
@@ -128,7 +129,11 @@ public partial class ColonyManager
         if (c.RecentFood.Skip(Math.Max(0, c.RecentFood.Count - 6)).Distinct().Count() >= 3) Standing("variety", (int)Math.Round(6 * fussy));
 
         if (c.HomeBedPos == null) Standing("nobed", -10);
-        else if (ResidenceAt(colony, c.HomeBedPos) is { } home) Standing("bed", 3 + Math.Max(0, home.Level - 1));
+        else if (ResidenceAt(colony, c.HomeBedPos) is { } home)
+        {
+            if (home.Type == BuildingTypes.BoardingHouse) Standing("boarding", BoardingMood(home));
+            else Standing("bed", 3 + Math.Max(0, home.Level - 1));
+        }
         if (c.PartnerId != 0 && colony.Citizens.Find(p => p.CitizenId == c.PartnerId) is { Alive: true }) Standing("partner", 6);
         Standing("townhall", TownHallLevel(colony));
         if (c.JobCode == null) Standing("nojob", -4);

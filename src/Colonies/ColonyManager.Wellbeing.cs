@@ -159,7 +159,7 @@ public partial class ColonyManager
         var byHome = colony.Citizens
             .Where(c => c.Alive && !c.Visitor && c.HomeBedPos != null)
             .Select(c => (c, home: ResidenceAt(colony, c.HomeBedPos!, boxes)))
-            .Where(p => p.home != null)
+            .Where(p => p.home != null && p.home.Type != BuildingTypes.BoardingHouse)
             .GroupBy(p => p.home!, p => p.c);
         float need = Math.Max(1, Config.HomeSpacePerSettler);
         foreach (var group in byHome)

@@ -13,7 +13,7 @@ public static class BuildingCategories
     /// <summary>Tabs with no types yet still show, as placeholders for buildings to come.</summary>
     public static readonly Category[] All =
     {
-        new("fundamentals", new[] { BuildingTypes.TownHall, BuildingTypes.Builder, BuildingTypes.Tavern, BuildingTypes.Residence }),
+        new("fundamentals", new[] { BuildingTypes.TownHall, BuildingTypes.Builder, BuildingTypes.Tavern, BuildingTypes.Residence, BuildingTypes.BoardingHouse }),
         Group("agriculture",
             new("land", new[] { BuildingTypes.Farmer, BuildingTypes.Forester, BuildingTypes.Gatherer, BuildingTypes.Hunter }),
             new("animals", new[] { BuildingTypes.ChickenCoop, BuildingTypes.Piggery, BuildingTypes.Shepherd, BuildingTypes.Goatherd, BuildingTypes.Herdsman })),

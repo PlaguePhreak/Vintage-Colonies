@@ -1130,7 +1130,7 @@ public partial class ColonyNetwork : ModSystem
             snapshot.RemovedMarkerCount = Manager.RemovedMarkerCount(colony, building);
             if (building.Type == BuildingTypes.Gatherer) snapshot.GatherMode = building.GatherMode;
         }
-        if (building.Type == BuildingTypes.Residence) AddResidence(snapshot, colony, building);
+        if (ColonyManager.IsHome(building.Type)) AddResidence(snapshot, colony, building);
 
         if (ColonyManager.IsGatherHut(building.Type))
         {
@@ -1249,7 +1249,7 @@ public partial class ColonyNetwork : ModSystem
             snapshot.HostName = Manager.HostOf(colony, building) is { } host ? ColonyManager.BuildingName(host) : "";
         }
         snapshot.ForceUpgradeTo = Manager.ForceUpgradeLevel(building);
-        snapshot.TopLevel = BlueprintLibrary.MaxLevels;
+        snapshot.TopLevel = BuildingTypes.TopLevel(building.Type);
         AddRequests(snapshot, colony, building, viewerUid);
         if (building.Type == BuildingTypes.CourierStation) AddCouriers(snapshot, colony);
         if (ColonyManager.CraftTabOf(building.Type) is { } craftTab) AddCraftRows(snapshot, colony, building, craftTab);

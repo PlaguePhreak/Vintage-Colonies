@@ -445,6 +445,7 @@ public class ColonyConfig
         ["forester"] = 60,
         ["potter"] = 30,
         ["residence"] = 30,
+        ["boardinghouse"] = 30,
         ["cook"] = 30,
         ["prospector"] = 30,
         ["miner"] = 30,
@@ -1074,6 +1075,19 @@ public class ColonyConfig
     public int FamilyMaxChildren = 4;
     /// <summary>In-game days a child takes to grow up into an adult settler who can work.</summary>
     public double FamilyChildGrowDays = 6;
+    // Boarding House (ColonyManager.Boarding.cs)
+    /// <summary>The standing mood of a settler who lives in a level 1 Boarding House (a Residence bed gives +3).</summary>
+    public int BoardingMood = -4;
+    /// <summary>How much better each Boarding House level above 1 makes that mood.</summary>
+    public int BoardingMoodPerLevel = 1;
+    /// <summary>Boarders move into a Residence by themselves once one has room for their whole household.</summary>
+    public bool BoardersMoveOut = true;
+    /// <summary>In-game hours between a colony's boarders looking for a free Residence.</summary>
+    public double BoardersLookEveryHours = 6;
+    /// <summary>Couples living in a Boarding House have children.</summary>
+    public bool BoardersHaveChildren = false;
+    /// <summary>The mood of a household that just moved from a Boarding House into a Residence, for two days.</summary>
+    public int NewHomeMood = 8;
     /// <summary>Children are only born while the colony has a bed nobody sleeps in, so housing limits growth.</summary>
     public bool FamilyChildNeedsFreeBed = true;
     /// <summary>No children are born once the colony has this many living settlers (children count); 0 means no limit.</summary>

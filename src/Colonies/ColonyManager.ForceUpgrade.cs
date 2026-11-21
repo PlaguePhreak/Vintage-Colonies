@@ -16,7 +16,7 @@ public partial class ColonyManager
         if (!Config.AllowForceUpgrade || building.IsStation || building.Removing || building.HasWorkOrder) return 0;
         if (building.Type == BuildingTypes.MineshaftEntrance) return 0;
         int next = building.Level + 1;
-        if (next > BlueprintLibrary.MaxLevels) return 0;
+        if (next > BuildingTypes.TopLevel(building.Type)) return 0;
         // A next level with a blueprint is built the normal way.
         if (next <= Blueprints.MaxLevel(building)) return 0;
         return next;
@@ -29,7 +29,7 @@ public partial class ColonyManager
         if (building.HasWorkOrder) return "createacolony:build-already";
         if (building.Removing) return "createacolony:remove-already";
         int next = ForceUpgradeLevel(building);
-        if (next == 0) return building.Level >= BlueprintLibrary.MaxLevels ? "createacolony:force-upgrade-top" : "createacolony:force-upgrade-has-blueprint";
+        if (next == 0) return building.Level >= BuildingTypes.TopLevel(building.Type) ? "createacolony:force-upgrade-top" : "createacolony:force-upgrade-has-blueprint";
 
         // The same as a finished build: the new level, the land it claims, the log line and the chat message.
         building.Upkeep = false;

@@ -56,6 +56,8 @@ public class BlockColonyHut : Block, IWandPlaceable
             ? Lang.GetL(player.LanguageCode, "createacolony:hut-placed-cook", name)
             : BuildingType == BuildingTypes.Residence
             ? Lang.GetL(player.LanguageCode, "createacolony:hut-placed-residence", name)
+            : BuildingType == BuildingTypes.BoardingHouse
+            ? Lang.GetL(player.LanguageCode, "createacolony:hut-placed-boardinghouse", name)
             : BuildingType == BuildingTypes.GuardTower
             ? Lang.GetL(player.LanguageCode, "createacolony:hut-placed-guardtower", name)
             : BuildingType == BuildingTypes.Barracks

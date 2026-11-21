@@ -901,6 +901,10 @@ public static class BuildingTypes
     public const string Cook = "cook";
     public const string GuardTower = "guardtower";
     public const string Residence = "residence";
+    /// <summary>The Boarding House (ColonyManager.Boarding.cs): many beds, at most two levels; boarders would rather have a home of their own.</summary>
+    public const string BoardingHouse = "boardinghouse";
+    /// <summary>The highest level a building of this type can reach.</summary>
+    public static int TopLevel(string type) => type == BoardingHouse ? 2 : BlueprintLibrary.MaxLevels;
     public const string Prospector = "prospector";
     public const string Miner = "miner";
     public const string Quarry = "quarry";

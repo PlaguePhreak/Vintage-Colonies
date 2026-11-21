@@ -93,6 +93,7 @@ public partial class ColonyManager
     {
         EnsureSurnames(colony);
         foreach (var child in colony.Citizens.Where(c => c.Alive && c.IsChild && now >= c.GrowsUpTotalDays).ToList()) GrowUp(colony, child);
+        TickBoarders(colony, now);
 
         if (!Config.Families) return;
         int today = (int)now;
@@ -197,6 +198,7 @@ public partial class ColonyManager
         if (Config.FamilyMaxColonySize > 0 && colony.Citizens.Count(c => c.Alive && !c.Visitor) >= Config.FamilyMaxColonySize) return "createacolony:family-colony-full";
         if (IsFull(colony)) return "createacolony:family-colony-full";
         if (Config.FamilyChildNeedsFreeBed && FreeBeds(colony) == 0) return "createacolony:family-no-bed";
+        if (!Config.BoardersHaveChildren && (IsBoarder(colony, a) || IsBoarder(colony, b))) return "createacolony:family-boarding";
         return null;
     }
 
@@ -304,7 +306,7 @@ public partial class ColonyManager
 
     /// <summary>The blocks each Residence covers.</summary>
     public List<(Building B, BlockPos Min, BlockPos Max)> ResidenceBoxes(Colony colony) => colony.Buildings
-        .Where(b => b.Type == BuildingTypes.Residence)
+        .Where(b => IsHome(b.Type))
         .Select(b => { var (min, max) = BuildingBox(b); return (b, min, max); })
         .ToList();
 
