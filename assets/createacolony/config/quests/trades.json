@@ -1,0 +1,4112 @@
+{
+  "code": "trades",
+  "order": 2,
+  "scope": "player",
+  "icon": "game:hoe-copper",
+  "chapters": [
+    {
+      "code": "kitchen",
+      "quests": [
+        {
+          "code": "kitchen-serve",
+          "x": 0.0,
+          "y": 0.0,
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-eggs",
+          "x": 1.82,
+          "y": -1.67,
+          "shape": "square",
+          "requires": [
+            "kitchen-serve"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-soup",
+          "x": 1.82,
+          "y": -0.83,
+          "shape": "square",
+          "requires": [
+            "kitchen-serve"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-porridge",
+          "x": 1.82,
+          "y": 0.0,
+          "shape": "square",
+          "requires": [
+            "kitchen-serve"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-stew",
+          "x": 1.82,
+          "y": 0.83,
+          "shape": "square",
+          "requires": [
+            "kitchen-serve"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-vstew",
+          "x": 1.82,
+          "y": 1.67,
+          "shape": "square",
+          "requires": [
+            "kitchen-serve"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-fullpot",
+          "x": 4.18,
+          "y": 0.0,
+          "shape": "square",
+          "requires": [
+            "kitchen-eggs",
+            "kitchen-soup",
+            "kitchen-porridge",
+            "kitchen-stew",
+            "kitchen-vstew"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-milk",
+          "x": 0.0,
+          "y": 8.83,
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-curdle",
+          "x": 1.82,
+          "y": 8.83,
+          "shape": "square",
+          "requires": [
+            "kitchen-milk",
+            "carp-barrel"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-cottage",
+          "x": 3.63,
+          "y": 8.83,
+          "shape": "square",
+          "requires": [
+            "kitchen-curdle",
+            "kitchen-salt"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-wheels",
+          "x": 5.45,
+          "y": 8.83,
+          "shape": "square",
+          "requires": [
+            "kitchen-cottage"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:rawcheese-*"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-cheddar",
+          "x": 7.26,
+          "y": 8.83,
+          "shape": "square",
+          "requires": [
+            "kitchen-wheels",
+            "kitchen-shelf"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:cheese-cheddar-*"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-blue",
+          "x": 9.08,
+          "y": 8.83,
+          "shape": "square",
+          "requires": [
+            "kitchen-cheddar"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:cheese-blue-*"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-waxed",
+          "x": 7.26,
+          "y": 9.67,
+          "shape": "square",
+          "requires": [
+            "kitchen-wheels"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:cheese-waxedcheddar-*"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-fcrock",
+          "x": 0.0,
+          "y": 12.33,
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:crock-*"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-filled",
+          "x": 1.82,
+          "y": 12.33,
+          "shape": "square",
+          "requires": [
+            "kitchen-fcrock"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-sealed",
+          "x": 3.63,
+          "y": 12.33,
+          "shape": "square",
+          "requires": [
+            "kitchen-filled"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-jam",
+          "x": 5.99,
+          "y": 12.08,
+          "shape": "square",
+          "requires": [
+            "kitchen-sealed"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-shelf",
+          "x": 3.63,
+          "y": 13.17,
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:shelf-*"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-cellar",
+          "x": 3.63,
+          "y": 14.0,
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-vessels",
+          "x": 3.63,
+          "y": 14.83,
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:storagevessel-*"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-stock",
+          "x": 5.99,
+          "y": 13.17,
+          "shape": "square",
+          "requires": [
+            "kitchen-sealed",
+            "kitchen-shelf",
+            "kitchen-cellar",
+            "kitchen-vessels"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-salt",
+          "x": 0.0,
+          "y": 15.67,
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:salt"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-cure",
+          "x": 1.82,
+          "y": 15.67,
+          "shape": "square",
+          "requires": [
+            "kitchen-salt",
+            "carp-barrel"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-brine",
+          "x": 1.82,
+          "y": 17.17,
+          "shape": "square",
+          "requires": [
+            "kitchen-salt",
+            "carp-barrel"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-pickle",
+          "x": 3.63,
+          "y": 17.17,
+          "shape": "square",
+          "requires": [
+            "kitchen-brine"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-flour",
+          "x": 0.0,
+          "y": 21.25,
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:flour-*"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-dough",
+          "x": 1.82,
+          "y": 21.25,
+          "shape": "square",
+          "requires": [
+            "kitchen-flour"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:dough-*"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-bread",
+          "x": 3.63,
+          "y": 21.25,
+          "shape": "square",
+          "requires": [
+            "kitchen-dough",
+            "clay-setup"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:bread-*"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-pie",
+          "x": 5.45,
+          "y": 21.25,
+          "shape": "square",
+          "requires": [
+            "kitchen-bread"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:pie-*"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-press",
+          "x": 0.0,
+          "y": 26.17,
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:fruitpress-*"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-juice",
+          "x": 1.82,
+          "y": 26.17,
+          "shape": "square",
+          "requires": [
+            "kitchen-press"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-ferment",
+          "x": 3.63,
+          "y": 26.17,
+          "shape": "square",
+          "requires": [
+            "kitchen-juice",
+            "carp-barrel"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-boiler",
+          "x": 9.08,
+          "y": 28.0,
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-distil",
+          "x": 9.99,
+          "y": 26.17,
+          "shape": "square",
+          "requires": [
+            "kitchen-boiler",
+            "kitchen-condenser",
+            "kitchen-ferment"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-fed",
+          "x": 17.8,
+          "y": 12.17,
+          "shape": "star",
+          "requires": [
+            "kitchen-fullpot",
+            "kitchen-blue",
+            "kitchen-stock",
+            "kitchen-pickle",
+            "kitchen-pie",
+            "kitchen-distil"
+          ],
+          "objectives": []
+        },
+        {
+          "code": "kitchen-pan",
+          "x": 6.36,
+          "y": -2.08,
+          "shape": "square",
+          "requires": [
+            "kitchen-fullpot"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-broth",
+          "x": 8.17,
+          "y": -2.92,
+          "shape": "square",
+          "requires": [
+            "kitchen-pan"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-lard",
+          "x": 9.99,
+          "y": -3.33,
+          "shape": "square",
+          "requires": [
+            "kitchen-broth"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-pilaf",
+          "x": 9.99,
+          "y": -2.5,
+          "shape": "square",
+          "requires": [
+            "kitchen-broth"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-gratin",
+          "x": 11.81,
+          "y": -2.5,
+          "shape": "square",
+          "requires": [
+            "kitchen-pilaf"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-saltwater",
+          "x": 8.35,
+          "y": -2.08,
+          "shape": "square",
+          "requires": [
+            "kitchen-pan"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-spile",
+          "x": 8.17,
+          "y": -1.17,
+          "shape": "square",
+          "requires": [
+            "kitchen-pan"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-tap",
+          "x": 9.99,
+          "y": -1.17,
+          "shape": "square",
+          "requires": [
+            "kitchen-spile"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-tsyrup",
+          "x": 11.81,
+          "y": -1.58,
+          "shape": "square",
+          "requires": [
+            "kitchen-tap"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-resin",
+          "x": 11.81,
+          "y": -0.75,
+          "shape": "square",
+          "requires": [
+            "kitchen-tap"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-bowl",
+          "x": 6.36,
+          "y": 2.08,
+          "shape": "square",
+          "requires": [
+            "kitchen-fullpot"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-egg",
+          "x": 8.17,
+          "y": 0.83,
+          "shape": "square",
+          "requires": [
+            "kitchen-bowl"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-pasta",
+          "x": 9.99,
+          "y": 0.83,
+          "shape": "square",
+          "requires": [
+            "kitchen-egg"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-hot",
+          "x": 11.81,
+          "y": 0.83,
+          "shape": "square",
+          "requires": [
+            "kitchen-pasta"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-cold",
+          "x": 13.62,
+          "y": 0.83,
+          "shape": "square",
+          "requires": [
+            "kitchen-hot"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-nug",
+          "x": 8.17,
+          "y": 2.33,
+          "shape": "square",
+          "requires": [
+            "kitchen-bowl"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-saus",
+          "x": 9.99,
+          "y": 2.33,
+          "shape": "square",
+          "requires": [
+            "kitchen-nug",
+            "kitchen-lard"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-rack",
+          "x": 11.81,
+          "y": 2.33,
+          "shape": "square",
+          "requires": [
+            "kitchen-saus"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-hang",
+          "x": 13.62,
+          "y": 2.33,
+          "shape": "square",
+          "requires": [
+            "kitchen-rack"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-dump",
+          "x": 9.99,
+          "y": 3.83,
+          "shape": "square",
+          "requires": [
+            "kitchen-nug",
+            "kitchen-softdough"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-salad",
+          "x": 8.17,
+          "y": 6.67,
+          "shape": "square",
+          "requires": [
+            "kitchen-bowl"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-yogurt",
+          "x": 5.45,
+          "y": 10.67,
+          "shape": "square",
+          "requires": [
+            "kitchen-ystarter"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-ymeal",
+          "x": 7.26,
+          "y": 10.67,
+          "shape": "square",
+          "requires": [
+            "kitchen-yogurt"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-starter",
+          "x": 0.54,
+          "y": 22.25,
+          "shape": "square",
+          "requires": [
+            "kitchen-dough"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-breaded",
+          "x": 8.17,
+          "y": 22.25,
+          "shape": "square",
+          "requires": [
+            "kitchen-fruitbread"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-fruitbread",
+          "x": 6.36,
+          "y": 22.25,
+          "shape": "square",
+          "requires": [
+            "kitchen-bread"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-bottle",
+          "x": 5.45,
+          "y": 24.33,
+          "shape": "square",
+          "requires": [
+            "kitchen-ferment"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-vinegar",
+          "x": 5.45,
+          "y": 25.25,
+          "shape": "square",
+          "requires": [
+            "kitchen-ferment"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-syrup",
+          "x": 3.63,
+          "y": 27.17,
+          "shape": "square",
+          "requires": [
+            "kitchen-juice"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-compote",
+          "x": 5.45,
+          "y": 27.17,
+          "shape": "square",
+          "requires": [
+            "kitchen-syrup"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-candy",
+          "x": 7.26,
+          "y": 27.17,
+          "shape": "square",
+          "requires": [
+            "kitchen-compote"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-hardtack",
+          "x": 11.81,
+          "y": 4.83,
+          "shape": "square",
+          "requires": [
+            "kitchen-gozinaki",
+            "kitchen-salt"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-gozinaki",
+          "x": 9.99,
+          "y": 4.83,
+          "shape": "square",
+          "requires": [
+            "kitchen-pemmican"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-pemmican",
+          "x": 8.17,
+          "y": 4.83,
+          "shape": "square",
+          "requires": [
+            "kitchen-bowl"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-trailmix",
+          "x": 13.62,
+          "y": 4.83,
+          "shape": "square",
+          "requires": [
+            "kitchen-hardtack"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-sushi",
+          "x": 8.17,
+          "y": 5.75,
+          "shape": "square",
+          "requires": [
+            "kitchen-bowl"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-pepper",
+          "x": 9.99,
+          "y": 5.75,
+          "shape": "square",
+          "requires": [
+            "kitchen-sushi"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-muffin",
+          "x": 4.36,
+          "y": 22.25,
+          "shape": "square",
+          "requires": [
+            "kitchen-softdough"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-softdough",
+          "x": 2.54,
+          "y": 22.25,
+          "shape": "square",
+          "requires": [
+            "kitchen-dough"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-pasteur",
+          "x": 1.82,
+          "y": 10.67,
+          "shape": "square",
+          "requires": [
+            "kitchen-milk",
+            "kitchen-pan"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-ystarter",
+          "x": 3.63,
+          "y": 10.67,
+          "shape": "square",
+          "requires": [
+            "kitchen-pasteur"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-crystal",
+          "x": 3.63,
+          "y": 18.08,
+          "shape": "square",
+          "requires": [
+            "kitchen-brine"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-drysalt",
+          "x": 5.45,
+          "y": 18.08,
+          "shape": "square",
+          "requires": [
+            "kitchen-crystal"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-fermfish",
+          "x": 4.18,
+          "y": 15.67,
+          "shape": "square",
+          "requires": [
+            "kitchen-cure"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-fishsauce",
+          "x": 5.99,
+          "y": 15.67,
+          "shape": "square",
+          "requires": [
+            "kitchen-fermfish"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-agewine",
+          "x": 5.45,
+          "y": 23.42,
+          "shape": "square",
+          "requires": [
+            "kitchen-ferment"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-finewine",
+          "x": 7.26,
+          "y": 23.42,
+          "shape": "square",
+          "requires": [
+            "kitchen-agewine"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-agespirit",
+          "x": 11.81,
+          "y": 25.25,
+          "shape": "square",
+          "requires": [
+            "kitchen-distil"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-aqua",
+          "x": 13.62,
+          "y": 25.25,
+          "shape": "square",
+          "requires": [
+            "kitchen-agespirit"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-brack",
+          "x": 7.26,
+          "y": 24.33,
+          "shape": "square",
+          "requires": [
+            "kitchen-bottle"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-condenser",
+          "x": 10.9,
+          "y": 28.0,
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-crumbs",
+          "x": 5.99,
+          "y": 20.33,
+          "shape": "square",
+          "requires": [
+            "kitchen-bread"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-feed",
+          "x": 7.81,
+          "y": 20.33,
+          "shape": "square",
+          "requires": [
+            "kitchen-crumbs"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kitchen-roast",
+          "x": 5.99,
+          "y": 19.42,
+          "shape": "square",
+          "requires": [
+            "kitchen-bread"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "farming",
+      "quests": [
+        {
+          "code": "farm-hoe",
+          "x": 0.0,
+          "y": 0.0,
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:hoe-*"
+            }
+          ]
+        },
+        {
+          "code": "farm-farmland",
+          "x": 1.69,
+          "y": 0.0,
+          "shape": "square",
+          "requires": [
+            "farm-hoe"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "farm-seeds",
+          "x": 0.0,
+          "y": 0.93,
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:seeds-*",
+              "count": 4
+            }
+          ]
+        },
+        {
+          "code": "farm-plant",
+          "x": 6.75,
+          "y": 0.46,
+          "shape": "square",
+          "requires": [
+            "farm-farmland",
+            "farm-seeds"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "farm-harvest",
+          "x": 8.78,
+          "y": 0.46,
+          "shape": "square",
+          "requires": [
+            "farm-plant"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "farm-ggrain",
+          "x": 12.5,
+          "y": -2.94,
+          "shape": "square",
+          "requires": [
+            "farm-harvest"
+          ],
+          "objectives": []
+        },
+        {
+          "code": "farm-gveg",
+          "x": 12.5,
+          "y": 3.87,
+          "shape": "square",
+          "requires": [
+            "farm-harvest"
+          ],
+          "objectives": []
+        },
+        {
+          "code": "farm-g0",
+          "x": 10.22,
+          "y": -2.25,
+          "shape": "square",
+          "requires": [
+            "farm-ggrain"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:grain-spelt",
+              "count": 8
+            }
+          ]
+        },
+        {
+          "code": "farm-g1",
+          "x": 10.54,
+          "y": -4.3,
+          "shape": "square",
+          "requires": [
+            "farm-ggrain"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:grain-rye",
+              "count": 8
+            }
+          ]
+        },
+        {
+          "code": "farm-g2",
+          "x": 12.33,
+          "y": -5.32,
+          "shape": "square",
+          "requires": [
+            "farm-ggrain"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:grain-flax",
+              "count": 8
+            }
+          ]
+        },
+        {
+          "code": "farm-g3",
+          "x": 14.25,
+          "y": -4.56,
+          "shape": "square",
+          "requires": [
+            "farm-ggrain"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:grain-rice",
+              "count": 8
+            }
+          ]
+        },
+        {
+          "code": "farm-g4",
+          "x": 14.84,
+          "y": -2.57,
+          "shape": "square",
+          "requires": [
+            "farm-ggrain"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:grain-amaranth",
+              "count": 8
+            }
+          ]
+        },
+        {
+          "code": "farm-g5",
+          "x": 13.68,
+          "y": -0.88,
+          "shape": "square",
+          "requires": [
+            "farm-ggrain"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:grain-sunflower",
+              "count": 8
+            }
+          ]
+        },
+        {
+          "code": "farm-g6",
+          "x": 11.62,
+          "y": -0.73,
+          "shape": "square",
+          "requires": [
+            "farm-ggrain"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:grain-cassava",
+              "count": 8
+            }
+          ]
+        },
+        {
+          "code": "farm-v0",
+          "x": 11.62,
+          "y": 1.66,
+          "shape": "square",
+          "requires": [
+            "farm-gveg"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:vegetable-carrot",
+              "count": 8
+            }
+          ]
+        },
+        {
+          "code": "farm-v1",
+          "x": 13.68,
+          "y": 1.81,
+          "shape": "square",
+          "requires": [
+            "farm-gveg"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:vegetable-onion",
+              "count": 8
+            }
+          ]
+        },
+        {
+          "code": "farm-v2",
+          "x": 14.84,
+          "y": 3.5,
+          "shape": "square",
+          "requires": [
+            "farm-gveg"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:vegetable-turnip",
+              "count": 8
+            }
+          ]
+        },
+        {
+          "code": "farm-v3",
+          "x": 14.25,
+          "y": 5.49,
+          "shape": "square",
+          "requires": [
+            "farm-gveg"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:vegetable-parsnip",
+              "count": 8
+            }
+          ]
+        },
+        {
+          "code": "farm-v4",
+          "x": 12.33,
+          "y": 6.25,
+          "shape": "square",
+          "requires": [
+            "farm-gveg"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:vegetable-cabbage",
+              "count": 8
+            }
+          ]
+        },
+        {
+          "code": "farm-v5",
+          "x": 10.54,
+          "y": 5.23,
+          "shape": "square",
+          "requires": [
+            "farm-gveg"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:vegetable-pumpkin",
+              "count": 4
+            }
+          ]
+        },
+        {
+          "code": "farm-v6",
+          "x": 10.22,
+          "y": 3.18,
+          "shape": "square",
+          "requires": [
+            "farm-gveg"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:vegetable-bellpepper",
+              "count": 8
+            }
+          ]
+        },
+        {
+          "code": "farm-bring",
+          "x": 17.9,
+          "y": 0.46,
+          "shape": "square",
+          "requires": [
+            "farm-ggrain",
+            "farm-gveg"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:grain-*",
+              "count": 64
+            },
+            {
+              "type": "obtain",
+              "code": "game:vegetable-*",
+              "count": 32
+            }
+          ]
+        },
+        {
+          "code": "farm-compost",
+          "x": 19.93,
+          "y": -0.46,
+          "shape": "square",
+          "requires": [
+            "farm-bring"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "farm-soy",
+          "x": 1.69,
+          "y": 1.86,
+          "shape": "square",
+          "requires": [
+            "farm-seeds"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "farm-soak",
+          "x": 3.38,
+          "y": 1.86,
+          "shape": "square",
+          "requires": [
+            "farm-soy"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "farm-grind",
+          "x": 5.07,
+          "y": 1.86,
+          "shape": "square",
+          "requires": [
+            "farm-soak"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "farm-soymilk",
+          "x": 7.09,
+          "y": 1.86,
+          "shape": "square",
+          "requires": [
+            "farm-grind"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "farm-culture",
+          "x": 7.09,
+          "y": 2.79,
+          "shape": "square",
+          "requires": [
+            "farm-grind"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "farm-brew",
+          "x": 8.95,
+          "y": 2.79,
+          "shape": "square",
+          "requires": [
+            "farm-culture"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "farm-quern",
+          "x": 16.04,
+          "y": -4.03,
+          "shape": "square",
+          "requires": [
+            "farm-ggrain"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:quern-*"
+            }
+          ]
+        },
+        {
+          "code": "farm-can",
+          "x": 6.75,
+          "y": -1.08,
+          "shape": "square",
+          "requires": [
+            "farm-plant"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:wateringcan-*"
+            }
+          ]
+        },
+        {
+          "code": "farm-water",
+          "x": 8.44,
+          "y": -1.08,
+          "shape": "square",
+          "requires": [
+            "farm-can"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "farm-fence",
+          "x": 4.73,
+          "y": -0.93,
+          "shape": "square",
+          "requires": [
+            "farm-plant"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:woodenfence-*"
+            }
+          ]
+        },
+        {
+          "code": "farm-richsoil",
+          "x": 1.69,
+          "y": -1.01,
+          "shape": "square",
+          "requires": [
+            "farm-farmland"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "farm-scythe",
+          "x": 10.98,
+          "y": 0.46,
+          "shape": "square",
+          "requires": [
+            "farm-harvest"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:scythe-*"
+            }
+          ]
+        },
+        {
+          "code": "farm-peanut",
+          "x": 1.69,
+          "y": 3.72,
+          "shape": "square",
+          "requires": [
+            "farm-seeds"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:legume-peanut",
+              "count": 8
+            }
+          ]
+        },
+        {
+          "code": "farm-roastp",
+          "x": 3.38,
+          "y": 3.72,
+          "shape": "square",
+          "requires": [
+            "farm-peanut"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "farm-paste",
+          "x": 5.07,
+          "y": 3.72,
+          "shape": "square",
+          "requires": [
+            "farm-roastp"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "farm-butter",
+          "x": 6.75,
+          "y": 3.72,
+          "shape": "square",
+          "requires": [
+            "farm-paste"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "farm-pineapple",
+          "x": 0.17,
+          "y": 2.87,
+          "shape": "square",
+          "requires": [
+            "farm-seeds"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:fruit-pineapple"
+            }
+          ]
+        },
+        {
+          "code": "farm-bone",
+          "x": 19.93,
+          "y": -2.79,
+          "shape": "square",
+          "requires": [
+            "farm-bring",
+            "farm-quern"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:bonemeal"
+            }
+          ]
+        },
+        {
+          "code": "farm-potash",
+          "x": 19.93,
+          "y": -1.63,
+          "shape": "square",
+          "requires": [
+            "farm-bring"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:potash"
+            }
+          ]
+        },
+        {
+          "code": "farm-fert",
+          "x": 22.29,
+          "y": -1.63,
+          "shape": "square",
+          "requires": [
+            "farm-bone",
+            "farm-potash",
+            "farm-compost"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "farm-rotate",
+          "x": 19.93,
+          "y": 1.39,
+          "shape": "square",
+          "requires": [
+            "farm-bring"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "farm-green",
+          "x": 19.93,
+          "y": 2.32,
+          "shape": "square",
+          "requires": [
+            "farm-bring"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "farm-master",
+          "x": 24.99,
+          "y": 0.46,
+          "shape": "star",
+          "requires": [
+            "farm-bring",
+            "farm-fert",
+            "farm-rotate",
+            "farm-green",
+            "farm-orchard",
+            "farm-honey"
+          ],
+          "objectives": []
+        },
+        {
+          "code": "farm-oil",
+          "x": 9.96,
+          "y": -5.63,
+          "shape": "square",
+          "requires": [
+            "farm-g2"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "farm-cutting",
+          "x": 2.03,
+          "y": 9.3,
+          "shape": "square",
+          "requires": [
+            "farm-shears"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "farm-bush",
+          "x": 4.05,
+          "y": 9.3,
+          "shape": "square",
+          "requires": [
+            "farm-cutting"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "farm-tcutting",
+          "x": 2.03,
+          "y": 15.19,
+          "shape": "square",
+          "requires": [
+            "farm-shears"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "farm-tree",
+          "x": 4.05,
+          "y": 15.19,
+          "shape": "square",
+          "requires": [
+            "farm-tcutting"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "farm-shears",
+          "x": 0.0,
+          "y": 12.24,
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:shears-*"
+            }
+          ]
+        },
+        {
+          "code": "farm-pickb",
+          "x": 8.78,
+          "y": 9.3,
+          "shape": "square",
+          "requires": [
+            "farm-bush"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "farm-graft",
+          "x": 4.05,
+          "y": 16.27,
+          "shape": "square",
+          "requires": [
+            "farm-tcutting"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "farm-pickf",
+          "x": 9.12,
+          "y": 15.19,
+          "shape": "square",
+          "requires": [
+            "farm-tree"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "farm-orchard",
+          "x": 14.52,
+          "y": 13.17,
+          "shape": "square",
+          "requires": [
+            "farm-pickb",
+            "farm-pickf"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "farm-store",
+          "x": 15.54,
+          "y": 0.46,
+          "shape": "square",
+          "requires": [
+            "farm-bring"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "farm-dry",
+          "x": 14.18,
+          "y": 17.05,
+          "shape": "square",
+          "requires": [
+            "farm-pickf"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "farm-leather",
+          "x": 16.21,
+          "y": 17.05,
+          "shape": "square",
+          "requires": [
+            "farm-dry"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "farm-candied",
+          "x": 16.21,
+          "y": 17.98,
+          "shape": "square",
+          "requires": [
+            "farm-dry"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "farm-bars",
+          "x": 16.21,
+          "y": 16.12,
+          "shape": "square",
+          "requires": [
+            "farm-dry"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "farm-b0",
+          "x": 6.86,
+          "y": 7.9,
+          "shape": "square",
+          "requires": [
+            "farm-pickb"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:fruit-blueberry",
+              "count": 8
+            }
+          ]
+        },
+        {
+          "code": "farm-b1",
+          "x": 9.52,
+          "y": 7.03,
+          "shape": "square",
+          "requires": [
+            "farm-pickb"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:fruit-cranberry",
+              "count": 8
+            }
+          ]
+        },
+        {
+          "code": "farm-b2",
+          "x": 11.16,
+          "y": 9.3,
+          "shape": "square",
+          "requires": [
+            "farm-pickb"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:fruit-redcurrant",
+              "count": 8
+            }
+          ]
+        },
+        {
+          "code": "farm-b3",
+          "x": 9.52,
+          "y": 11.57,
+          "shape": "square",
+          "requires": [
+            "farm-pickb"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:fruit-blackcurrant",
+              "count": 8
+            }
+          ]
+        },
+        {
+          "code": "farm-b4",
+          "x": 6.86,
+          "y": 10.7,
+          "shape": "square",
+          "requires": [
+            "farm-pickb"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:fruit-whitecurrant",
+              "count": 8
+            }
+          ]
+        },
+        {
+          "code": "farm-f0",
+          "x": 6.45,
+          "y": 14.22,
+          "shape": "square",
+          "requires": [
+            "farm-pickf"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:fruit-redapple|game:fruit-pinkapple|game:fruit-yellowapple"
+            }
+          ]
+        },
+        {
+          "code": "farm-f1",
+          "x": 7.7,
+          "y": 12.74,
+          "shape": "square",
+          "requires": [
+            "farm-pickf"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:fruit-cherry"
+            }
+          ]
+        },
+        {
+          "code": "farm-f2",
+          "x": 9.61,
+          "y": 12.4,
+          "shape": "square",
+          "requires": [
+            "farm-pickf"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:fruit-peach"
+            }
+          ]
+        },
+        {
+          "code": "farm-f3",
+          "x": 11.28,
+          "y": 13.37,
+          "shape": "square",
+          "requires": [
+            "farm-pickf"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:fruit-pear"
+            }
+          ]
+        },
+        {
+          "code": "farm-f4",
+          "x": 11.96,
+          "y": 15.19,
+          "shape": "square",
+          "requires": [
+            "farm-pickf"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:fruit-orange"
+            }
+          ]
+        },
+        {
+          "code": "farm-f5",
+          "x": 11.28,
+          "y": 17.01,
+          "shape": "square",
+          "requires": [
+            "farm-pickf"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:fruit-mango"
+            }
+          ]
+        },
+        {
+          "code": "farm-f6",
+          "x": 9.61,
+          "y": 17.98,
+          "shape": "square",
+          "requires": [
+            "farm-pickf"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:fruit-breadfruit"
+            }
+          ]
+        },
+        {
+          "code": "farm-f7",
+          "x": 7.7,
+          "y": 17.63,
+          "shape": "square",
+          "requires": [
+            "farm-pickf"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:fruit-lychee"
+            }
+          ]
+        },
+        {
+          "code": "farm-f8",
+          "x": 6.45,
+          "y": 16.15,
+          "shape": "square",
+          "requires": [
+            "farm-pickf"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:fruit-pomegranate"
+            }
+          ]
+        },
+        {
+          "code": "farm-skep",
+          "x": 0.0,
+          "y": 21.15,
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:skep-*"
+            }
+          ]
+        },
+        {
+          "code": "farm-colony",
+          "x": 2.03,
+          "y": 21.15,
+          "shape": "square",
+          "requires": [
+            "farm-skep"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "farm-comb",
+          "x": 4.05,
+          "y": 21.15,
+          "shape": "square",
+          "requires": [
+            "farm-colony"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:honeycomb"
+            }
+          ]
+        },
+        {
+          "code": "farm-wax",
+          "x": 6.08,
+          "y": 22.08,
+          "shape": "square",
+          "requires": [
+            "farm-comb"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:beeswax"
+            }
+          ]
+        },
+        {
+          "code": "farm-honey",
+          "x": 6.08,
+          "y": 21.15,
+          "shape": "square",
+          "requires": [
+            "farm-comb"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "farm-cer",
+          "x": 4.05,
+          "y": 20.15,
+          "shape": "square",
+          "requires": [
+            "farm-colony",
+            "clay-kiln"
+          ],
+          "mod": "fromgoldencombs",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "farm-cermove",
+          "x": 6.25,
+          "y": 20.15,
+          "shape": "square",
+          "requires": [
+            "farm-cer"
+          ],
+          "mod": "fromgoldencombs",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "farm-cerharv",
+          "x": 8.44,
+          "y": 20.15,
+          "shape": "square",
+          "requires": [
+            "farm-cermove"
+          ],
+          "mod": "fromgoldencombs",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "farm-pollin",
+          "x": 4.05,
+          "y": 22.24,
+          "shape": "square",
+          "requires": [
+            "farm-colony"
+          ],
+          "mod": "fromgoldencombs",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "farm-panels",
+          "x": 8.27,
+          "y": 22.08,
+          "shape": "square",
+          "requires": [
+            "farm-wax"
+          ],
+          "mod": "fromgoldencombs",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "farm-rack",
+          "x": 10.3,
+          "y": 22.08,
+          "shape": "square",
+          "requires": [
+            "farm-panels"
+          ],
+          "mod": "fromgoldencombs",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "farm-frames",
+          "x": 12.33,
+          "y": 22.08,
+          "shape": "square",
+          "requires": [
+            "farm-rack"
+          ],
+          "mod": "fromgoldencombs",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "farm-lang",
+          "x": 14.52,
+          "y": 22.08,
+          "shape": "square",
+          "requires": [
+            "farm-frames"
+          ],
+          "mod": "fromgoldencombs",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "farm-harvf",
+          "x": 16.72,
+          "y": 22.08,
+          "shape": "square",
+          "requires": [
+            "farm-lang"
+          ],
+          "mod": "fromgoldencombs",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "farm-twine",
+          "x": 18.91,
+          "y": 22.08,
+          "shape": "square",
+          "requires": [
+            "farm-harvf"
+          ],
+          "mod": "fromgoldencombs",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "carpentry",
+      "quests": [
+        {
+          "code": "carp-sapling",
+          "x": 0.0,
+          "y": -5.0,
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:sapling-*"
+            }
+          ]
+        },
+        {
+          "code": "carp-grow",
+          "x": 1.82,
+          "y": -5.0,
+          "shape": "square",
+          "requires": [
+            "carp-sapling"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "carp-fell",
+          "x": 3.63,
+          "y": -5.0,
+          "shape": "square",
+          "requires": [
+            "carp-grow"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "carp-resin",
+          "x": 3.63,
+          "y": -4.17,
+          "shape": "square",
+          "requires": [
+            "carp-grow"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:resin"
+            }
+          ]
+        },
+        {
+          "code": "carp-saw",
+          "x": 0.0,
+          "y": 0.0,
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:saw-*"
+            }
+          ]
+        },
+        {
+          "code": "carp-boards",
+          "x": 1.82,
+          "y": 0.0,
+          "shape": "square",
+          "requires": [
+            "carp-saw"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:plank-*",
+              "count": 16
+            }
+          ]
+        },
+        {
+          "code": "carp-bucket",
+          "x": 4.24,
+          "y": -2.92,
+          "shape": "square",
+          "requires": [
+            "carp-boards"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:woodbucket"
+            }
+          ]
+        },
+        {
+          "code": "carp-barrel",
+          "x": 6.05,
+          "y": -2.92,
+          "shape": "square",
+          "requires": [
+            "carp-bucket"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:barrel"
+            }
+          ]
+        },
+        {
+          "code": "carp-chest",
+          "x": 4.24,
+          "y": -2.08,
+          "shape": "square",
+          "requires": [
+            "carp-boards"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:chest-*"
+            }
+          ]
+        },
+        {
+          "code": "carp-trunk",
+          "x": 6.05,
+          "y": -2.08,
+          "shape": "square",
+          "requires": [
+            "carp-chest"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:trunk-*"
+            }
+          ]
+        },
+        {
+          "code": "carp-door",
+          "x": 4.24,
+          "y": -1.25,
+          "shape": "square",
+          "requires": [
+            "carp-boards"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:door-*"
+            }
+          ]
+        },
+        {
+          "code": "carp-trapdoor",
+          "x": 6.05,
+          "y": -1.25,
+          "shape": "square",
+          "requires": [
+            "carp-door"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:trapdoor-*"
+            }
+          ]
+        },
+        {
+          "code": "carp-ladder",
+          "x": 6.05,
+          "y": -0.42,
+          "shape": "square",
+          "requires": [
+            "carp-fence"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:ladder-*"
+            }
+          ]
+        },
+        {
+          "code": "carp-fence",
+          "x": 4.24,
+          "y": -0.42,
+          "shape": "square",
+          "requires": [
+            "carp-boards"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:woodenfence-*"
+            }
+          ]
+        },
+        {
+          "code": "carp-stairs",
+          "x": 4.24,
+          "y": 0.42,
+          "shape": "square",
+          "requires": [
+            "carp-boards"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:plankstairs-*"
+            }
+          ]
+        },
+        {
+          "code": "carp-beams",
+          "x": 6.05,
+          "y": 0.42,
+          "shape": "square",
+          "requires": [
+            "carp-stairs"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:supportbeam-*"
+            }
+          ]
+        },
+        {
+          "code": "carp-table",
+          "x": 4.24,
+          "y": 1.25,
+          "shape": "square",
+          "requires": [
+            "carp-boards"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:table-*"
+            }
+          ]
+        },
+        {
+          "code": "carp-chair",
+          "x": 6.05,
+          "y": 1.25,
+          "shape": "square",
+          "requires": [
+            "carp-table"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:chair-*"
+            }
+          ]
+        },
+        {
+          "code": "carp-bed",
+          "x": 7.87,
+          "y": 1.25,
+          "shape": "square",
+          "requires": [
+            "carp-chair"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:bed-wood-*"
+            }
+          ]
+        },
+        {
+          "code": "carp-sign",
+          "x": 7.87,
+          "y": -0.42,
+          "shape": "square",
+          "requires": [
+            "carp-ladder"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:sign-*"
+            }
+          ]
+        },
+        {
+          "code": "carp-toolrack",
+          "x": 9.69,
+          "y": 1.25,
+          "shape": "square",
+          "requires": [
+            "carp-bed"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:toolrack-*"
+            }
+          ]
+        },
+        {
+          "code": "carp-bookshelf",
+          "x": 11.5,
+          "y": 1.25,
+          "shape": "square",
+          "requires": [
+            "carp-toolrack"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:bookshelf-*"
+            }
+          ]
+        },
+        {
+          "code": "carp-axle",
+          "x": 4.24,
+          "y": 2.57,
+          "shape": "square",
+          "requires": [
+            "carp-boards"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:woodenaxle-*"
+            }
+          ]
+        },
+        {
+          "code": "carp-raft",
+          "x": 0.0,
+          "y": 3.96,
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "carp-sailboat",
+          "x": 1.82,
+          "y": 3.96,
+          "shape": "square",
+          "requires": [
+            "carp-raft",
+            "carp-boards"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "carp-master",
+          "x": 14.68,
+          "y": 0.0,
+          "shape": "star",
+          "requires": [
+            "carp-fell",
+            "carp-barrel",
+            "carp-crate",
+            "carp-trapdoor",
+            "carp-sign",
+            "carp-beams",
+            "carp-bookshelf",
+            "carp-sailboat"
+          ],
+          "objectives": []
+        },
+        {
+          "code": "carp-brack",
+          "x": 7.87,
+          "y": -2.92,
+          "shape": "square",
+          "requires": [
+            "carp-barrel"
+          ],
+          "mod": "foodshelves",
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "foodshelves:barrelrack-*"
+            }
+          ]
+        },
+        {
+          "code": "carp-tun",
+          "x": 9.69,
+          "y": -2.92,
+          "shape": "square",
+          "requires": [
+            "carp-brack"
+          ],
+          "mod": "foodshelves",
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "foodshelves:tun-*"
+            }
+          ]
+        },
+        {
+          "code": "carp-tunrack",
+          "x": 11.5,
+          "y": -2.92,
+          "shape": "square",
+          "requires": [
+            "carp-tun"
+          ],
+          "mod": "foodshelves",
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "foodshelves:tunrack-*"
+            }
+          ]
+        },
+        {
+          "code": "carp-crate",
+          "x": 7.87,
+          "y": -2.08,
+          "shape": "square",
+          "requires": [
+            "carp-trunk"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:crate-*"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "husbandry",
+      "quests": [
+        {
+          "code": "herd-trap",
+          "x": 0.0,
+          "y": -0.83,
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "herd-bait",
+          "x": 1.82,
+          "y": -0.83,
+          "shape": "square",
+          "requires": [
+            "herd-trap"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "herd-catch",
+          "x": 3.63,
+          "y": -0.83,
+          "shape": "square",
+          "requires": [
+            "herd-bait"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "herd-pen",
+          "x": 1.82,
+          "y": 0.83,
+          "shape": "square",
+          "requires": [
+            "carp-fence"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "herd-first",
+          "x": 5.45,
+          "y": 0.0,
+          "shape": "square",
+          "requires": [
+            "herd-catch",
+            "herd-pen",
+            "herd-big"
+          ],
+          "requiresAny": true,
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "herd-strough",
+          "x": 3.63,
+          "y": 5.0,
+          "shape": "square",
+          "requires": [
+            "herd-pen"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:trough-*"
+            }
+          ]
+        },
+        {
+          "code": "herd-feed",
+          "x": 5.45,
+          "y": 5.0,
+          "shape": "square",
+          "requires": [
+            "herd-strough"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "herd-ltrough",
+          "x": 7.26,
+          "y": 5.0,
+          "shape": "square",
+          "requires": [
+            "herd-feed"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:trough-*"
+            }
+          ]
+        },
+        {
+          "code": "herd-keep",
+          "x": 8.17,
+          "y": 0.0,
+          "shape": "square",
+          "requires": [
+            "herd-first"
+          ],
+          "objectives": []
+        },
+        {
+          "code": "herd-hares",
+          "x": 6.4,
+          "y": -1.26,
+          "shape": "square",
+          "requires": [
+            "herd-keep"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "herd-goats",
+          "x": 8.85,
+          "y": -2.05,
+          "shape": "square",
+          "requires": [
+            "herd-keep"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "herd-chickens",
+          "x": 10.37,
+          "y": 0.0,
+          "shape": "square",
+          "requires": [
+            "herd-keep"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "herd-sheep",
+          "x": 8.85,
+          "y": 2.05,
+          "shape": "square",
+          "requires": [
+            "herd-keep"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "herd-pigs",
+          "x": 6.4,
+          "y": 1.26,
+          "shape": "square",
+          "requires": [
+            "herd-keep"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "herd-henbox",
+          "x": 12.18,
+          "y": 0.0,
+          "shape": "square",
+          "requires": [
+            "herd-chickens"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:henbox-*"
+            }
+          ]
+        },
+        {
+          "code": "herd-eggs",
+          "x": 14.0,
+          "y": 0.0,
+          "shape": "square",
+          "requires": [
+            "herd-henbox"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:egg-*"
+            }
+          ]
+        },
+        {
+          "code": "herd-chicks",
+          "x": 15.82,
+          "y": 0.0,
+          "shape": "square",
+          "requires": [
+            "herd-eggs"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "herd-feathers",
+          "x": 12.18,
+          "y": -1.11,
+          "shape": "square",
+          "requires": [
+            "herd-chickens"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:feather"
+            }
+          ]
+        },
+        {
+          "code": "herd-breed",
+          "x": 10.9,
+          "y": -3.33,
+          "shape": "square",
+          "requires": [
+            "herd-keep"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "herd-gen2",
+          "x": 12.71,
+          "y": -3.33,
+          "shape": "square",
+          "requires": [
+            "herd-breed"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "herd-tame",
+          "x": 14.53,
+          "y": -3.33,
+          "shape": "square",
+          "requires": [
+            "herd-gen2"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "herd-milk",
+          "x": 16.35,
+          "y": -3.33,
+          "shape": "square",
+          "requires": [
+            "herd-tame"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "herd-butcher",
+          "x": 10.9,
+          "y": 3.33,
+          "shape": "square",
+          "requires": [
+            "herd-keep"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "herd-hides",
+          "x": 12.71,
+          "y": 3.33,
+          "shape": "square",
+          "requires": [
+            "herd-butcher"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:hide-raw-*"
+            }
+          ]
+        },
+        {
+          "code": "herd-fat",
+          "x": 12.71,
+          "y": 4.17,
+          "shape": "square",
+          "requires": [
+            "herd-butcher"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:fat"
+            }
+          ]
+        },
+        {
+          "code": "herd-ride",
+          "x": 14.53,
+          "y": 5.0,
+          "shape": "square",
+          "requires": [
+            "herd-break",
+            "herd-buy"
+          ],
+          "requiresAny": true,
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "herd-master",
+          "x": 19.07,
+          "y": 0.0,
+          "shape": "star",
+          "requires": [
+            "herd-chicks",
+            "herd-milk",
+            "herd-hides",
+            "herd-fat",
+            "herd-medal",
+            "herd-pack"
+          ],
+          "objectives": []
+        },
+        {
+          "code": "herd-calf",
+          "x": 9.08,
+          "y": 5.0,
+          "shape": "square",
+          "requires": [
+            "herd-ltrough",
+            "herd-ctrap"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "herd-raise",
+          "x": 10.9,
+          "y": 5.0,
+          "shape": "square",
+          "requires": [
+            "herd-calf"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "herd-break",
+          "x": 12.71,
+          "y": 5.0,
+          "shape": "square",
+          "requires": [
+            "herd-raise"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "herd-buy",
+          "x": 12.71,
+          "y": 5.97,
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "herd-medal",
+          "x": 16.35,
+          "y": 5.0,
+          "shape": "square",
+          "requires": [
+            "herd-ride"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "herd-pack",
+          "x": 16.35,
+          "y": 5.97,
+          "shape": "square",
+          "requires": [
+            "herd-ride"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "herd-ctrap",
+          "x": 1.82,
+          "y": -1.81,
+          "shape": "square",
+          "requires": [
+            "herd-trap"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "herd-big",
+          "x": 3.63,
+          "y": -1.81,
+          "shape": "square",
+          "requires": [
+            "herd-ctrap"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "textiles",
+      "quests": [
+        {
+          "code": "tailor-hides",
+          "x": 1.96,
+          "y": 0.0,
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:hide-raw-*"
+            }
+          ]
+        },
+        {
+          "code": "tailor-salt",
+          "x": 3.91,
+          "y": 0.0,
+          "shape": "square",
+          "requires": [
+            "tailor-hides"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "tailor-soak",
+          "x": 3.91,
+          "y": -0.83,
+          "shape": "square",
+          "requires": [
+            "tailor-hides",
+            "tailor-lime"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:hide-soaked-*"
+            }
+          ]
+        },
+        {
+          "code": "tailor-oil",
+          "x": 3.91,
+          "y": 1.67,
+          "shape": "square",
+          "requires": [
+            "tailor-hides"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:hide-oiled-*"
+            }
+          ]
+        },
+        {
+          "code": "tailor-pelt",
+          "x": 5.59,
+          "y": 1.67,
+          "shape": "square",
+          "requires": [
+            "tailor-oil"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:hide-pelt-*"
+            }
+          ]
+        },
+        {
+          "code": "tailor-fur",
+          "x": 7.26,
+          "y": 1.67,
+          "shape": "square",
+          "requires": [
+            "tailor-pelt"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "tailor-scrape",
+          "x": 5.59,
+          "y": -0.83,
+          "shape": "square",
+          "requires": [
+            "tailor-soak"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:hide-scraped-*"
+            }
+          ]
+        },
+        {
+          "code": "tailor-lime",
+          "x": 1.96,
+          "y": -0.83,
+          "shape": "square",
+          "requires": [
+            "tailor-findlime"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "tailor-weak",
+          "x": 5.59,
+          "y": -1.67,
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "tailor-strong",
+          "x": 7.26,
+          "y": -1.67,
+          "shape": "square",
+          "requires": [
+            "tailor-weak"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "tailor-prep",
+          "x": 7.26,
+          "y": -0.83,
+          "shape": "square",
+          "requires": [
+            "tailor-weak",
+            "tailor-scrape"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:hide-prepared-*"
+            }
+          ]
+        },
+        {
+          "code": "tailor-leather",
+          "x": 8.94,
+          "y": -0.83,
+          "shape": "square",
+          "requires": [
+            "tailor-prep",
+            "tailor-strong"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:leather-*"
+            }
+          ]
+        },
+        {
+          "code": "tailor-backpack",
+          "x": 10.62,
+          "y": -0.83,
+          "shape": "square",
+          "requires": [
+            "tailor-leather"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:backpack-*|game:backpack"
+            }
+          ]
+        },
+        {
+          "code": "tailor-findlime",
+          "x": 0.0,
+          "y": -0.83,
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:lime|game:borax|game:powderedborax"
+            }
+          ]
+        },
+        {
+          "code": "tailor-saddle",
+          "x": 10.62,
+          "y": -1.67,
+          "shape": "square",
+          "requires": [
+            "tailor-leather"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "tailor-bridle",
+          "x": 12.29,
+          "y": -1.67,
+          "shape": "square",
+          "requires": [
+            "tailor-saddle"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "tailor-sleather",
+          "x": 12.29,
+          "y": -0.83,
+          "shape": "square",
+          "requires": [
+            "tailor-backpack"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:leather-sturdy-*"
+            }
+          ]
+        },
+        {
+          "code": "tailor-sbackpack",
+          "x": 13.97,
+          "y": -0.83,
+          "shape": "square",
+          "requires": [
+            "tailor-sleather"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "tailor-armour",
+          "x": 10.62,
+          "y": 0.0,
+          "shape": "square",
+          "requires": [
+            "tailor-leather"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "tailor-huge",
+          "x": 10.62,
+          "y": 0.83,
+          "shape": "square",
+          "requires": [
+            "tailor-leather"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "tailor-master",
+          "x": 16.77,
+          "y": 1.67,
+          "shape": "star",
+          "requires": [
+            "tailor-bridle",
+            "tailor-sbackpack",
+            "tailor-armour",
+            "tailor-huge",
+            "tailor-fur",
+            "tailor-sack",
+            "tailor-shirt",
+            "tailor-trousers",
+            "tailor-dyecloth",
+            "tailor-dyeblue"
+          ],
+          "objectives": []
+        },
+        {
+          "code": "tailor-twine",
+          "x": 0.0,
+          "y": 3.78,
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:flaxtwine"
+            }
+          ]
+        },
+        {
+          "code": "tailor-linen",
+          "x": 1.96,
+          "y": 3.78,
+          "shape": "square",
+          "requires": [
+            "tailor-twine"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:linen-*"
+            }
+          ]
+        },
+        {
+          "code": "tailor-kit",
+          "x": 1.96,
+          "y": 4.62,
+          "shape": "square",
+          "requires": [
+            "tailor-twine"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:sewingkit"
+            }
+          ]
+        },
+        {
+          "code": "tailor-sack",
+          "x": 3.91,
+          "y": 2.95,
+          "shape": "square",
+          "requires": [
+            "tailor-linen"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:linensack"
+            }
+          ]
+        },
+        {
+          "code": "tailor-cloth",
+          "x": 3.91,
+          "y": 3.78,
+          "shape": "square",
+          "requires": [
+            "tailor-linen"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:cloth-*"
+            }
+          ]
+        },
+        {
+          "code": "tailor-shirt",
+          "x": 5.87,
+          "y": 3.78,
+          "shape": "square",
+          "requires": [
+            "tailor-cloth"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "tailor-trousers",
+          "x": 5.87,
+          "y": 4.62,
+          "shape": "square",
+          "requires": [
+            "tailor-cloth"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "tailor-alum",
+          "x": 3.91,
+          "y": 5.45,
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "tailor-mordant",
+          "x": 5.87,
+          "y": 5.45,
+          "shape": "square",
+          "requires": [
+            "tailor-cloth",
+            "tailor-alum"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "tailor-yellow",
+          "x": 7.82,
+          "y": 5.45,
+          "shape": "square",
+          "requires": [
+            "tailor-mordant"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "tailor-dyecloth",
+          "x": 9.78,
+          "y": 5.45,
+          "shape": "square",
+          "requires": [
+            "tailor-yellow"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "tailor-woad",
+          "x": 7.82,
+          "y": 6.28,
+          "shape": "square",
+          "requires": [
+            "tailor-mordant"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "tailor-dyeblue",
+          "x": 9.78,
+          "y": 6.28,
+          "shape": "square",
+          "requires": [
+            "tailor-woad"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

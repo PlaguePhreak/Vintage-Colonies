@@ -97,17 +97,54 @@ public partial class ColonyManager
             Array.Copy(needed, progress, needed.Length);
             return QuestStatus.Claimed;
         }
+        if (q.Soon) return QuestStatus.Locked;
         if (q.PerColony && colony == null) return QuestStatus.Locked;
-        if (q.Requires.Any(r => Quests.Get(r) is { } need && !IsClaimed(need, player.PlayerUID, colony))) return QuestStatus.Locked;
+        // A quest that is still to come never holds back the ones after it.
+        var needs = q.Requires.Select(r => Quests.Get(r)).Where(n => n != null && !n.Soon).ToList();
+        if (needs.Count > 0)
+        {
+            int claimed = needs.Count(n => IsClaimed(n!, player.PlayerUID, colony));
+            if (q.RequiresAny ? claimed == 0 : claimed < needs.Count) return QuestStatus.Locked;
+        }
         if (q.Accept && record?.Accepted != true) return QuestStatus.Available;
 
         bool complete = true;
         for (int i = 0; i < q.Objectives.Count; i++)
         {
-            progress[i] = Math.Min(needed[i], Progress(player, colony, q.Objectives[i]));
+            progress[i] = IsManual(q.Objectives[i])
+                ? (record?.Checked == true ? needed[i] : 0)
+                : Math.Min(needed[i], Progress(player, colony, q.Objectives[i]));
             if (progress[i] < needed[i]) complete = false;
         }
         return complete ? QuestStatus.Complete : QuestStatus.Active;
+    }
+
+    readonly Dictionary<string, bool> knownItems = new();
+
+    /// <summary>
+    /// A task the game cannot check, so the player marks it done: the manual type, and any item task whose
+    /// item code matches nothing in this game (a wrong code, or a mod that changed it) so it can never block.
+    /// </summary>
+    public bool IsManual(QuestObjectiveDef o)
+    {
+        if (o.Type == ObjectiveTypes.Manual) return true;
+        if (o.Type is not (ObjectiveTypes.Obtain or ObjectiveTypes.Deliver or ObjectiveTypes.Stock)) return false;
+        if (!knownItems.TryGetValue(o.Code, out bool known))
+        {
+            knownItems[o.Code] = known = QuestItems.Sample(sapi.World, o.Code) != null;
+            if (!known) Mod.Logger.Warning("Quest task item {0} matches nothing in the game; the task is marked done by hand", o.Code);
+        }
+        return !known;
+    }
+
+    /// <summary>Marks the tasks the game cannot check as done, from the quest card's button.</summary>
+    public string? CheckQuest(IServerPlayer player, Colony? colony, QuestDef q)
+    {
+        if (Evaluate(player, colony, q, out _, out _) != QuestStatus.Active || !q.Objectives.Any(IsManual)) return "createacolony:quest-not-active";
+        if (q.PerColony && (colony == null || colony.RoleOf(player.PlayerUID) < ColonyRole.Member)) return "createacolony:denied-member";
+        EnsureRecord(q, player.PlayerUID, colony ?? HomeColony(player.PlayerUID)!).Checked = true;
+        SaveRecords(q, player.PlayerUID, colony);
+        return null;
     }
 
     /// <summary>How far along one objective is, from what the player carries and what the colony has.</summary>

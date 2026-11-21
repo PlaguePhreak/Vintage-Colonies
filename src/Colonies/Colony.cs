@@ -663,6 +663,8 @@ public class QuestRecord
     [ProtoMember(4)] public double ClaimedTotalDays;
     /// <summary>The player was told the quest is ready to claim, so they are not told again.</summary>
     [ProtoMember(5)] public bool Notified;
+    /// <summary>The player marked the quest's unchecked tasks as done.</summary>
+    [ProtoMember(6)] public bool Checked;
 }
 
 /// <summary>One player's own quests (the base game groups and the Story prologue), saved on the world under the player's uid.</summary>

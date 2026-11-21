@@ -12,6 +12,20 @@ domain (`assets/createacolony/`, block and item codes like `createacolony:townha
 (`ModConfig/createacolony.json`), the release zips (`createacolony_<version>.zip`) and all save data keys.
 Changing any of those would stop old worlds from loading their colonies, so leave them as they are.
 
+## New quest book (0.175.0)
+
+All the old quests are gone and the quest book starts again with nine new chapters. Old quest progress does not carry over. Not tested in game yet.
+
+- **Ages** (each player's own): Stone Age, Clay Working, Copper Age.
+- **Trades** (each player's own): Kitchen Cooking, Farming, Carpentry, Animal Husbandry, Textiles and Leather Working.
+- **The Colony** (shared by the colony): Foundations of a Kingdom, a star of 105 quests with A New Beginning in the middle and five branches.
+- **Mark as done.** Many tasks are things the game cannot check (cook a soup, breed your animals). Their card has a Mark as done button. A task whose item the game does not know also falls back to this button, so a wrong item code can never block a quest.
+- **Coming later.** Colony quests for buildings the mod does not have yet (Fisher, Bakery, School, Library, raids and so on) show locked with "Coming later". They never hold back the quests after them.
+- **Mod quests.** Quests for Expanded Foods, From Golden Combs and Food Shelves only show when that mod is installed.
+- A quest can now open when any one of the quests before it is done (`requiresAny`), and quest positions can be fractions.
+- No rewards yet. Bronze Age, Iron and Steel, Mechanical Power, Kilns and Glass and the Tutorial are not written yet.
+- New quest file fields: `mod` (mod id the quest needs), `soon`, `requiresAny`, and the task type `manual`.
+
 ## Combined release, Boarding House and the new quest book (0.173.0)
 
 This version puts 0.166.0 to 0.172.0 together (Research, giving requests from the Requests tab, safety, health and crowding, Smelter alloys and the bloomery, the Butcher, herders and the Tannery, and Force upgrade) and adds the following.

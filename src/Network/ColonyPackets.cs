@@ -789,7 +789,9 @@ public enum QuestAction
     Drop = 3,
     Track = 4,
     CloseWindow = 5,
-    Refresh = 6
+    Refresh = 6,
+    /// <summary>Marks the tasks the game cannot check as done.</summary>
+    Check = 7
 }
 
 /// <summary>A change asked from the quest book; the server checks it before applying it.</summary>

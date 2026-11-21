@@ -147,6 +147,12 @@ public class GuiDialogQuestCard : GuiDialog
                 Button("quest-drop", () => network.SendQuestAction(quest.Code, QuestAction.Drop));
                 break;
         }
+        if (status == QuestStatus.Active && Enumerable.Range(0, quest.Objectives.Count).Any(i => GuiDialogQuestBook.IsManual(capi, quest.Objectives[i]) && (state == null || i >= state.Progress.Count || state.Progress[i] < Math.Max(1, quest.Objectives[i].Count))))
+        {
+            bx -= 40;
+            composer.AddSmallButton(Lang.Get("createacolony:quest-check"), () => { network.SendQuestAction(quest.Code, QuestAction.Check); return true; }, ElementBounds.Fixed(bx - 100, y, 136, 28));
+            bx -= 106;
+        }
         if (status is QuestStatus.Available or QuestStatus.Active or QuestStatus.Complete)
         {
             bool tracked = state?.Tracked == true;

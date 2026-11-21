@@ -107,6 +107,7 @@ public partial class ColonyNetwork
             QuestAction.Accept when quest != null => Manager.AcceptQuest(player, colony, quest),
             QuestAction.Claim when quest != null => Manager.ClaimQuest(player, colony, quest),
             QuestAction.Drop when quest != null => Manager.DropQuest(player, colony, quest),
+            QuestAction.Check when quest != null => Manager.CheckQuest(player, colony, quest),
             QuestAction.Track when quest != null => Track(player, quest),
             QuestAction.Refresh => null,
             _ => "createacolony:quest-unknown"

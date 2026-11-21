@@ -27,6 +27,7 @@ public class QuestLibrary
     public static QuestLibrary Load(ICoreAPI api)
     {
         var library = new QuestLibrary();
+        var hidden = new HashSet<string>();
         foreach (var asset in api.Assets.GetManyInCategory("config", "quests/", CreateAColonyModSystem.ModId))
         {
             try
@@ -51,6 +52,11 @@ public class QuestLibrary
                 {
                     quest.Chapter = chapter;
                     if (quest.Code.Length == 0) continue;
+                    if (quest.Mod.Length > 0 && !api.ModLoader.IsModEnabled(quest.Mod))
+                    {
+                        hidden.Add(quest.Code);
+                        continue;
+                    }
                     if (library.byCode.ContainsKey(quest.Code))
                     {
                         api.Logger.Warning("[createacolony] Quest {0} appears twice; the second one is skipped", quest.Code);
@@ -58,12 +64,18 @@ public class QuestLibrary
                     }
                     library.byCode[quest.Code] = quest;
                 }
-                chapter.Quests.RemoveAll(q => q.Code.Length == 0 || library.byCode[q.Code] != q);
+                chapter.Quests.RemoveAll(q => q.Code.Length == 0 || library.byCode.GetValueOrDefault(q.Code) != q);
             }
         }
         // A quest that needs one that does not exist can never open, so the bad link is dropped with a warning.
         foreach (var quest in library.byCode.Values)
         {
+            // A quest of a mod that is not installed counts as done: the link to it just goes away.
+            if (quest.Requires.Any(hidden.Contains))
+            {
+                if (quest.RequiresAny) quest.Requires.Clear();
+                else quest.Requires.RemoveAll(hidden.Contains);
+            }
             foreach (string need in quest.Requires.Where(r => !library.byCode.ContainsKey(r)).ToList())
             {
                 api.Logger.Warning("[createacolony] Quest {0} needs unknown quest {1}; the link is ignored", quest.Code, need);
@@ -126,8 +138,8 @@ public class QuestDef
     /// <summary>Unique across the whole book; the lang keys and saved progress use it.</summary>
     public string Code = "";
     /// <summary>Where it sits on the chapter's map, in grid cells.</summary>
-    public int X;
-    public int Y;
+    public double X;
+    public double Y;
     /// <summary>An item or block code for its icon (wildcards allowed: the first match is drawn). Empty uses the first objective's.</summary>
     public string Icon = "";
     public string Shape = QuestShapes.Round;
@@ -137,6 +149,12 @@ public class QuestDef
     public bool Accept;
     /// <summary>Hidden until its requirements are met.</summary>
     public bool Secret;
+    /// <summary>One claimed quest of Requires is enough to open this one, instead of all of them.</summary>
+    public bool RequiresAny;
+    /// <summary>A mod id: the quest only exists while that mod is installed. Quests that need it open without it.</summary>
+    public string Mod = "";
+    /// <summary>Coming later: shown on the map but locked, for huts and features the mod does not have yet.</summary>
+    public bool Soon;
     public List<QuestObjectiveDef> Objectives = new();
     public List<QuestRewardDef> Rewards = new();
 
@@ -179,6 +197,8 @@ public static class ObjectiveTypes
     public const string Camp = "camp";
     /// <summary>The player belongs to a colony.</summary>
     public const string Colony = "colony";
+    /// <summary>Something the game cannot check: the player presses "Mark as done" on the quest's card.</summary>
+    public const string Manual = "manual";
 }
 
 public class QuestObjectiveDef

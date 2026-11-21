@@ -2,1489 +2,113 @@
   "code": "colony",
   "order": 3,
   "scope": "colony",
+  "icon": "createacolony:townhall",
   "chapters": [
     {
-      "code": "founding",
+      "code": "kingdom",
       "quests": [
         {
-          "code": "c-townhall",
-          "x": 0,
-          "y": 0,
+          "code": "kingdom-q1",
+          "x": 8.94,
+          "y": 0.0,
           "shape": "square",
-          "icon": "createacolony:townhall",
           "objectives": [
             {
               "type": "colony"
             }
+          ]
+        },
+        {
+          "code": "kingdom-h0",
+          "x": 8.94,
+          "y": -3.98,
+          "shape": "hexagon",
+          "requires": [
+            "kingdom-q1"
           ],
-          "rewards": [
+          "objectives": [
             {
-              "code": "game:firewood",
-              "count": 8
+              "type": "colony"
             }
           ]
         },
         {
-          "code": "c-townhall-1",
-          "x": 1,
-          "y": 0,
+          "code": "kingdom-q2",
+          "x": 8.94,
+          "y": -5.3,
           "shape": "square",
           "requires": [
-            "c-townhall"
+            "kingdom-h0"
           ],
+          "icon": "createacolony:townhall",
           "objectives": [
             {
               "type": "building",
-              "code": "townhall",
-              "level": 1
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:stick",
-              "count": 16
+              "code": "townhall"
             }
           ]
         },
         {
-          "code": "c-name",
-          "x": 2,
-          "y": 0,
-          "shape": "star",
-          "requires": [
-            "c-townhall-1"
-          ],
-          "objectives": [
-            {
-              "type": "event",
-              "code": "event-founded"
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:bread-spelt-perfect",
-              "count": 2
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "code": "builder",
-      "quests": [
-        {
-          "code": "c-builder-hut",
-          "x": 0,
-          "y": 0,
+          "code": "kingdom-q3",
+          "x": 8.94,
+          "y": -6.61,
           "shape": "square",
+          "requires": [
+            "kingdom-q2"
+          ],
           "icon": "createacolony:hut-builder",
           "objectives": [
             {
               "type": "building",
-              "code": "builder"
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:stick",
-              "count": 16
-            }
-          ]
-        },
-        {
-          "code": "c-builder-job",
-          "x": 1,
-          "y": 0,
-          "shape": "square",
-          "requires": [
-            "c-builder-hut"
-          ],
-          "objectives": [
+              "code": "builder",
+              "level": 1
+            },
             {
               "type": "job",
-              "code": "builder"
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:planks-*",
-              "count": 8
+              "code": "builder",
+              "count": 1
             }
           ]
         },
         {
-          "code": "c-builder-2",
-          "x": 2,
-          "y": 0,
-          "shape": "star",
+          "code": "kingdom-q17",
+          "x": 8.94,
+          "y": -7.93,
+          "shape": "square",
           "requires": [
-            "c-builder-job"
+            "kingdom-q3"
           ],
+          "icon": "createacolony:townhall",
           "objectives": [
             {
               "type": "building",
-              "code": "builder",
+              "code": "townhall",
               "level": 2
             }
-          ],
-          "rewards": [
-            {
-              "code": "game:planks-*",
-              "count": 32
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "code": "jobs",
-      "quests": [
-        {
-          "code": "c-two",
-          "x": 0,
-          "y": 0,
-          "shape": "square",
-          "objectives": [
-            {
-              "type": "settlers",
-              "count": 2
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:bread-spelt-perfect",
-              "count": 4
-            }
           ]
         },
         {
-          "code": "c-jobs",
-          "x": 1,
-          "y": 0,
+          "code": "kingdom-q18",
+          "x": 8.94,
+          "y": -9.25,
           "shape": "square",
           "requires": [
-            "c-two"
+            "kingdom-q17"
           ],
           "objectives": [
             {
-              "type": "job",
-              "code": "builder"
-            },
-            {
-              "type": "job",
-              "code": "courier"
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:firewood",
-              "count": 16
+              "type": "manual"
             }
           ]
         },
         {
-          "code": "c-four",
-          "x": 2,
-          "y": 0,
-          "shape": "star",
-          "requires": [
-            "c-jobs"
-          ],
-          "objectives": [
-            {
-              "type": "settlers",
-              "count": 4
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:bread-spelt-perfect",
-              "count": 8
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "code": "storage",
-      "quests": [
-        {
-          "code": "c-warehouse",
-          "x": 0,
-          "y": 0,
-          "shape": "square",
-          "icon": "createacolony:warehouse",
-          "objectives": [
-            {
-              "type": "building",
-              "code": "warehouse"
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:stick",
-              "count": 16
-            }
-          ]
-        },
-        {
-          "code": "c-courier",
-          "x": 1,
-          "y": 0,
+          "code": "kingdom-q4",
+          "x": 9.68,
+          "y": -5.69,
           "shape": "square",
           "requires": [
-            "c-warehouse"
+            "kingdom-h0"
           ],
-          "objectives": [
-            {
-              "type": "job",
-              "code": "courier"
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:linen-normal-down",
-              "count": 2
-            }
-          ]
-        },
-        {
-          "code": "c-stock",
-          "x": 2,
-          "y": 0,
-          "shape": "star",
-          "requires": [
-            "c-courier"
-          ],
-          "objectives": [
-            {
-              "type": "stock",
-              "code": "*",
-              "count": 200
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:gear-rusty",
-              "count": 2
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "code": "food",
-      "quests": [
-        {
-          "code": "c-farmer",
-          "x": 0,
-          "y": 0,
-          "shape": "square",
-          "icon": "createacolony:hut-farmer",
-          "objectives": [
-            {
-              "type": "building",
-              "code": "farmer"
-            },
-            {
-              "type": "job",
-              "code": "farmer"
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:seeds-*",
-              "count": 8
-            }
-          ]
-        },
-        {
-          "code": "c-cook",
-          "x": 1,
-          "y": 0,
-          "shape": "square",
-          "icon": "createacolony:hut-cook",
-          "requires": [
-            "c-farmer"
-          ],
-          "objectives": [
-            {
-              "type": "building",
-              "code": "cook"
-            },
-            {
-              "type": "job",
-              "code": "cook"
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:bowl-fired",
-              "count": 4
-            }
-          ]
-        },
-        {
-          "code": "c-bread",
-          "x": 2,
-          "y": 0,
-          "shape": "star",
-          "requires": [
-            "c-cook"
-          ],
-          "objectives": [
-            {
-              "type": "stock",
-              "code": "game:bread-*",
-              "count": 8
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:honeyportion",
-              "count": 2
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "code": "families",
-      "quests": [
-        {
-          "code": "c-residence",
-          "x": 0,
-          "y": 0,
-          "shape": "square",
-          "icon": "createacolony:hut-residence",
-          "objectives": [
-            {
-              "type": "building",
-              "code": "residence",
-              "level": 1
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:drygrass",
-              "count": 32
-            }
-          ]
-        },
-        {
-          "code": "c-couple",
-          "x": 1,
-          "y": 0,
-          "shape": "square",
-          "requires": [
-            "c-residence"
-          ],
-          "objectives": [
-            {
-              "type": "couples"
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:linen-normal-down",
-              "count": 4
-            }
-          ]
-        },
-        {
-          "code": "c-born",
-          "x": 2,
-          "y": 0,
-          "shape": "square",
-          "requires": [
-            "c-couple"
-          ],
-          "objectives": [
-            {
-              "type": "children"
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:honeyportion",
-              "count": 4
-            }
-          ]
-        },
-        {
-          "code": "c-grown",
-          "x": 3,
-          "y": 0,
-          "shape": "star",
-          "requires": [
-            "c-born"
-          ],
-          "objectives": [
-            {
-              "type": "event",
-              "code": "event-grown-up"
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:gear-rusty",
-              "count": 4
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "code": "guards",
-      "quests": [
-        {
-          "code": "c-tower",
-          "x": 0,
-          "y": 0,
-          "shape": "square",
-          "icon": "createacolony:hut-guardtower",
-          "objectives": [
-            {
-              "type": "building",
-              "code": "guardtower",
-              "level": 1
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:spear-copper",
-              "count": 1
-            }
-          ]
-        },
-        {
-          "code": "c-guard",
-          "x": 1,
-          "y": 0,
-          "shape": "square",
-          "requires": [
-            "c-tower"
-          ],
-          "objectives": [
-            {
-              "type": "job",
-              "code": "guard"
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:spear-copper",
-              "count": 2
-            }
-          ]
-        },
-        {
-          "code": "c-patrol",
-          "x": 2,
-          "y": -1,
-          "shape": "hexagon",
-          "requires": [
-            "c-guard"
-          ],
-          "objectives": [
-            {
-              "type": "stat",
-              "code": "patrol-points",
-              "count": 20
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:torch-basic-lit-up",
-              "count": 8
-            }
-          ]
-        },
-        {
-          "code": "c-kills",
-          "x": 2,
-          "y": 1,
-          "shape": "star",
-          "requires": [
-            "c-guard"
-          ],
-          "objectives": [
-            {
-              "type": "stat",
-              "code": "kill:*",
-              "count": 5
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:gear-rusty",
-              "count": 4
-            }
-          ]
-        },
-        {
-          "code": "c-barracks-hut",
-          "x": 1,
-          "y": 2,
-          "shape": "square",
-          "icon": "createacolony:hut-barracks",
-          "requires": [
-            "c-guard"
-          ],
-          "objectives": [
-            {
-              "type": "building",
-              "code": "barracks",
-              "level": 0
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:spear-copper",
-              "count": 1
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "code": "banners",
-      "quests": [
-        {
-          "code": "c-banner",
-          "x": 0,
-          "y": 0,
-          "shape": "star",
-          "objectives": [
-            {
-              "type": "event",
-              "code": "event-banner"
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:linen-normal-down",
-              "count": 8
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "code": "gathering",
-      "quests": [
-        {
-          "code": "c-gatherer-hut",
-          "x": 0,
-          "y": 0,
-          "shape": "square",
-          "icon": "createacolony:hut-gatherer",
-          "objectives": [
-            {
-              "type": "building",
-              "code": "gatherer",
-              "level": 0
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:firewood",
-              "count": 8
-            }
-          ]
-        },
-        {
-          "code": "c-gatherer-job",
-          "x": 1,
-          "y": 0,
-          "shape": "round",
-          "objectives": [
-            {
-              "type": "job",
-              "code": "gatherer",
-              "count": 1
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:bread-spelt-perfect",
-              "count": 4
-            }
-          ],
-          "requires": [
-            "c-gatherer-hut"
-          ]
-        },
-        {
-          "code": "c-hunter-hut",
-          "x": 2,
-          "y": 0,
-          "shape": "square",
-          "icon": "createacolony:hut-hunter",
-          "objectives": [
-            {
-              "type": "building",
-              "code": "hunter",
-              "level": 0
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:stick",
-              "count": 16
-            }
-          ]
-        },
-        {
-          "code": "c-hunter-job",
-          "x": 3,
-          "y": 0,
-          "shape": "round",
-          "objectives": [
-            {
-              "type": "job",
-              "code": "hunter",
-              "count": 1
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:gear-rusty",
-              "count": 1
-            }
-          ],
-          "requires": [
-            "c-hunter-hut"
-          ]
-        },
-        {
-          "code": "c-butcher-hut",
-          "x": 4,
-          "y": 0,
-          "shape": "square",
-          "icon": "createacolony:hut-butcher",
-          "objectives": [
-            {
-              "type": "building",
-              "code": "butcher",
-              "level": 0
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:drygrass",
-              "count": 16
-            }
-          ]
-        },
-        {
-          "code": "c-butcher-job",
-          "x": 5,
-          "y": 0,
-          "shape": "round",
-          "objectives": [
-            {
-              "type": "job",
-              "code": "butcher",
-              "count": 1
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:honeyportion",
-              "count": 4
-            }
-          ],
-          "requires": [
-            "c-butcher-hut"
-          ]
-        },
-        {
-          "code": "c-explorer-hut",
-          "x": 6,
-          "y": 0,
-          "shape": "square",
-          "icon": "createacolony:hut-explorer",
-          "objectives": [
-            {
-              "type": "building",
-              "code": "explorer",
-              "level": 0
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:firewood",
-              "count": 8
-            }
-          ]
-        },
-        {
-          "code": "c-explorer-job",
-          "x": 7,
-          "y": 0,
-          "shape": "round",
-          "objectives": [
-            {
-              "type": "job",
-              "code": "explorer",
-              "count": 1
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:bread-spelt-perfect",
-              "count": 4
-            }
-          ],
-          "requires": [
-            "c-explorer-hut"
-          ]
-        }
-      ]
-    },
-    {
-      "code": "herding",
-      "quests": [
-        {
-          "code": "c-chickencoop-hut",
-          "x": 0,
-          "y": 0,
-          "shape": "square",
-          "icon": "createacolony:hut-chickencoop",
-          "objectives": [
-            {
-              "type": "building",
-              "code": "chickencoop",
-              "level": 0
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:firewood",
-              "count": 8
-            }
-          ]
-        },
-        {
-          "code": "c-chickenherder-job",
-          "x": 1,
-          "y": 0,
-          "shape": "round",
-          "objectives": [
-            {
-              "type": "job",
-              "code": "chickenherder",
-              "count": 1
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:bread-spelt-perfect",
-              "count": 4
-            }
-          ],
-          "requires": [
-            "c-chickencoop-hut"
-          ]
-        },
-        {
-          "code": "c-piggery-hut",
-          "x": 2,
-          "y": 0,
-          "shape": "square",
-          "icon": "createacolony:hut-piggery",
-          "objectives": [
-            {
-              "type": "building",
-              "code": "piggery",
-              "level": 0
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:stick",
-              "count": 16
-            }
-          ]
-        },
-        {
-          "code": "c-swineherd-job",
-          "x": 3,
-          "y": 0,
-          "shape": "round",
-          "objectives": [
-            {
-              "type": "job",
-              "code": "swineherd",
-              "count": 1
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:gear-rusty",
-              "count": 1
-            }
-          ],
-          "requires": [
-            "c-piggery-hut"
-          ]
-        },
-        {
-          "code": "c-shepherd-hut",
-          "x": 4,
-          "y": 0,
-          "shape": "square",
-          "icon": "createacolony:hut-shepherd",
-          "objectives": [
-            {
-              "type": "building",
-              "code": "shepherd",
-              "level": 0
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:drygrass",
-              "count": 16
-            }
-          ]
-        },
-        {
-          "code": "c-shepherd-job",
-          "x": 5,
-          "y": 0,
-          "shape": "round",
-          "objectives": [
-            {
-              "type": "job",
-              "code": "shepherd",
-              "count": 1
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:honeyportion",
-              "count": 4
-            }
-          ],
-          "requires": [
-            "c-shepherd-hut"
-          ]
-        },
-        {
-          "code": "c-goatherd-hut",
-          "x": 6,
-          "y": 0,
-          "shape": "square",
-          "icon": "createacolony:hut-goatherd",
-          "objectives": [
-            {
-              "type": "building",
-              "code": "goatherd",
-              "level": 0
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:firewood",
-              "count": 8
-            }
-          ]
-        },
-        {
-          "code": "c-goatherd-job",
-          "x": 7,
-          "y": 0,
-          "shape": "round",
-          "objectives": [
-            {
-              "type": "job",
-              "code": "goatherd",
-              "count": 1
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:bread-spelt-perfect",
-              "count": 4
-            }
-          ],
-          "requires": [
-            "c-goatherd-hut"
-          ]
-        },
-        {
-          "code": "c-tannery-hut",
-          "x": 0,
-          "y": 2,
-          "shape": "square",
-          "icon": "createacolony:hut-tannery",
-          "objectives": [
-            {
-              "type": "building",
-              "code": "tannery",
-              "level": 0
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:stick",
-              "count": 16
-            }
-          ]
-        },
-        {
-          "code": "c-tanner-job",
-          "x": 1,
-          "y": 2,
-          "shape": "round",
-          "objectives": [
-            {
-              "type": "job",
-              "code": "tanner",
-              "count": 1
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:gear-rusty",
-              "count": 1
-            }
-          ],
-          "requires": [
-            "c-tannery-hut"
-          ]
-        }
-      ]
-    },
-    {
-      "code": "mines",
-      "quests": [
-        {
-          "code": "c-prospector-hut",
-          "x": 0,
-          "y": 0,
-          "shape": "square",
-          "icon": "createacolony:hut-prospector",
-          "objectives": [
-            {
-              "type": "building",
-              "code": "prospector",
-              "level": 0
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:firewood",
-              "count": 8
-            }
-          ]
-        },
-        {
-          "code": "c-prospector-job",
-          "x": 1,
-          "y": 0,
-          "shape": "round",
-          "objectives": [
-            {
-              "type": "job",
-              "code": "prospector",
-              "count": 1
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:bread-spelt-perfect",
-              "count": 4
-            }
-          ],
-          "requires": [
-            "c-prospector-hut"
-          ]
-        },
-        {
-          "code": "c-miner-hut",
-          "x": 2,
-          "y": 0,
-          "shape": "square",
-          "icon": "createacolony:hut-miner",
-          "objectives": [
-            {
-              "type": "building",
-              "code": "miner",
-              "level": 0
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:stick",
-              "count": 16
-            }
-          ]
-        },
-        {
-          "code": "c-miner-job",
-          "x": 3,
-          "y": 0,
-          "shape": "round",
-          "objectives": [
-            {
-              "type": "job",
-              "code": "miner",
-              "count": 1
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:gear-rusty",
-              "count": 1
-            }
-          ],
-          "requires": [
-            "c-miner-hut"
-          ]
-        },
-        {
-          "code": "c-quarry-hut",
-          "x": 4,
-          "y": 0,
-          "shape": "square",
-          "icon": "createacolony:hut-quarry",
-          "objectives": [
-            {
-              "type": "building",
-              "code": "quarry",
-              "level": 0
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:drygrass",
-              "count": 16
-            }
-          ]
-        },
-        {
-          "code": "c-quarrier-job",
-          "x": 5,
-          "y": 0,
-          "shape": "round",
-          "objectives": [
-            {
-              "type": "job",
-              "code": "quarrier",
-              "count": 1
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:honeyportion",
-              "count": 4
-            }
-          ],
-          "requires": [
-            "c-quarry-hut"
-          ]
-        }
-      ]
-    },
-    {
-      "code": "workshops",
-      "quests": [
-        {
-          "code": "c-craftsman-hut",
-          "x": 0,
-          "y": 0,
-          "shape": "square",
-          "icon": "createacolony:hut-craftsman",
-          "objectives": [
-            {
-              "type": "building",
-              "code": "craftsman",
-              "level": 0
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:firewood",
-              "count": 8
-            }
-          ]
-        },
-        {
-          "code": "c-craftsman-job",
-          "x": 1,
-          "y": 0,
-          "shape": "round",
-          "objectives": [
-            {
-              "type": "job",
-              "code": "craftsman",
-              "count": 1
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:bread-spelt-perfect",
-              "count": 4
-            }
-          ],
-          "requires": [
-            "c-craftsman-hut"
-          ]
-        },
-        {
-          "code": "c-potter-hut",
-          "x": 2,
-          "y": 0,
-          "shape": "square",
-          "icon": "createacolony:hut-potter",
-          "objectives": [
-            {
-              "type": "building",
-              "code": "potter",
-              "level": 0
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:stick",
-              "count": 16
-            }
-          ]
-        },
-        {
-          "code": "c-potter-job",
-          "x": 3,
-          "y": 0,
-          "shape": "round",
-          "objectives": [
-            {
-              "type": "job",
-              "code": "potter",
-              "count": 1
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:gear-rusty",
-              "count": 1
-            }
-          ],
-          "requires": [
-            "c-potter-hut"
-          ]
-        },
-        {
-          "code": "c-sawmill-hut",
-          "x": 4,
-          "y": 0,
-          "shape": "square",
-          "icon": "createacolony:hut-sawmill",
-          "objectives": [
-            {
-              "type": "building",
-              "code": "sawmill",
-              "level": 0
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:drygrass",
-              "count": 16
-            }
-          ]
-        },
-        {
-          "code": "c-sawyer-job",
-          "x": 5,
-          "y": 0,
-          "shape": "round",
-          "objectives": [
-            {
-              "type": "job",
-              "code": "sawyer",
-              "count": 1
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:honeyportion",
-              "count": 4
-            }
-          ],
-          "requires": [
-            "c-sawmill-hut"
-          ]
-        },
-        {
-          "code": "c-smelter-hut",
-          "x": 6,
-          "y": 0,
-          "shape": "square",
-          "icon": "createacolony:hut-smelter",
-          "objectives": [
-            {
-              "type": "building",
-              "code": "smelter",
-              "level": 0
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:firewood",
-              "count": 8
-            }
-          ]
-        },
-        {
-          "code": "c-smelter-job",
-          "x": 7,
-          "y": 0,
-          "shape": "round",
-          "objectives": [
-            {
-              "type": "job",
-              "code": "smelter",
-              "count": 1
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:bread-spelt-perfect",
-              "count": 4
-            }
-          ],
-          "requires": [
-            "c-smelter-hut"
-          ]
-        },
-        {
-          "code": "c-blacksmith-hut",
-          "x": 0,
-          "y": 2,
-          "shape": "square",
-          "icon": "createacolony:hut-blacksmith",
-          "objectives": [
-            {
-              "type": "building",
-              "code": "blacksmith",
-              "level": 0
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:stick",
-              "count": 16
-            }
-          ]
-        },
-        {
-          "code": "c-blacksmith-job",
-          "x": 1,
-          "y": 2,
-          "shape": "round",
-          "objectives": [
-            {
-              "type": "job",
-              "code": "blacksmith",
-              "count": 1
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:gear-rusty",
-              "count": 1
-            }
-          ],
-          "requires": [
-            "c-blacksmith-hut"
-          ]
-        },
-        {
-          "code": "c-armourer-hut",
-          "x": 2,
-          "y": 2,
-          "shape": "square",
-          "icon": "createacolony:hut-armourer",
-          "objectives": [
-            {
-              "type": "building",
-              "code": "armourer",
-              "level": 0
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:drygrass",
-              "count": 16
-            }
-          ]
-        },
-        {
-          "code": "c-armourer-job",
-          "x": 3,
-          "y": 2,
-          "shape": "round",
-          "objectives": [
-            {
-              "type": "job",
-              "code": "armourer",
-              "count": 1
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:honeyportion",
-              "count": 4
-            }
-          ],
-          "requires": [
-            "c-armourer-hut"
-          ]
-        },
-        {
-          "code": "c-weaponsmith-hut",
-          "x": 4,
-          "y": 2,
-          "shape": "square",
-          "icon": "createacolony:hut-weaponsmith",
-          "objectives": [
-            {
-              "type": "building",
-              "code": "weaponsmith",
-              "level": 0
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:firewood",
-              "count": 8
-            }
-          ]
-        },
-        {
-          "code": "c-weaponsmith-job",
-          "x": 5,
-          "y": 2,
-          "shape": "round",
-          "objectives": [
-            {
-              "type": "job",
-              "code": "weaponsmith",
-              "count": 1
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:bread-spelt-perfect",
-              "count": 4
-            }
-          ],
-          "requires": [
-            "c-weaponsmith-hut"
-          ]
-        }
-      ]
-    },
-    {
-      "code": "finery",
-      "quests": [
-        {
-          "code": "c-tailor-hut",
-          "x": 0,
-          "y": 0,
-          "shape": "square",
-          "icon": "createacolony:hut-tailor",
-          "objectives": [
-            {
-              "type": "building",
-              "code": "tailor",
-              "level": 0
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:firewood",
-              "count": 8
-            }
-          ]
-        },
-        {
-          "code": "c-tailor-job",
-          "x": 1,
-          "y": 0,
-          "shape": "round",
-          "objectives": [
-            {
-              "type": "job",
-              "code": "tailor",
-              "count": 1
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:bread-spelt-perfect",
-              "count": 4
-            }
-          ],
-          "requires": [
-            "c-tailor-hut"
-          ]
-        },
-        {
-          "code": "c-jeweller-hut",
-          "x": 2,
-          "y": 0,
-          "shape": "square",
-          "icon": "createacolony:hut-jeweller",
-          "objectives": [
-            {
-              "type": "building",
-              "code": "jeweller",
-              "level": 0
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:stick",
-              "count": 16
-            }
-          ]
-        },
-        {
-          "code": "c-jeweller-job",
-          "x": 3,
-          "y": 0,
-          "shape": "round",
-          "objectives": [
-            {
-              "type": "job",
-              "code": "jeweller",
-              "count": 1
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:gear-rusty",
-              "count": 1
-            }
-          ],
-          "requires": [
-            "c-jeweller-hut"
-          ]
-        }
-      ]
-    },
-    {
-      "code": "townlife",
-      "quests": [
-        {
-          "code": "c-tavern-hut",
-          "x": 0,
-          "y": 0,
-          "shape": "square",
           "icon": "createacolony:hut-tavern",
           "objectives": [
             {
@@ -1492,178 +116,1466 @@
               "code": "tavern",
               "level": 1
             }
-          ],
-          "rewards": [
-            {
-              "code": "game:firewood",
-              "count": 8
-            }
           ]
         },
         {
-          "code": "c-boardinghouse-hut",
-          "x": 2,
-          "y": 0,
+          "code": "kingdom-q5",
+          "x": 9.68,
+          "y": -7.01,
           "shape": "square",
-          "icon": "createacolony:hut-boardinghouse",
-          "objectives": [
-            {
-              "type": "building",
-              "code": "boardinghouse",
-              "level": 0
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:stick",
-              "count": 16
-            }
-          ]
-        },
-        {
-          "code": "c-church-hut",
-          "x": 4,
-          "y": 0,
-          "shape": "square",
-          "icon": "createacolony:hut-church",
-          "objectives": [
-            {
-              "type": "building",
-              "code": "church",
-              "level": 0
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:drygrass",
-              "count": 16
-            }
-          ]
-        },
-        {
-          "code": "c-priest-job",
-          "x": 5,
-          "y": 0,
-          "shape": "round",
-          "objectives": [
-            {
-              "type": "job",
-              "code": "priest",
-              "count": 1
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:honeyportion",
-              "count": 4
-            }
-          ],
           "requires": [
-            "c-church-hut"
+            "kingdom-q4"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
           ]
         },
         {
-          "code": "c-bailiff-job",
-          "x": 6,
-          "y": 0,
-          "shape": "round",
-          "objectives": [
-            {
-              "type": "job",
-              "code": "bailiff",
-              "count": 1
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:bread-spelt-perfect",
-              "count": 4
-            }
-          ],
-          "icon": "createacolony:townhall"
-        },
-        {
-          "code": "c-mint-hut",
-          "x": 0,
-          "y": 2,
+          "code": "kingdom-q6",
+          "x": 9.68,
+          "y": -8.33,
           "shape": "square",
-          "icon": "createacolony:hut-mint",
+          "requires": [
+            "kingdom-q5"
+          ],
+          "icon": "createacolony:hut-residence",
           "objectives": [
             {
               "type": "building",
-              "code": "mint",
-              "level": 0
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:stick",
-              "count": 16
+              "code": "residence",
+              "level": 1
             }
           ]
         },
         {
-          "code": "c-minter-job",
-          "x": 1,
-          "y": 2,
-          "shape": "round",
+          "code": "kingdom-q7",
+          "x": 8.21,
+          "y": -5.69,
+          "shape": "square",
+          "requires": [
+            "kingdom-h0"
+          ],
+          "icon": "createacolony:hut-farmer",
           "objectives": [
             {
-              "type": "job",
-              "code": "minter",
-              "count": 1
+              "type": "building",
+              "code": "farmer",
+              "level": 1
             }
-          ],
-          "rewards": [
-            {
-              "code": "game:gear-rusty",
-              "count": 1
-            }
-          ],
-          "requires": [
-            "c-mint-hut"
           ]
         },
         {
-          "code": "c-archive-hut",
-          "x": 2,
-          "y": 2,
+          "code": "kingdom-q8",
+          "x": 8.21,
+          "y": -7.01,
           "shape": "square",
+          "requires": [
+            "kingdom-q7"
+          ],
+          "soon": true,
+          "objectives": []
+        },
+        {
+          "code": "kingdom-q13",
+          "x": 8.21,
+          "y": -8.33,
+          "shape": "square",
+          "requires": [
+            "kingdom-q8"
+          ],
+          "icon": "createacolony:hut-cook",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "cook",
+              "level": 1
+            },
+            {
+              "type": "job",
+              "code": "cook",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q9",
+          "x": 10.41,
+          "y": -6.09,
+          "shape": "square",
+          "requires": [
+            "kingdom-h0"
+          ],
+          "icon": "createacolony:hut-forester",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "forester",
+              "level": 1
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q10",
+          "x": 10.41,
+          "y": -7.4,
+          "shape": "square",
+          "requires": [
+            "kingdom-q9"
+          ],
+          "icon": "createacolony:hut-miner",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "miner",
+              "level": 1
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q11",
+          "x": 7.47,
+          "y": -6.09,
+          "shape": "square",
+          "requires": [
+            "kingdom-h0"
+          ],
+          "icon": "createacolony:hut-guardtower",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "guardtower",
+              "level": 1
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q12",
+          "x": 7.47,
+          "y": -7.4,
+          "shape": "square",
+          "requires": [
+            "kingdom-q11"
+          ],
+          "icon": "createacolony:workstation-courier",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "courierstation",
+              "level": 1
+            },
+            {
+              "type": "building",
+              "code": "warehouse",
+              "level": 1
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q15",
+          "x": 11.15,
+          "y": -6.48,
+          "shape": "square",
+          "requires": [
+            "kingdom-h0"
+          ],
           "icon": "createacolony:hut-archive",
           "objectives": [
             {
               "type": "building",
               "code": "archive",
-              "level": 0
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:drygrass",
-              "count": 16
-            }
-          ]
-        },
-        {
-          "code": "c-researcher-job",
-          "x": 3,
-          "y": 2,
-          "shape": "round",
-          "objectives": [
+              "level": 1
+            },
             {
               "type": "job",
               "code": "researcher",
               "count": 1
             }
+          ]
+        },
+        {
+          "code": "kingdom-q16",
+          "x": 11.15,
+          "y": -7.8,
+          "shape": "square",
+          "requires": [
+            "kingdom-q15"
           ],
-          "rewards": [
+          "objectives": [
             {
-              "code": "game:honeyportion",
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q14",
+          "x": 6.74,
+          "y": -6.48,
+          "shape": "square",
+          "requires": [
+            "kingdom-h0"
+          ],
+          "objectives": [
+            {
+              "type": "settlers",
+              "count": 8
+            }
+          ]
+        },
+        {
+          "code": "kingdom-h1",
+          "x": 12.73,
+          "y": -1.23,
+          "shape": "hexagon",
+          "requires": [
+            "kingdom-q1"
+          ],
+          "icon": "createacolony:townhall",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "townhall",
+              "level": 2
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q38",
+          "x": 13.98,
+          "y": -1.64,
+          "shape": "square",
+          "requires": [
+            "kingdom-h1"
+          ],
+          "icon": "createacolony:townhall",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "townhall",
+              "level": 3
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q42",
+          "x": 15.23,
+          "y": -2.04,
+          "shape": "square",
+          "requires": [
+            "kingdom-q38"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q19",
+          "x": 14.58,
+          "y": -1.06,
+          "shape": "square",
+          "requires": [
+            "kingdom-h1"
+          ],
+          "icon": "createacolony:hut-residence",
+          "objectives": [
+            {
+              "type": "buildings",
+              "code": "residence",
+              "count": 3
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q20",
+          "x": 15.83,
+          "y": -1.47,
+          "shape": "square",
+          "requires": [
+            "kingdom-q19"
+          ],
+          "objectives": [
+            {
+              "type": "settlers",
+              "count": 15
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q34",
+          "x": 17.09,
+          "y": -1.87,
+          "shape": "square",
+          "requires": [
+            "kingdom-q20"
+          ],
+          "objectives": [
+            {
+              "type": "settlers",
+              "count": 25
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q39",
+          "x": 18.34,
+          "y": -2.28,
+          "shape": "square",
+          "requires": [
+            "kingdom-q34"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q21",
+          "x": 14.13,
+          "y": -2.46,
+          "shape": "square",
+          "requires": [
+            "kingdom-h1"
+          ],
+          "icon": "createacolony:hut-builder",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "builder",
+              "level": 2
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q22",
+          "x": 15.38,
+          "y": -2.86,
+          "shape": "square",
+          "requires": [
+            "kingdom-q21"
+          ],
+          "icon": "createacolony:hut-farmer",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "farmer",
+              "level": 2
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q23",
+          "x": 16.63,
+          "y": -3.27,
+          "shape": "square",
+          "requires": [
+            "kingdom-q22"
+          ],
+          "icon": "createacolony:hut-miner",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "miner",
+              "level": 2
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q31",
+          "x": 15.18,
+          "y": -0.48,
+          "shape": "square",
+          "requires": [
+            "kingdom-h1"
+          ],
+          "icon": "createacolony:hut-healer",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "healer"
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q32",
+          "x": 16.44,
+          "y": -0.89,
+          "shape": "square",
+          "requires": [
+            "kingdom-q31"
+          ],
+          "soon": true,
+          "objectives": []
+        },
+        {
+          "code": "kingdom-q33",
+          "x": 17.69,
+          "y": -1.3,
+          "shape": "square",
+          "requires": [
+            "kingdom-q32"
+          ],
+          "soon": true,
+          "objectives": []
+        },
+        {
+          "code": "kingdom-q24",
+          "x": 14.28,
+          "y": -3.28,
+          "shape": "square",
+          "requires": [
+            "kingdom-h1"
+          ],
+          "icon": "createacolony:hut-sawmill",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "sawmill",
+              "level": 1
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q25",
+          "x": 15.53,
+          "y": -3.69,
+          "shape": "square",
+          "requires": [
+            "kingdom-q24"
+          ],
+          "soon": true,
+          "objectives": []
+        },
+        {
+          "code": "kingdom-q26",
+          "x": 16.78,
+          "y": -4.09,
+          "shape": "square",
+          "requires": [
+            "kingdom-q25"
+          ],
+          "icon": "createacolony:hut-smelter",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "smelter",
+              "level": 1
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q27",
+          "x": 18.03,
+          "y": -4.5,
+          "shape": "square",
+          "requires": [
+            "kingdom-q26"
+          ],
+          "soon": true,
+          "objectives": []
+        },
+        {
+          "code": "kingdom-q29",
+          "x": 15.79,
+          "y": 0.09,
+          "shape": "square",
+          "requires": [
+            "kingdom-h1"
+          ],
+          "icon": "createacolony:hut-barracks",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "barracks",
+              "level": 1
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q30",
+          "x": 17.04,
+          "y": -0.31,
+          "shape": "square",
+          "requires": [
+            "kingdom-q29"
+          ],
+          "soon": true,
+          "objectives": []
+        },
+        {
+          "code": "kingdom-q37",
+          "x": 18.29,
+          "y": -0.72,
+          "shape": "square",
+          "requires": [
+            "kingdom-q30"
+          ],
+          "soon": true,
+          "objectives": []
+        },
+        {
+          "code": "kingdom-q28",
+          "x": 14.42,
+          "y": -4.1,
+          "shape": "square",
+          "requires": [
+            "kingdom-h1"
+          ],
+          "soon": true,
+          "objectives": []
+        },
+        {
+          "code": "kingdom-q40",
+          "x": 15.68,
+          "y": -4.51,
+          "shape": "square",
+          "requires": [
+            "kingdom-q28"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q41",
+          "x": 16.93,
+          "y": -4.91,
+          "shape": "square",
+          "requires": [
+            "kingdom-q40"
+          ],
+          "soon": true,
+          "objectives": []
+        },
+        {
+          "code": "kingdom-q35",
+          "x": 16.39,
+          "y": 0.67,
+          "shape": "square",
+          "requires": [
+            "kingdom-h1"
+          ],
+          "icon": "createacolony:warehouse",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "warehouse",
+              "level": 2
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q36",
+          "x": 17.64,
+          "y": 0.26,
+          "shape": "square",
+          "requires": [
+            "kingdom-q35"
+          ],
+          "objectives": [
+            {
+              "type": "job",
+              "code": "courier",
+              "count": 3
+            }
+          ]
+        },
+        {
+          "code": "kingdom-h2",
+          "x": 11.28,
+          "y": 3.22,
+          "shape": "hexagon",
+          "requires": [
+            "kingdom-q1"
+          ],
+          "icon": "createacolony:townhall",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "townhall",
+              "level": 3
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q68",
+          "x": 12.05,
+          "y": 4.29,
+          "shape": "square",
+          "requires": [
+            "kingdom-h2"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q59",
+          "x": 11.69,
+          "y": 5.04,
+          "shape": "square",
+          "requires": [
+            "kingdom-h2"
+          ],
+          "objectives": [
+            {
+              "type": "settlers",
+              "count": 40
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q60",
+          "x": 12.47,
+          "y": 6.1,
+          "shape": "square",
+          "requires": [
+            "kingdom-q59"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q65",
+          "x": 13.24,
+          "y": 7.17,
+          "shape": "square",
+          "requires": [
+            "kingdom-q60"
+          ],
+          "icon": "createacolony:hut-cook",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "cook",
+              "level": 3
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q66",
+          "x": 14.01,
+          "y": 8.23,
+          "shape": "square",
+          "requires": [
+            "kingdom-q65"
+          ],
+          "soon": true,
+          "objectives": []
+        },
+        {
+          "code": "kingdom-q43",
+          "x": 12.88,
+          "y": 4.17,
+          "shape": "square",
+          "requires": [
+            "kingdom-h2"
+          ],
+          "icon": "createacolony:hut-blacksmith",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "blacksmith",
+              "level": 1
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q44",
+          "x": 13.66,
+          "y": 5.24,
+          "shape": "square",
+          "requires": [
+            "kingdom-q43"
+          ],
+          "soon": true,
+          "objectives": []
+        },
+        {
+          "code": "kingdom-q45",
+          "x": 14.43,
+          "y": 6.3,
+          "shape": "square",
+          "requires": [
+            "kingdom-q44"
+          ],
+          "soon": true,
+          "objectives": []
+        },
+        {
+          "code": "kingdom-q48",
+          "x": 15.2,
+          "y": 7.37,
+          "shape": "square",
+          "requires": [
+            "kingdom-q45"
+          ],
+          "soon": true,
+          "objectives": []
+        },
+        {
+          "code": "kingdom-q54",
+          "x": 11.33,
+          "y": 5.79,
+          "shape": "square",
+          "requires": [
+            "kingdom-h2"
+          ],
+          "icon": "createacolony:hut-archive",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "archive",
+              "level": 3
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q55",
+          "x": 12.1,
+          "y": 6.85,
+          "shape": "square",
+          "requires": [
+            "kingdom-q54"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q56",
+          "x": 12.88,
+          "y": 7.92,
+          "shape": "square",
+          "requires": [
+            "kingdom-q55"
+          ],
+          "soon": true,
+          "objectives": []
+        },
+        {
+          "code": "kingdom-q57",
+          "x": 13.65,
+          "y": 8.98,
+          "shape": "square",
+          "requires": [
+            "kingdom-q56"
+          ],
+          "soon": true,
+          "objectives": []
+        },
+        {
+          "code": "kingdom-q46",
+          "x": 13.71,
+          "y": 4.06,
+          "shape": "square",
+          "requires": [
+            "kingdom-h2"
+          ],
+          "soon": true,
+          "objectives": []
+        },
+        {
+          "code": "kingdom-q47",
+          "x": 14.48,
+          "y": 5.13,
+          "shape": "square",
+          "requires": [
+            "kingdom-q46"
+          ],
+          "soon": true,
+          "objectives": []
+        },
+        {
+          "code": "kingdom-q52",
+          "x": 15.26,
+          "y": 6.19,
+          "shape": "square",
+          "requires": [
+            "kingdom-q47"
+          ],
+          "soon": true,
+          "objectives": []
+        },
+        {
+          "code": "kingdom-q53",
+          "x": 16.03,
+          "y": 7.26,
+          "shape": "square",
+          "requires": [
+            "kingdom-q52"
+          ],
+          "soon": true,
+          "objectives": []
+        },
+        {
+          "code": "kingdom-q58",
+          "x": 10.97,
+          "y": 6.54,
+          "shape": "square",
+          "requires": [
+            "kingdom-h2"
+          ],
+          "soon": true,
+          "objectives": []
+        },
+        {
+          "code": "kingdom-q61",
+          "x": 11.74,
+          "y": 7.61,
+          "shape": "square",
+          "requires": [
+            "kingdom-q58"
+          ],
+          "icon": "createacolony:hut-barracks",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "barracks",
+              "level": 2
+            },
+            {
+              "type": "buildings",
+              "code": "guardtower",
               "count": 4
             }
-          ],
+          ]
+        },
+        {
+          "code": "kingdom-q62",
+          "x": 12.52,
+          "y": 8.67,
+          "shape": "square",
           "requires": [
-            "c-archive-hut"
+            "kingdom-q61"
+          ],
+          "soon": true,
+          "objectives": []
+        },
+        {
+          "code": "kingdom-q63",
+          "x": 13.29,
+          "y": 9.74,
+          "shape": "square",
+          "requires": [
+            "kingdom-q62"
+          ],
+          "soon": true,
+          "objectives": []
+        },
+        {
+          "code": "kingdom-q49",
+          "x": 14.54,
+          "y": 3.95,
+          "shape": "square",
+          "requires": [
+            "kingdom-h2"
+          ],
+          "icon": "createacolony:hut-farmer",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "farmer",
+              "level": 3
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q50",
+          "x": 15.31,
+          "y": 5.01,
+          "shape": "square",
+          "requires": [
+            "kingdom-q49"
+          ],
+          "soon": true,
+          "objectives": []
+        },
+        {
+          "code": "kingdom-q51",
+          "x": 16.08,
+          "y": 6.08,
+          "shape": "square",
+          "requires": [
+            "kingdom-q50"
+          ],
+          "icon": "createacolony:hut-chickencoop",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "chickencoop",
+              "level": 1
+            },
+            {
+              "type": "building",
+              "code": "piggery",
+              "level": 1
+            },
+            {
+              "type": "building",
+              "code": "shepherd",
+              "level": 1
+            },
+            {
+              "type": "building",
+              "code": "goatherd",
+              "level": 1
+            },
+            {
+              "type": "building",
+              "code": "herdsman",
+              "level": 1
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q64",
+          "x": 10.6,
+          "y": 7.29,
+          "shape": "square",
+          "requires": [
+            "kingdom-h2"
+          ],
+          "icon": "createacolony:warehouse",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "warehouse",
+              "level": 3
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q67",
+          "x": 11.38,
+          "y": 8.36,
+          "shape": "square",
+          "requires": [
+            "kingdom-q64"
+          ],
+          "icon": "createacolony:hut-builder",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "builder",
+              "level": 3
+            }
+          ]
+        },
+        {
+          "code": "kingdom-h3",
+          "x": 6.6,
+          "y": 3.22,
+          "shape": "hexagon",
+          "requires": [
+            "kingdom-q1"
+          ],
+          "icon": "createacolony:townhall",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "townhall",
+              "level": 4
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q69",
+          "x": 5.83,
+          "y": 4.29,
+          "shape": "square",
+          "requires": [
+            "kingdom-h3"
+          ],
+          "icon": "createacolony:townhall",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "townhall",
+              "level": 4
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q90",
+          "x": 5.05,
+          "y": 5.35,
+          "shape": "square",
+          "requires": [
+            "kingdom-q69"
+          ],
+          "icon": "createacolony:townhall",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "townhall",
+              "level": 5
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q71",
+          "x": 5.0,
+          "y": 4.17,
+          "shape": "square",
+          "requires": [
+            "kingdom-h3"
+          ],
+          "objectives": [
+            {
+              "type": "settlers",
+              "count": 60
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q72",
+          "x": 4.23,
+          "y": 5.24,
+          "shape": "square",
+          "requires": [
+            "kingdom-q71"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q77",
+          "x": 3.45,
+          "y": 6.3,
+          "shape": "square",
+          "requires": [
+            "kingdom-q72"
+          ],
+          "icon": "createacolony:hut-residence",
+          "objectives": [
+            {
+              "type": "buildings",
+              "code": "residence",
+              "count": 5,
+              "level": 4
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q86",
+          "x": 2.68,
+          "y": 7.37,
+          "shape": "square",
+          "requires": [
+            "kingdom-q77"
+          ],
+          "objectives": [
+            {
+              "type": "settlers",
+              "count": 80
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q80",
+          "x": 6.19,
+          "y": 5.04,
+          "shape": "square",
+          "requires": [
+            "kingdom-h3"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q81",
+          "x": 5.41,
+          "y": 6.1,
+          "shape": "square",
+          "requires": [
+            "kingdom-q80"
+          ],
+          "icon": "createacolony:warehouse",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "warehouse",
+              "level": 4
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q84",
+          "x": 4.64,
+          "y": 7.17,
+          "shape": "square",
+          "requires": [
+            "kingdom-q81"
+          ],
+          "icon": "createacolony:hut-chickencoop",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "chickencoop",
+              "level": 3
+            },
+            {
+              "type": "building",
+              "code": "piggery",
+              "level": 3
+            },
+            {
+              "type": "building",
+              "code": "shepherd",
+              "level": 3
+            },
+            {
+              "type": "building",
+              "code": "goatherd",
+              "level": 3
+            },
+            {
+              "type": "building",
+              "code": "herdsman",
+              "level": 3
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q85",
+          "x": 3.87,
+          "y": 8.23,
+          "shape": "square",
+          "requires": [
+            "kingdom-q84"
+          ],
+          "icon": "createacolony:hut-builder",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "builder",
+              "level": 4
+            },
+            {
+              "type": "job",
+              "code": "builder",
+              "count": 2
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q70",
+          "x": 4.17,
+          "y": 4.06,
+          "shape": "square",
+          "requires": [
+            "kingdom-h3"
+          ],
+          "icon": "createacolony:hut-archive",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "archive",
+              "level": 4
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q73",
+          "x": 3.4,
+          "y": 5.13,
+          "shape": "square",
+          "requires": [
+            "kingdom-q70"
+          ],
+          "soon": true,
+          "objectives": []
+        },
+        {
+          "code": "kingdom-q74",
+          "x": 2.63,
+          "y": 6.19,
+          "shape": "square",
+          "requires": [
+            "kingdom-q73"
+          ],
+          "soon": true,
+          "objectives": []
+        },
+        {
+          "code": "kingdom-q88",
+          "x": 1.85,
+          "y": 7.26,
+          "shape": "square",
+          "requires": [
+            "kingdom-q74"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q75",
+          "x": 6.55,
+          "y": 5.79,
+          "shape": "square",
+          "requires": [
+            "kingdom-h3"
+          ],
+          "soon": true,
+          "objectives": []
+        },
+        {
+          "code": "kingdom-q76",
+          "x": 5.78,
+          "y": 6.85,
+          "shape": "square",
+          "requires": [
+            "kingdom-q75"
+          ],
+          "soon": true,
+          "objectives": []
+        },
+        {
+          "code": "kingdom-q83",
+          "x": 5.0,
+          "y": 7.92,
+          "shape": "square",
+          "requires": [
+            "kingdom-q76"
+          ],
+          "soon": true,
+          "objectives": []
+        },
+        {
+          "code": "kingdom-q89",
+          "x": 4.23,
+          "y": 8.98,
+          "shape": "square",
+          "requires": [
+            "kingdom-q83"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q78",
+          "x": 3.35,
+          "y": 3.95,
+          "shape": "square",
+          "requires": [
+            "kingdom-h3"
+          ],
+          "icon": "createacolony:hut-barracks",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "barracks",
+              "level": 4
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q79",
+          "x": 2.57,
+          "y": 5.01,
+          "shape": "square",
+          "requires": [
+            "kingdom-q78"
+          ],
+          "soon": true,
+          "objectives": []
+        },
+        {
+          "code": "kingdom-q87",
+          "x": 1.8,
+          "y": 6.08,
+          "shape": "square",
+          "requires": [
+            "kingdom-q79"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q82",
+          "x": 6.91,
+          "y": 6.54,
+          "shape": "square",
+          "requires": [
+            "kingdom-h3"
+          ],
+          "soon": true,
+          "objectives": []
+        },
+        {
+          "code": "kingdom-h4",
+          "x": 5.15,
+          "y": -1.23,
+          "shape": "hexagon",
+          "requires": [
+            "kingdom-q1"
+          ],
+          "icon": "createacolony:townhall",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "townhall",
+              "level": 5
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q100",
+          "x": 3.9,
+          "y": -1.64,
+          "shape": "star",
+          "requires": [
+            "kingdom-h4"
+          ],
+          "objectives": []
+        },
+        {
+          "code": "kingdom-q91",
+          "x": 3.75,
+          "y": -2.46,
+          "shape": "square",
+          "requires": [
+            "kingdom-h4"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q92",
+          "x": 2.5,
+          "y": -2.86,
+          "shape": "square",
+          "requires": [
+            "kingdom-q91"
+          ],
+          "objectives": [
+            {
+              "type": "settlers",
+              "count": 100
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q98",
+          "x": 1.25,
+          "y": -3.27,
+          "shape": "square",
+          "requires": [
+            "kingdom-q92"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q93",
+          "x": 3.3,
+          "y": -1.06,
+          "shape": "square",
+          "requires": [
+            "kingdom-h4"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q97",
+          "x": 2.05,
+          "y": -1.47,
+          "shape": "square",
+          "requires": [
+            "kingdom-q93"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q94",
+          "x": 3.61,
+          "y": -3.28,
+          "shape": "square",
+          "requires": [
+            "kingdom-h4"
+          ],
+          "soon": true,
+          "objectives": []
+        },
+        {
+          "code": "kingdom-q96",
+          "x": 2.35,
+          "y": -3.69,
+          "shape": "square",
+          "requires": [
+            "kingdom-q94"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q95",
+          "x": 2.7,
+          "y": -0.48,
+          "shape": "square",
+          "requires": [
+            "kingdom-h4"
+          ],
+          "soon": true,
+          "objectives": []
+        },
+        {
+          "code": "kingdom-q99",
+          "x": 3.46,
+          "y": -4.1,
+          "shape": "square",
+          "requires": [
+            "kingdom-h4"
+          ],
+          "objectives": [
+            {
+              "type": "manual"
+            }
           ]
         }
       ]

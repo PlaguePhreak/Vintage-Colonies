@@ -106,9 +106,11 @@ public class GuiDialogQuestBook : GuiDialog
     /// <summary>Why a locked quest is locked, in words: the quests it needs, or that it needs a colony. "" when there is nothing to say.</summary>
     public string WhyLocked(QuestDef quest)
     {
+        if (quest.Soon) return Lang.Get("createacolony:questbook-soon");
         if (quest.PerColony && snapshot.ColonyId.Length == 0) return Lang.Get("createacolony:questbook-needs-colony");
-        var needs = quest.Requires.Select(r => library.Get(r)).Where(r => r != null && StatusOf(r!) != QuestStatus.Claimed).Select(r => Lang.Get(QuestLibrary.TitleKey(r!))).ToList();
-        return needs.Count > 0 ? Lang.Get("createacolony:questbook-needs", string.Join(", ", needs)) : "";
+        var needs = quest.Requires.Select(r => library.Get(r)).Where(r => r != null && !r.Soon && StatusOf(r!) != QuestStatus.Claimed).Select(r => Lang.Get(QuestLibrary.TitleKey(r!))).ToList();
+        if (quest.RequiresAny && needs.Count < quest.Requires.Count) return "";
+        return needs.Count > 0 ? Lang.Get(quest.RequiresAny ? "createacolony:questbook-needs-any" : "createacolony:questbook-needs", string.Join(", ", needs)) : "";
     }
 
     // ---- Layout ---------------------------------------------------------------------------
@@ -286,9 +288,13 @@ public class GuiDialogQuestBook : GuiDialog
     // ---- Words and pictures -----------------------------------------------------------------
 
     /// <summary>One objective in words, from its type: "Have 8 × Flint", "Build a Warehouse", "Have 3 settlers"...</summary>
+    public static bool IsManual(ICoreClientAPI capi, QuestObjectiveDef o) =>
+        o.Type == ObjectiveTypes.Manual || (o.Type is ObjectiveTypes.Obtain or ObjectiveTypes.Deliver or ObjectiveTypes.Stock && QuestItems.Sample(capi.World, o.Code) == null);
+
     public static string ObjectiveText(ICoreClientAPI capi, QuestObjectiveDef o)
     {
         if (o.Text.Length > 0) return Lang.Get("createacolony:" + o.Text);
+        if (IsManual(capi, o)) return Lang.Get("createacolony:objective-manual");
         int count = Math.Max(1, o.Count);
         switch (o.Type)
         {

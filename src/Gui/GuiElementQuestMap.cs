@@ -102,7 +102,7 @@ public class GuiElementQuestMap : GuiElement
         double spanY = (shown.Max(q => q.Y) - shown.Min(q => q.Y) + 2.0) * CellSize;
         if (Bounds.fixedWidth > 0 && Bounds.fixedHeight > 0)
         {
-            view.Zoom = Math.Clamp(Math.Min(Bounds.fixedWidth / spanX, Bounds.fixedHeight / spanY), 0.6, 1);
+            view.Zoom = Math.Clamp(Math.Min(Bounds.fixedWidth / spanX, Bounds.fixedHeight / spanY), 0.45, 1);
         }
     }
 
