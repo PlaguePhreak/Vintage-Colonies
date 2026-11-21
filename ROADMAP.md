@@ -77,6 +77,8 @@ Everything listed under "What we have" and "Partly done" has been tested in game
 1. **Smelter** (started in 0.50.0): still to do are alloys such as bronze, and a bloomery for iron
 2. **Happiness** came in 0.61.0. Still to add: safety (raids), health, and how crowded the colony is
 3. **A request list**: seeing what workers need came in 0.142.0 (Requests tab), and giving them what you carry straight from that tab in 0.167.0
+2. **Happiness** came in 0.61.0. Safety (monsters, guards, attacks), health and crowded homes came in 0.168.0 (not tested yet). Still to add: raids, when raids are in
+3. **A request list**: seeing what workers need came in 0.142.0 (Requests tab). Still to add: filling a request from the tab
 4. **Animal herders and a Tanner**: chickens, pigs, sheep and goats in pens for meat, eggs and hides, and a Tanner who makes leather in barrels
 5. **Ranged guards and a rally banner** (the Barracks came in 0.54.0), then **Raids**: now and then, enemies turn up and attack the player's colony. The player is warned in chat and on the Town Hall window. There are several raid factions, from bandits (who use the settler models) to the game's own monsters such as drifters and shivers.
 6. **Graveyard**: an undertaker who buries the dead (the Healer, bandages and poultices came in 0.117.0)

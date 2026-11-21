@@ -226,6 +226,37 @@ All three are on the new Mining tab of the Builder's Wand and use placeholder bl
 - Chests, beds, racks, shelves, signs and paintings stay where they are. The builder asks couriers for the blocks it needs, as for any build.
 - **Stop repair** cancels it. The colony gets a message when it is done. A Mineshaft Entrance has no Repair; use the Levels tab's Repair for mines.
 
+## Safety, health and crowding in happiness (0.168.0)
+
+Settlers now also care about how safe they are, how hurt they are, and how much room they have at home. You see these on the settler's happiness hover, like the other thoughts.
+
+**Safety**
+- **Monsters about** (-6): a monster came within 48 blocks of the Town Hall (`DangerRadius`), or attacked a settler, in the last 6 hours (`DangerHours`). Only -2 when the colony has enough guards.
+- **Feels safe with the guards** (+3): at least one guard for every 8 grown-ups (`SettlersPerGuard`).
+- **No guards to keep them safe** (-3): 6 or more grown-ups (`UnguardedFrom`) and no guard at all.
+- **Was attacked** (-6, 1 day): a creature hurt them.
+- **Saw a settler attacked** (-3, 12 hours): a monster hurt someone within 16 blocks (`WitnessRadius`).
+- **A monster killed a settler** (-8, 4 days): everyone, when a monster kills a settler for good.
+- **A monster was killed** (+3, 1 day): everyone, when a guard or other settler kills a monster.
+- Raids are not in the mod yet. When they come, they will add to this.
+
+**Health**
+- **Hurt** (-5): below half health (`HurtMoodBelow`).
+- **Badly hurt** (-12): below a quarter (`BadlyHurtMoodBelow`).
+- **Treated by the healer** (+4, 1 day): the Healer looked after them in bed.
+
+**Crowding** (in a Residence)
+- Each person needs 16 blocks of room (`HomeSpacePerSettler`): the floor inside the building times its storeys (one storey for every 5 blocks of height).
+- **Crowded home** (-4): less room than that. **Very crowded home** (-8): less than half.
+- **A home just for family** (+2): enough room, and everyone sleeping there is family.
+
+**How to test**
+1. Open a settler's window and hover the happiness bar to see their thoughts.
+2. Let a drifter or wolf come near the Town Hall: "Monsters about" shows up.
+3. Hire a guard for a small colony: "Feels safe with the guards" shows up.
+4. Hit a settler's health down (or let a monster do it): "Hurt" shows up.
+5. Put many settlers' beds in one small Residence: "Crowded home" shows up.
+
 ## Recommended mods
 These work well with Vintage Colonies. Install them separately.
 - **Tailor's Delight** (Tels and Phiwa): more tools and materials for the Tailor.
