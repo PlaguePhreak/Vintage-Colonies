@@ -43,7 +43,10 @@ public partial class ColonyManager
         long now = sapi.World.ElapsedMilliseconds;
         int r = Math.Max(8, Config.JoblessSkinRadius);
         var found = sapi.World.GetEntitiesAround(settler.Pos.XYZ, r, Math.Min(r, 24), e => Skinnable(e));
+        // With a butcher, animals nobody has started on go to the Butcher's Hut whole (ColonyManager.Butchery.cs).
+        bool butcher = ButcherWorks(colony);
         return found
+            .Where(e => !butcher || e.GetBehavior<EntityBehaviorHarvestable>()?.IsHarvested == true)
             .Where(e => !skip(e.Pos.AsBlockPos) && (InClaim(colony, e.Pos.AsBlockPos) || ZoneAt(colony, e.Pos.AsBlockPos) != null
                 || e.WatchedAttributes.GetString(HuntedByAttr) == colony.ColonyId))
             .Where(e => !carcassClaims.TryGetValue(e.EntityId, out var c) || c.By == settler.EntityId || c.Until < now)

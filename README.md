@@ -226,6 +226,35 @@ All three are on the new Mining tab of the Builder's Wand and use placeholder bl
 - Chests, beds, racks, shelves, signs and paintings stay where they are. The builder asks couriers for the blocks it needs, as for any build.
 - **Stop repair** cancels it. The colony gets a message when it is done. A Mineshaft Entrance has no Repair; use the Levels tab's Repair for mines.
 
+## Butcher's Hut (0.170.0)
+`src/Colonies/ColonyManager.Butchery.cs`, `src/Settlers/AiTaskSettlerButcher.cs`, `src/Item/ItemCarcass.cs`,
+and changes to `src/Settlers/AiTaskSettlerHunter.cs`. Mechanics only: there is no building for it yet, so place
+the hut block on its own. Not tested in game yet.
+
+- **Butcher's Hut** (Builder's Wand, Craftsmanship > Food tab; recipe: a knife in the middle of 7 planks, the
+  knife is not used up). Give a settler the Butcher job and put a knife in the hut storage.
+- **Hunters bring kills home whole.** While the colony has a butcher, the hunter skins nothing. It picks up its
+  kills as a **carcass** (no knife needed) and carries them to the Butcher's Hut, two at a time
+  (`CarcassLoad`). If it can't get there, it leaves them in its own hut. Settlers without a job also leave
+  un-skinned animals for the butcher.
+- **The butcher** cuts each carcass up at the hut block with its knife. It gets a quarter more meat and fat than
+  skinning (`ButcherYieldBonus` 0.25), plus bones (1 to 4 by animal size) if the animal gives none. The new
+  Butchery skill makes it faster and sometimes gives one more piece. What it cuts goes in the hut storage,
+  food in the coolest chest first, and couriers take it to the warehouse and cellar.
+- When no carcass is waiting, the butcher picks up dead animals on your land or within its Work area
+  (`ButcherRadius` 48), including animals herders cull (they carry the same `createacolony:huntedBy` tag), and
+  fetches carcasses left at a Hunter's Hut or in the warehouse.
+- Carcasses spoil like meat: fresh for 2 days, then rot within a day.
+- **Butchering mod (optional).** Nothing of the mod is copied or bundled. When it is installed, a hook or table
+  from it in or by the hut is where the butcher works, for 15% more meat and fat (`ButcheringStationBonus`).
+  Empty buckets in the hut storage get filled with blood. The mod's block and blood codes are guesses
+  (`ButcheringStations`, `ButcheringBloodCode`); the hut window says whether a hook or table was found, so
+  they can be fixed in the config if needed. Smoking racks are not used yet.
+- Config: `ButcherRadius`, `HunterBringsCarcasses`, `CarcassLoad`, `CarcassPickUpSeconds`,
+  `ButcherSecondsBySize`, `ButcherYieldBonus`, `ButcherBonesBySize`, `ButcherBoneCode`, `ButcherKnifeWear`,
+  `ButcheringModId`, `ButcheringStations`, `ButcheringStationBonus`, `ButcheringBloodCode`,
+  `ButcheringBloodLitresBySize`.
+
 ## Recommended mods
 These work well with Vintage Colonies. Install them separately.
 - **Tailor's Delight** (Tels and Phiwa): more tools and materials for the Tailor.

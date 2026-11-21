@@ -26,6 +26,7 @@
 		{ "code": "exploring", "job": "explorer", "xpPerWork": 3, "workSpeedPerLevel": 0.04 },
 		{ "code": "foraging", "job": "gatherer", "xpPerWork": 1, "workSpeedPerLevel": 0.04, "perks": { "yield": [0.05, 0.1, 0.15, 0.25] } },
 		{ "code": "hunting", "job": "hunter", "xpPerWork": 2, "workSpeedPerLevel": 0.04, "perks": { "swingSpeed": [1.05, 1.1, 1.15, 1.2] } },
+		{ "code": "butchery", "job": "butcher", "xpPerWork": 3, "workSpeedPerLevel": 0.04, "perks": { "yield": [0.05, 0.1, 0.15, 0.25] } },
 		{ "code": "cooking", "job": "cook", "xpPerWork": 3, "workSpeedPerLevel": 0.04, "perks": { "portion": [0, 0.1, 0.2, 0.3] } },
 		{ "code": "hauling", "job": "courier", "xpPerWork": 1, "workSpeedPerLevel": 0.04, "perks": { "packSlots": [1, 1, 2, 3] } },
 		{ "code": "fighting", "job": "guard", "xpPerWork": 5, "strengthPerWork": 1, "workSpeedPerLevel": 0.02, "perks": { "swingSpeed": [1.05, 1.1, 1.15, 1.2] } },

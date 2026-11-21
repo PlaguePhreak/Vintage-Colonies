@@ -1,0 +1,23 @@
+{
+	"code": "carcass",
+	"class": "ItemCarcass",
+	// A dead animal picked up whole for the butcher (ColonyManager.Butchery.cs). It holds what the animal gives
+	// when skinned. Settlers make these; it is not in the creative inventory, as an empty one gives nothing.
+	"maxstacksize": 1,
+	"shape": { "base": "createacolony:item/carcass" },
+	"textures": {
+		"hide": { "base": "game:block/wood/bark/oak" },
+		"meat": { "base": "game:block/cloth/linen/red" }
+	},
+	"transitionableProps": [{
+		"type": "Perish",
+		"freshHours": { "avg": 48 },
+		"transitionHours": { "avg": 24 },
+		"transitionedStack": { "type": "item", "code": "game:rot", "quantity": 4 },
+		"transitionRatio": 1
+	}],
+	"guiTransform": { "rotation": { "x": -30, "y": 135, "z": 0 }, "origin": { "x": 0.5, "y": 0.2, "z": 0.5 }, "scale": 1.6 },
+	"fpHandTransform": { "translation": { "x": 0, "y": 0.1, "z": 0 }, "rotation": { "x": 0, "y": 90, "z": 0 }, "scale": 1.6 },
+	"tpHandTransform": { "translation": { "x": -0.9, "y": -0.3, "z": -0.6 }, "rotation": { "x": 0, "y": 90, "z": 0 }, "scale": 0.7 },
+	"groundTransform": { "origin": { "x": 0.5, "y": 0, "z": 0.5 }, "scale": 2.5 }
+}

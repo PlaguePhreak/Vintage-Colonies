@@ -17,6 +17,8 @@ namespace CreateAColony.Settlers;
 /// and the rest to the hut. An animal it cannot catch in time it lets go for a while. Without a knife it leaves
 /// its kills for settlers without a job to skin. Animals eating the colony's crops come first, wherever they are
 /// and whatever the Allowed to collect tab says (ColonyManager.CropPests.cs): the farmer calls the hunter for them.
+/// While the colony has a butcher, it skins nothing: it picks up its kills whole and takes them to the Butcher's
+/// Hut (ColonyManager.Butchery.cs), a few at a time.
 /// </summary>
 public class AiTaskSettlerHunter : AiTaskSettlerWorker
 {
@@ -24,6 +26,10 @@ public class AiTaskSettlerHunter : AiTaskSettlerWorker
 
     long preyId;
     bool skinning;
+    /// <summary>Picking up a kill whole for the butcher, instead of skinning it.</summary>
+    bool pickingUp;
+    /// <summary>Taking carcasses to this Butcher's Hut.</summary>
+    int deliverTo;
     long chaseStartMs;
     readonly Dictionary<long, long> letGo = new();
 
@@ -34,10 +40,13 @@ public class AiTaskSettlerHunter : AiTaskSettlerWorker
     protected override EnumTool Tool => EnumTool.Spear;
     protected override ItemMatch Stock => _ => false;
     protected override bool IsToolStack(ItemStack? stack) => stack != null && ColonyManager.IsWeapon(stack);
-    protected override bool AlsoKeeps(ItemStack stack) => ColonyManager.IsKnife(stack);
-    protected override bool WantsInHand(ItemStack? stack) => skinning ? ColonyManager.IsKnife(stack) : IsToolStack(stack);
+    // Carcasses stay in its pack while there is a butcher to take them to; otherwise they go in the hut storage.
+    protected override bool AlsoKeeps(ItemStack stack) => ColonyManager.IsKnife(stack)
+        || ColonyManager.IsCarcass(stack) && Colony is { } c && manager!.ButcherDropOff(c, entity.Pos.XYZ) != null;
+    protected override bool WantsInHand(ItemStack? stack) => skinning && !pickingUp ? ColonyManager.IsKnife(stack) : IsToolStack(stack);
+    protected override bool WorkNeedsTool => deliverTo == 0;
 
-    protected override float WorkSeconds => skinning
+    protected override float WorkSeconds => deliverTo != 0 ? 0.5f : pickingUp ? manager!.Config.CarcassPickUpSeconds : skinning
         ? (Hand is { } hand && entity.World.GetEntityById(preyId) is { } carcass ? ColonyManager.SkinSeconds(carcass, hand, entity) : 1f)
         : manager!.Config.HunterSecondsPerHit / (Colony is { } c && Citizen is { } me ? manager.SwingFactor(c, me) : 1f);
 
@@ -55,8 +64,25 @@ public class AiTaskSettlerHunter : AiTaskSettlerWorker
     {
         var m = manager!;
         long now = entity.World.ElapsedMilliseconds;
+        pickingUp = false;
+        deliverTo = 0;
         bool knife = HasKnife(citizen);
-        if (!knife && storage.FirstOrDefault(c => c.Inventory.Any(s => !s.Empty && ColonyManager.IsKnife(s.Itemstack))) is { } knifeChest)
+        bool forButcher = m.Config.HunterBringsCarcasses && m.ButcherWorks(colony);
+        int carried = m.PackCount(citizen, ColonyManager.IsCarcass);
+        // Carrying a full load of carcasses, or nothing else of its own to pick up: off to the butcher.
+        if (carried > 0 && forButcher
+            && (carried >= System.Math.Max(1, m.Config.CarcassLoad) || m.PackFull(citizen) || m.HunterCarcass(colony, hut, entity.Pos.XYZ, LetGo) is not { } next || !m.ForTheButcher(colony, next)))
+        {
+            skinning = false;
+            workRange = 2f;
+            // A Butcher's Hut it cannot get to: into its own hut's storage, where the butcher fetches them.
+            var drop = m.ButcherDropOff(colony, entity.Pos.XYZ);
+            bool reachable = drop != null && !IsUnreachable(drop.Value.Chest.Pos);
+            deliverTo = reachable ? drop!.Value.Hut.BuildingId : hut.BuildingId;
+            SetStatus("hunter-to-butcher");
+            return GoWork(reachable ? drop!.Value.Chest.Pos : storage[0].Pos);
+        }
+        if (!knife && !forButcher && storage.FirstOrDefault(c => c.Inventory.Any(s => !s.Empty && ColonyManager.IsKnife(s.Itemstack))) is { } knifeChest)
         {
             return FetchSupplies(knifeChest.Pos, s => ColonyManager.IsKnife(s), 1);
         }
@@ -68,14 +94,16 @@ public class AiTaskSettlerHunter : AiTaskSettlerWorker
             chaseStartMs = now;
             onPest = true;
         }
-        // Its own kills next, before they rot.
-        if (!onPest && knife && !m.PackFull(citizen) && m.HunterCarcass(colony, hut, entity.Pos.XYZ, LetGo) is { } carcass)
+        // Its own kills next, before they rot: whole for the butcher, else skinned.
+        if (!onPest && !m.PackFull(citizen) && m.HunterCarcass(colony, hut, entity.Pos.XYZ, LetGo) is { } carcass
+            && (knife || forButcher && m.ForTheButcher(colony, carcass)))
         {
             skinning = true;
+            pickingUp = forButcher && m.ForTheButcher(colony, carcass);
             preyId = carcass.EntityId;
             m.ClaimCarcass(carcass, entity);
             workRange = 2f;
-            SetStatus("hunter-skinning");
+            SetStatus(pickingUp ? "hunter-picking-up" : "hunter-skinning");
             return GoWork(carcass.Pos.AsBlockPos);
         }
         if (!onPest && m.PackFull(citizen)) return false;
@@ -108,19 +136,34 @@ public class AiTaskSettlerHunter : AiTaskSettlerWorker
     }
 
     /// <summary>The animal moves: walk to where it is now.</summary>
-    protected override Vec3d WalkGoal() => entity.World.GetEntityById(preyId)?.Pos.XYZ ?? target.ToVec3d().Add(0.5, 0, 0.5);
+    protected override Vec3d WalkGoal() => deliverTo == 0 && entity.World.GetEntityById(preyId)?.Pos.XYZ is { } at ? at : target.ToVec3d().Add(0.5, 0, 0.5);
 
-    protected override bool CloseEnough() => entity.World.GetEntityById(preyId) is { } e
+    protected override bool CloseEnough() => deliverTo == 0 && entity.World.GetEntityById(preyId) is { } e
         ? entity.Pos.DistanceTo(e.Pos.XYZ) <= workRange + 0.5
         : base.CloseEnough();
 
-    protected override string WorkAnimation(ItemSlot? hand) => skinning ? "knifecut" : base.WorkAnimation(hand);
+    protected override string WorkAnimation(ItemSlot? hand) => deliverTo != 0 || pickingUp ? "interactstatic" : skinning ? "knifecut" : base.WorkAnimation(hand);
 
     protected override void DoWork(Colony colony, CitizenRecord citizen, Building hut)
     {
         var m = manager!;
+        if (deliverTo != 0)
+        {
+            if (colony.Buildings.Find(b => b.BuildingId == deliverTo) is { } butcherHut) m.DeliverCarcasses(colony, citizen, butcherHut);
+            deliverTo = 0;
+            return;
+        }
         var e = entity.World.GetEntityById(preyId);
         if (e == null) return;
+        if (pickingUp)
+        {
+            if (m.PickUpCarcass(colony, entity, e) is { } whole && m.AddToPack(colony, citizen, whole, false) == 0)
+            {
+                entity.World.SpawnItemEntity(whole, entity.Pos.XYZ.Add(0, 0.5, 0));
+            }
+            m.AddStat(hut, "carried:" + e.Code.Path);
+            return;
+        }
         if (skinning)
         {
             if (!ColonyManager.Skinnable(e) || Hand is not { } hand) return;
@@ -137,5 +180,6 @@ public class AiTaskSettlerHunter : AiTaskSettlerWorker
         SyncHand();
     }
 
-    protected override string DescribeWork() => Lang.Get(skinning ? "createacolony:activity-hunter-skin" : "createacolony:activity-hunter-hunt");
+    protected override string DescribeWork() => Lang.Get(deliverTo != 0 ? "createacolony:activity-hunter-to-butcher" : pickingUp ? "createacolony:activity-hunter-pick-up"
+        : skinning ? "createacolony:activity-hunter-skin" : "createacolony:activity-hunter-hunt");
 }

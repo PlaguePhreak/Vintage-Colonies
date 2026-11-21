@@ -17,7 +17,7 @@ public static class BuildingCategories
         new("agriculture", new[] { BuildingTypes.Farmer, BuildingTypes.Forester, BuildingTypes.Gatherer, BuildingTypes.Hunter }),
         Group("craftsmanship",
             new("woodworking", new[] { BuildingTypes.Sawmill }),
-            new("food", new[] { BuildingTypes.Cook }),
+            new("food", new[] { BuildingTypes.Cook, BuildingTypes.Butcher }),
             new("metallurgy", new[] { BuildingTypes.Smelter, BuildingTypes.Blacksmith, BuildingTypes.Armourer, BuildingTypes.Weaponsmith, BuildingTypes.Mint }),
             new("primitive", new[] { BuildingTypes.Potter, BuildingTypes.Craftsman }),
             new("luxury", new[] { BuildingTypes.Tailor, BuildingTypes.Jeweller })),

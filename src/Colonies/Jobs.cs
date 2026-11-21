@@ -25,6 +25,8 @@ public static class Jobs
     public const string Explorer = "explorer";
     public const string Gatherer = "gatherer";
     public const string Hunter = "hunter";
+    /// <summary>Works at the Butcher's Hut: cuts up dead animals for meat, hides, fat and bones.</summary>
+    public const string Butcher = "butcher";
     /// <summary>One per colony, at the Town Hall: answers wanderers, hands out jobs, oversees the fields and collects rent (ColonyManager.Bailiff.cs).</summary>
     public const string Bailiff = "bailiff";
     /// <summary>Strikes coins at the Royal Mint.</summary>
@@ -33,7 +35,7 @@ public static class Jobs
     public const string Priest = "priest";
 
     /// <summary>All assignable jobs; an empty code means unemployed.</summary>
-    public static readonly string[] All = { "", Builder, Courier, Forester, Farmer, Guard, Potter, Cook, Prospector, Miner, Quarrier, Smelter, Blacksmith, Armourer, Weaponsmith, Sawyer, Craftsman, Tailor, Jeweller, Healer, Explorer, Gatherer, Hunter, Minter, Priest, Bailiff };
+    public static readonly string[] All = { "", Builder, Courier, Forester, Farmer, Guard, Potter, Cook, Prospector, Miner, Quarrier, Smelter, Blacksmith, Armourer, Weaponsmith, Sawyer, Craftsman, Tailor, Jeweller, Healer, Explorer, Gatherer, Hunter, Butcher, Minter, Priest, Bailiff };
 
     /// <summary>The job whose skill a settler's work trains and uses: a prospector on Mine ore works as a miner.</summary>
     public static string? WorkJob(CitizenRecord c) => c.JobCode == Prospector && c.WorkRole == ProspectorRoles.Mine ? Miner : c.JobCode;
@@ -41,5 +43,5 @@ public static class Jobs
     public static bool IsValid(string code) => System.Array.IndexOf(All, code) >= 0;
 
     /// <summary>Jobs that keep their own tools, weapons and supplies in their inventory, so couriers leave it alone.</summary>
-    public static bool CarriesOwnLoad(string? code) => code is Builder or Forester or Farmer or Guard or Potter or Cook or Prospector or Miner or Quarrier or Smelter or Blacksmith or Armourer or Weaponsmith or Sawyer or Craftsman or Tailor or Jeweller or Healer or Explorer or Gatherer or Hunter or Minter or Priest;
+    public static bool CarriesOwnLoad(string? code) => code is Builder or Forester or Farmer or Guard or Potter or Cook or Prospector or Miner or Quarrier or Smelter or Blacksmith or Armourer or Weaponsmith or Sawyer or Craftsman or Tailor or Jeweller or Healer or Explorer or Gatherer or Hunter or Butcher or Minter or Priest;
 }

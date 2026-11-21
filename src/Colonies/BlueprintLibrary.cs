@@ -913,6 +913,8 @@ public static class BuildingTypes
     public const string Explorer = "explorer";
     public const string Gatherer = "gatherer";
     public const string Hunter = "hunter";
+    /// <summary>The Butcher's Hut: its butcher cuts up the animals hunters and herders bring home (ColonyManager.Butchery.cs).</summary>
+    public const string Butcher = "butcher";
     public const string Barracks = "barracks";
     /// <summary>Put at a mine's entrance; several Miner's Huts can work the one mine through it.</summary>
     public const string MineshaftEntrance = "mineshaftentrance";
