@@ -123,7 +123,7 @@ public class GuiDialogQuestBook : GuiDialog
     {
         if (quest.Soon) return Lang.Get("createacolony:questbook-soon");
         if (quest.PerColony && snapshot.ColonyId.Length == 0) return Lang.Get("createacolony:questbook-needs-colony");
-        var needs = quest.Requires.Select(r => library.Get(r)).Where(r => r != null && !r.Soon && StatusOf(r!) != QuestStatus.Claimed).Select(r => Lang.Get(QuestLibrary.TitleKey(r!))).ToList();
+        var needs = quest.Requires.Select(r => library.Get(r)).Where(r => r != null && !r.Soon && StatusOf(r!) != QuestStatus.Claimed).Select(r => QuestLibrary.Title(r!)).ToList();
         if (quest.RequiresAny && needs.Count < quest.Requires.Count) return "";
         return needs.Count > 0 ? Lang.Get(quest.RequiresAny ? "createacolony:questbook-needs-any" : "createacolony:questbook-needs", string.Join(", ", needs)) : "";
     }
@@ -176,13 +176,13 @@ public class GuiDialogQuestBook : GuiDialog
         foreach (var g in groups)
         {
             var chapters = ShownChapters(g);
-            rows.Add(new QuestSidebarRow { IsGroup = true, GroupCode = g.Code, Name = Lang.Get("createacolony:questgroup-" + g.Code), Waiting = chapters.Sum(Waiting) });
+            rows.Add(new QuestSidebarRow { IsGroup = true, GroupCode = g.Code, Name = QuestLibrary.Title(g), Waiting = chapters.Sum(Waiting) });
             foreach (var c in chapters)
             {
                 var (done, total) = ChapterProgress(c);
                 rows.Add(new QuestSidebarRow
                 {
-                    GroupCode = g.Code, ChapterCode = c.Code, Name = Lang.Get("createacolony:chapter-" + c.Code),
+                    GroupCode = g.Code, ChapterCode = c.Code, Name = QuestLibrary.Title(c),
                     Done = done, Total = total, Waiting = Waiting(c), Selected = c == chapter, Icon = ChapterIcon(c)
                 });
             }
@@ -223,7 +223,7 @@ public class GuiDialogQuestBook : GuiDialog
         {
             selectedOf[chapterCode] = code;
             ShowCard(code == null ? null : quests.FirstOrDefault(q => q.Code == code));
-        }, Lang.Get("createacolony:chapter-" + chapterCode));
+        }, QuestLibrary.Title(chapter));
         mapElement.Fogged = Fogged;
         mapElement.CentreOnQuests(chapterCode);
         composer.AddInteractiveElement(mapElement, "questmap");

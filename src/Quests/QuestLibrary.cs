@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 using Vintagestory.API.Common;
+using Vintagestory.API.Config;
 using Vintagestory.API.Util;
 
 namespace CreateAColony.Quests;
@@ -24,21 +25,57 @@ public class QuestLibrary
 
     public QuestDef? Get(string code) => byCode.GetValueOrDefault(code);
 
+    /// <summary>Where a server keeps a quest book that was edited in game; while it holds files they replace the mod's own.</summary>
+    public static string OverrideFolder(ICoreAPI api) => System.IO.Path.Combine(api.GetOrCreateDataPath("ModConfig"), "createacolony", "quests");
+
+    /// <summary>The server's book: the edited one when there is one, else the mod's own. The client starts with the mod's own and is sent the server's.</summary>
     public static QuestLibrary Load(ICoreAPI api)
     {
-        var library = new QuestLibrary();
-        var hidden = new HashSet<string>();
-        foreach (var asset in api.Assets.GetManyInCategory("config", "quests/", CreateAColonyModSystem.ModId))
+        if (api.Side == EnumAppSide.Server)
         {
             try
             {
-                var group = JsonConvert.DeserializeObject<QuestGroupDef>(asset.ToText());
+                string folder = OverrideFolder(api);
+                if (System.IO.Directory.Exists(folder))
+                {
+                    var files = System.IO.Directory.GetFiles(folder, "*.json");
+                    if (files.Length > 0)
+                    {
+                        var edited = FromJson(api, files.Select(System.IO.File.ReadAllText));
+                        edited.Edited = true;
+                        return edited;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                api.Logger.Error("[createacolony] Could not read the edited quest book, using the mod's own: {0}", e.Message);
+            }
+        }
+        return FromJson(api, api.Assets.GetManyInCategory("config", "quests/", CreateAColonyModSystem.ModId).Select(a => a.ToText()));
+    }
+
+    /// <summary>True when this book came from the server's edited files.</summary>
+    public bool Edited;
+
+    public List<string> ToJson() => Groups.Select(g => JsonConvert.SerializeObject(g, Formatting.Indented,
+        new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore })).ToList();
+
+    public static QuestLibrary FromJson(ICoreAPI api, IEnumerable<string> jsons)
+    {
+        var library = new QuestLibrary();
+        var hidden = new HashSet<string>();
+        foreach (string json in jsons)
+        {
+            try
+            {
+                var group = JsonConvert.DeserializeObject<QuestGroupDef>(json);
                 if (group == null || group.Code.Length == 0) continue;
                 library.Groups.Add(group);
             }
             catch (Exception e)
             {
-                api.Logger.Error("[createacolony] Bad quest file {0}: {1}", asset.Location, e.Message);
+                api.Logger.Error("[createacolony] Bad quest file: {0}", e.Message);
             }
         }
         library.Groups.Sort((a, b) => a.Order != b.Order ? a.Order.CompareTo(b.Order) : string.CompareOrdinal(a.Code, b.Code));
@@ -86,6 +123,18 @@ public class QuestLibrary
         return library;
     }
 
+    // Names: the edited text when there is one, else the lang file.
+    public static string Title(QuestDef q) => q.Title.Length > 0 ? q.Title : Lang.Get(TitleKey(q));
+    public static string TitleL(string language, QuestDef q) => q.Title.Length > 0 ? q.Title : Lang.GetL(language, TitleKey(q));
+    public static string Desc(QuestDef q)
+    {
+        if (q.Desc.Length > 0 || q.Title.Length > 0) return q.Desc;
+        string text = Lang.Get(TitleKey(q) + "-desc");
+        return text.EndsWith("-desc") ? "" : text;
+    }
+    public static string Title(QuestChapterDef c) => c.Title.Length > 0 ? c.Title : Lang.Get("createacolony:chapter-" + c.Code);
+    public static string Title(QuestGroupDef g) => g.Title.Length > 0 ? g.Title : Lang.Get("createacolony:questgroup-" + g.Code);
+
     /// <summary>Lang key suffix of a quest's title; the description adds "-desc".</summary>
     public static string TitleKey(QuestDef q) => "createacolony:quest-" + q.Code;
 }
@@ -107,6 +156,8 @@ public class QuestGroupDef
     public string Scope = QuestScope.Player;
     /// <summary>An item or block code drawn as the group's icon.</summary>
     public string Icon = "";
+    /// <summary>The group's name when the book was edited in game; empty uses the lang file (questgroup-code).</summary>
+    public string Title = "";
     public List<QuestChapterDef> Chapters = new();
 }
 
@@ -117,6 +168,8 @@ public class QuestChapterDef
     /// <summary>Overrides the group's scope; the Story prologue is per player while the rest is per colony.</summary>
     public string? Scope;
     public string Icon = "";
+    /// <summary>The chapter's name when edited in game; empty uses the lang file (chapter-code).</summary>
+    public string Title = "";
     public List<QuestDef> Quests = new();
 
     [JsonIgnore] public QuestGroupDef Group = null!;
@@ -159,6 +212,11 @@ public class QuestDef
     public string Mod = "";
     /// <summary>Coming later: shown on the map but locked, for huts and features the mod does not have yet.</summary>
     public bool Soon;
+    /// <summary>Can be done again: claiming it gives the rewards and starts it over. Quests after it open at the first claim.</summary>
+    public bool Repeatable;
+    /// <summary>Name and description when edited in game; empty uses the lang file (quest-code, quest-code-desc).</summary>
+    public string Title = "";
+    public string Desc = "";
     public List<QuestObjectiveDef> Objectives = new();
     public List<QuestRewardDef> Rewards = new();
 

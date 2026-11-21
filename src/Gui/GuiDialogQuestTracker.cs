@@ -67,7 +67,7 @@ public class GuiDialogQuestTracker : HudElement
         {
             var status = (QuestStatus)state.Status;
             var titleFont = status == QuestStatus.Complete ? GuiKit.Detail().WithColor(new[] { 1.0, 0.82, 0.25, 1.0 }) : GuiKit.Detail();
-            string title = Lang.Get(QuestLibrary.TitleKey(quest));
+            string title = QuestLibrary.Title(quest);
             if (status == QuestStatus.Complete) title += " ✓";
             composer.AddStaticText(title, titleFont, ElementBounds.Fixed(0, y, Width, 20));
             y += 20;

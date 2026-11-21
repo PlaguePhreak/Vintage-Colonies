@@ -30,8 +30,16 @@ public partial class ColonyManager
     /// <summary>The quest book's contents, read from the quest files the first time they are needed.</summary>
     public QuestLibrary Quests => quests ??= QuestLibrary.Load(sapi);
 
-    /// <summary>Re-reads the quest files, for /colony quest reload after editing them.</summary>
-    public void ReloadQuests() => quests = null;
+    /// <summary>Swaps in a new quest book (the editor saved, or the files were reset) and forgets what was worked out from the old one.</summary>
+    public void ReloadQuests()
+    {
+        quests = QuestLibrary.Load(sapi);
+        knownItems.Clear();
+        killTags = null;
+        breakTasks = null;
+        placeTasks = null;
+    }
+
 
     public PlayerQuests QuestsOf(string playerUid)
     {
@@ -83,7 +91,8 @@ public partial class ColonyManager
         else SavePlayerQuests(playerUid);
     }
 
-    public bool IsClaimed(QuestDef q, string playerUid, Colony? colony) => RecordOf(q, playerUid, colony)?.Claimed == true;
+    /// <summary>Claimed, or for a quest that repeats: claimed at least once.</summary>
+    public bool IsClaimed(QuestDef q, string playerUid, Colony? colony) => RecordOf(q, playerUid, colony) is { } r && (r.Claimed || r.Times > 0);
 
     /// <summary>
     /// Where a quest stands for a player, with how far along each objective is. Colony quests need a
@@ -351,11 +360,26 @@ public partial class ColonyManager
         }
 
         var record = EnsureRecord(q, player.PlayerUID, colony ?? HomeColony(player.PlayerUID)!);
-        record.Claimed = true;
+        record.Times++;
         record.ClaimedTotalDays = sapi.World.Calendar.TotalDays;
+        if (q.Repeatable)
+        {
+            // Start over: the tasks count from nothing again.
+            record.Notified = record.Checked = record.Accepted = false;
+            var counters = QuestsOf(player.PlayerUID).Counters;
+            for (int i = 0; i < q.Objectives.Count; i++)
+            {
+                counters.Remove(q.Code + "#" + i);
+                var o = q.Objectives[i];
+                if (o.Type == ObjectiveTypes.Kill) counters.Remove(o.Code);
+                else if (o.Type is ObjectiveTypes.Break or ObjectiveTypes.Place) counters.Remove(o.Type + ":" + o.Code);
+            }
+            SavePlayerQuests(player.PlayerUID);
+        }
+        else record.Claimed = true;
         SaveRecords(q, player.PlayerUID, colony);
 
-        player.SendMessage(0, Lang.GetL(player.LanguageCode, "createacolony:quest-claimed", Lang.GetL(player.LanguageCode, QuestLibrary.TitleKey(q))), EnumChatType.Notification);
+        player.SendMessage(0, Lang.GetL(player.LanguageCode, "createacolony:quest-claimed", QuestLibrary.TitleL(player.LanguageCode, q)), EnumChatType.Notification);
         if (q.PerColony && colony != null) LogEvent(colony, "event-quest-done", "@quest-" + q.Code, player.PlayerName);
         return null;
     }
@@ -411,8 +435,8 @@ public partial class ColonyManager
             record.Notified = true;
             SaveRecords(q, player.PlayerUID, colony);
             // The same pop-up the game shows for a lore find.
-            sapi.SendIngameDiscovery(player, "questcompleted", Lang.GetL(player.LanguageCode, "createacolony:quest-completed-popup", Lang.GetL(player.LanguageCode, QuestLibrary.TitleKey(q))));
-            player.SendMessage(0, Lang.GetL(player.LanguageCode, "createacolony:quest-ready", Lang.GetL(player.LanguageCode, QuestLibrary.TitleKey(q))), EnumChatType.Notification);
+            sapi.SendIngameDiscovery(player, "questcompleted", Lang.GetL(player.LanguageCode, "createacolony:quest-completed-popup", QuestLibrary.TitleL(player.LanguageCode, q)));
+            player.SendMessage(0, Lang.GetL(player.LanguageCode, "createacolony:quest-ready", QuestLibrary.TitleL(player.LanguageCode, q)), EnumChatType.Notification);
         }
     }
 }

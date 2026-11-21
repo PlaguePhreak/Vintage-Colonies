@@ -53,6 +53,8 @@ public partial class ColonyNetwork : ModSystem
             .RegisterMessageType<QuestBookOpenRequest>()
             .RegisterMessageType<QuestBookSnapshot>()
             .RegisterMessageType<QuestActionPacket>()
+            .RegisterMessageType<QuestLibraryPacket>()
+            .RegisterMessageType<QuestEditPacket>()
             .RegisterMessageType<SettlerSlotPacket>()
             .RegisterMessageType<HandPlacePacket>()
             .RegisterMessageType<DisplayRedrawPacket>();
@@ -69,6 +71,7 @@ public partial class ColonyNetwork : ModSystem
             .SetMessageHandler<HutOpenRequest>(OnHutOpenRequest)
             .SetMessageHandler<QuestBookOpenRequest>(OnQuestBookOpen)
             .SetMessageHandler<QuestActionPacket>(OnQuestAction)
+            .SetMessageHandler<QuestEditPacket>(OnQuestEdit)
             .SetMessageHandler<SettlerSlotPacket>(OnSettlerSlot);
         StartQuestsServer(api);
         api.Event.PlayerNowPlaying += player => serverChannel!.SendPacket(new HandPlacePacket { On = Manager.Config.PlaceHutsByHand }, player);
@@ -1315,6 +1318,7 @@ public partial class ColonyNetwork : ModSystem
             .SetMessageHandler<WandChooserSnapshot>(OnWandChooserSnapshot)
             .SetMessageHandler<GhostPreviewPacket>(OnGhostPreview)
             .SetMessageHandler<QuestBookSnapshot>(OnQuestBookSnapshot)
+            .SetMessageHandler<QuestLibraryPacket>(OnQuestLibrary)
             .SetMessageHandler<HandPlacePacket>(p => WandOnly.ClientHandPlacing = p.On)
             .SetMessageHandler<DisplayRedrawPacket>(OnDisplayRedraw);
         StartQuestsClient(api);

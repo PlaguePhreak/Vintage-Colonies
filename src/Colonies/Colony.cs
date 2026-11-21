@@ -665,6 +665,8 @@ public class QuestRecord
     [ProtoMember(5)] public bool Notified;
     /// <summary>The player marked the quest's unchecked tasks as done.</summary>
     [ProtoMember(6)] public bool Checked;
+    /// <summary>How many times the quest was claimed (more than once only for a quest that repeats).</summary>
+    [ProtoMember(7)] public int Times;
 }
 
 /// <summary>One player's own quests (the base game groups and the Story prologue), saved on the world under the player's uid.</summary>

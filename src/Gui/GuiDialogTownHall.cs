@@ -340,7 +340,7 @@ public class GuiDialogTownHall : GuiDialog
             y = composer.Section(Lang.Get("createacolony:townhall-quests-ready"), y, Width);
             foreach (var q in ready)
             {
-                y = composer.Text("• " + Lang.Get(QuestLibrary.TitleKey(q)) + " — " + Lang.Get("createacolony:chapter-" + q.Chapter.Code), GuiKit.Body().WithColor(new[] { 1.0, 0.82, 0.25, 1.0 }), 10, y, Width - 10, 2);
+                y = composer.Text("• " + QuestLibrary.Title(q) + " — " + QuestLibrary.Title(q.Chapter), GuiKit.Body().WithColor(new[] { 1.0, 0.82, 0.25, 1.0 }), 10, y, Width - 10, 2);
             }
             y += 8;
         }
@@ -350,14 +350,14 @@ public class GuiDialogTownHall : GuiDialog
         {
             var chapters = group.Chapters.Where(c => c.PerColony).ToList();
             if (chapters.Count == 0) continue;
-            y = composer.Section(Lang.Get("createacolony:questgroup-" + group.Code), y, Width);
+            y = composer.Section(QuestLibrary.Title(group), y, Width);
             foreach (var chapter in chapters)
             {
                 int total = chapter.Quests.Count(q => !q.Secret || StatusOf(q) != QuestStatus.Locked);
                 int done = chapter.Quests.Count(q => StatusOf(q) == QuestStatus.Claimed);
                 var font = done > 0 && done == total ? GuiKit.Body().WithColor(GuiKit.GoodColor) : GuiKit.Body();
                 composer
-                    .AddStaticText(Lang.Get("createacolony:chapter-" + chapter.Code), font, ElementBounds.Fixed(10, y, Width * 0.5, 22))
+                    .AddStaticText(QuestLibrary.Title(chapter), font, ElementBounds.Fixed(10, y, Width * 0.5, 22))
                     .AddStaticText(total == 0 ? Lang.Get("createacolony:townhall-quests-later") : done + " / " + total,
                         GuiKit.Detail().WithOrientation(EnumTextOrientation.Right), ElementBounds.Fixed(Width * 0.5, y + 1, Width * 0.5 - 10, 22));
                 y += 24;

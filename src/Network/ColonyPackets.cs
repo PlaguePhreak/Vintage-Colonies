@@ -780,6 +780,23 @@ public class QuestBookSnapshot
     [ProtoMember(5)] public bool Periodic;
     /// <summary>The viewer's role in the colony, so the book knows whether they may claim colony quests.</summary>
     [ProtoMember(6)] public int ViewerRole;
+    /// <summary>The viewer may edit the quest book (a server admin, or the player in single player).</summary>
+    [ProtoMember(7)] public bool CanEdit;
+}
+
+/// <summary>The server's quest book, one JSON text per group: sent when it differs from the mod's own and after every edit.</summary>
+[ProtoContract]
+public class QuestLibraryPacket
+{
+    [ProtoMember(1)] public List<string> Groups = new();
+}
+
+/// <summary>The quest editor saves the whole book (one JSON text per group), or asks for the mod's own book back.</summary>
+[ProtoContract]
+public class QuestEditPacket
+{
+    [ProtoMember(1)] public List<string> Groups = new();
+    [ProtoMember(2)] public bool Reset;
 }
 
 public enum QuestAction

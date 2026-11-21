@@ -57,7 +57,7 @@ public class GuiDialogQuestCard : GuiDialog
         var state = book.StateOf(quest);
         var composer = capi.Gui.CreateCompo("createacolony-questcard", dialogBounds)
             .AddShadedDialogBG(bgBounds)
-            .AddDialogTitleBar(Lang.Get(QuestLibrary.TitleKey(quest)), () => TryClose())
+            .AddDialogTitleBar(QuestLibrary.Title(quest), () => TryClose())
             .BeginChildElements(bgBounds);
 
         double y = 30;
@@ -113,8 +113,7 @@ public class GuiDialogQuestCard : GuiDialog
         y = boxTop + boxHeight + 10;
 
         // The story. Quest text may use the game's text tags, such as <font color="#ffd966">, for coloured words.
-        string desc = Lang.Get(QuestLibrary.TitleKey(quest) + "-desc");
-        if (desc.EndsWith("-desc")) desc = "";
+        string desc = QuestLibrary.Desc(quest);
         if (desc.Length > 0) y = composer.Rich(desc, GuiKit.Detail(), 0, y, Width, 10);
 
         if (status == QuestStatus.Locked)

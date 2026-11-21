@@ -419,7 +419,7 @@ public class GuiElementQuestMap : GuiElement
         if (hovered != null && Shown(hovered))
         {
             var (cx, cy) = Centre(hovered);
-            string text = Lang.Get(QuestLibrary.TitleKey(hovered));
+            string text = QuestLibrary.Title(hovered);
             ctx.SelectFontFace(GuiStyle.StandardFontName, FontSlant.Normal, FontWeight.Normal);
             ctx.SetFontSize(scaled(14));
             double boxWidth = ctx.TextExtents(text).XAdvance + scaled(8), boxHeight = ctx.FontExtents.Height + scaled(4);

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using CreateAColony.Colonies;
@@ -34,6 +35,11 @@ public partial class ColonyNetwork
 
     void StartQuestsServer(ICoreServerAPI api)
     {
+        // A book edited in game is sent to each player as they join; the mod's own book they already have.
+        api.Event.PlayerNowPlaying += player =>
+        {
+            if (Manager.Quests.Edited) serverChannel!.SendPacket(new QuestLibraryPacket { Groups = Manager.Quests.ToJson() }, player);
+        };
         api.Event.RegisterGameTickListener(_ =>
         {
             foreach (var player in api.World.AllOnlinePlayers.OfType<IServerPlayer>())
@@ -67,6 +73,7 @@ public partial class ColonyNetwork
             ColonyName = colony?.Name ?? "",
             ViewerRole = colony == null ? 0 : (int)colony.RoleOf(player.PlayerUID),
             OpenWindow = openWindow,
+            CanEdit = player.HasPrivilege(Privilege.controlserver),
             Periodic = periodic,
             Quests = QuestStates(player, colony)
         };
@@ -118,6 +125,55 @@ public partial class ColonyNetwork
         if (colony != null && quest?.PerColony == true) RefreshViewers(colony);
     }
 
+    /// <summary>The quest editor saved the book, or asked for the mod's own back. Admins only.</summary>
+    void OnQuestEdit(IServerPlayer player, QuestEditPacket packet)
+    {
+        if (!player.HasPrivilege(Privilege.controlserver))
+        {
+            player.SendIngameError("createacolony-quest", Lang.GetL(player.LanguageCode, "createacolony:questedit-denied"));
+            return;
+        }
+        try
+        {
+            string folder = QuestLibrary.OverrideFolder(sapi!);
+            if (!packet.Reset)
+            {
+                var check = QuestLibrary.FromJson(sapi!, packet.Groups);
+                if (check.Groups.Count == 0 || check.Groups.Count != packet.Groups.Count) throw new Exception("the book could not be read");
+            }
+            if (System.IO.Directory.Exists(folder))
+            {
+                foreach (string old in System.IO.Directory.GetFiles(folder, "*.json")) System.IO.File.Delete(old);
+            }
+            if (!packet.Reset)
+            {
+                System.IO.Directory.CreateDirectory(folder);
+                var saved = QuestLibrary.FromJson(sapi!, packet.Groups);
+                var texts = saved.ToJson();
+                for (int i = 0; i < saved.Groups.Count; i++)
+                {
+                    string name = new string(saved.Groups[i].Code.Where(c => char.IsLetterOrDigit(c) || c == '-' || c == '_').ToArray());
+                    System.IO.File.WriteAllText(System.IO.Path.Combine(folder, (name.Length > 0 ? name : "group" + i) + ".json"), texts[i]);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            sapi!.Logger.Error("[createacolony] Saving the quest book failed: {0}", e);
+            player.SendIngameError("createacolony-quest", Lang.GetL(player.LanguageCode, "createacolony:questedit-failed", e.Message));
+            return;
+        }
+        Manager.ReloadQuests();
+        var book = new QuestLibraryPacket { Groups = Manager.Quests.ToJson() };
+        foreach (var online in sapi!.World.AllOnlinePlayers.OfType<IServerPlayer>())
+        {
+            if (online.ConnectionState != EnumClientState.Playing) continue;
+            serverChannel!.SendPacket(book, online);
+            if (questViewers.Contains(online.PlayerUID)) SendQuestBook(online, openWindow: false, periodic: false);
+        }
+        player.SendMessage(0, Lang.GetL(player.LanguageCode, packet.Reset ? "createacolony:questedit-reset-done" : "createacolony:questedit-saved"), EnumChatType.Notification);
+    }
+
     string? Track(IServerPlayer player, QuestDef quest)
     {
         Manager.ToggleTracked(player, quest);
@@ -143,6 +199,20 @@ public partial class ColonyNetwork
     public void RequestQuestBook() => clientChannel?.SendPacket(new QuestBookOpenRequest());
 
     public void SendQuestAction(string code, QuestAction action) => clientChannel?.SendPacket(new QuestActionPacket { Code = code, Action = action });
+
+    /// <summary>The server's quest book replaces the one read from the mod's files.</summary>
+    void OnQuestLibrary(QuestLibraryPacket packet)
+    {
+        clientQuests = QuestLibrary.FromJson(capi!, packet.Groups);
+        if (questDialog != null && questDialog.IsOpened())
+        {
+            questDialog.TryClose();
+            questDialog = null;
+            RequestQuestBook();
+        }
+    }
+
+    public void SendQuestEdit(List<string> groups, bool reset) => clientChannel!.SendPacket(new QuestEditPacket { Groups = groups, Reset = reset });
 
     void OnQuestBookSnapshot(QuestBookSnapshot snapshot)
     {
