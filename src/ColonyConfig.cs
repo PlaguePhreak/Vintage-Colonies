@@ -557,6 +557,16 @@ public class ColonyConfig
         ["game:ingot-copper"] = 4
     };
 
+    /// <summary>What the smelter makes in the bloomery by the hut, by the code of what comes out (wildcards allowed).</summary>
+    public string[] BloomeryOutputs = { "*:*bloom*" };
+    /// <summary>The ingot a bloom is hammered into when the game has no smithing recipe for it, by bloom code.</summary>
+    public System.Collections.Generic.Dictionary<string, string> BloomIngots = new()
+    {
+        ["game:ironbloom"] = "game:ingot-iron"
+    };
+    /// <summary>Extra hammer strikes a blacksmith takes to beat the slag out of a bloom, on top of those for its size.</summary>
+    public int BloomExtraStrikes = 4;
+
     // Blacksmith
     /// <summary>Seconds a blacksmith takes to load or fuel the forge, or take the hot ingots out.</summary>
     public float BlacksmithSecondsPerStep = 2f;

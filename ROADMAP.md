@@ -74,7 +74,7 @@ Everything listed under "What we have" and "Partly done" has been tested in game
 ## Not built yet
 
 **Next, in this order**
-1. **Smelter** (started in 0.50.0): still to do are alloys such as bronze, and a bloomery for iron
+1. **Smelter** (started in 0.50.0): alloys such as bronze and the bloomery for iron added in 0.169.0 (not tested yet)
 2. **Happiness** came in 0.61.0. Still to add: safety (raids), health, and how crowded the colony is
 3. **A request list**: seeing what workers need came in 0.142.0 (Requests tab), and giving them what you carry straight from that tab in 0.167.0
 2. **Happiness** came in 0.61.0. Safety (monsters, guards, attacks), health and crowded homes came in 0.168.0 (not tested yet). Still to add: raids, when raids are in

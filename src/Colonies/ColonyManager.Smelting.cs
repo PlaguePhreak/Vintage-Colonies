@@ -14,8 +14,9 @@ namespace CreateAColony.Colonies;
 /// crucible with nuggets (or metal bits), puts it on the fire pit by the hut with charcoal, lets the game
 /// melt it, and pours the metal into fired ingot molds it sets out beside the fire pit. Once the ingots
 /// have cooled it takes them out. Ingots stay in the hut storage until couriers take them to the
-/// warehouse. The Smelting tab says how many ingots of each metal to keep. Alloys (bronze) are not made
-/// yet: every crucible holds one kind of ore.
+/// warehouse. The Smelting tab says how many ingots of each metal to keep. Alloys such as bronze are
+/// mixed in the crucible from the nuggets of each metal in the right shares (ColonyManager.Alloys.cs), and
+/// iron is made in the game's bloomery (ColonyManager.Bloomery.cs).
 /// </summary>
 public partial class ColonyManager
 {
@@ -26,6 +27,12 @@ public partial class ColonyManager
         public required ItemStack Sample;
         public readonly Dictionary<AssetLocation, int> UnitsPer = new();
         public readonly Dictionary<AssetLocation, int> MeltingPoint = new();
+        /// <summary>For an alloy: the game's alloy recipe and the metals in it, each with the ores that melt into it.</summary>
+        public AlloyRecipe? Alloy;
+        public readonly List<AlloyPart> Parts = new();
+        /// <summary>Made in the bloomery, not the crucible (iron bloom): pieces of each ore per bloom.</summary>
+        public bool Bloomery;
+        public readonly Dictionary<AssetLocation, int> BloomRatio = new();
 
         public bool IsOre(ItemStack s) => UnitsPer.ContainsKey(s.Collectible.Code);
         public bool IsMine(ItemStack s) => s.Collectible.Code.ToString() == Key;
@@ -41,6 +48,8 @@ public partial class ColonyManager
         foreach (var obj in sapi.World.Collectibles)
         {
             var props = obj?.CombustibleProps;
+            // A bloom is hammered on the anvil, never melted (ColonyManager.Bloomery.cs).
+            if (obj is IAnvilWorkable && obj.Code?.Path.Contains("bloom") == true) continue;
             if (obj?.Code == null || props?.SmeltedStack == null || !props.RequiresContainer || props.MeltingPoint <= 0 || props.SmeltingType != EnumSmeltType.Smelt) continue;
             var ingot = props.SmeltedStack.ResolvedItemstack;
             if (ingot == null || ingot.Collectible.FirstCodePart() != "ingot" || ingot.Collectible.Code.Equals(obj.Code)) continue;
@@ -56,7 +65,10 @@ public partial class ColonyManager
             kind.UnitsPer[obj.Code] = units;
             kind.MeltingPoint[obj.Code] = props.MeltingPoint;
         }
-        return smeltKinds = kinds.Values.OrderBy(k => k.Key).ToList();
+        var all = kinds.Values.ToList();
+        all.AddRange(AlloyKinds(kinds));
+        all.AddRange(BloomeryKinds());
+        return smeltKinds = all.OrderBy(k => k.Alloy != null ? 1 : k.Bloomery ? 2 : 0).ThenBy(k => k.Key).ToList();
     }
 
     public SmeltKind? SmeltKindOf(ItemStack stack) => SmeltKinds().FirstOrDefault(k => k.IsOre(stack));
@@ -95,17 +107,14 @@ public partial class ColonyManager
             if (mold.ContentsLeft != null && mine(mold.ContentsLeft)) count++;
             if (mold.ContentsRight != null && mine(mold.ContentsRight)) count++;
         }
+        if (kind.Bloomery) return count + BloomsInBloomery(hut, kind);
         // Metal in the crucible counts too, so a second batch of it is not started.
         var pit = SmelterFirepit(hut);
         foreach (var slot in pit == null ? Array.Empty<ItemSlot>() : new[] { pit.inputSlot, pit.outputSlot })
         {
             if (slot.Itemstack?.Block is BlockSmeltedContainer full && full.GetContents(sapi.World, slot.Itemstack) is { Key: { } metal } contents && mine(metal)) count += contents.Value / 100;
         }
-        if (pit?.inputSlot.Itemstack?.Block is BlockSmeltingContainer && pit.Inventory is ISlotProvider cooking)
-        {
-            int units = cooking.Slots.Where(s => !s.Empty && kind.IsOre(s.Itemstack)).Sum(s => s.StackSize * kind.UnitsPer[s.Itemstack.Collectible.Code]);
-            count += units / 100;
-        }
+        if (pit != null && CrucibleMakes(pit) is { } making && making.Code == kind.Key) count += making.Units / 100;
         return count;
     }
 
@@ -243,29 +252,41 @@ public partial class ColonyManager
             slots[i].MarkDirty();
         }
 
-        if (pit.Inventory is not ISlotProvider cooking || crucible.Block is not BlockSmeltingContainer bsc || !bsc.CanSmelt(sapi.World, cooking, crucible, null)
-            || slots.All(s => s.Empty))
+        if (!CrucibleCanSmelt(pit))
         {
-            // Take the ore out before the crucible: a fire pit drops whatever is in a crucible taken off it.
-            foreach (var slot in slots)
-            {
-                if (slot.Empty) continue;
-                AddToPack(colony, smelter, slot.Itemstack);
-                slot.Itemstack = null;
-                slot.MarkDirty();
-            }
-            AddToPack(colony, smelter, crucible);
-            pit.inputSlot.Itemstack = null;
-            pit.inputSlot.MarkDirty();
-            pit.MarkDirty(true);
+            UnloadCrucible(colony, smelter, pit);
             return false;
         }
         FuelSmelterFire(colony, smelter, pit, MeltTemperature(kind, slots.Where(s => !s.Empty).Select(s => s.Itemstack!)));
         return true;
     }
 
+    /// <summary>True when the game will melt what is in the crucible on the fire pit.</summary>
+    bool CrucibleCanSmelt(BlockEntityFirepit pit) =>
+        pit.Inventory is ISlotProvider cooking && pit.inputSlot.Itemstack is { Block: BlockSmeltingContainer bsc } crucible
+        && pit.otherCookingSlots.Any(s => !s.Empty) && bsc.CanSmelt(sapi.World, cooking, crucible, null);
+
+    /// <summary>Takes the ore and then the empty crucible off the fire pit, back to the smelter.</summary>
+    void UnloadCrucible(Colony colony, CitizenRecord smelter, BlockEntityFirepit pit)
+    {
+        // Take the ore out before the crucible: a fire pit drops whatever is in a crucible taken off it.
+        foreach (var slot in pit.otherCookingSlots)
+        {
+            if (slot.Empty) continue;
+            AddToPack(colony, smelter, slot.Itemstack);
+            slot.Itemstack = null;
+            slot.MarkDirty();
+        }
+        if (pit.inputSlot.Itemstack is { } crucible) AddToPack(colony, smelter, crucible);
+        pit.inputSlot.Itemstack = null;
+        pit.inputSlot.MarkDirty();
+        pit.MarkDirty(true);
+    }
+
     /// <summary>How many pieces of this ore make one ingot (20 nuggets, say).</summary>
-    public static int PiecesPerIngot(SmeltKind kind, AssetLocation code) => Math.Max(1, (int)Math.Ceiling(100.0 / kind.UnitsPer[code]));
+    public static int PiecesPerIngot(SmeltKind kind, AssetLocation code) => kind.Bloomery
+        ? Math.Max(1, kind.BloomRatio[code])
+        : Math.Max(1, (int)Math.Ceiling(100.0 / kind.UnitsPer[code]));
 
     /// <summary>The temperature the fire pit must reach for what is on it now.</summary>
     public int SmelterHeatNeeded(BlockEntityFirepit pit)
@@ -414,11 +435,12 @@ public partial class ColonyManager
     public string SmelterInfo(Colony colony, Building hut)
     {
         var pit = SmelterFirepit(hut);
-        if (pit == null) return Lang.Get("createacolony:smelter-no-firepit", Config.SmelterRadius);
+        string bloomery = BloomeryInfo(hut) is { } line ? "<br>" + line : "";
+        if (pit == null) return Lang.Get("createacolony:smelter-no-firepit", Config.SmelterRadius) + bloomery;
         int molds = SmelterMolds(hut).Sum(m => (m.MoldLeft != null && !m.ShatteredLeft ? 1 : 0) + (m.QuantityMolds > 1 && m.MoldRight != null && !m.ShatteredRight ? 1 : 0));
         string fire = FullCrucibleSlot(pit) != null ? Lang.Get("createacolony:smelter-fire-poured")
             : pit.inputSlot.Itemstack is { } input && IsEmptyCrucible(input) ? Lang.Get(pit.IsBurning ? "createacolony:smelter-fire-melting" : "createacolony:smelter-fire-waiting")
             : Lang.Get("createacolony:smelter-fire-ready");
-        return fire + "<br>" + Lang.Get("createacolony:smelter-molds", molds, FreeMoldSides(hut));
+        return fire + "<br>" + Lang.Get("createacolony:smelter-molds", molds, FreeMoldSides(hut)) + bloomery;
     }
 }

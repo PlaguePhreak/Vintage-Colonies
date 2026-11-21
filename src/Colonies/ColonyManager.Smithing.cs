@@ -25,7 +25,10 @@ public partial class ColonyManager
         /// <summary>The finished thing's code: the tool when the piece is put on a handle, else the piece.</summary>
         public required string Key;
         public required ItemStack Sample;
-        public required SmithingRecipe Recipe;
+        /// <summary>The game's smithing recipe; null for a bloom hammered into an ingot by the config's list.</summary>
+        public SmithingRecipe? Recipe;
+        /// <summary>Hammered from a bloom (iron bloom into an iron ingot), not from ingots.</summary>
+        public bool FromBloom;
         public required AssetLocation Ingot;
         public required int Ingots;
         public required int Strikes;
@@ -94,6 +97,10 @@ public partial class ColonyManager
                     Handle = handle
                 };
             }
+        }
+        foreach (var bloom in BloomSmithKinds())
+        {
+            if (!kinds.ContainsKey(bloom.Key)) kinds[bloom.Key] = bloom;
         }
         return smithKinds = kinds.Values.OrderBy(k => k.Metal).ThenBy(k => k.Key).ToList();
     }
@@ -233,13 +240,13 @@ public partial class ColonyManager
         var metals = new HashSet<AssetLocation>();
         void Add(IEnumerable<ItemStack> stacks)
         {
-            foreach (var s in stacks) if (IsIngot(s)) metals.Add(s.Collectible.Code);
+            foreach (var s in stacks) if (IsIngot(s) || IsBloom(s)) metals.Add(s.Collectible.Code);
         }
         Add(WarehouseContainers(colony).SelectMany(c => c.Inventory).Where(s => !s.Empty).Select(s => s.Itemstack));
         Add(HutStorage(colony, hut).SelectMany(c => c.Inventory).Where(s => !s.Empty).Select(s => s.Itemstack));
         if (smith != null) Add(PackItems(smith));
         int tier = SmithAnvil(hut)?.OwnMetalTier ?? int.MaxValue;
-        return SmithKindsFor(colony, hut.Type).Where(k => CraftKeep(hut, k.Key) > 0 || (metals.Contains(k.Ingot) && k.Tier <= tier)).ToList();
+        return SmithKindsFor(colony, hut.Type).Where(k => CraftKeep(hut, k.Key) > 0 || ((k.FromBloom || metals.Contains(k.Ingot)) && k.Tier <= tier)).ToList();
     }
 
     /// <summary>Puts the ingots for a piece in the forge, adds fuel if it has little, and lights it.</summary>
@@ -306,7 +313,7 @@ public partial class ColonyManager
         int count = made.StackSize;
         AddToPack(colony, smith, made);
         if (made.StackSize > 0) StoreHarvest(colony, hut, smith, new[] { made }, hut.HutPos);
-        AddStat(hut, "smithed", count);
+        AddStat(hut, kind.FromBloom ? "blooms-hammered" : "smithed", count);
         return true;
     }
 
@@ -319,7 +326,7 @@ public partial class ColonyManager
         var kinds = SmithKindsFor(colony, hut.Type);
         var recipeInputs = HasHutRecipes(hut.Type) ? HutRecipeInputs(colony, hut) : _ => false;
         bool armourer = hut.Type == BuildingTypes.Armourer;
-        return s => !IsIngot(s) && !IsForgeFuel(s) && !kinds.Any(k => k.IsHandle(s)) && !recipeInputs(s)
+        return s => !IsIngot(s) && !IsBloom(s) && !IsForgeFuel(s) && !kinds.Any(k => k.IsHandle(s)) && !recipeInputs(s)
             && !(armourer && (ArmourerMendLeft(s) > 1 - Config.ArmourerMendBelow || IsArmourPart(s)));
     }
 

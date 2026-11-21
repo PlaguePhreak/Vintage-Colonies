@@ -59,7 +59,7 @@ public class AiTaskSettlerBlacksmith : AiTaskSettlerWorker
         // Ingots in the forge: take them out once hot, else keep the fire going.
         if (forge.WorkItemStack is { } heating)
         {
-            if (!ColonyManager.IsIngot(heating))
+            if (!ColonyManager.IsIngot(heating) && !ColonyManager.IsBloom(heating))
             {
                 SetStatus("smith-forge-busy");
                 return false;
@@ -122,7 +122,8 @@ public class AiTaskSettlerBlacksmith : AiTaskSettlerWorker
                 SetStatus("smith-fetching-ingots");
                 return FetchSupplies(chest.Pos, want.IsIngot, want.Ingots - have);
             }
-            if (m.CodeInWarehouse(colony, want.IsIngot) != null)
+            // Blooms are asked for even when the warehouse has none: the smelter makes them in the bloomery.
+            if (want.FromBloom || m.CodeInWarehouse(colony, want.IsIngot) != null)
             {
                 m.EnsureCraftRequest(colony, hut, want.Ingot.ToString(), want.Ingots - have);
                 SetStatus("smith-waiting-ingots");
