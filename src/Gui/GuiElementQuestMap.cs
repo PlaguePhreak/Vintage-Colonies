@@ -69,7 +69,20 @@ public class GuiElementQuestMap : GuiElement
     /// <summary>The fog: the book says which quests are still out of sight (the ones before them are not open yet).</summary>
     public System.Func<QuestDef, bool>? Fogged;
 
-    bool Shown(QuestDef q) => (!q.Secret || StatusOf(q) != QuestStatus.Locked) && Fogged?.Invoke(q) != true;
+    // The quest editor: drag a quest to move it, hold Shift and drag to another quest to join or part them,
+    // right-click a quest to change it, right-click empty map for a new one.
+    public bool EditMode;
+    public Action<QuestDef>? OnEdit;
+    public Action<double, double>? OnAdd;
+    QuestDef? dragQuest, linkFrom;
+
+    (double X, double Y) CellAt(double x, double y)
+    {
+        double k = Scale;
+        return (((x - Bounds.InnerWidth / 2) / k - view.PanX) / CellSize, ((y - Bounds.InnerHeight / 2) / k - view.PanY) / CellSize);
+    }
+
+    bool Shown(QuestDef q) => (!q.Secret || StatusOf(q) != QuestStatus.Locked) && Fogged?.Invoke(q) != true || EditMode;
 
     /// <summary>A quest's centre inside the element, in screen pixels.</summary>
     (double X, double Y) Centre(QuestDef q)
@@ -126,6 +139,29 @@ public class GuiElementQuestMap : GuiElement
     public override void OnMouseDownOnElement(ICoreClientAPI api, MouseEvent args)
     {
         base.OnMouseDownOnElement(api, args);
+        if (EditMode)
+        {
+            var at = QuestAt(args.X - Bounds.absX, args.Y - Bounds.absY);
+            if (args.Button == EnumMouseButton.Right)
+            {
+                if (at != null) OnEdit?.Invoke(at);
+                else
+                {
+                    var (cx, cy) = CellAt(args.X - Bounds.absX, args.Y - Bounds.absY);
+                    OnAdd?.Invoke(Math.Round(cx * 4) / 4, Math.Round(cy * 4) / 4);
+                }
+                return;
+            }
+            if (args.Button == EnumMouseButton.Left && at != null)
+            {
+                if (api.Input.KeyboardKeyStateRaw[(int)GlKeys.ShiftLeft] || api.Input.KeyboardKeyStateRaw[(int)GlKeys.ShiftRight]) linkFrom = at;
+                else dragQuest = at;
+                prevMouseX = downX = args.X;
+                prevMouseY = downY = args.Y;
+                moved = false;
+                return;
+            }
+        }
         if (args.Button != EnumMouseButton.Left) return;
         dragging = true;
         moved = false;
@@ -136,6 +172,29 @@ public class GuiElementQuestMap : GuiElement
     public override void OnMouseUp(ICoreClientAPI api, MouseEvent args)
     {
         base.OnMouseUp(api, args);
+        if (dragQuest != null)
+        {
+            // Quests snap to quarter cells, so rows and columns line up.
+            dragQuest.X = Math.Round(dragQuest.X * 4) / 4;
+            dragQuest.Y = Math.Round(dragQuest.Y * 4) / 4;
+            var done = dragQuest;
+            dragQuest = null;
+            dirty = true;
+            if (!moved) OnEdit?.Invoke(done);
+            return;
+        }
+        if (linkFrom != null)
+        {
+            var to = QuestAt(args.X - Bounds.absX, args.Y - Bounds.absY);
+            if (to != null && to != linkFrom)
+            {
+                if (!to.Requires.Remove(linkFrom.Code)) to.Requires.Add(linkFrom.Code);
+                to.NoLine.Remove(linkFrom.Code);
+            }
+            linkFrom = null;
+            dirty = true;
+            return;
+        }
         if (!dragging) return;
         dragging = false;
         if (moved || !Bounds.PointInside(args.X, args.Y)) return;
@@ -148,6 +207,18 @@ public class GuiElementQuestMap : GuiElement
     public override void OnMouseMove(ICoreClientAPI api, MouseEvent args)
     {
         if (dragging && !api.Input.MouseButton.Left) dragging = false;
+        if (dragQuest != null)
+        {
+            if (Math.Abs(args.X - downX) > 4 || Math.Abs(args.Y - downY) > 4) moved = true;
+            if (moved)
+            {
+                dragQuest.X += (args.X - prevMouseX) / Scale / CellSize;
+                dragQuest.Y += (args.Y - prevMouseY) / Scale / CellSize;
+            }
+            prevMouseX = args.X;
+            prevMouseY = args.Y;
+            dirty = true;
+        }
         if (dragging)
         {
             if (Math.Abs(args.X - downX) > 4 || Math.Abs(args.Y - downY) > 4) moved = true;

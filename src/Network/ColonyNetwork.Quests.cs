@@ -212,6 +212,9 @@ public partial class ColonyNetwork
         }
     }
 
+    /// <summary>The editor threw its changes away: back to the book as it was.</summary>
+    public void SetClientQuests(List<string> groups) => OnQuestLibrary(new QuestLibraryPacket { Groups = groups });
+
     public void SendQuestEdit(List<string> groups, bool reset) => clientChannel!.SendPacket(new QuestEditPacket { Groups = groups, Reset = reset });
 
     void OnQuestBookSnapshot(QuestBookSnapshot snapshot)

@@ -25,6 +25,53 @@ public class QuestLibrary
 
     public QuestDef? Get(string code) => byCode.GetValueOrDefault(code);
 
+    // ---- The quest editor's changes (client side, before the book is saved to the server) ----
+
+    public void Add(QuestChapterDef chapter, QuestDef quest)
+    {
+        quest.Chapter = chapter;
+        chapter.Quests.Add(quest);
+        byCode[quest.Code] = quest;
+    }
+
+    public void Remove(QuestDef quest)
+    {
+        quest.Chapter.Quests.Remove(quest);
+        byCode.Remove(quest.Code);
+        foreach (var other in byCode.Values)
+        {
+            other.Requires.Remove(quest.Code);
+            other.NoLine.Remove(quest.Code);
+        }
+    }
+
+    /// <summary>A code no quest has yet, from a wanted start such as "farm-new".</summary>
+    public string FreeCode(string start)
+    {
+        string code = start;
+        for (int n = 2; byCode.ContainsKey(code); n++) code = start + n;
+        return code;
+    }
+
+    /// <summary>Writes every name and description into the quests themselves, so an edited book carries its own text.</summary>
+    public void BakeText()
+    {
+        foreach (var g in Groups)
+        {
+            g.Title = Title(g);
+            foreach (var c in g.Chapters)
+            {
+                c.Title = Title(c);
+                foreach (var q in c.Quests)
+                {
+                    string desc = Desc(q);
+                    q.Title = Title(q);
+                    q.Desc = desc;
+                }
+            }
+        }
+    }
+
     /// <summary>Where a server keeps a quest book that was edited in game; while it holds files they replace the mod's own.</summary>
     public static string OverrideFolder(ICoreAPI api) => System.IO.Path.Combine(api.GetOrCreateDataPath("ModConfig"), "createacolony", "quests");
 

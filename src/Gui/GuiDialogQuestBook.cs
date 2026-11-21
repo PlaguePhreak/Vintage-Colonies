@@ -222,15 +222,176 @@ public class GuiDialogQuestBook : GuiDialog
         mapElement = new GuiElementQuestMap(capi, mapBounds, quests, states, IconsFor(quests), view, selectedOf.GetValueOrDefault(chapterCode), code =>
         {
             selectedOf[chapterCode] = code;
-            ShowCard(code == null ? null : quests.FirstOrDefault(q => q.Code == code));
+            if (!editing) ShowCard(code == null ? null : quests.FirstOrDefault(q => q.Code == code));
         }, QuestLibrary.Title(chapter));
         mapElement.Fogged = Fogged;
+        mapElement.EditMode = editing;
+        mapElement.OnEdit = EditQuest;
+        mapElement.OnAdd = (qx, qy) => AddQuest(chapter, qx, qy);
         mapElement.CentreOnQuests(chapterCode);
         composer.AddInteractiveElement(mapElement, "questmap");
 
-        composer.AddStaticText(Lang.Get("createacolony:questbook-pick"), GuiKit.Muted(), ElementBounds.Fixed(x, top + TopRow + bodyHeight + 6, mapWidth, 20));
+        // The quest editor's buttons, for an admin (or the player in single player).
+        if (snapshot.CanEdit)
+        {
+            double by = top + TopRow + bodyHeight + 2, bx = x + mapWidth;
+            void Button(string key, ActionConsumable click, double w)
+            {
+                bx -= w + 6;
+                composer.AddSmallButton(Lang.Get("createacolony:questedit-" + key), click, ElementBounds.Fixed(bx + 6, by, w, 24));
+            }
+            if (!editing) Button("start", StartEditing, 110);
+            else
+            {
+                Button("save-book", SaveBook, 110);
+                Button("discard", DiscardEdits, 100);
+                Button("reset", ResetBook, 150);
+                Button("chapter-delete", DeleteChapter, 130);
+                Button("chapter-rename", RenameChapter, 130);
+                Button("chapter-new", NewChapter, 120);
+            }
+        }
+        composer.AddStaticText(Lang.Get(editing ? "createacolony:questedit-hint" : "createacolony:questbook-pick"), GuiKit.Muted(), ElementBounds.Fixed(x, top + TopRow + bodyHeight + 6, mapWidth - (snapshot.CanEdit ? (editing ? 770 : 120) : 0), 20));
 
         SingleComposer = composer.EndChildElements().Compose();
+    }
+
+    // ---- The quest editor ------------------------------------------------------------------
+
+    bool editing;
+    List<string>? beforeEdits;
+    GuiDialogQuestEdit? editDialog;
+    GuiDialogQuestName? nameDialog;
+    bool resetArmed;
+
+    bool StartEditing()
+    {
+        beforeEdits = library.ToJson();
+        // An edited book carries its own names and text, so they are written into the quests first.
+        library.BakeText();
+        editing = true;
+        card?.TryClose();
+        Compose();
+        return true;
+    }
+
+    void EditQuest(QuestDef quest)
+    {
+        editDialog?.TryClose();
+        editDialog = new GuiDialogQuestEdit(capi, quest, saved =>
+        {
+            icons.Remove(saved.Code);
+            Compose();
+        }, doomed =>
+        {
+            library.Remove(doomed);
+            Compose();
+        }, source =>
+        {
+            var copy = Newtonsoft.Json.JsonConvert.DeserializeObject<QuestDef>(Newtonsoft.Json.JsonConvert.SerializeObject(source))!;
+            copy.Code = library.FreeCode(source.Code + "-copy");
+            copy.X = source.X + 1;
+            library.Add(source.Chapter, copy);
+            Compose();
+            EditQuest(copy);
+        });
+        editDialog.TryOpen();
+    }
+
+    void AddQuest(QuestChapterDef chapter, double x, double y)
+    {
+        var quest = new QuestDef
+        {
+            Code = library.FreeCode(chapter.Code + "-new"), X = x, Y = y, Shape = QuestShapes.Square,
+            Title = Lang.Get("createacolony:questedit-new-quest"),
+        };
+        library.Add(chapter, quest);
+        Compose();
+        EditQuest(quest);
+    }
+
+    bool SaveBook()
+    {
+        editDialog?.TryClose();
+        editing = false;
+        network.SendQuestEdit(library.ToJson(), false);
+        return true;
+    }
+
+    bool DiscardEdits()
+    {
+        editDialog?.TryClose();
+        editing = false;
+        if (beforeEdits != null) network.SetClientQuests(beforeEdits);
+        return true;
+    }
+
+    /// <summary>Back to the mod's own quests. The button must be pressed twice, so a slip does not throw the book away.</summary>
+    bool ResetBook()
+    {
+        if (!resetArmed)
+        {
+            resetArmed = true;
+            capi.TriggerIngameError(this, "questreset", Lang.Get("createacolony:questedit-reset-confirm"));
+            return true;
+        }
+        resetArmed = false;
+        editDialog?.TryClose();
+        editing = false;
+        network.SendQuestEdit(new List<string>(), true);
+        return true;
+    }
+
+    void AskName(string headingKey, string initial, Action<string> onOk)
+    {
+        nameDialog?.TryClose();
+        nameDialog = new GuiDialogQuestName(capi, Lang.Get(headingKey), initial, onOk);
+        nameDialog.TryOpen();
+    }
+
+    bool NewChapter()
+    {
+        var group = Group;
+        if (group == null) return true;
+        AskName("createacolony:questedit-chapter-new", "", name =>
+        {
+            string slug = new string(name.ToLowerInvariant().Where(char.IsLetterOrDigit).ToArray());
+            if (slug.Length == 0) slug = "chapter";
+            string code = slug;
+            for (int n = 2; library.Groups.SelectMany(g => g.Chapters).Any(c => c.Code == code); n++) code = slug + n;
+            var chapter = new QuestChapterDef { Code = code, Title = name, Group = group };
+            group.Chapters.Add(chapter);
+            chapterOf[group.Code] = code;
+            // A chapter with no quests is not listed, so it starts with one.
+            AddQuest(chapter, 0, 0);
+        });
+        return true;
+    }
+
+    bool RenameChapter()
+    {
+        var chapter = Chapter;
+        if (chapter == null) return true;
+        AskName("createacolony:questedit-chapter-rename", QuestLibrary.Title(chapter), name =>
+        {
+            chapter.Title = name;
+            Compose();
+        });
+        return true;
+    }
+
+    bool DeleteChapter()
+    {
+        var chapter = Chapter;
+        if (chapter == null) return true;
+        if (chapter.Quests.Count > 0)
+        {
+            capi.TriggerIngameError(this, "chapternotempty", Lang.Get("createacolony:questedit-chapter-not-empty"));
+            return true;
+        }
+        chapter.Group.Chapters.Remove(chapter);
+        Compose();
+        return true;
     }
 
     /// <summary>Pops the quest's card up over the map, or closes the card when no quest is chosen.</summary>
@@ -277,12 +438,14 @@ public class GuiDialogQuestBook : GuiDialog
     public override void OnMouseDown(MouseEvent args)
     {
         if (card != null && card.Covers(args.X, args.Y)) return;
+        if (editDialog != null && editDialog.Covers(args.X, args.Y)) return;
         base.OnMouseDown(args);
     }
 
     public override void OnMouseUp(MouseEvent args)
     {
         if (card != null && card.Covers(args.X, args.Y)) return;
+        if (editDialog != null && editDialog.Covers(args.X, args.Y)) return;
         base.OnMouseUp(args);
     }
 
@@ -413,6 +576,8 @@ public class GuiDialogQuestBook : GuiDialog
 
     public override void OnGuiClosed()
     {
+        editDialog?.TryClose();
+        nameDialog?.TryClose();
         card?.TryClose();
         network.SendQuestAction("", QuestAction.CloseWindow);
         base.OnGuiClosed();
