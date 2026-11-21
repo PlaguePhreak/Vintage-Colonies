@@ -31,7 +31,7 @@ public class QuestMapView
 public class GuiElementQuestMap : GuiElement
 {
     /// <summary>Grid cell size and the icon's circle, unscaled.</summary>
-    public const double CellSize = 96, NodeRadius = 31, IconSize = 44;
+    public const double CellSize = 96, NodeRadius = 31, IconSize = 38;
     public const double MinZoom = 0.4, MaxZoom = 1.6;
 
     readonly List<QuestDef> quests;
@@ -43,6 +43,8 @@ public class GuiElementQuestMap : GuiElement
     string? selected;
     QuestDef? hovered;
     LoadedTexture texture;
+    /// <summary>Padlocks, ticks, reward badges and the hover name: drawn over the item icons, so an icon never hides them.</summary>
+    LoadedTexture overlay;
     bool dirty = true;
     bool dragging, moved;
     int prevMouseX, prevMouseY, downX, downY;
@@ -58,6 +60,7 @@ public class GuiElementQuestMap : GuiElement
         this.selected = selected;
         this.onSelect = onSelect;
         texture = new LoadedTexture(capi);
+        overlay = new LoadedTexture(capi);
     }
 
     public QuestStatus StatusOf(QuestDef q) => states.TryGetValue(q.Code, out var s) ? (QuestStatus)s.Status : QuestStatus.Locked;
@@ -187,19 +190,23 @@ public class GuiElementQuestMap : GuiElement
         if (dirty) Redraw();
         if (texture.TextureId != 0) api.Render.Render2DTexturePremultipliedAlpha(texture.TextureId, Bounds.renderX, Bounds.renderY, Bounds.InnerWidth, Bounds.InnerHeight);
 
-        // The item icons, clipped to the box.
+        // The item icons. Each is clipped to its own frame, so a long item (a spear) cannot spill over the map.
         api.Render.PushScissor(Bounds);
         float size = (float)(IconSize * Scale);
         double margin = NodeRadius * Scale;
+        double half = NodeRadius * Scale * 0.74;
         foreach (var q in quests)
         {
             if (!Shown(q) || !icons.TryGetValue(q.Code, out var stack) || stack == null) continue;
             var (cx, cy) = Centre(q);
             if (cx < -margin || cy < -margin || cx > Bounds.InnerWidth + margin || cy > Bounds.InnerHeight + margin) continue;
+            if (!GuiKit.ClipTo(api, Bounds, Bounds.renderX + cx - half, Bounds.renderY + cy - half, half * 2, half * 2)) continue;
             int color = StatusOf(q) == QuestStatus.Locked ? ColorUtil.ColorFromRgba(110, 110, 110, 255) : ColorUtil.WhiteArgb;
             api.Render.RenderItemstackToGui(new DummySlot(stack), Bounds.renderX + cx, Bounds.renderY + cy, 100, size, color, true, false, false);
         }
         api.Render.PopScissor();
+
+        if (overlay.TextureId != 0) api.Render.Render2DTexturePremultipliedAlpha(overlay.TextureId, Bounds.renderX, Bounds.renderY, Bounds.InnerWidth, Bounds.InnerHeight, 400);
     }
 
     void Redraw()
@@ -209,6 +216,9 @@ public class GuiElementQuestMap : GuiElement
         using var surface = new ImageSurface(Format.Argb32, width, height);
         using (var ctx = new Context(surface)) Draw(ctx, width, height);
         api.Gui.LoadOrUpdateCairoTexture(surface, false, ref texture);
+        using var top = new ImageSurface(Format.Argb32, width, height);
+        using (var ctx = new Context(top)) DrawMarks(ctx, width, height);
+        api.Gui.LoadOrUpdateCairoTexture(top, false, ref overlay);
     }
 
     static double[] StatusColor(QuestStatus status) => status switch
@@ -333,7 +343,6 @@ public class GuiElementQuestMap : GuiElement
                 ctx.LineWidth = Math.Max(1, 1.5 * k);
                 ctx.Stroke();
             }
-            if (status == QuestStatus.Locked) Padlock(ctx, cx + r * 0.66, cy + r * 0.62, r * 0.3);
             if (status == QuestStatus.Complete)
             {
                 // A glow around quests ready to claim.
@@ -341,20 +350,38 @@ public class GuiElementQuestMap : GuiElement
                 ctx.SetSourceRGBA(color[0], color[1], color[2], 0.4);
                 ctx.LineWidth = Math.Max(1.5, 4 * k);
                 ctx.Stroke();
-                Badge(ctx, cx + r * 0.72, cy - r * 0.72, r * 0.3);
             }
+        }
+    }
+
+    /// <summary>The layer over the item icons: a padlock, tick, reward badge or tracking dot on each quest, and the name of the one under the pointer.</summary>
+    void DrawMarks(Context ctx, int width, int height)
+    {
+        double k = Scale, r = NodeRadius * k;
+        foreach (var q in quests)
+        {
+            if (!Shown(q)) continue;
+            var (cx, cy) = Centre(q);
+            if (cx < -r * 2 || cy < -r * 2 || cx > width + r * 2 || cy > height + r * 2) continue;
+            var status = StatusOf(q);
+            var color = StatusColor(status);
+            if (status == QuestStatus.Locked) Padlock(ctx, cx + r * 0.72, cy + r * 0.7, r * 0.3);
+            if (status == QuestStatus.Complete) Badge(ctx, cx + r * 0.74, cy - r * 0.74, r * 0.32);
             if (status == QuestStatus.Claimed)
             {
                 // A tick on a dark disc in the corner.
+                double tx = cx + r * 0.72, ty = cy + r * 0.7, tr = r * 0.32;
                 ctx.NewPath();
-                ctx.Arc(cx + r * 0.68, cy + r * 0.64, r * 0.3, 0, 2 * Math.PI);
+                ctx.Arc(tx, ty, tr, 0, 2 * Math.PI);
                 ctx.SetSourceRGBA(0.08, 0.14, 0.08, 1);
-                ctx.Fill();
+                ctx.FillPreserve();
                 ctx.SetSourceRGBA(color[0], color[1], color[2], 1);
+                ctx.LineWidth = Math.Max(1, 1.5 * k);
+                ctx.Stroke();
                 ctx.LineWidth = Math.Max(1.5, 3 * k);
-                ctx.MoveTo(cx + r * 0.52, cy + r * 0.64);
-                ctx.LineTo(cx + r * 0.64, cy + r * 0.78);
-                ctx.LineTo(cx + r * 0.86, cy + r * 0.5);
+                ctx.MoveTo(tx - tr * 0.5, ty);
+                ctx.LineTo(tx - tr * 0.12, ty + tr * 0.42);
+                ctx.LineTo(tx + tr * 0.55, ty - tr * 0.42);
                 ctx.Stroke();
             }
             if (states.TryGetValue(q.Code, out var s) && s.Tracked)
@@ -378,7 +405,7 @@ public class GuiElementQuestMap : GuiElement
             double lx = Math.Clamp(cx - boxWidth / 2, scaled(2), Math.Max(scaled(2), width - boxWidth - scaled(2)));
             double ly = cy - r - boxHeight - scaled(4);
             if (ly < scaled(2)) ly = Math.Min(height - boxHeight - scaled(2), cy + r + scaled(4));
-            ctx.SetSourceRGBA(0, 0, 0, 0.8);
+            ctx.SetSourceRGBA(0, 0, 0, 0.85);
             ctx.Rectangle(lx, ly, boxWidth, boxHeight);
             ctx.Fill();
             ctx.SetSourceRGBA(1, 1, 1, 0.5);
@@ -487,5 +514,6 @@ public class GuiElementQuestMap : GuiElement
     {
         base.Dispose();
         texture.Dispose();
+        overlay.Dispose();
     }
 }

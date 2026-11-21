@@ -123,4 +123,17 @@ public static class GuiKit
             .AddStaticText(Lang.Get("createacolony:page", page + 1, pages), Detail().WithOrientation(EnumTextOrientation.Center), ElementBounds.Fixed(mid - 60, y + 6, 120, 22))
             .AddSmallButton(Lang.Get("createacolony:next"), () => { if (page < pages - 1) go(page + 1); return true; }, ElementBounds.Fixed(mid + 70, y, 90, 28));
     }
+
+    /// <summary>
+    /// Clips what is drawn next to a box (in screen pixels) that also lies inside an element. Call it between
+    /// PushScissor(element) and PopScissor. False when nothing of the box is on show, so the drawing can be skipped.
+    /// </summary>
+    public static bool ClipTo(ICoreClientAPI capi, ElementBounds within, double x, double y, double width, double height)
+    {
+        double left = Math.Max(x, within.renderX), top = Math.Max(y, within.renderY);
+        double right = Math.Min(x + width, within.renderX + within.InnerWidth), bottom = Math.Min(y + height, within.renderY + within.InnerHeight);
+        if (right - left < 1 || bottom - top < 1) return false;
+        capi.Render.GlScissor((int)left, (int)(capi.Render.FrameHeight - bottom), (int)(right - left), (int)(bottom - top));
+        return true;
+    }
 }

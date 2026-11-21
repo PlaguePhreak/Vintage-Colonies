@@ -154,6 +154,9 @@ public class GuiElementQuestSidebar : GuiElement
             if (row.IsGroup || row.Icon == null) continue;
             double cy = top - scroll + height / 2;
             if (cy < -height || cy > Bounds.InnerHeight + height) continue;
+            // Clipped to its own little box, so a long item cannot spill over the lines below.
+            double box = scaled(22);
+            if (!GuiKit.ClipTo(api, Bounds, Bounds.renderX + scaled(22) - box / 2, Bounds.renderY + cy - box / 2, box, box)) continue;
             api.Render.RenderItemstackToGui(new DummySlot(row.Icon), Bounds.renderX + scaled(22), Bounds.renderY + cy, 100, size, ColorUtil.WhiteArgb, true, false, false);
         }
         api.Render.PopScissor();
