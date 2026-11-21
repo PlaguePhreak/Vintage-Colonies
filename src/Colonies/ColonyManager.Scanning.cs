@@ -46,6 +46,7 @@ public partial class ColonyManager
             BuildingTypes.Explorer => (int)(Config.ExplorerRadius * ResearchMult(ColonyOfBuilding(hut), "explorerRange")), // Field Notes
             BuildingTypes.Gatherer => Config.GathererRadius,
             BuildingTypes.Hunter => Config.HunterRadius,
+            BuildingTypes.Butcher => Config.ButcherRadius,
             _ => Config.FarmerOrchardRadius
         };
     }

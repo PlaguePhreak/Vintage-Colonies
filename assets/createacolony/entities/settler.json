@@ -94,6 +94,7 @@
 					{ "code": "settlerexplorer", "animation": "walk", "priority": 1.2, "movespeed": 0.022 },
 					{ "code": "settlergatherer", "animation": "walk", "priority": 1.2, "movespeed": 0.02 },
 					{ "code": "settlerhunter", "animation": "walk", "priority": 1.2, "movespeed": 0.025 },
+					{ "code": "settlerbutcher", "animation": "walk", "priority": 1.2, "movespeed": 0.022 },
 					{ "code": "settlerguard", "animation": "walk", "priority": 1.2, "movespeed": 0.024 },
 					{ "code": "settlerbailiff", "animation": "walk", "priority": 1.2, "movespeed": 0.02 },
 					{ "code": "settlervisitor", "animation": "walk", "priority": 1.1, "movespeed": 0.02 },

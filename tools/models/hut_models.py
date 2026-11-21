@@ -183,6 +183,14 @@ hunter=shape(["sides","planks","log","metal","hide","meat"], base+[
   box("Hide",[8,10,13.3],[14,17,13.7],"hide"),
   box("Meat",[8,9,5],[13,11,9],"meat"),
 ])
+# Butcher's Hut: a chopping block with a cleaver in it, a ham hanging from a post and a bone.
+butcher=shape(["sides","planks","log","top","metal","meat","bone"], base+[
+  box("Block",[3,9,3],[9,13,9],"log","top"),
+  box("Blade",[5,13,5.6],[8,15,6.2],"metal"), box("Grip",[8,13.8,5.5],[11,14.6,6.3],"planks"),
+  box("Post",[12,9,12],[13,20,13],"log"), box("Arm",[10,19,12],[13,20,13],"log"),
+  box("Rope",[10.3,17,12.3],[10.7,19,12.7],"planks"), box("Ham",[9,12.5,11],[12,17,14],"meat"),
+  box("Bone",[3,9,11],[8,9.8,12],"bone"),
+])
 # Primitive Craftsman: a flat knapping stone with flint on it, and a stone axe and spear leaning by it.
 craftsman=shape(["sides","planks","stone","flint","log"], base+[
   box("Anvil",[4,9,4],[11,11,10],"stone"),
@@ -275,4 +283,5 @@ if __name__ == "__main__":
     for name, (tex, el) in models.items():
         json.dump(shape(tex, base + el), open(f"{out}/{name}.json", "w"), indent=1)
     for name, model in {"hut-smelter": smelter, "hut-blacksmith": smith, "hut-sawmill": saw, "hut-barracks": barracks, "hut-explorer": explorer, "hut-gatherer": gatherer, "hut-hunter": hunter, "hut-craftsman": craftsman, "hut-tailor": tailor, "hut-jeweller": jeweller, "hut-healer": healer, "hut-armourer": armourer, "hut-weaponsmith": weaponsmith, "hut-mint": mint, "hut-archive": archive, "hut-church": church, "workstation-healer": station_healer, "hut-mineshaftentrance": entrance, "supplycamp": camp, "fieldmarker": crow}.items():
+    for name, model in {"hut-smelter": smelter, "hut-blacksmith": smith, "hut-sawmill": saw, "hut-barracks": barracks, "hut-explorer": explorer, "hut-gatherer": gatherer, "hut-hunter": hunter, "hut-butcher": butcher, "hut-craftsman": craftsman, "hut-tailor": tailor, "hut-jeweller": jeweller, "hut-healer": healer, "hut-armourer": armourer, "hut-weaponsmith": weaponsmith, "hut-mint": mint, "hut-church": church, "workstation-healer": station_healer, "hut-mineshaftentrance": entrance, "supplycamp": camp, "fieldmarker": crow}.items():
         json.dump(model, open(f"{out}/{name}.json", "w"), indent=1)

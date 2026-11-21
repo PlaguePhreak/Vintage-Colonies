@@ -61,6 +61,7 @@ public partial class ColonyManager : ModSystem
         PathDebug = Config.PathDebug;
 
         api.Event.SaveGameLoaded += OnSaveGameLoaded;
+        api.Event.SaveGameLoaded += () => _ = ButcheringMod; // remembers whether the Butchering mod is installed
         api.Event.GameWorldSave += OnGameWorldSave;
         api.Event.RegisterGameTickListener(OnColonyTick, ColonyTickMs, 1000);
         api.Event.RegisterGameTickListener(OnScanTick, ScanTickMs);

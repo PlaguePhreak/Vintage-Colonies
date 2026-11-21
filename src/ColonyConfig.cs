@@ -214,6 +214,39 @@ public class ColonyConfig
     /// <summary>Animals the hunter leaves alone: born in a pen (bred by players), or a baby.</summary>
     public bool HunterSparesLivestock = true;
 
+    // Butcher (ColonyManager.Butchery.cs)
+    /// <summary>How far from the Butcher's Hut, in blocks, the butcher goes to pick up dead animals (change it on the Work area tab).</summary>
+    public int ButcherRadius = 48;
+    /// <summary>While the colony has a butcher, the hunter brings its kills home whole instead of skinning them.</summary>
+    public bool HunterBringsCarcasses = true;
+    /// <summary>How many carcasses a hunter or butcher carries at once.</summary>
+    public int CarcassLoad = 2;
+    /// <summary>Seconds it takes to pick up a dead animal.</summary>
+    public float CarcassPickUpSeconds = 2f;
+    /// <summary>Seconds the butcher takes to cut up a small, medium, large and huge animal (before skill).</summary>
+    public float[] ButcherSecondsBySize = { 6f, 10f, 15f, 20f };
+    /// <summary>Extra meat and fat a butcher gets compared to skinning with a knife in the field (0.25 = a quarter more).</summary>
+    public float ButcherYieldBonus = 0.25f;
+    /// <summary>Bones the butcher gets from a small, medium, large and huge animal, when the animal gives none already.</summary>
+    public int[] ButcherBonesBySize = { 1, 2, 3, 4 };
+    /// <summary>The bone item the butcher gets. Left out if the game has no such item.</summary>
+    public string ButcherBoneCode = "game:bone";
+    /// <summary>Knife wear for each animal cut up.</summary>
+    public int ButcherKnifeWear = 3;
+
+    // Butchering mod by CaptainOats (optional; nothing of it is copied or bundled). The codes below are guesses
+    // that can be fixed here if the mod uses other names; the Butcher's Hut window says what was found.
+    /// <summary>The Butchering mod's mod id.</summary>
+    public string ButcheringModId = "butchering";
+    /// <summary>Blocks of the Butchering mod the butcher works at when one is in or near the Butcher's Hut: hooks and tables.</summary>
+    public string[] ButcheringStations = { "butchering:*hook*", "butchering:*table*" };
+    /// <summary>Extra meat and fat when the butcher works at a hook or table, on top of ButcherYieldBonus.</summary>
+    public float ButcheringStationBonus = 0.15f;
+    /// <summary>The Butchering mod's blood liquid. The butcher fills empty buckets in the hut storage with it.</summary>
+    public string ButcheringBloodCode = "butchering:bloodportion";
+    /// <summary>Litres of blood from a small, medium, large and huge animal.</summary>
+    public float[] ButcheringBloodLitresBySize = { 0.5f, 1f, 2f, 3f };
+
     // Gatherer
     /// <summary>How far from the Gatherer's Hut, in blocks, the gatherer forages (change it on the Work area tab).</summary>
     public int GathererRadius = 48;
@@ -373,6 +406,7 @@ public class ColonyConfig
         ["explorer"] = 30,
         ["gatherer"] = 30,
         ["hunter"] = 30,
+        ["butcher"] = 30,
     };
     /// <summary>
     /// How many blocks each side of a hut's square grows for every hut level above 1, so a hut near the edge of the

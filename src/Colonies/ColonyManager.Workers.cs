@@ -36,6 +36,8 @@ public partial class ColonyManager
         [BuildingTypes.Gatherer] = new WorkerHutKind(Jobs.Gatherer, EnumTool.Knife, _ => false, _ => false),
         // The hunter hunts with a spear (any weapon does) and keeps a knife for skinning.
         [BuildingTypes.Hunter] = new WorkerHutKind(Jobs.Hunter, EnumTool.Spear, _ => false, IsKnife),
+        // The butcher cuts up carcasses with a knife; carcasses waiting and empty buckets (for blood, with the Butchering mod) stay at the hut.
+        [BuildingTypes.Butcher] = new WorkerHutKind(Jobs.Butcher, EnumTool.Knife, _ => false, s => IsCarcass(s) || IsEmptyBucketForBlood(s)),
     };
 
     /// <summary>Huts a settler works from, whose chests are never warehouse storage.</summary>
@@ -348,6 +350,7 @@ public partial class ColonyManager
         if (hut.Type == BuildingTypes.Explorer) lines.Add(ExplorerInfo(colony, hut));
         if (hut.Type == BuildingTypes.Gatherer) lines.Add(GathererInfo(colony, hut));
         if (hut.Type == BuildingTypes.Hunter) lines.Add(HunterInfo(hut));
+        if (hut.Type == BuildingTypes.Butcher) lines.AddRange(ButcherInfo(colony, hut));
         lines.Add("");
         lines.Add(Lang.Get("createacolony:hint-" + hut.Type + (hut.IsStation ? "-station" : ""), GatherRadius(hut)));
         return string.Join("<br>", lines);
