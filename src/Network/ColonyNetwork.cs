@@ -1152,8 +1152,7 @@ public partial class ColonyNetwork : ModSystem
         if (building.Type is BuildingTypes.Forester or BuildingTypes.Farmer or BuildingTypes.Potter or BuildingTypes.Cook
             or BuildingTypes.Prospector or BuildingTypes.Miner or BuildingTypes.Quarry
             or BuildingTypes.Smelter or BuildingTypes.Blacksmith or BuildingTypes.Armourer or BuildingTypes.Weaponsmith or BuildingTypes.Sawmill or BuildingTypes.Craftsman or BuildingTypes.Tailor or BuildingTypes.Jeweller or BuildingTypes.Healer or BuildingTypes.Mint or BuildingTypes.Church
-            or BuildingTypes.Explorer or BuildingTypes.Gatherer or BuildingTypes.Hunter or BuildingTypes.Butcher) snapshot.Info = Manager.WorkerHutInfo(colony, building);
-            or BuildingTypes.Explorer or BuildingTypes.Gatherer or BuildingTypes.Hunter or BuildingTypes.Tannery
+            or BuildingTypes.Explorer or BuildingTypes.Gatherer or BuildingTypes.Hunter or BuildingTypes.Butcher or BuildingTypes.Tannery
             || ColonyManager.IsHerderHut(building.Type)) snapshot.Info = Manager.WorkerHutInfo(colony, building);
         if (building.Type == BuildingTypes.Tavern)
         {
@@ -1249,10 +1248,9 @@ public partial class ColonyNetwork : ModSystem
             snapshot.IsStation = true;
             snapshot.HostName = Manager.HostOf(colony, building) is { } host ? ColonyManager.BuildingName(host) : "";
         }
-        AddRequests(snapshot, colony, building, viewerUid);
         snapshot.ForceUpgradeTo = Manager.ForceUpgradeLevel(building);
         snapshot.TopLevel = BlueprintLibrary.MaxLevels;
-        AddRequests(snapshot, colony, building);
+        AddRequests(snapshot, colony, building, viewerUid);
         if (building.Type == BuildingTypes.CourierStation) AddCouriers(snapshot, colony);
         if (ColonyManager.CraftTabOf(building.Type) is { } craftTab) AddCraftRows(snapshot, colony, building, craftTab);
         if (Manager.HasHutRecipes(building.Type)) AddRecipeRows(snapshot, colony, building);
