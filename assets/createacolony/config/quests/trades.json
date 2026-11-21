@@ -294,7 +294,7 @@
           "shape": "square",
           "objectives": [
             {
-              "type": "obtain",
+              "type": "place",
               "code": "game:shelf-*"
             }
           ]
@@ -318,7 +318,7 @@
           "shape": "square",
           "objectives": [
             {
-              "type": "obtain",
+              "type": "place",
               "code": "game:storagevessel-*"
             }
           ]
@@ -340,7 +340,7 @@
               "code": "cellar"
             },
             {
-              "type": "blocknear",
+              "type": "place",
               "code": "storagevessel-*|shelf-*|crock-*"
             }
           ]
@@ -469,7 +469,7 @@
           "shape": "square",
           "objectives": [
             {
-              "type": "obtain",
+              "type": "place",
               "code": "game:fruitpress-*"
             }
           ]
@@ -512,7 +512,7 @@
           "shape": "square",
           "objectives": [
             {
-              "type": "blocknear",
+              "type": "place",
               "code": "boiler*"
             }
           ]
@@ -538,7 +538,7 @@
           "code": "kitchen-fed",
           "x": 17.8,
           "y": 12.17,
-          "shape": "star",
+          "shape": "square",
           "requires": [
             "kitchen-fullpot",
             "kitchen-blue",
@@ -673,7 +673,7 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "blocknear",
+              "type": "place",
               "code": "aculinaryartillery:spile-*"
             }
           ]
@@ -837,7 +837,7 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "blocknear",
+              "type": "place",
               "code": "aculinaryartillery:meathooks-*"
             }
           ]
@@ -1361,7 +1361,7 @@
           "mod": "expandedfoods",
           "objectives": [
             {
-              "type": "obtain",
+              "type": "place",
               "code": "aculinaryartillery:bottlerack-*|aculinaryartillery:bottlerackcorner-*"
             }
           ]
@@ -1373,7 +1373,7 @@
           "shape": "square",
           "objectives": [
             {
-              "type": "blocknear",
+              "type": "place",
               "code": "condenser*"
             }
           ]
@@ -1453,7 +1453,7 @@
           ],
           "objectives": [
             {
-              "type": "blocknear",
+              "type": "place",
               "code": "farmland-*"
             }
           ]
@@ -1482,7 +1482,7 @@
           ],
           "objectives": [
             {
-              "type": "blocknear",
+              "type": "place",
               "code": "crop-*"
             }
           ]
@@ -1890,7 +1890,7 @@
           ],
           "objectives": [
             {
-              "type": "obtain",
+              "type": "place",
               "code": "game:quern-*"
             }
           ]
@@ -1939,7 +1939,7 @@
           ],
           "objectives": [
             {
-              "type": "obtain",
+              "type": "place",
               "code": "game:woodenfence-*"
             }
           ]
@@ -2143,7 +2143,7 @@
           "code": "farm-master",
           "x": 24.99,
           "y": 0.46,
-          "shape": "star",
+          "shape": "square",
           "requires": [
             "farm-bring",
             "farm-fert",
@@ -2196,7 +2196,7 @@
           ],
           "objectives": [
             {
-              "type": "blocknear",
+              "type": "place",
               "code": "*berrybush*|fruitingbush-*"
             }
           ]
@@ -2226,7 +2226,7 @@
           ],
           "objectives": [
             {
-              "type": "blocknear",
+              "type": "place",
               "code": "fruittree-*"
             }
           ]
@@ -2303,7 +2303,7 @@
           ],
           "objectives": [
             {
-              "type": "blocknear",
+              "type": "place",
               "count": 4,
               "code": "fruittree-*"
             }
@@ -2610,7 +2610,7 @@
           "shape": "square",
           "objectives": [
             {
-              "type": "obtain",
+              "type": "place",
               "code": "game:skep-*"
             }
           ]
@@ -2707,7 +2707,7 @@
           "mod": "fromgoldencombs",
           "objectives": [
             {
-              "type": "blocknear",
+              "type": "place",
               "code": "fromgoldencombs:ceramicbroodpot-*"
             }
           ]
@@ -2780,7 +2780,7 @@
           "mod": "fromgoldencombs",
           "objectives": [
             {
-              "type": "obtain",
+              "type": "place",
               "code": "fromgoldencombs:framerack-*"
             }
           ]
@@ -2816,7 +2816,7 @@
           "mod": "fromgoldencombs",
           "objectives": [
             {
-              "type": "blocknear",
+              "type": "place",
               "code": "fromgoldencombs:langstrothbase-*|fromgoldencombs:langstrothstack-*|fromgoldencombs:langstrothsuper-*"
             }
           ]
@@ -2869,7 +2869,7 @@
           "shape": "square",
           "objectives": [
             {
-              "type": "obtain",
+              "type": "place",
               "code": "game:sapling-*"
             }
           ]
@@ -2977,7 +2977,7 @@
           ],
           "objectives": [
             {
-              "type": "obtain",
+              "type": "place",
               "code": "game:barrel"
             }
           ]
@@ -2992,7 +2992,7 @@
           ],
           "objectives": [
             {
-              "type": "obtain",
+              "type": "place",
               "code": "game:chest-*"
             }
           ]
@@ -3007,7 +3007,7 @@
           ],
           "objectives": [
             {
-              "type": "obtain",
+              "type": "place",
               "code": "game:trunk-*"
             }
           ]
@@ -3022,7 +3022,7 @@
           ],
           "objectives": [
             {
-              "type": "obtain",
+              "type": "place",
               "code": "game:door-*"
             }
           ]
@@ -3037,7 +3037,7 @@
           ],
           "objectives": [
             {
-              "type": "obtain",
+              "type": "place",
               "code": "game:trapdoor-*"
             }
           ]
@@ -3052,7 +3052,7 @@
           ],
           "objectives": [
             {
-              "type": "obtain",
+              "type": "place",
               "code": "game:ladder-*"
             }
           ]
@@ -3067,7 +3067,7 @@
           ],
           "objectives": [
             {
-              "type": "obtain",
+              "type": "place",
               "code": "game:woodenfence-*"
             }
           ]
@@ -3082,7 +3082,7 @@
           ],
           "objectives": [
             {
-              "type": "obtain",
+              "type": "place",
               "code": "game:plankstairs-*"
             }
           ]
@@ -3112,7 +3112,7 @@
           ],
           "objectives": [
             {
-              "type": "obtain",
+              "type": "place",
               "code": "game:table-*"
             }
           ]
@@ -3127,7 +3127,7 @@
           ],
           "objectives": [
             {
-              "type": "obtain",
+              "type": "place",
               "code": "game:chair-*"
             }
           ]
@@ -3142,7 +3142,7 @@
           ],
           "objectives": [
             {
-              "type": "obtain",
+              "type": "place",
               "code": "game:bed-wood-*"
             }
           ]
@@ -3157,7 +3157,7 @@
           ],
           "objectives": [
             {
-              "type": "obtain",
+              "type": "place",
               "code": "game:sign-*"
             }
           ]
@@ -3172,7 +3172,7 @@
           ],
           "objectives": [
             {
-              "type": "obtain",
+              "type": "place",
               "code": "game:toolrack-*"
             }
           ]
@@ -3187,7 +3187,7 @@
           ],
           "objectives": [
             {
-              "type": "obtain",
+              "type": "place",
               "code": "game:bookshelf-*"
             }
           ]
@@ -3202,7 +3202,7 @@
           ],
           "objectives": [
             {
-              "type": "obtain",
+              "type": "place",
               "code": "game:woodenaxle-*"
             }
           ]
@@ -3242,7 +3242,7 @@
           "code": "carp-master",
           "x": 14.68,
           "y": 0.0,
-          "shape": "star",
+          "shape": "square",
           "requires": [
             "carp-fell",
             "carp-barrel",
@@ -3267,7 +3267,7 @@
           "mod": "foodshelves",
           "objectives": [
             {
-              "type": "obtain",
+              "type": "place",
               "code": "foodshelves:barrelrack-*"
             }
           ]
@@ -3283,7 +3283,7 @@
           "mod": "foodshelves",
           "objectives": [
             {
-              "type": "obtain",
+              "type": "place",
               "code": "foodshelves:tun-*"
             }
           ]
@@ -3299,7 +3299,7 @@
           "mod": "foodshelves",
           "objectives": [
             {
-              "type": "obtain",
+              "type": "place",
               "code": "foodshelves:tunrack-*"
             }
           ]
@@ -3314,7 +3314,7 @@
           ],
           "objectives": [
             {
-              "type": "obtain",
+              "type": "place",
               "code": "game:crate-*"
             }
           ]
@@ -3346,7 +3346,7 @@
           ],
           "objectives": [
             {
-              "type": "blocknear",
+              "type": "place",
               "code": "*baskettrap*|trap-*|trapcrate-*"
             }
           ]
@@ -3376,12 +3376,12 @@
           ],
           "objectives": [
             {
-              "type": "blocknear",
+              "type": "place",
               "count": 12,
               "code": "woodenfence-*"
             },
             {
-              "type": "blocknear",
+              "type": "place",
               "code": "woodenfencegate-*"
             }
           ]
@@ -3420,7 +3420,7 @@
           ],
           "objectives": [
             {
-              "type": "obtain",
+              "type": "place",
               "code": "game:trough-*"
             }
           ]
@@ -3450,7 +3450,7 @@
           ],
           "objectives": [
             {
-              "type": "obtain",
+              "type": "place",
               "code": "game:trough-*"
             }
           ]
@@ -3555,7 +3555,7 @@
           ],
           "objectives": [
             {
-              "type": "obtain",
+              "type": "place",
               "code": "game:henbox-*"
             }
           ]
@@ -3738,7 +3738,7 @@
           "code": "herd-master",
           "x": 19.07,
           "y": 0.0,
-          "shape": "star",
+          "shape": "square",
           "requires": [
             "herd-chicks",
             "herd-milk",

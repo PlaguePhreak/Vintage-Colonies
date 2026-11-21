@@ -191,6 +191,33 @@ public partial class ColonyManager
         if (counted) SavePlayerQuests(player.PlayerUID);
     }
 
+    readonly Dictionary<string, bool> placeableBlocks = new();
+
+    /// <summary>
+    /// How many of a block the player has set down. Blocks placed by hand are counted as they are placed. Things
+    /// the game builds without a placing event (a pile on the ground, a firepit, tilled soil, a sown crop) are
+    /// counted when they stand near the player, and that count is kept. A pattern that is no block at all, only
+    /// an item, falls back to carrying it.
+    /// </summary>
+    int PlaceProgress(IServerPlayer player, QuestObjectiveDef o)
+    {
+        var counters = QuestsOf(player.PlayerUID).Counters;
+        string key = "place:" + o.Code;
+        int placed = counters.GetValueOrDefault(key);
+        int need = Math.Max(1, o.Count);
+        if (o.Code.Length == 0 || placed >= need || player.Entity == null) return placed;
+        if (!placeableBlocks.TryGetValue(o.Code, out bool isBlock))
+            placeableBlocks[o.Code] = isBlock = o.Code.Split('|').Any(part => part.Length > 0 && sapi.World.SearchBlocks(Loc(part)).Length > 0);
+        if (!isBlock) return CountCarried(player, o.Code);
+        int near = CountBlocksNear(player.Entity.Pos.AsBlockPos, o.Code, need);
+        if (near > placed)
+        {
+            counters[key] = placed = near;
+            SavePlayerQuests(player.PlayerUID);
+        }
+        return placed;
+    }
+
     /// <summary>The Grand Tour: remembers each kind of hut the player has stood beside, and returns how many kinds so far.</summary>
     int TourProgress(IServerPlayer player, Colony colony)
     {

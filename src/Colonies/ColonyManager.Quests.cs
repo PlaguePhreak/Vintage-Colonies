@@ -141,7 +141,7 @@ public partial class ColonyManager
     public bool IsManual(QuestObjectiveDef o)
     {
         if (o.Type == ObjectiveTypes.Manual) return true;
-        if (o.Type is ObjectiveTypes.BlockNear or ObjectiveTypes.EntityNear or ObjectiveTypes.Holds)
+        if (o.Type is ObjectiveTypes.BlockNear or ObjectiveTypes.EntityNear or ObjectiveTypes.Holds || (o.Type == ObjectiveTypes.Place && o.Code.Length > 0))
         {
             string id = o.Type + ":" + o.Code;
             if (!knownItems.TryGetValue(id, out bool found))
@@ -216,7 +216,7 @@ public partial class ColonyManager
     int Progress(IServerPlayer player, Colony? colony, QuestObjectiveDef o)
     {
         if (o.Type == ObjectiveTypes.Kill) return QuestsOf(player.PlayerUID).Counters.GetValueOrDefault(o.Code);
-        if (o.Type == ObjectiveTypes.Place) return QuestsOf(player.PlayerUID).Counters.GetValueOrDefault("place:" + o.Code);
+        if (o.Type == ObjectiveTypes.Place) return PlaceProgress(player, o);
         if (o.Type == ObjectiveTypes.Tour) return colony == null ? 0 : TourProgress(player, colony);
         if (o.Type == ObjectiveTypes.Break) return QuestsOf(player.PlayerUID).Counters.GetValueOrDefault("break:" + o.Code);
         if (o.Type is ObjectiveTypes.Research or ObjectiveTypes.Happiness or ObjectiveTypes.AverageLevel or ObjectiveTypes.WorkHuts or ObjectiveTypes.TopSkill)

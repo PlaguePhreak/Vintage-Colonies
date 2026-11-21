@@ -493,6 +493,8 @@ public class GuiDialogQuestBook : GuiDialog
                 return o.Level > 0
                     ? Lang.Get("createacolony:objective-entitynear-generation", count, Plain(o.Code), o.Level)
                     : Lang.Get("createacolony:objective-entitynear", count, Plain(o.Code));
+            case ObjectiveTypes.Place when o.Code.Length > 0:
+                return Lang.Get("createacolony:objective-place-of", count, ItemName(capi, o.Code));
             case ObjectiveTypes.Room:
                 return Lang.Get("createacolony:objective-room" + (o.Code.Length > 0 ? "-" + o.Code : ""));
             case ObjectiveTypes.Break:

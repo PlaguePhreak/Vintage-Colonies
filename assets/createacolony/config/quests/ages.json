@@ -58,7 +58,7 @@
           ],
           "objectives": [
             {
-              "type": "blocknear",
+              "type": "place",
               "code": "groundstorage"
             }
           ]
@@ -288,7 +288,7 @@
           ],
           "objectives": [
             {
-              "type": "blocknear",
+              "type": "place",
               "code": "firepit-*"
             }
           ]
@@ -318,7 +318,7 @@
           ],
           "objectives": [
             {
-              "type": "obtain",
+              "type": "place",
               "code": "game:bed-*"
             }
           ]
@@ -364,7 +364,7 @@
           ],
           "objectives": [
             {
-              "type": "obtain",
+              "type": "place",
               "code": "game:chest-*"
             }
           ]
@@ -581,7 +581,7 @@
           ],
           "objectives": [
             {
-              "type": "blocknear",
+              "type": "place",
               "code": "pitkiln*"
             }
           ]
@@ -672,7 +672,7 @@
           ],
           "objectives": [
             {
-              "type": "obtain",
+              "type": "place",
               "code": "game:storagevessel-*"
             }
           ]
@@ -763,7 +763,7 @@
           ],
           "objectives": [
             {
-              "type": "blocknear",
+              "type": "place",
               "code": "clayoven*"
             }
           ]
@@ -841,7 +841,7 @@
           "shape": "square",
           "objectives": [
             {
-              "type": "blocknear",
+              "type": "place",
               "code": "charcoalpit|charcoalpile-*"
             }
           ]
@@ -1051,7 +1051,7 @@
           ],
           "objectives": [
             {
-              "type": "obtain",
+              "type": "place",
               "code": "game:anvil-copper"
             }
           ]
@@ -1066,7 +1066,7 @@
           ],
           "objectives": [
             {
-              "type": "obtain",
+              "type": "place",
               "code": "game:forge"
             }
           ]
@@ -1177,7 +1177,7 @@
           "code": "copper-master",
           "x": 17.86,
           "y": 3.89,
-          "shape": "star",
+          "shape": "square",
           "requires": [
             "copper-breakore",
             "copper-digmine",
@@ -1368,7 +1368,7 @@
           ],
           "objectives": [
             {
-              "type": "obtain",
+              "type": "place",
               "code": "game:lantern-*"
             }
           ]
