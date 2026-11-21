@@ -12,6 +12,25 @@ domain (`assets/createacolony/`, block and item codes like `createacolony:townha
 (`ModConfig/createacolony.json`), the release zips (`createacolony_<version>.zip`) and all save data keys.
 Changing any of those would stop old worlds from loading their colonies, so leave them as they are.
 
+## Combined release, Boarding House and the new quest book (0.173.0)
+
+This version puts 0.166.0 to 0.172.0 together (Research, giving requests from the Requests tab, safety, health and crowding, Smelter alloys and the bloomery, the Butcher, herders and the Tannery, and Force upgrade) and adds the following.
+
+- **Boarding House** (Fundamentals tab; planks, dry grass and a stick). A home with many beds and two levels at most. Every bed inside the building is a place to sleep, and it has a Residents tab like a Residence. It has no building of its own yet: place the block and build around it.
+  - Boarders have a standing "Lives in a boarding house" thought of -4 at level 1 and -3 at level 2 (`BoardingMood`, `BoardingMoodPerLevel`), where a Residence bed gives +3 or more. The crowded-home thought does not count there.
+  - A settler looking for a bed takes a Residence bed first, then a Boarding House bed, then a bed outside any home.
+  - Every 6 in-game hours (`BoardersLookEveryHours`) boarders move into a Residence that has room for their whole household, families first, and get a "Moved into a home of their own" thought (+8 for two days, `NewHomeMood`). Turn it off with `BoardersMoveOut: false`.
+  - Couples have no children while either of them boards (`BoardersHaveChildren`).
+- **Quest book in the FTB Quests style.** The book now fills most of the screen.
+  - Every group and chapter is in a list down the left. Click a group to fold it. Each chapter shows an icon and how many quests are done, and a red "!" when a reward is waiting.
+  - The map has bigger icons in solid frames, thick lines that turn green when done, a padlock on quests that are not open yet, a tick on finished ones and the chapter's name across the top. Drag to move it, scroll to zoom.
+  - Clicking a quest pops up a card over the map with Tasks on the left, Rewards on the right and the story under them. Clicking empty map closes it.
+  - **Claim all** at the top takes every waiting reward at once.
+  - Chapters with no quests are hidden until they have some.
+  - Quest text may use the game's text tags for coloured words, such as `<font color="#ffd966">Town Hall</font>`.
+- **Quests for the newer huts.** The Colony group has 7 new chapters: Gathering and hunting, Animals and leather, Mines and quarries, Workshops, Clothes and finery, Town life, and a Barracks quest under Guards. Each hut has a quest for placing it and one for giving it a worker.
+- **Tidying.** The "Coming later" lines are gone from the Town Hall window, and so is the Guard Tower's "Hire trainee" section, which did nothing.
+
 ## Build
 1. Install the .NET 10 SDK and set `VINTAGE_STORY` to your game folder.
 2. Run `dotnet build CreateAColony.csproj -c Release`.
