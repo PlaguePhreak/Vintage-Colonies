@@ -162,7 +162,7 @@ public partial class ColonyNetwork : ModSystem
             ColonyAction.SetJob => SetJob(colony, role, packet.CitizenId, packet.Text),
             ColonyAction.SetRole => SetRole(colony, role, packet.PlayerUid, (ColonyRole)packet.Role),
             ColonyAction.RemoveMember => SetRole(colony, role, packet.PlayerUid, ColonyRole.Visitor),
-            ColonyAction.Build or ColonyAction.CancelBuild or ColonyAction.Rotate or ColonyAction.Repair => BuildAction(colony, role, packet),
+            ColonyAction.Build or ColonyAction.CancelBuild or ColonyAction.Rotate or ColonyAction.Repair or ColonyAction.ForceUpgrade => BuildAction(colony, role, packet),
             ColonyAction.CancelTeardown => CancelTeardown(colony, role, packet.BuildingId),
             ColonyAction.MovePriority => MovePriority(colony, role, packet),
             ColonyAction.SetAnyWoodOrStone => SetAnyWoodOrStone(colony, role, packet.Text == "1"),
@@ -427,6 +427,8 @@ public partial class ColonyNetwork : ModSystem
                 return Manager.StartWorkOrder(colony, building);
             case ColonyAction.Repair:
                 return Manager.StartRepair(colony, building);
+            case ColonyAction.ForceUpgrade:
+                return Manager.ForceUpgrade(colony, building);
             case ColonyAction.CancelBuild:
                 if (building.Removing) Manager.CancelRemoval(colony, building);
                 else Manager.CancelWorkOrder(colony, building);
@@ -1242,6 +1244,8 @@ public partial class ColonyNetwork : ModSystem
             snapshot.IsStation = true;
             snapshot.HostName = Manager.HostOf(colony, building) is { } host ? ColonyManager.BuildingName(host) : "";
         }
+        snapshot.ForceUpgradeTo = Manager.ForceUpgradeLevel(building);
+        snapshot.TopLevel = BlueprintLibrary.MaxLevels;
         AddRequests(snapshot, colony, building);
         if (building.Type == BuildingTypes.CourierStation) AddCouriers(snapshot, colony);
         if (ColonyManager.CraftTabOf(building.Type) is { } craftTab) AddCraftRows(snapshot, colony, building, craftTab);

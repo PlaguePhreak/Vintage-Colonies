@@ -238,7 +238,17 @@ public class BlueprintLibrary
 
     /// <summary>The building's blueprint for a level, in its own style, variant and turn.</summary>
     /// <summary>A work station never has one: it is only its block.</summary>
-    public Blueprint? Get(Building building, int level) => building.IsStation ? null : Get(StyleFor(building), building.Type, level, building.Rotation, building.Variant);
+    /// <summary>
+    /// The building's blueprint at a level. A hut raised with Force upgrade (ColonyManager.ForceUpgrade.cs) can be above
+    /// the last level its pack has; it then still stands as that last level, so that blueprint is the one returned.
+    /// </summary>
+    public Blueprint? Get(Building building, int level)
+    {
+        if (building.IsStation) return null;
+        int max = MaxLevel(building);
+        if (max > 0 && level > max) level = max;
+        return Get(StyleFor(building), building.Type, level, building.Rotation, building.Variant);
+    }
 
     string? FindJson(string style, string type, string variant, int level)
     {
