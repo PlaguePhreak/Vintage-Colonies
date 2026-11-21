@@ -205,6 +205,32 @@ public static class ObjectiveTypes
     public const string Manual = "manual";
     /// <summary>The player killed Count creatures that have any of the entity tags in Code ("animal|huntable|predator").</summary>
     public const string Kill = "kill";
+    /// <summary>A container the player carries, or the block they look at, holds Code (a liquid in a bucket or barrel, food on a shelf).</summary>
+    public const string Holds = "holds";
+    /// <summary>The player carries a cooked meal of recipe Code with Count servings; Level 1 asks for a sealed crock.</summary>
+    public const string Meal = "meal";
+    /// <summary>Count blocks matching Code stand within a few blocks of the player.</summary>
+    public const string BlockNear = "blocknear";
+    /// <summary>Count creatures matching Code are near the player; Level is the lowest generation that counts.</summary>
+    public const string EntityNear = "entitynear";
+    /// <summary>The player stands in a closed room; Code "cellar" or "greenhouse" asks for that kind.</summary>
+    public const string Room = "room";
+    /// <summary>The player rides a creature matching Code (any when empty).</summary>
+    public const string Mounted = "mounted";
+    /// <summary>The player is Count blocks below sea level.</summary>
+    public const string Depth = "depth";
+    /// <summary>The player broke Count blocks; Code is "tool@block", either side may be empty.</summary>
+    public const string Break = "break";
+    /// <summary>Count pieces of research are finished.</summary>
+    public const string Research = "research";
+    /// <summary>The colony's average happiness (0 to 100) is at least Count.</summary>
+    public const string Happiness = "happiness";
+    /// <summary>Huts of type Code average Count / 10 levels.</summary>
+    public const string AverageLevel = "averagelevel";
+    /// <summary>Count different kinds of work hut are at Level or above.</summary>
+    public const string WorkHuts = "workhuts";
+    /// <summary>Count settlers have a skill at Level or above.</summary>
+    public const string TopSkill = "topskill";
 }
 
 public class QuestObjectiveDef

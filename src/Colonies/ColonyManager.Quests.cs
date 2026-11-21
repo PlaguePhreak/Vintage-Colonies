@@ -113,9 +113,11 @@ public partial class ColonyManager
         bool complete = true;
         for (int i = 0; i < q.Objectives.Count; i++)
         {
-            progress[i] = IsManual(q.Objectives[i])
-                ? (record?.Checked == true ? needed[i] : 0)
-                : Math.Min(needed[i], Progress(player, colony, q.Objectives[i]));
+            var o = q.Objectives[i];
+            // A task the game cannot understand (a wrong item name, an old "manual" task) never blocks: it counts as done.
+            progress[i] = IsManual(o) ? needed[i]
+                : StickyChecks.Contains(o.Type) ? Math.Min(needed[i], StickyProgress(player, q, i, o, needed[i]))
+                : Math.Min(needed[i], Progress(player, colony, o));
             if (progress[i] < needed[i]) complete = false;
         }
         return complete ? QuestStatus.Complete : QuestStatus.Active;
@@ -134,7 +136,7 @@ public partial class ColonyManager
         if (!knownItems.TryGetValue(o.Code, out bool known))
         {
             knownItems[o.Code] = known = QuestItems.Sample(sapi.World, o.Code) != null;
-            if (!known) Mod.Logger.Warning("Quest task item {0} matches nothing in the game; the task is marked done by hand", o.Code);
+            if (!known) Mod.Logger.Warning("Quest task item {0} matches nothing in the game; the task counts as done", o.Code);
         }
         return !known;
     }
@@ -190,6 +192,9 @@ public partial class ColonyManager
     int Progress(IServerPlayer player, Colony? colony, QuestObjectiveDef o)
     {
         if (o.Type == ObjectiveTypes.Kill) return QuestsOf(player.PlayerUID).Counters.GetValueOrDefault(o.Code);
+        if (o.Type == ObjectiveTypes.Break) return QuestsOf(player.PlayerUID).Counters.GetValueOrDefault("break:" + o.Code);
+        if (o.Type is ObjectiveTypes.Research or ObjectiveTypes.Happiness or ObjectiveTypes.AverageLevel or ObjectiveTypes.WorkHuts or ObjectiveTypes.TopSkill)
+            return colony == null ? 0 : ColonyNumber(colony, o);
         double now = sapi.World.Calendar.TotalDays;
         switch (o.Type)
         {
