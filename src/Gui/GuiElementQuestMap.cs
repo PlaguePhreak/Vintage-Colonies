@@ -297,22 +297,40 @@ public class GuiElementQuestMap : GuiElement
             var (x2, y2) = Centre(q);
             foreach (string need in q.Requires)
             {
+                if (q.NoLine.Contains(need)) continue;
                 var from = shown.FirstOrDefault(s => s.Code == need);
                 if (from == null) continue;
                 var (x1, y1) = Centre(from);
                 bool done = StatusOf(from) == QuestStatus.Claimed;
+                // A quest many lines lead to can have a rail: each line runs level to the rail, along it, then in to the quest,
+                // so long lines do not cut across the rest of the map.
+                double? railX = null;
+                if (q.Rail is { } rail && from.X < rail - 0.01 && Math.Abs(from.Y - q.Y) > 0.01)
+                    railX = Bounds.InnerWidth / 2 + (rail * CellSize + view.PanX) * k;
                 // A dark edge under a thick line, so it reads on any background.
                 ctx.LineCap = LineCap.Round;
-                ctx.SetSourceRGBA(0, 0, 0, 0.6);
-                ctx.LineWidth = Math.Max(2, 7 * k);
-                ctx.MoveTo(x1, y1);
-                ctx.LineTo(x2, y2);
-                ctx.Stroke();
-                ctx.SetSourceRGBA(done ? 0.45 : 0.55, done ? 0.8 : 0.5, done ? 0.4 : 0.47, 1);
-                ctx.LineWidth = Math.Max(1.5, 4 * k);
-                ctx.MoveTo(x1, y1);
-                ctx.LineTo(x2, y2);
-                ctx.Stroke();
+                ctx.LineJoin = LineJoin.Round;
+                for (int pass = 0; pass < 2; pass++)
+                {
+                    if (pass == 0)
+                    {
+                        ctx.SetSourceRGBA(0, 0, 0, 0.6);
+                        ctx.LineWidth = Math.Max(2, 7 * k);
+                    }
+                    else
+                    {
+                        ctx.SetSourceRGBA(done ? 0.45 : 0.55, done ? 0.8 : 0.5, done ? 0.4 : 0.47, 1);
+                        ctx.LineWidth = Math.Max(1.5, 4 * k);
+                    }
+                    ctx.MoveTo(x1, y1);
+                    if (railX is { } rx)
+                    {
+                        ctx.LineTo(rx, y1);
+                        ctx.LineTo(rx, y2);
+                    }
+                    ctx.LineTo(x2, y2);
+                    ctx.Stroke();
+                }
             }
         }
 

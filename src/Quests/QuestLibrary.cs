@@ -140,6 +140,10 @@ public class QuestDef
     /// <summary>Where it sits on the chapter's map, in grid cells.</summary>
     public double X;
     public double Y;
+    /// <summary>Optional: an x on the map where lines from quests to the left of it turn, so they reach this quest along one shared rail.</summary>
+    public double? Rail;
+    /// <summary>Requirements that get no line on the map: a quest from far across the chapter, named on the card instead.</summary>
+    public List<string> NoLine = new();
     /// <summary>An item or block code for its icon (wildcards allowed: the first match is drawn). Empty uses the first objective's.</summary>
     public string Icon = "";
     public string Shape = QuestShapes.Round;

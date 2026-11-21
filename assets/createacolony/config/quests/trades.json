@@ -141,6 +141,9 @@
             "kitchen-curdle",
             "kitchen-salt"
           ],
+          "noLine": [
+            "kitchen-salt"
+          ],
           "objectives": [
             {
               "type": "manual"
@@ -169,6 +172,9 @@
           "shape": "square",
           "requires": [
             "kitchen-wheels",
+            "kitchen-shelf"
+          ],
+          "noLine": [
             "kitchen-shelf"
           ],
           "objectives": [
@@ -509,6 +515,7 @@
             "kitchen-pie",
             "kitchen-distil"
           ],
+          "rail": 15.8,
           "objectives": []
         },
         {
@@ -760,6 +767,9 @@
             "kitchen-nug",
             "kitchen-lard"
           ],
+          "noLine": [
+            "kitchen-lard"
+          ],
           "mod": "expandedfoods",
           "objectives": [
             {
@@ -804,6 +814,9 @@
           "shape": "square",
           "requires": [
             "kitchen-nug",
+            "kitchen-softdough"
+          ],
+          "noLine": [
             "kitchen-softdough"
           ],
           "mod": "expandedfoods",
@@ -987,6 +1000,9 @@
             "kitchen-gozinaki",
             "kitchen-salt"
           ],
+          "noLine": [
+            "kitchen-salt"
+          ],
           "mod": "expandedfoods",
           "objectives": [
             {
@@ -1106,6 +1122,9 @@
           "shape": "square",
           "requires": [
             "kitchen-milk",
+            "kitchen-pan"
+          ],
+          "noLine": [
             "kitchen-pan"
           ],
           "mod": "expandedfoods",
@@ -1937,6 +1956,9 @@
             "farm-bring",
             "farm-quern"
           ],
+          "noLine": [
+            "farm-quern"
+          ],
           "objectives": [
             {
               "type": "obtain",
@@ -2016,6 +2038,7 @@
             "farm-orchard",
             "farm-honey"
           ],
+          "rail": 23.98,
           "objectives": []
         },
         {
@@ -3031,6 +3054,9 @@
             "carp-raft",
             "carp-boards"
           ],
+          "noLine": [
+            "carp-boards"
+          ],
           "objectives": [
             {
               "type": "manual"
@@ -3052,6 +3078,7 @@
             "carp-bookshelf",
             "carp-sailboat"
           ],
+          "rail": 13.17,
           "objectives": []
         },
         {
@@ -3504,6 +3531,7 @@
             "herd-medal",
             "herd-pack"
           ],
+          "rail": 17.71,
           "objectives": []
         },
         {
@@ -3513,6 +3541,9 @@
           "shape": "square",
           "requires": [
             "herd-ltrough",
+            "herd-ctrap"
+          ],
+          "noLine": [
             "herd-ctrap"
           ],
           "objectives": [
@@ -3922,6 +3953,7 @@
             "tailor-dyecloth",
             "tailor-dyeblue"
           ],
+          "rail": 15.37,
           "objectives": []
         },
         {
