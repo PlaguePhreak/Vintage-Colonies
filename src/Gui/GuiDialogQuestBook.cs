@@ -10,15 +10,14 @@ using Vintagestory.API.Config;
 namespace CreateAColony.Gui;
 
 /// <summary>
-/// The quest book: groups down the left as tabs, a chapter chooser along the top, the chapter's map in
-/// the middle and the chosen quest's card underneath with its objectives, rewards and buttons. All the
-/// text and layout comes from the quest files; the server only says where each quest stands.
+/// The quest book, laid out like FTB Quests: it fills most of the screen, with every group and chapter in a
+/// list down the left (groups fold, a red "!" marks a reward waiting) and the chosen chapter's map filling the
+/// rest. Clicking a quest pops its card up over the map (GuiDialogQuestCard). All the text and layout comes
+/// from the quest files; the server only says where each quest stands.
 /// </summary>
 public class GuiDialogQuestBook : GuiDialog
 {
-    const double Width = 620;
-    const double MapHeight = 290;
-    const double CardHeight = 230;
+    const double SidebarWidth = 230, Gap = 8, TopRow = 34, BottomRow = 24;
 
     readonly ColonyNetwork network;
     readonly QuestLibrary library;
@@ -31,9 +30,12 @@ public class GuiDialogQuestBook : GuiDialog
     readonly Dictionary<string, string> chapterOf = new();
     readonly Dictionary<string, string?> selectedOf = new();
     readonly Dictionary<string, QuestMapView> views = new();
-    // Item icons looked up once per quest; null when nothing matched.
+    readonly QuestSidebarState sidebarState = new();
+    // Item icons looked up once per quest or chapter; null when nothing matched.
     readonly Dictionary<string, ItemStack?> icons = new();
+    readonly Dictionary<string, ItemStack?> chapterIcons = new();
     GuiElementQuestMap? mapElement;
+    GuiDialogQuestCard? card;
 
     public override string? ToggleKeyCombinationCode => null;
 
@@ -43,6 +45,9 @@ public class GuiDialogQuestBook : GuiDialog
         this.snapshot = snapshot;
         library = network.ClientQuests;
         Apply(snapshot);
+        // Open on the first chapter that has quests.
+        var first = ShownGroups().FirstOrDefault();
+        if (first != null) groupIndex = library.Groups.IndexOf(first);
         Compose();
     }
 
@@ -50,9 +55,11 @@ public class GuiDialogQuestBook : GuiDialog
     {
         string before = lastSignature;
         Apply(fresh);
-        // Timed refreshes only redraw when something moved, so an open chapter list stays open.
+        // Timed refreshes only redraw when something moved, so the map and the list stay put.
         if (fresh.Periodic && before == lastSignature) return;
         Compose();
+        // The open card shows the same quest with its new progress.
+        if (card != null && card.IsOpened() && library.Get(card.QuestCode) is { } q) card.Show(q);
     }
 
     void Apply(QuestBookSnapshot fresh)
@@ -71,23 +78,21 @@ public class GuiDialogQuestBook : GuiDialog
         get
         {
             var group = Group;
-            if (group == null || group.Chapters.Count == 0) return null;
-            return group.Chapters.FirstOrDefault(c => c.Code == chapterOf.GetValueOrDefault(group.Code)) ?? group.Chapters[0];
+            if (group == null) return null;
+            var chapters = ShownChapters(group);
+            if (chapters.Count == 0) return null;
+            return chapters.FirstOrDefault(c => c.Code == chapterOf.GetValueOrDefault(group.Code)) ?? chapters[0];
         }
     }
 
-    QuestDef? Selected
-    {
-        get
-        {
-            var chapter = Chapter;
-            if (chapter == null) return null;
-            string? code = selectedOf.GetValueOrDefault(chapter.Code);
-            return code == null ? null : chapter.Quests.FirstOrDefault(q => q.Code == code);
-        }
-    }
+    /// <summary>Chapters with at least one quest; empty ones are left out of the book until they are written.</summary>
+    static List<QuestChapterDef> ShownChapters(QuestGroupDef group) => group.Chapters.Where(c => c.Quests.Count > 0).ToList();
+
+    List<QuestGroupDef> ShownGroups() => library.Groups.Where(g => ShownChapters(g).Count > 0).ToList();
 
     public QuestStatus StatusOf(QuestDef q) => states.TryGetValue(q.Code, out var s) ? (QuestStatus)s.Status : QuestStatus.Locked;
+
+    public QuestStateView? StateOf(QuestDef q) => states.GetValueOrDefault(q.Code);
 
     (int Done, int Total) ChapterProgress(QuestChapterDef chapter)
     {
@@ -96,195 +101,180 @@ public class GuiDialogQuestBook : GuiDialog
         return (done, total);
     }
 
+    int Waiting(QuestChapterDef chapter) => chapter.Quests.Count(q => StatusOf(q) == QuestStatus.Complete);
+
+    /// <summary>Why a locked quest is locked, in words: the quests it needs, or that it needs a colony. "" when there is nothing to say.</summary>
+    public string WhyLocked(QuestDef quest)
+    {
+        if (quest.PerColony && snapshot.ColonyId.Length == 0) return Lang.Get("createacolony:questbook-needs-colony");
+        var needs = quest.Requires.Select(r => library.Get(r)).Where(r => r != null && StatusOf(r!) != QuestStatus.Claimed).Select(r => Lang.Get(QuestLibrary.TitleKey(r!))).ToList();
+        return needs.Count > 0 ? Lang.Get("createacolony:questbook-needs", string.Join(", ", needs)) : "";
+    }
+
     // ---- Layout ---------------------------------------------------------------------------
+
+    /// <summary>The window's inner size in unscaled pixels: most of the screen, whatever the GUI scale.</summary>
+    (double Width, double Height) WindowSize()
+    {
+        double scale = Math.Max(0.5, RuntimeEnv.GUIScale);
+        double screenWidth = capi.Render.FrameWidth / scale, screenHeight = capi.Render.FrameHeight / scale;
+        return (Math.Clamp(screenWidth - 90, 720, 1700), Math.Clamp(screenHeight - 150, 400, 1000));
+    }
 
     void Compose()
     {
+        var (width, height) = WindowSize();
         var dialogBounds = ElementStdBounds.AutosizedMainDialog.WithAlignment(EnumDialogArea.CenterMiddle);
         var bgBounds = ElementBounds.Fill.WithFixedPadding(GuiStyle.ElementToDialogPadding);
         bgBounds.BothSizing = ElementSizing.FitToChildren;
 
-        var tabs = library.Groups.Select((g, i) => new GuiTab { Name = Lang.Get("createacolony:questgroup-" + g.Code), DataInt = i, Active = i == groupIndex }).ToArray();
         string title = Lang.Get("createacolony:questbook-title");
         if (snapshot.ColonyName.Length > 0) title += " · " + snapshot.ColonyName;
 
         mapElement = null;
         var composer = capi.Gui.CreateCompo("createacolony-questbook", dialogBounds)
             .AddShadedDialogBG(bgBounds)
-            .AddDialogTitleBar(title, () => TryClose());
-        if (tabs.Length > 0)
-        {
-            composer.AddVerticalTabs(tabs, ElementBounds.Fixed(-160, 35, 160, tabs.Length * 30), (_, tab) => { groupIndex = tab.DataInt; Compose(); }, "tabs");
-        }
-        composer.BeginChildElements(bgBounds);
+            .AddDialogTitleBar(title, () => TryClose())
+            .BeginChildElements(bgBounds);
 
-        double y = 30;
-        var group = Group;
-        var chapter = Chapter;
-        if (group == null)
+        double top = 30;
+        var groups = ShownGroups();
+        if (groups.Count == 0)
         {
-            composer.Text(Lang.Get("createacolony:quests-none-loaded"), GuiKit.Muted(), 0, y, Width);
-            composer.FitTabs(tabs.Length);
+            composer.Text(Lang.Get("createacolony:quests-none-loaded"), GuiKit.Muted(), 0, top, width);
             SingleComposer = composer.EndChildElements().Compose();
             return;
         }
-
-        // The chapter chooser, with how many quests of each are done.
-        var chapters = group.Chapters;
-        if (chapters.Count > 0)
+        var group = Group;
+        if (group == null || !groups.Contains(group))
         {
-            string[] values = chapters.Select(c => c.Code).ToArray();
-            string[] names = chapters.Select(c =>
+            group = groups[0];
+            groupIndex = library.Groups.IndexOf(group);
+        }
+        var chapter = Chapter!;
+
+        // The list of groups and chapters down the left.
+        double bodyHeight = height - TopRow - BottomRow;
+        var rows = new List<QuestSidebarRow>();
+        foreach (var g in groups)
+        {
+            var chapters = ShownChapters(g);
+            rows.Add(new QuestSidebarRow { IsGroup = true, GroupCode = g.Code, Name = Lang.Get("createacolony:questgroup-" + g.Code), Waiting = chapters.Sum(Waiting) });
+            foreach (var c in chapters)
             {
                 var (done, total) = ChapterProgress(c);
-                return Lang.Get("createacolony:chapter-" + c.Code) + "   " + done + " / " + total;
-            }).ToArray();
-            int index = chapter == null ? 0 : Math.Max(0, chapters.IndexOf(chapter));
-            composer
-                .AddStaticText(Lang.Get("createacolony:questbook-chapter"), GuiKit.Body(), ElementBounds.Fixed(0, y + 4, 90, 26))
-                .AddDropDown(values, names, index, (code, selected) =>
+                rows.Add(new QuestSidebarRow
                 {
-                    if (!selected) return;
-                    chapterOf[group.Code] = code;
-                    Compose();
-                }, ElementBounds.Fixed(90, y, 300, 28), "chapter");
-            string scope = Lang.Get(chapter?.PerColony == true ? "createacolony:questbook-scope-colony" : "createacolony:questbook-scope-player");
-            composer.AddStaticText(scope, GuiKit.Muted().WithOrientation(EnumTextOrientation.Right), ElementBounds.Fixed(Width - 220, y + 4, 220, 26));
+                    GroupCode = g.Code, ChapterCode = c.Code, Name = Lang.Get("createacolony:chapter-" + c.Code),
+                    Done = done, Total = total, Waiting = Waiting(c), Selected = c == chapter, Icon = ChapterIcon(c)
+                });
+            }
         }
-        y += 38;
+        var sidebarBounds = ElementBounds.Fixed(0, top, SidebarWidth, height);
+        composer.AddInset(sidebarBounds.FlatCopy(), 3, 0.8f);
+        composer.AddInteractiveElement(new GuiElementQuestSidebar(capi, sidebarBounds, rows, sidebarState, row =>
+        {
+            if (row.IsGroup) return;
+            int index = library.Groups.FindIndex(g => g.Code == row.GroupCode);
+            if (index < 0) return;
+            if (index == groupIndex && chapterOf.GetValueOrDefault(row.GroupCode) == row.ChapterCode && Chapter?.Code == row.ChapterCode) return;
+            // Close the card first, while the old chapter is still the open one, so its quest is let go.
+            card?.TryClose();
+            groupIndex = index;
+            chapterOf[row.GroupCode] = row.ChapterCode;
+            Compose();
+        }), "questsidebar");
+
+        // The top row: the chapter, how far along it is, and Claim all.
+        double x = SidebarWidth + Gap, mapWidth = width - x;
+        var (chapterDone, chapterTotal) = ChapterProgress(chapter);
+        string scope = Lang.Get(chapter.PerColony ? "createacolony:questbook-scope-colony" : "createacolony:questbook-scope-player");
+        composer.AddStaticText(Lang.Get("createacolony:questbook-progress", chapterDone, chapterTotal) + "   ·   " + scope, GuiKit.Body(), ElementBounds.Fixed(x, top + 5, mapWidth - 200, 24));
+        int waiting = library.Groups.SelectMany(g => g.Chapters).Sum(Waiting);
+        if (waiting > 0)
+        {
+            composer.AddSmallButton(Lang.Get("createacolony:questbook-claim-all", waiting), ClaimAll, ElementBounds.Fixed(width - 180, top, 180, 28));
+        }
 
         // The chapter's map.
-        var mapBounds = ElementBounds.Fixed(0, y, Width, MapHeight);
+        var mapBounds = ElementBounds.Fixed(x, top + TopRow, mapWidth, bodyHeight);
         composer.AddInset(mapBounds.FlatCopy(), 3, 0.8f);
-        var quests = chapter?.Quests ?? new List<QuestDef>();
-        string chapterCode = chapter?.Code ?? "";
+        var quests = chapter.Quests;
+        string chapterCode = chapter.Code;
         if (!views.TryGetValue(chapterCode, out var view)) views[chapterCode] = view = new QuestMapView();
         mapElement = new GuiElementQuestMap(capi, mapBounds, quests, states, IconsFor(quests), view, selectedOf.GetValueOrDefault(chapterCode), code =>
         {
             selectedOf[chapterCode] = code;
-            Compose();
-        });
+            ShowCard(code == null ? null : quests.FirstOrDefault(q => q.Code == code));
+        }, Lang.Get("createacolony:chapter-" + chapterCode));
         mapElement.CentreOnQuests(chapterCode);
         composer.AddInteractiveElement(mapElement, "questmap");
-        y += MapHeight + 8;
 
-        // The chosen quest.
-        composer.AddInset(ElementBounds.Fixed(0, y, Width, CardHeight), 3, 0.8f);
-        var quest = Selected;
-        if (quest == null)
-        {
-            string hint = quests.Count == 0 ? Lang.Get("createacolony:quests-chapter-empty") : Lang.Get("createacolony:questbook-pick");
-            composer.Text(hint, GuiKit.Muted(), 10, y + 10, Width - 20);
-        }
-        else
-        {
-            ComposeCard(composer, quest, y);
-        }
+        composer.AddStaticText(Lang.Get("createacolony:questbook-pick"), GuiKit.Muted(), ElementBounds.Fixed(x, top + TopRow + bodyHeight + 6, mapWidth, 20));
 
-        composer.FitTabs(tabs.Length);
         SingleComposer = composer.EndChildElements().Compose();
     }
 
-    /// <summary>The quest's title, where it stands, its story, its objectives with progress, its rewards and its buttons.</summary>
-    void ComposeCard(GuiComposer composer, QuestDef quest, double top)
+    /// <summary>Pops the quest's card up over the map, or closes the card when no quest is chosen.</summary>
+    void ShowCard(QuestDef? quest)
     {
-        const double pad = 10;
-        double x = pad, width = Width - 2 * pad, y = top + pad;
-        var status = StatusOf(quest);
-        var state = states.GetValueOrDefault(quest.Code);
-
-        composer.AddStaticText(Lang.Get(QuestLibrary.TitleKey(quest)), GuiKit.Heading(), ElementBounds.Fixed(x, y, width - 160, 26));
-        var statusFont = GuiKit.Body().WithOrientation(EnumTextOrientation.Right).WithColor(StatusColor(status));
-        composer.AddStaticText(Lang.Get("createacolony:queststatus-" + status.ToString().ToLowerInvariant()), statusFont, ElementBounds.Fixed(x + width - 160, y + 2, 160, 26));
-        y += 30;
-
-        // Two columns: the story and objectives on the left, the rewards and buttons on the right.
-        double leftWidth = width * 0.62, rightX = x + leftWidth + pad, rightWidth = width - leftWidth - pad;
-        double left = y, right = y;
-
-        string desc = Lang.Get(QuestLibrary.TitleKey(quest) + "-desc");
-        if (desc.EndsWith("-desc")) desc = "";
-        if (desc.Length > 0)
+        if (quest == null)
         {
-            double descHeight = Math.Min(GuiKit.TextHeight(capi, GuiKit.Detail(), desc, leftWidth), 70);
-            composer.AddStaticText(desc, GuiKit.Detail(), ElementBounds.Fixed(x, left, leftWidth, descHeight));
-            left += descHeight + 6;
+            card?.TryClose();
+            return;
         }
-        for (int i = 0; i < quest.Objectives.Count; i++)
+        if (card == null)
         {
-            var o = quest.Objectives[i];
-            int progress = state != null && i < state.Progress.Count ? state.Progress[i] : 0;
-            int needed = state != null && i < state.Needed.Count ? state.Needed[i] : Math.Max(1, o.Count);
-            bool done = status == QuestStatus.Claimed || progress >= needed;
-            string mark = done ? "✓ " : "• ";
-            string line = mark + ObjectiveText(capi, o);
-            if (needed > 1 || o.Type is ObjectiveTypes.Obtain or ObjectiveTypes.Deliver or ObjectiveTypes.Stock) line += "  (" + progress + " / " + needed + ")";
-            var font = done ? GuiKit.Detail().WithColor(GuiKit.GoodColor) : GuiKit.Detail();
-            composer.AddStaticText(line, font, ElementBounds.Fixed(x, left, leftWidth, 20));
-            left += 20;
+            card = new GuiDialogQuestCard(capi, network, this, quest);
+            card.TryOpen();
         }
-
-        if (quest.Rewards.Count > 0)
+        else
         {
-            composer.AddStaticText(Lang.Get("createacolony:questbook-rewards"), GuiKit.Body(), ElementBounds.Fixed(rightX, right, rightWidth, 22));
-            right += 24;
-            var parts = new List<RichTextComponentBase>();
-            foreach (var reward in quest.Rewards)
-            {
-                var stack = QuestItems.Sample(capi.World, reward.Code);
-                if (stack == null) continue;
-                stack = stack.Clone();
-                stack.StackSize = Math.Max(1, reward.Count);
-                parts.Add(new ItemstackTextComponent(capi, stack, 40, 4, EnumFloat.Inline));
-            }
-            if (parts.Count > 0)
-            {
-                composer.AddRichtext(parts.ToArray(), ElementBounds.Fixed(rightX, right, rightWidth, 44));
-                right += 48;
-            }
-        }
-
-        // Buttons along the bottom right.
-        double by = top + CardHeight - pad - 28;
-        double bx = x + width;
-        void Button(string key, Action click)
-        {
-            bx -= 100;
-            composer.AddSmallButton(Lang.Get("createacolony:" + key), () => { click(); return true; }, ElementBounds.Fixed(bx, by, 96, 28));
-            bx -= 6;
-        }
-        switch (status)
-        {
-            case QuestStatus.Available when quest.Accept:
-                Button("quest-accept", () => network.SendQuestAction(quest.Code, QuestAction.Accept));
-                break;
-            case QuestStatus.Complete:
-                Button("quest-claim", () => network.SendQuestAction(quest.Code, QuestAction.Claim));
-                break;
-            case QuestStatus.Active when quest.Accept:
-                Button("quest-drop", () => network.SendQuestAction(quest.Code, QuestAction.Drop));
-                break;
-        }
-        if (status is QuestStatus.Available or QuestStatus.Active or QuestStatus.Complete)
-        {
-            bool tracked = state?.Tracked == true;
-            Button(tracked ? "quest-untrack" : "quest-track", () => network.SendQuestAction(quest.Code, QuestAction.Track));
-        }
-        if (status == QuestStatus.Locked)
-        {
-            var needs = quest.Requires.Select(r => library.Get(r)).Where(r => r != null && StatusOf(r!) != QuestStatus.Claimed).Select(r => Lang.Get(QuestLibrary.TitleKey(r!))).ToList();
-            string why = quest.PerColony && snapshot.ColonyId.Length == 0
-                ? Lang.Get("createacolony:questbook-needs-colony")
-                : needs.Count > 0 ? Lang.Get("createacolony:questbook-needs", string.Join(", ", needs)) : "";
-            if (why.Length > 0) composer.Text(why, GuiKit.Muted(), x, by - 24, width - 220);
-        }
-        else if (status == QuestStatus.Available && quest.Accept)
-        {
-            composer.Text(Lang.Get("createacolony:questbook-accept-hint"), GuiKit.Muted(), x, by - 24, width - 220);
+            card.Show(quest);
+            if (!card.IsOpened()) card.TryOpen();
         }
     }
 
-    static double[] StatusColor(QuestStatus status) => status switch
+    /// <summary>Called by the card when it closes: the map lets go of the quest it showed.</summary>
+    public void CardClosed(GuiDialogQuestCard closed)
+    {
+        if (closed != card) return;
+        var chapter = Chapter;
+        if (chapter == null) return;
+        selectedOf[chapter.Code] = null;
+        mapElement?.Select(null);
+    }
+
+    /// <summary>Claims every quest whose reward is waiting, in every chapter.</summary>
+    bool ClaimAll()
+    {
+        foreach (var q in library.Groups.SelectMany(g => g.Chapters).SelectMany(c => c.Quests).Where(q => StatusOf(q) == QuestStatus.Complete).ToList())
+        {
+            network.SendQuestAction(q.Code, QuestAction.Claim);
+        }
+        return true;
+    }
+
+    // Clicks on the card belong to the card, even though the book fills the screen behind it.
+    public override void OnMouseDown(MouseEvent args)
+    {
+        if (card != null && card.Covers(args.X, args.Y)) return;
+        base.OnMouseDown(args);
+    }
+
+    public override void OnMouseUp(MouseEvent args)
+    {
+        if (card != null && card.Covers(args.X, args.Y)) return;
+        base.OnMouseUp(args);
+    }
+
+    public override void OnMouseWheel(MouseWheelEventArgs args)
+    {
+        if (card != null && card.Covers(capi.Input.MouseX, capi.Input.MouseY)) return;
+        base.OnMouseWheel(args);
+    }
+
+    public static double[] StatusColor(QuestStatus status) => status switch
     {
         QuestStatus.Locked => GuiKit.MutedColor,
         QuestStatus.Active => new[] { 0.5, 0.72, 1.0, 1.0 },
@@ -352,8 +342,18 @@ public class GuiDialogQuestBook : GuiDialog
         return icons;
     }
 
+    /// <summary>A chapter's icon for the side list: its own, else its first quest's.</summary>
+    ItemStack? ChapterIcon(QuestChapterDef chapter)
+    {
+        if (chapterIcons.TryGetValue(chapter.Code, out var known)) return known;
+        ItemStack? stack = chapter.Icon.Length > 0 ? QuestItems.Sample(capi.World, chapter.Icon) : null;
+        if (stack == null && chapter.Quests.Count > 0) stack = IconsFor(chapter.Quests.Take(1).ToList()).GetValueOrDefault(chapter.Quests[0].Code);
+        return chapterIcons[chapter.Code] = stack;
+    }
+
     public override void OnGuiClosed()
     {
+        card?.TryClose();
         network.SendQuestAction("", QuestAction.CloseWindow);
         base.OnGuiClosed();
     }
