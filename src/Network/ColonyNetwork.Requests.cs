@@ -1,7 +1,10 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using CreateAColony.Colonies;
 using Vintagestory.API.Common;
 using Vintagestory.API.Config;
+using Vintagestory.API.Server;
 using Vintagestory.GameContent;
 
 namespace CreateAColony.Network;
@@ -9,8 +12,9 @@ namespace CreateAColony.Network;
 /// <summary>The Requests tab of every hut and the Courier's Station's courier list (0.142.0).</summary>
 public partial class ColonyNetwork
 {
-    void AddRequests(HutSnapshot snapshot, Colony colony, Building building)
+    void AddRequests(HutSnapshot snapshot, Colony colony, Building building, string viewerUid)
     {
+        var viewer = sapi!.World.PlayerByUid(viewerUid);
         snapshot.HasRequestsTab = ColonyManager.HasOwnStorage(building.Type) || ColonyManager.JobOf(building.Type) != null;
         if (!snapshot.HasRequestsTab) return;
         string ownTag = ColonyManager.RequestTag(building);
@@ -38,9 +42,46 @@ public partial class ColonyNetwork
                 InColony = row.InColony,
                 Status = row.Status,
                 Color = row.Color,
-                For = forText
+                For = forText,
+                RequestId = r.RequestId,
+                PlayerHas = viewer == null ? 0 : CarriedCount(viewer, r.ItemCode),
+                Needed = NeededFor(r)
             });
         }
+    }
+
+    /// <summary>How many a player gives for a request: what the hut still needs, without the spare.</summary>
+    static int NeededFor(DeliveryRequest r) => Math.Max(1, r.Remaining - r.Extra);
+
+    /// <summary>
+    /// The Requests tab's give buttons (Aaron, 0.167.0, like MineColonies): Text holds request ids, comma separated.
+    /// For each, moves what the hut still needs from the player's hotbar and backpack into the chest the request is
+    /// for, and counts it as delivered, so couriers stop bringing it.
+    /// </summary>
+    string? FillRequests(IServerPlayer player, Colony colony, ColonyRole role, ColonyActionPacket packet)
+    {
+        if (role < ColonyRole.Member) return "createacolony:denied-member";
+        var hut = colony.Buildings.Find(b => b.BuildingId == packet.BuildingId);
+        if (hut == null) return "createacolony:bad-building";
+        var open = Manager.RequestsOf(colony, hut);
+        int given = 0, kinds = 0;
+        foreach (string part in packet.Text.Split(',', StringSplitOptions.RemoveEmptyEntries).Take(200))
+        {
+            if (!int.TryParse(part.Trim(), out int id) || open.Find(r => r.RequestId == id) is not { } request) continue;
+            // The chest the request is for; if it is gone, the hut's own storage.
+            var dest = sapi!.World.BlockAccessor.GetBlockEntity(request.DestPos) is BlockEntityContainer chest
+                ? new List<BlockEntityContainer> { chest }
+                : Manager.HutStorage(colony, hut).Cast<BlockEntityContainer>().ToList();
+            if (dest.Count == 0) continue;
+            int moved = Give(player, dest, request.ItemCode, Math.Min(NeededFor(request), 999));
+            if (moved <= 0) continue;
+            Manager.RecordDelivery(colony, request, moved);
+            given += moved;
+            kinds++;
+        }
+        if (given == 0) return "createacolony:give-none";
+        player.SendMessage(0, Lang.GetL(player.LanguageCode, kinds > 1 ? "createacolony:requests-given-all" : "createacolony:requests-given", given, kinds), EnumChatType.Notification);
+        return null;
     }
 
     void AddCouriers(HutSnapshot snapshot, Colony colony)

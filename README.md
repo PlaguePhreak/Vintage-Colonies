@@ -327,6 +327,12 @@ One researcher makes about 100 points a day. The nodes live in `assets/createaco
 - Config: `CarryTorches` (on/off) and `LightFetchRange` (64 blocks: how far a settler walks for its light).
 - Not tested in game.
 
+## Give requests from the Requests tab (0.167.0)
+- **A give button on each request.** When you carry something a hut asked for, the row says "You carry ..." in green and gets a **^** button. Press it to put what the hut still needs (not the spare) straight into the chest it asked for. The request counts as brought, so couriers stop bringing it.
+- **Give all** at the top gives everything you carry that the hut asked for, in one go.
+- Works for tools too (any axe will do when the hut asked for an axe). Uses your hotbar and backpack. You need to be a colony member.
+- Not tested in game.
+
 ## Requests tab, Courier's Station and better fuel (0.142.0)
 - **Requests tab on every hut.** It lists what the hut and its worker asked the couriers for (the potter's firewood, dry grass and sticks, a builder's planks, a tool). Each row shows how many were brought, how many are in the warehouse, and what is happening: a courier bringing it, waiting for a courier, the Gatherer cutting grass for it, another hut making it, or nobody has it.
 - **Huts ask for a few spare.** A hut asks for about a quarter more than it needs, at least 1 and at most 8 (a potter needing 4 firewood asks for 5). Once what it needs is there, it does not wait for the spare. Not for tools, Minimum stock or your own requests. Config: `RequestSparePercent` (25, 0 turns it off) and `RequestSpareMax` (8).

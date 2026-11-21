@@ -188,6 +188,7 @@ public partial class ColonyNetwork : ModSystem
             ColonyAction.SetBailiffRule => SetBailiffRule(player, colony, role, packet.Text),
             ColonyAction.SetTithe => SetTithe(colony, role, packet.Text),
             ColonyAction.StartResearch or ColonyAction.PauseResearch => ResearchAction(colony, role, packet),
+            ColonyAction.FillRequests => FillRequests(player, colony, role, packet),
             ColonyAction.HireRecruit => HireAction(player, colony, role, packet),
             ColonyAction.RemoveHut => RemoveHut(player, colony, role, packet),
             ColonyAction.LinkMineHut or ColonyAction.UnlinkMineHut => LinkMineAction(colony, role, packet),
@@ -1244,7 +1245,7 @@ public partial class ColonyNetwork : ModSystem
             snapshot.IsStation = true;
             snapshot.HostName = Manager.HostOf(colony, building) is { } host ? ColonyManager.BuildingName(host) : "";
         }
-        AddRequests(snapshot, colony, building);
+        AddRequests(snapshot, colony, building, viewerUid);
         if (building.Type == BuildingTypes.CourierStation) AddCouriers(snapshot, colony);
         if (ColonyManager.CraftTabOf(building.Type) is { } craftTab) AddCraftRows(snapshot, colony, building, craftTab);
         if (Manager.HasHutRecipes(building.Type)) AddRecipeRows(snapshot, colony, building);
