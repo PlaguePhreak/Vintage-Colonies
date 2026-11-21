@@ -12,6 +12,22 @@ domain (`assets/createacolony/`, block and item codes like `createacolony:townha
 (`ModConfig/createacolony.json`), the release zips (`createacolony_<version>.zip`) and all save data keys.
 Changing any of those would stop old worlds from loading their colonies, so leave them as they are.
 
+## Automatic quests, detailed cards and the quest editor (0.176.0)
+
+- **Every quest checks itself.** There is no "Mark as done" button any more. Quests look at what you carry,
+  what a container you hold or look at has in it, the meal in your bowl, blocks and animals near you, the room
+  you stand in, what you hunt, break and place, and the colony's own numbers. A task the game cannot find an
+  item for (a mod that renamed something) counts as done and is written to the server log.
+- **Detailed cards.** Each quest card now says what the thing is, how to do it, and often a tip.
+- **Quest completed popup** in the game's lore style, and **fog**: you do not see a quest until the one
+  before it is unlocked.
+- **Quest editor.** Press *Edit quests* at the bottom right of the quest book (admins only on servers). Drag a
+  quest to move it, right-click it to edit its name, text, icon, shape, tasks and rewards, Shift-drag from one
+  quest to another to link or unlink them, right-click empty space to add a quest. *Save book* writes the book
+  to `ModConfig/createacolony/quests/` on the server and sends it to everyone. *Reset book* (press twice)
+  goes back to the built in book.
+- **Repeatable quests.** A switch in the editor lets a quest be claimed again and again.
+
 ## New quest book (0.175.0)
 
 All the old quests are gone and the quest book starts again with nine new chapters. Old quest progress does not carry over. Not tested in game yet.
