@@ -1,0 +1,52 @@
+{
+	"code": "bandit",
+	"class": "EntityBandit",
+	"variantGroups": [{ "code": "sex", "states": ["male", "female"] }],
+	"canClimb": true,
+	"eyeHeight": 1.6,
+	"hitboxSize": { "x": 0.6, "y": 1.85 },
+	"deadHitboxSize": { "x": 0.75, "y": 0.5 },
+	// Raiders (0.181.0): SettlerLooks gives bandits the player's model and a random look, as it does settlers.
+	"attributes": {
+		"mainTextureCode": "skin1"
+	},
+	"client": {
+		"renderer": "Shape",
+		"shape": { "base": "createacolony:entity/humanoid/settler-{sex}" },
+		"textures": { "skin1": { "base": "game:entity/humanoid/villagerbody/skin/normal3" } },
+		"behaviors": [
+			{ "code": "villagerinventory" },
+			{ "code": "seraphinventory" },
+			{ "code": "nametag", "showtagonlywhentargeted": true },
+			{ "code": "repulseagents" },
+			{ "code": "controlledphysics", "stepHeight": 1.1 },
+			{ "code": "interpolateposition" }
+		],
+		"animations": [
+			{ "code": "idle", "animation": "balanced-idle", "blendMode": "average", "triggeredBy": { "defaultAnim": true } },
+			{ "code": "walk", "animation": "balanced-walk", "blendMode": "average" },
+			{ "code": "die", "animation": "balanced-die", "animationSpeed": 1.75, "weight": 10, "blendMode": "addAverage" },
+			{ "code": "hurt", "animation": "balanced-hurt", "animationSpeed": 2, "blendMode": "addAverage" }
+		]
+	},
+	"server": {
+		"behaviors": [
+			{ "code": "villagerinventory" },
+			{ "code": "seraphinventory" },
+			{ "code": "nametag", "showtagonlywhentargeted": true },
+			{ "code": "repulseagents" },
+			{ "code": "controlledphysics", "stepHeight": 1.1 },
+			{ "code": "health", "currenthealth": 16, "maxhealth": 16 },
+			{ "code": "despawn", "minPlayerDistance": 160, "belowLightLevel": -1, "minSeconds": 600 },
+			{
+				"code": "taskai",
+				"aitasks": [
+					// Fights, robs, lights fires and marches on the Town Hall, see AiTaskBanditRaid.
+					{ "code": "banditraid", "animation": "walk", "priority": 2.0, "movespeed": 0.026 },
+					{ "code": "lookaround", "priority": 0.5 }
+				]
+			}
+		]
+	},
+	"sounds": {}
+}

@@ -87,7 +87,7 @@ public partial class ColonyManager
     /// <summary>A living creature guards fight: one of the GuardTargets in the config.</summary>
     public bool IsThreat(Entity e) =>
         e.Alive && e is EntityAgent && e is not EntityPlayer && e is not EntitySettler
-        && Config.GuardTargets.Any(pattern => WildcardUtil.Match(pattern, e.Code.Path));
+        && (e is EntityBandit || Config.GuardTargets.Any(pattern => WildcardUtil.Match(pattern, e.Code.Path)) || RaidOf(e) != null);
 
     /// <summary>A threat this tower's guards fight: not one switched off on its Hostiles tab.</summary>
     public bool IsThreatFor(Building? tower, Entity e) => IsThreat(e) && (tower == null || !tower.HostilesOff.Contains(e.Code.Path));

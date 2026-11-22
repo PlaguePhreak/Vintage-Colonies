@@ -39,7 +39,12 @@ public class RangedShooter
     /// Aims at the target and shoots when the draw is done and the way is clear. Call every tick while the
     /// settler stands in range with its bow or sling in hand. True on the tick it shot.
     /// </summary>
-    public bool Update(ColonyManager m, Colony colony, CitizenRecord citizen, EntityAgent entity, ItemSlot hand, Entity target, float dt, Action syncHand)
+    public bool Update(ColonyManager m, Colony colony, CitizenRecord citizen, EntityAgent entity, ItemSlot hand, Entity target, float dt, Action syncHand) =>
+        Update(m, entity, hand, target, dt, syncHand, () => m.Shoot(colony, citizen, entity, hand, target),
+            () => m.Config.RangedSecondsPerShot * m.WorkTimeFactor(colony, citizen) / m.SwingFactor(colony, citizen));
+
+    /// <summary>The same for any shooter (bandits): fire shoots, waitSeconds gives the pause before the next draw.</summary>
+    public bool Update(ColonyManager m, EntityAgent entity, ItemSlot hand, Entity target, float dt, Action syncHand, Func<bool> fire, Func<float> waitSeconds)
     {
         var weapon = hand.Itemstack;
         if (weapon == null || !ColonyManager.IsRangedWeapon(weapon))
@@ -82,12 +87,12 @@ public class RangedShooter
             return false;
         }
         StopAim(entity, hand, syncHand);
-        if (!m.Shoot(colony, citizen, entity, hand, target)) return false;
+        if (!fire()) return false;
         syncHand();
         shotAnim = ColonyManager.ShotAnimation(weapon);
         Play(entity, shotAnim);
         shotLeft = 0.4f;
-        cooldown = m.Config.RangedSecondsPerShot * m.WorkTimeFactor(colony, citizen) / m.SwingFactor(colony, citizen);
+        cooldown = waitSeconds();
         return true;
     }
 

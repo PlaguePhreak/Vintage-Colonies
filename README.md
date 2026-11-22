@@ -70,6 +70,17 @@ Built from the design doc Aaron approved on 22 Nov 2026 (https://claude.ai/artif
 - Not in this update: bringing settlers back to life (Aaron: leave it out), laying a body out on a table first, a memorial stone at level 5, grieving family visiting graves, and the undertaker carrying home a knocked-out settler's things.
 - Not tested in game.
 
+## Raids (0.183.0)
+Built from the raids design doc with Aaron's answers (22 Nov 2026, https://claude.ai/artifact/82qtsGCQ2M6wJN4ce3duZH).
+- **When.** Raids start once the colony has 8 grown settlers, whatever the Town Hall level. After that a raid comes every in-game week to month: at least 7 days apart, never more than 60. Raids only come while a colony member is online.
+- **Warning.** Members get a chat message saying who is coming and from which side, and the Town Hall shows it on the Colony militia and Settings tabs. Settlers who aren't guards go home and hide. Half an in-game hour later the raiders arrive past the colony's border and march on the Town Hall.
+- **Who comes.** Outlaws (by day), a wolf pack, or drifters (at night only). Raid size grows with the number of settlers, the Town Hall level and raids beaten. Outlaws look like settlers in rough country clothes, with spears, clubs, knives or simple bows, and some carry torches.
+- **What outlaws do.** They fight settlers and players they meet, never break blocks, rob chests on the colony's land (one stack each) and try to carry it off, and set grass on fire with their torches. Fire that spreads to buildings burns them. Kill a thief before they get away to get the loot back. Once half of them are down the rest run.
+- **The end.** The raid is won when the raiders are all dead (or more were killed than got away). Settlers are happier after a win. Raiders give up after 2 in-game hours. Dead outlaws sometimes drop rusty gears, their weapon and arrows.
+- **Settings.** On the Town Hall **Settings** tab officers set raids On, Off or Only when I say, the size (Smaller, Normal, Bigger), and can start a raid now. Server owners can turn raids off or change the timing and sizes in the config (Raids, RaidMinSettlers, RaidMinDays, RaidMaxDays and the Bandit settings).
+- **Quest.** First Raid Survival (Colony chapter) now works: beat off a raid. It unlocks after First Barracks.
+- More bandit groups (Hill Raiders, River Reavers, Rust Brigands, Storm Cultists, Deserters) come later.
+
 ## Ranged guards and the Rally Banner (0.178.0)
 Built from the design doc Aaron approved on 22 Nov 2026 (https://claude.ai/artifact/X1rem76HRLvrBPbsY3UWZp).
 - **Each guard fights up close or at range.** On the Town Hall's **Colony militia** tab, officers click a guard's role (Guard: melee / Guard: ranged) to switch it. One tower can hold both kinds.

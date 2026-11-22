@@ -45,6 +45,7 @@ public class CreateAColonyModSystem : ModSystem
     public override void Start(ICoreAPI api)
     {
         api.RegisterEntity("EntitySettler", typeof(EntitySettler));
+        api.RegisterEntity("EntityBandit", typeof(EntityBandit));
         api.RegisterEntityBehaviorClass("colonycitizen", typeof(EntityBehaviorColonyCitizen));
         api.RegisterBlockClass("BlockTownHall", typeof(BlockTownHall));
         api.RegisterBlockEntityClass("TownHall", typeof(BlockEntityTownHall));
@@ -67,6 +68,8 @@ public class CreateAColonyModSystem : ModSystem
         api.RegisterItemClass("ItemCarcass", typeof(Items.ItemCarcass));
 
         AiTaskRegistry.Register<AiTaskSettlerFlee>("settlerflee");
+        AiTaskRegistry.Register<AiTaskBanditRaid>("banditraid");
+        AiTaskRegistry.Register<AiTaskRaidMarch>("raidmarch");
         AiTaskRegistry.Register<AiTaskSettlerDefend>("settlerdefend");
         AiTaskRegistry.Register<AiTaskSettlerShelter>("settlershelter");
         AiTaskRegistry.Register<AiTaskSettlerSleep>("settlersleep");

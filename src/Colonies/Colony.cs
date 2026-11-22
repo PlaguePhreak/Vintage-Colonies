@@ -856,6 +856,16 @@ public class Colony
     [ProtoMember(80)] public bool? SelfDefence;
     /// <summary>Colony militia: settlers with a weapon come to help a nearby settler who is attacked. Null until changed, so the server config decides.</summary>
     [ProtoMember(81)] public bool? SupportAllies;
+    /// <summary>Raids (Town Hall Settings tab): 0 on, 1 off, 2 only when an officer presses Start raid.</summary>
+    [ProtoMember(3200)] public int RaidMode;
+    /// <summary>Raid size: 0 smaller, 1 normal, 2 bigger.</summary>
+    [ProtoMember(3201, IsRequired = true)] public int RaidSize = 1;
+    /// <summary>The in-game day the next raid is due (0 until the colony first qualifies), and of the last raid.</summary>
+    [ProtoMember(3202)] public double NextRaidDay;
+    [ProtoMember(3203)] public double LastRaidDay;
+    /// <summary>Raids fought off, and raids in all; later raids grow a little.</summary>
+    [ProtoMember(3204)] public int RaidsWon;
+    [ProtoMember(3205)] public int RaidsTotal;
     /// <summary>Mines whose Miner's Hut or Mineshaft Entrance was removed. Their blocks stay; the next Miner's Hut or entrance near one takes it on.</summary>
     [ProtoMember(90)] public List<Building> DerelictMines = new();
     /// <summary>Where the gatherer picked up ore bits: likely a deposit below, for the prospectors to check.</summary>

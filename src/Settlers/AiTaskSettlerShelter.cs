@@ -17,9 +17,12 @@ public class AiTaskSettlerShelter : SettlerTaskBase
     {
         var citizen = Citizen;
         var colony = Colony;
-        return manager != null && citizen != null && colony != null && manager.IsStormNear()
-            && !manager.StaysOutInStorms(colony, citizen) && !CalledToArms;
+        return manager != null && citizen != null && colony != null && Hides(colony, citizen) && !CalledToArms;
     }
+
+    /// <summary>A temporal storm, or a raid on its way or under way (0.181.0, guards stay out for both).</summary>
+    bool Hides(Colony colony, CitizenRecord citizen) =>
+        manager!.IsStormNear() && !manager.StaysOutInStorms(colony, citizen) || manager.HidesFromRaid(colony, citizen);
 
     public override void StartExecute()
     {
@@ -31,7 +34,7 @@ public class AiTaskSettlerShelter : SettlerTaskBase
 
     public override bool ContinueExecute(float dt)
     {
-        if (!manager!.IsStormNear() || CalledToArms) return false;
+        if (Colony is not { } colony || Citizen is not { } citizen || !Hides(colony, citizen) || CalledToArms) return false;
 
         if (Arrived || PathFailed)
         {
@@ -51,5 +54,6 @@ public class AiTaskSettlerShelter : SettlerTaskBase
         base.FinishExecute(cancelled);
     }
 
-    public override string Describe(Colony colony, CitizenRecord citizen) => Vintagestory.API.Config.Lang.Get("createacolony:activity-sheltering");
+    public override string Describe(Colony colony, CitizenRecord citizen) =>
+        Vintagestory.API.Config.Lang.Get(manager?.HidesFromRaid(colony, citizen) == true ? "createacolony:activity-hiding-raid" : "createacolony:activity-sheltering");
 }

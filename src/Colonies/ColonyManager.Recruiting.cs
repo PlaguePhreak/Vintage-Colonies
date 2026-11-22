@@ -294,7 +294,9 @@ public partial class ColonyManager
         foreach (var player in sapi.World.AllOnlinePlayers.OfType<IServerPlayer>())
         {
             if (colony.RoleOf(player.PlayerUID) < ColonyRole.Member) continue;
-            player.SendMessage(0, Lang.GetL(player.LanguageCode, langKey, args), EnumChatType.Notification);
+            // Arguments that are lang keys of this mod are put in the player's language too (raid sides).
+            var translated = args.Select(a => a is string s && s.StartsWith("createacolony:") ? Lang.GetL(player.LanguageCode, s) : a).ToArray();
+            player.SendMessage(0, Lang.GetL(player.LanguageCode, langKey, translated), EnumChatType.Notification);
         }
     }
 

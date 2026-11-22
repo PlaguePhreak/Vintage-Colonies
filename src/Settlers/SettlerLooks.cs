@@ -21,7 +21,7 @@ public class SettlerLooks : ModSystem
 {
     const string SettlerShape = "createacolony:shapes/entity/humanoid/settler-seraph.json";
     const string SettlerShapeBase = "createacolony:entity/humanoid/settler-seraph";
-    static readonly string[] SettlerTypes = { "createacolony:entities/settler.json", "createacolony:entities/settlerchild.json" };
+    static readonly string[] SettlerTypes = { "createacolony:entities/settler.json", "createacolony:entities/settlerchild.json", "createacolony:entities/bandit.json" };
     /// <summary>Animation source: the settler model whose animations (balanced-idle, balanced-walk...) the settler files use.</summary>
     const string AnimationSource = "createacolony:shapes/entity/humanoid/settler-male.json";
     /// <summary>

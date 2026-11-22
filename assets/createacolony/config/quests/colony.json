@@ -811,10 +811,20 @@
           "y": -1.04,
           "shape": "square",
           "requires": [
-            "kingdom-q30"
+            "kingdom-q29"
           ],
-          "soon": true,
-          "objectives": []
+          "objectives": [
+            {
+              "type": "event",
+              "code": "event-raid-won"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
         },
         {
           "code": "kingdom-q28",

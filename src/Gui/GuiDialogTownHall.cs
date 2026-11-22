@@ -895,6 +895,7 @@ public class GuiDialogTownHall : GuiDialog
         int guards = people.Count(c => c.Job == Jobs.Guard), armed = people.Count(c => c.Job != Jobs.Guard && c.Weapon.Length > 0);
         top = composer.Text(Lang.Get("createacolony:militia-summary", guards, armed, people.Count - guards - armed), GuiKit.Detail(), 0, top, Width, 6);
         if (snapshot.RalliedBy.Count > 0) top = composer.Text(Lang.Get("createacolony:militia-rallied", string.Join(", ", snapshot.RalliedBy)), GuiKit.Detail().WithColor(GuiKit.GoodColor), 0, top, Width, 6);
+        if (snapshot.RaidStatus.Length > 0) top = composer.Text(snapshot.RaidStatus, GuiKit.Detail().WithColor(GuiKit.WarnColor), 0, top, Width, 6);
         double y;
         if (people.Count == 0)
         {
@@ -1180,6 +1181,57 @@ public class GuiDialogTownHall : GuiDialog
             ? Lang.Get("createacolony:overview-warehouse", snapshot.WarehouseChests, snapshot.DropOffs, snapshot.OpenRequests)
             : Lang.Get("createacolony:overview-no-warehouse"), GuiKit.Detail(), 0, y, Width, 12);
 
+        ComposeRaidSettings(composer, y);
+    }
+
+    /// <summary>Raids (0.183.0): on, off or only when sent; their size; send one now; when the next may come.</summary>
+    void ComposeRaidSettings(GuiComposer composer, double y)
+    {
+        y = composer.Section(Lang.Get("createacolony:raids"), y, Width);
+        if (!snapshot.RaidsAllowed)
+        {
+            composer.Text(Lang.Get("createacolony:raids-off-server"), GuiKit.Detail(), 0, y, Width, 12);
+            return;
+        }
+        if (snapshot.RaidStatus.Length > 0) y = composer.Text(snapshot.RaidStatus, GuiKit.Body(), 0, y, Width, 6);
+        string[] modes = { "raids-mode-on", "raids-mode-off", "raids-mode-manual" };
+        string[] sizes = { "raids-size-small", "raids-size-normal", "raids-size-big" };
+        if (Officer)
+        {
+            int nextMode = (snapshot.RaidMode + 1) % 3, nextSize = (snapshot.RaidSize + 1) % 3;
+            composer
+                .AddStaticText(Lang.Get("createacolony:raids-mode"), GuiKit.Body(), ElementBounds.Fixed(0, y + 5, 90, 25))
+                .AddSmallButton(Lang.Get("createacolony:" + modes[Math.Clamp(snapshot.RaidMode, 0, 2)]), () =>
+                {
+                    network.SendAction(new ColonyActionPacket { ColonyId = ColonyId, Action = ColonyAction.SetRaidMode, Text = nextMode.ToString() });
+                    return true;
+                }, ElementBounds.Fixed(90, y, 170, 28))
+                .AddStaticText(Lang.Get("createacolony:raids-size"), GuiKit.Body(), ElementBounds.Fixed(280, y + 5, 60, 25))
+                .AddSmallButton(Lang.Get("createacolony:" + sizes[Math.Clamp(snapshot.RaidSize, 0, 2)]), () =>
+                {
+                    network.SendAction(new ColonyActionPacket { ColonyId = ColonyId, Action = ColonyAction.SetRaidSize, Text = nextSize.ToString() });
+                    return true;
+                }, ElementBounds.Fixed(340, y, 110, 28));
+            if (snapshot.RaidStatus.Length == 0)
+            {
+                composer.AddSmallButton(Lang.Get("createacolony:raids-start"), () =>
+                {
+                    network.SendAction(new ColonyActionPacket { ColonyId = ColonyId, Action = ColonyAction.StartRaid });
+                    return true;
+                }, ElementBounds.Fixed(Width - 130, y, 130, 28));
+            }
+            y += 36;
+        }
+        else
+        {
+            y = composer.Text(Lang.Get("createacolony:raids-mode") + " " + Lang.Get("createacolony:" + modes[Math.Clamp(snapshot.RaidMode, 0, 2)])
+                + ", " + Lang.Get("createacolony:raids-size") + " " + Lang.Get("createacolony:" + sizes[Math.Clamp(snapshot.RaidSize, 0, 2)]), GuiKit.Body(), 0, y, Width, 6);
+        }
+        string next = snapshot.RaidMode != 0 ? ""
+            : snapshot.DaysToNextRaid < 0 ? Lang.Get("createacolony:raids-too-small", snapshot.RaidMinSettlers)
+            : Lang.Get("createacolony:raids-next", Math.Max(1, (int)Math.Ceiling(snapshot.DaysToNextRaid)));
+        string record = Lang.Get("createacolony:raids-record", snapshot.RaidsWon, snapshot.RaidsTotal);
+        composer.Text(next.Length > 0 ? next + " " + record : record, GuiKit.Muted(), 0, y, Width, 12);
     }
 
     // ---- Sending --------------------------------------------------------------------------

@@ -189,6 +189,7 @@ public partial class ColonyNetwork : ModSystem
             ColonyAction.SetPermadeath => SetPermadeath(colony, role, packet.Text == "1"),
             ColonyAction.SetSelfDefence or ColonyAction.SetSupportAllies => SetMilitia(colony, role, packet),
             ColonyAction.SetGuardRanged => SetGuardRanged(colony, role, packet),
+            ColonyAction.SetRaidMode or ColonyAction.SetRaidSize or ColonyAction.StartRaid => RaidAction(colony, role, packet),
             ColonyAction.SetBailiffRule => SetBailiffRule(player, colony, role, packet.Text),
             ColonyAction.SetTithe => SetTithe(colony, role, packet.Text),
             ColonyAction.SetMarketRule => role < ColonyRole.Officer ? "createacolony:denied-officer" : Manager.SetMarketRule(colony, packet.Text),
@@ -278,6 +279,29 @@ public partial class ColonyNetwork : ModSystem
         var citizen = colony.Citizens.Find(c => c.CitizenId == packet.CitizenId);
         if (citizen == null || citizen.JobCode != Jobs.Guard) return "createacolony:bad-citizen";
         citizen.GuardRanged = packet.Text == "1";
+        Manager.MarkDirty(colony);
+        return null;
+    }
+
+    /// <summary>Town Hall Settings: raids on, off or only when sent, their size, and sending one now; officers only.</summary>
+    string? RaidAction(Colony colony, ColonyRole role, ColonyActionPacket packet)
+    {
+        if (role < ColonyRole.Officer) return "createacolony:denied-officer";
+        int.TryParse(packet.Text, out int value);
+        switch (packet.Action)
+        {
+            case ColonyAction.SetRaidMode:
+                colony.RaidMode = System.Math.Clamp(value, 0, 2);
+                if (colony.RaidMode == 0 && colony.NextRaidDay < sapi!.World.Calendar.TotalDays) colony.NextRaidDay = 0;
+                break;
+            case ColonyAction.SetRaidSize:
+                colony.RaidSize = System.Math.Clamp(value, 0, 2);
+                break;
+            default:
+                if (!Manager.Config.Raids) return "createacolony:raid-disabled";
+                if (Manager.StartRaid(colony, null) is { } error) return error;
+                break;
+        }
         Manager.MarkDirty(colony);
         return null;
     }
@@ -818,6 +842,14 @@ public partial class ColonyNetwork : ModSystem
             Permadeath = Manager.Permadeath(colony),
             SelfDefence = Manager.SelfDefence(colony),
             RalliedBy = Manager.RalliedBy(colony),
+            RaidStatus = Manager.RaidStatus(colony),
+            RaidMode = colony.RaidMode,
+            RaidSize = colony.RaidSize,
+            DaysToNextRaid = Manager.DaysToNextRaid(colony),
+            RaidsWon = colony.RaidsWon,
+            RaidsTotal = colony.RaidsTotal,
+            RaidsAllowed = Manager.Config.Raids,
+            RaidMinSettlers = Manager.Config.RaidMinSettlers,
             SupportAllies = Manager.SupportAllies(colony),
             FreeBeds = Manager.FreeBeds(colony),
             WandererDays = config.Wanderers ? Manager.WandererEveryDays(colony) : 0,

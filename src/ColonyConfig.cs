@@ -616,6 +616,41 @@ public class ColonyConfig
     /// <summary>After a fight, a ranged guard picks up arrows the colony's settlers shot within this many blocks.</summary>
     public float ArrowPickupRadius = 24f;
 
+    // Raids (0.181.0, design doc https://claude.ai/artifact/82qtsGCQ2M6wJN4ce3duZH)
+    /// <summary>Raids can happen at all; each colony can also switch them off on its Town Hall Settings tab.</summary>
+    public bool Raids = true;
+    /// <summary>A colony is raided once it has this many grown settlers (Aaron: whatever the Town Hall level).</summary>
+    public int RaidMinSettlers = 8;
+    /// <summary>Days between raids: at least RaidMinDays, usually up to an in-game month, never more than RaidMaxDays (Aaron).</summary>
+    public float RaidMinDays = 7f;
+    public float RaidMaxDays = 60f;
+    /// <summary>In-game hours between the warning and the attack, and before raiders still alive give up and leave.</summary>
+    public float RaidWarningHours = 0.5f;
+    public float RaidGiveUpHours = 2f;
+    /// <summary>Raid size: one raider per RaidSettlersPerRaider grown settlers, plus one per Town Hall level, up to RaidMaxRaiders (Normal size).</summary>
+    public float RaidSettlersPerRaider = 3f;
+    public int RaidMaxRaiders = 20;
+    /// <summary>Raiders gather this many blocks past the colony's border.</summary>
+    public int RaidSpawnDistanceMin = 48;
+    public int RaidSpawnDistanceMax = 64;
+    /// <summary>Raid factions in this update: outlaws (bandits), wolves, drifters (night only).</summary>
+    public string[] RaidFactions = { "outlaws", "wolves", "drifters" };
+    /// <summary>Creatures each monster faction sends, as entity codes with * wildcards; one is picked at random for each raider.</summary>
+    public string[] RaidWolves = { "game:wolf-*adult*" };
+    public string[] RaidDrifters = { "game:drifter-normal", "game:drifter-deep" };
+    /// <summary>Bandits: share of archers and torch carriers, health, damage factor, and how many arrows an archer has.</summary>
+    public float BanditArcherShare = 0.25f;
+    public float BanditTorchShare = 0.3f;
+    public float BanditHealth = 16f;
+    public float BanditDamageFactor = 0.8f;
+    public int BanditArrows = 16;
+    /// <summary>Bandits run once this share of the raid is down.</summary>
+    public float BanditFleeShare = 0.5f;
+    /// <summary>Chance a torch-carrying bandit sets dry grass on fire on its way in.</summary>
+    public float BanditFireChance = 0.5f;
+    /// <summary>Rusty gears a dead bandit may drop (0 up to this many).</summary>
+    public int BanditMaxGears = 2;
+
     // Rally Banner (0.178.0)
     /// <summary>A raised Rally Banner calls its linked guards from up to this many blocks away; guards further off stay put.</summary>
     public float RallyRange = 256f;

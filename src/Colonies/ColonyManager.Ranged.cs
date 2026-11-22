@@ -146,20 +146,33 @@ public partial class ColonyManager
         var ammo = TakeFromPack(colony, citizen, s => s.Collectible.Code.Equals(best.Collectible.Code), 1);
         if (ammo == null) return false;
 
+        // Better fighters aim truer (the Fighting skill's swing speed stands for their skill here).
+        double spread = Config.RangedSpreadDegrees / Math.Max(0.5, SwingFactor(colony, citizen));
+        if (LaunchProjectile(shooter, hand, ammo, target, DamageFactor(colony, citizen), spread)) return true;
+        AddToPack(colony, citizen, ammo, false);
+        return false;
+    }
+
+    /// <summary>
+    /// Fires one arrow (from a bow) or stone (from a sling) at the target, as the game's ItemBow and ItemSling do:
+    /// the same projectile entity, bow and arrow damage added up times damageFactor, aimed on an arc at where the
+    /// target is going, off by up to spreadDegrees. Bandits use this too (AiTaskBanditRaid). False when the game
+    /// has no projectile for that ammo.
+    /// </summary>
+    public bool LaunchProjectile(EntityAgent shooter, ItemSlot hand, ItemStack ammo, Entity target, float damageFactor, double spreadDegrees)
+    {
+        var weapon = hand.Itemstack;
+        if (weapon == null) return false;
         bool sling = IsSling(weapon);
         string code = sling
             ? "thrownstone-" + ammo.Collectible.Variant["rock"]
             : ammo.ItemAttributes?["arrowEntityCode"].AsString(null) ?? "arrow-" + ammo.Collectible.Variant["material"];
         var type = sapi.World.GetEntityType(new AssetLocation(code));
         var entity = type == null ? null : sapi.World.ClassRegistry.CreateEntity(type);
-        if (entity is not IProjectile projectile)
-        {
-            AddToPack(colony, citizen, ammo, false);
-            return false;
-        }
+        if (entity is not IProjectile projectile) return false;
 
         projectile.FiredBy = shooter;
-        projectile.Damage = (AttrDamage(weapon) + AttrDamage(ammo)) * DamageFactor(colony, citizen);
+        projectile.Damage = (AttrDamage(weapon) + AttrDamage(ammo)) * damageFactor;
         projectile.DamageTier = sling ? 0 : weapon.Collectible.Attributes?["damageTier"].AsInt(0) ?? 0;
         projectile.ProjectileStack = ammo;
         projectile.WeaponStack = weapon;
@@ -174,8 +187,7 @@ public partial class ColonyManager
         to.Add(target.Pos.Motion.X * from.DistanceTo(to) / speed, 0, target.Pos.Motion.Z * from.DistanceTo(to) / speed);
         var velocity = AimArc(from, to, speed, gravity);
 
-        // Better fighters aim truer (the Fighting skill's swing speed stands for their skill here).
-        double spread = Config.RangedSpreadDegrees / Math.Max(0.5, SwingFactor(colony, citizen)) * GameMath.DEG2RAD;
+        double spread = spreadDegrees * GameMath.DEG2RAD;
         var rand = sapi.World.Rand;
         double yaw = Math.Atan2(velocity.X, velocity.Z) + (rand.NextDouble() + rand.NextDouble() - 1) * spread;
         double flat = Math.Sqrt(velocity.X * velocity.X + velocity.Z * velocity.Z);

@@ -26,6 +26,7 @@ public partial class ColonyManager
         ["passion2"] = (14, 4),
         ["meal"] = (4, 12),
         ["skillup"] = (3, 24),
+        ["raidwon"] = (5, 48),
         ["parent"] = (12, 72),
         ["knockedout"] = (-12, 48),
         ["death"] = (-6, 72),

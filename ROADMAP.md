@@ -90,6 +90,7 @@ Things marked *(tested)* have been tried in game. Everything else is built but s
 - Rusty gears are the colony's money; Coinage coins are used when that mod is installed, and the Royal Mint needs it (0.177.0, not tested yet)
 - Ranged guards: each guard can be set to melee or ranged on the Colony militia tab, ranged guards shoot bows and slings and pick up their arrows after a fight, and armed settlers prefer spears and shields (0.178.0, not tested yet)
 - Rally Banner: link guard posts to it, raise it to call their guards to you, lower it to send them back (0.178.0, not tested yet)
+- Raids: from 8 grown settlers, every in-game week to month; outlaws (steal, start grass fires), wolf packs or drifters march on the Town Hall; warning in chat and on the Town Hall; On / Off / Only when I say and size on the Settings tab (0.183.0, not tested yet)
 - Graveyard and Undertaker: grave plots, the undertaker brings the dead home, buries them under a named grave marker and holds a small funeral; belongings go to the Graveyard's storage (0.179.0, not tested yet)
 - Economy step 1: the Market and Market Trader, settlers spend spare gears on meals and clothes, the economy starts at Town Hall level 2 with 60 starting gears (0.182.0, not tested yet)
 
@@ -99,7 +100,7 @@ Things marked *(tested)* have been tried in game. Everything else is built but s
 - **Town Hall window**: alliances, happiness, reordering work orders, custom ranks, permission logs, auto hiring and housing, and enter and leave messages say "Coming later" *(tested)*
 - **Permissions**: no custom ranks, no hostile or neutral list, no log of who did what *(tested)*
 - **Hiring and housing**: no auto-hire switch (choosing who lives in each home came in 0.75.0)
-- **Guards**: ranged guards and the Rally Banner came in 0.178.0; still no raids, no Combat Academy or archery range, and the Rally Banner does not show the colony's Heraldry design yet *(not tested yet)*
+- **Guards**: ranged guards and the Rally Banner came in 0.178.0, raids (outlaws, wolves, drifters) in 0.183.0; still no other bandit groups, no Combat Academy or archery range, and the Rally Banner does not show the colony's Heraldry design yet *(not tested yet)*
 - **Blueprints**: no in-game scan tool for your own buildings, and the wand's Education, Walls and Decoration tabs are still empty *(tested)*
 - **Death**: the Graveyard and Undertaker came in 0.179.0. Still to do: a memorial stone, laying the body out on a table first, family visiting graves, and the Graveyard's buildings (Aaron designs them) *(not tested yet)*
 - **Quests**: the new quest book is in (0.175.0-0.177.1). Still to do: real rewards, the Bronze Age, Iron and Steel, Mechanical Power and Kilns and Glass chapters (the Tutorial page was dropped), 31 Colony quests that wait for huts we do not have yet, and Tavern jobs and settler requests as quests
@@ -108,13 +109,13 @@ Things marked *(tested)* have been tried in game. Everything else is built but s
 ## Not built yet
 
 **Next, in this order**
-1. **Raids** (ranged guards and the Rally Banner came in 0.178.0): now and then, enemies turn up and attack the player's colony. The player is warned in chat and on the Town Hall window. There are several raid factions, from bandits (who use the settler models) to the game's own monsters such as drifters and shivers.
-2. **Armourer's and Weaponsmith's buildings**: the jobs came in 0.114.0, the buildings are still to design
-3. **Butcher's Hut, the rest**: the building, smoking racks, and offal and sinew from the mod. Original plan: a butcher takes the animals the Hunter (0.99.0) and herders bring home and cuts them up for meat, hides, fat and bones, then stores the meat with the food from 0.100.0. Works with the **Butchering** mod by CaptainOats when it is installed: the butcher hangs carcasses on its hooks, uses its tables, catches blood in buckets and smokes meat on its racks for more food per animal. Without the mod, the butcher uses a knife like the game does. The mod lists no licence, so we will never copy or bundle its files. It stays an optional extra that players download themselves.
-4. **Langstroth hives for the Beekeeper**: frames, the Frame Rack and waxed twine from From Golden Combs (the Apiary came in 0.174.0)
-5. **Buildings for the newer huts**: herder huts, Tannery, Butcher's Hut, Apiary, Boarding House and Graveyard still use placeholder models (Aaron designs every building)
+1. **Armourer's and Weaponsmith's buildings**: the jobs came in 0.114.0, the buildings are still to design
+2. **Butcher's Hut, the rest**: the building, smoking racks, and offal and sinew from the mod. Original plan: a butcher takes the animals the Hunter (0.99.0) and herders bring home and cuts them up for meat, hides, fat and bones, then stores the meat with the food from 0.100.0. Works with the **Butchering** mod by CaptainOats when it is installed: the butcher hangs carcasses on its hooks, uses its tables, catches blood in buckets and smokes meat on its racks for more food per animal. Without the mod, the butcher uses a knife like the game does. The mod lists no licence, so we will never copy or bundle its files. It stays an optional extra that players download themselves.
+3. **Langstroth hives for the Beekeeper**: frames, the Frame Rack and waxed twine from From Golden Combs (the Apiary came in 0.174.0)
+4. **Buildings for the newer huts**: herder huts, Tannery, Butcher's Hut, Apiary, Boarding House and Graveyard still use placeholder models (Aaron designs every building)
 
 **Later**
+- **More bandit groups for raids**: Hill Raiders, River Reavers, Rust Brigands, Storm Cultists and Deserters, each with their own look and way of fighting (written up 22 Nov 2026)
 - **Economy** (design doc https://claude.ai/artifact/54wQA4dYCoNTKviikB23iN, approved 22 Nov 2026): step 1, the Market, came in 0.182.0. Still to do: step 2 the Tavern Keeper and drinks (the Cook makes drinks for now, brewing is its own job later), step 3 home comfort, furniture, rent and better houses, step 4 market day traders, fines and the Bailiff's money report. The Royal Mint, taxes and wages came in 0.136.0.
 - More huts from MineColonies: Stonemason, Baker, Fisher, Plantation (reeds and cattails), Composter, Crusher and Sifter (quern and panning), Florist, Dyer, Fletcher and Mechanic (windmills and gears)
 - A Combat Academy and an archery range to train guards

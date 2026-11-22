@@ -74,6 +74,7 @@ public partial class ColonyManager : ModSystem
         api.Event.DidPlaceBlock += OnQuestPlace;
         api.Event.RegisterGameTickListener(OnFarWorkTick, FarWorkTickMs);
         api.Event.RegisterGameTickListener(_ => SaveDirty(), DirtySaveMs, DirtySaveMs);
+        StartRaids();
         StartDoors();
         StartFires();
         StartCropWatch();

@@ -737,6 +737,15 @@ public class ColonySnapshot
     [ProtoMember(60)] public bool SelfDefence;
     /// <summary>Colony militia tab: players whose Rally Banner is raised for this colony right now.</summary>
     [ProtoMember(3100)] public List<string> RalliedBy = new();
+    /// <summary>Raids (0.183.0): the line about a raid coming or under way ("" for none), the Settings tab choices, and days to the next raid (-1 for none).</summary>
+    [ProtoMember(3200)] public string RaidStatus = "";
+    [ProtoMember(3201)] public int RaidMode;
+    [ProtoMember(3202, IsRequired = true)] public int RaidSize = 1;
+    [ProtoMember(3203)] public double DaysToNextRaid = -1;
+    [ProtoMember(3204)] public int RaidsWon;
+    [ProtoMember(3205)] public int RaidsTotal;
+    [ProtoMember(3206)] public bool RaidsAllowed;
+    [ProtoMember(3207)] public int RaidMinSettlers;
     [ProtoMember(61)] public bool SupportAllies;
     /// <summary>The Bailiff tab (110-119): the bailiff's name ("" for none) and whether they are on duty (BailiffState), the rules, the ledger and the estate report.</summary>
     [ProtoMember(110)] public string BailiffName = "";
@@ -980,6 +989,12 @@ public enum ColonyAction
     SetSupportAllies = 141,
     /// <summary>Colony militia tab (officers): the guard with CitizenId fights with a bow or sling ("1") or up close ("0").</summary>
     SetGuardRanged = 3100,
+    /// <summary>Town Hall Settings (officers): raids on ("0"), off ("1") or only when sent ("2"), in Text.</summary>
+    SetRaidMode = 3200,
+    /// <summary>Town Hall Settings (officers): raid size smaller ("0"), normal ("1") or bigger ("2"), in Text.</summary>
+    SetRaidSize = 3201,
+    /// <summary>Town Hall Settings (officers): sends a raid now.</summary>
+    StartRaid = 3202,
     /// <summary>Remove hut: the hut's workers lose their job, a builder takes the building down and the hut block comes back.</summary>
     RemoveHut = 150,
     /// <summary>Stops taking a trader's old house down; BuildingId is the TeardownOrder id.</summary>
