@@ -6088,5 +6088,20 @@
 	"winter-short-firewood": "firewood",
 	"winter-short-clothes": "warm clothes",
 	"winter-warning": "{0}: winter is {1} days away and the colony is short of {2}. See the Town Hall's Winter tab.",
-	"event-winter-warning": "Winter is {0} days away. Short of {1}."
+	"event-winter-warning": "Winter is {0} days away. Short of {1}.",
+	"workstatus-serving": "setting bowls of food on the tables",
+	"workstatus-ladling": "filling bowls from the pot",
+	"workstatus-clearing-tables": "clearing bowls off the tables",
+	"workstatus-fetching-bowls": "fetching bowls",
+	"workstatus-fetching-bucket": "fetching a bucket for water",
+	"workstatus-fetching-water": "fetching water for the pot",
+	"activity-cook-serve": "Setting out bowls",
+	"activity-cook-ladle": "Filling bowls",
+	"activity-cook-clear": "Clearing the tables",
+	"activity-cook-water": "Fetching water",
+	"thought-ateattable": "Ate a meal at a table",
+	"serving-no-tables": "No tables to serve at. Put tables with chairs, stools or benches inside the hut and the cook serves meals at 7 and 18.",
+	"serving-places": "Serving at {0} tables (this level serves up to {1}). Meals at 7 and 18.",
+	"serving-meal-0": "Breakfast: {0} ate at the tables, {1} ate elsewhere.",
+	"serving-meal-1": "Supper: {0} ate at the tables, {1} ate elsewhere."
 }

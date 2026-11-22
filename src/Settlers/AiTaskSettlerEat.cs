@@ -52,11 +52,15 @@ public class AiTaskSettlerEat : SettlerTaskBase
         if (manager == null || entity.World.ElapsedMilliseconds < nextSearchMs) return false;
         var citizen = Citizen;
         var needs = entity.GetBehavior<EntityBehaviorSettlerNeeds>();
-        if (citizen == null || needs == null || !needs.IsHungry(manager.Config, citizen) || CalledToArms) return false;
+        if (citizen == null || needs == null || CalledToArms || Colony is not { } colony) return false;
+        bool hungry = needs.IsHungry(manager.Config, citizen);
+        // At a meal time a settler that would eat comes in to the Cook's Hut tables (ColonyManager.Serving.cs).
+        bool toTable = !hungry && manager.ComesToTable(colony, citizen);
+        if (!hungry && !toTable) return false;
         // With packed food left the settler eats on the go (EntityBehaviorColonyCitizen) and keeps working.
-        if (manager.HasLunch(citizen, entity)) return false;
+        if (!toTable && manager.HasLunch(citizen, entity)) return false;
 
-        var food = manager.FindFood(Colony!, citizen, entity, IsUnreachable);
+        var food = toTable ? manager.ServedMealFor(colony, citizen, entity, IsUnreachable) : manager.FindFood(colony, citizen, entity, IsUnreachable);
         if (food == null)
         {
             nextSearchMs = entity.World.ElapsedMilliseconds + NoFoodRetryMs;
@@ -150,7 +154,9 @@ public class AiTaskSettlerEat : SettlerTaskBase
     {
         var citizen = Citizen;
         if (citizen == null || entity.World.BlockAccessor.GetBlockEntity(containerPos!) is not BlockEntityContainer container) return false;
-        eatingName = manager!.EatFood(Colony!, citizen, entity, container, out var eaten);
+        bool atTable = manager!.IsServedMeal(Colony!, container);
+        eatingName = manager.EatFood(Colony!, citizen, entity, container, out var eaten);
+        if (eatingName != null) manager.NoteMeal(Colony!, citizen, atTable);
         if (eatingName != null && eaten != null && manager.Config.HoldFoodToEat) HoldFood(entity, eaten);
         // Packs food for later while at the store, so the next meals are eaten on the go.
         if (eatingName != null) manager.PackLunch(Colony!, citizen, entity, container);

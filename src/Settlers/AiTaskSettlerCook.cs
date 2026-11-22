@@ -22,7 +22,7 @@ namespace CreateAColony.Settlers;
 /// </summary>
 public class AiTaskSettlerCook : AiTaskSettlerWorker
 {
-    enum Work { Load, LoadMeal, Fuel, Empty, Shelve, OvenLoad, OvenFuel, OvenEmpty, Wash, Brew }
+    enum Work { Load, LoadMeal, Fuel, Empty, Shelve, OvenLoad, OvenFuel, OvenEmpty, Wash, Brew, Serve, Ladle, Clear, Water }
 
     Work work;
     ColonyManager.KitchenKind? kind;
@@ -50,7 +50,10 @@ public class AiTaskSettlerCook : AiTaskSettlerWorker
         ColonyManager.IsFirewood(stack) || ColonyManager.IsCleanPot(stack) || meal?.Uses(stack) == true || bake?.Uses(stack) == true
         || manager!.IsEmptyCrock(stack) || manager.IsRottenMeal(stack)
         // Juice or honey and what goes with it, for the brewing barrels (ColonyManager.Brewing.cs).
-        || brewing && (manager.HoldsBrewLiquid(stack) || manager.IsBrewSolid(stack));
+        || brewing && (manager.HoldsBrewLiquid(stack) || manager.IsBrewSolid(stack))
+        // Bowls to set out on the tables at meal times, and a bucket of water for the meal (ColonyManager.Serving.cs).
+        || ColonyManager.IsBowl(stack) && (manager.IsFilledBowl(stack) || manager.MealTimeNow() >= 0)
+        || meal?.Water > 0 && ColonyManager.IsWaterVessel(stack);
 
     /// <summary>Whether the cook is brewing now, so it keeps what it fetched for the barrels.</summary>
     bool brewing;
@@ -74,6 +77,7 @@ public class AiTaskSettlerCook : AiTaskSettlerWorker
         // Pot meals go into crocks: they keep there and the pot is free for the next meal (ColonyManager.Crocks.cs).
         crockAtHand = m.CrockAtHand(colony, hut, citizen);
         if (m.FillCrocks(colony, citizen) > 0) SetStatus("filling-crocks");
+        if (PlanServe(colony, citizen, hut)) return true;
         if (PlanCrocks(colony, citizen, hut)) return true;
         // Food fetched to keep cool goes down to the cool chest it was fetched for.
         if (coolTo != null)
@@ -195,6 +199,66 @@ public class AiTaskSettlerCook : AiTaskSettlerWorker
     }
 
     /// <summary>
+    /// Serving (ColonyManager.Serving.cs). At a meal time, with tables free: set out the filled bowls it carries, fill
+    /// empty bowls at a crock or pot of meal, or get empty bowls (off the tables, or from the kitchen). At any time,
+    /// bowls left eaten on the tables are cleared away.
+    /// </summary>
+    bool PlanServe(Colony colony, CitizenRecord citizen, Building hut)
+    {
+        var m = manager!;
+        if (!m.Config.CookServes || m.ServingSpots(hut).Count == 0) return false;
+        var here = entity.Pos.AsBlockPos;
+        if (m.MealTimeNow() >= 0)
+        {
+            var free = m.FreeServingSpots(hut).Where(p => !IsUnreachable(p)).OrderBy(p => p.DistanceSqTo(here.X, here.Y, here.Z)).ToList();
+            if (free.Count > 0)
+            {
+                var pack = m.PackItems(citizen);
+                if (pack.Any(m.IsFilledBowl))
+                {
+                    work = Work.Serve;
+                    SetStatus("serving");
+                    return GoWork(free[0]);
+                }
+                var source = m.LadleSource(colony, hut, IsUnreachable);
+                if (source != null)
+                {
+                    if (pack.Any(ColonyManager.IsEmptyBowl))
+                    {
+                        work = Work.Ladle;
+                        SetStatus("ladling");
+                        return GoWork(source.Pos);
+                    }
+                    if (!m.PackFull(citizen))
+                    {
+                        if (m.DirtyServingSpot(hut, IsUnreachable) is { } eaten)
+                        {
+                            work = Work.Clear;
+                            SetStatus("clearing-tables");
+                            return GoWork(eaten);
+                        }
+                        var bowls = m.KitchenStores(colony, hut).FirstOrDefault(c => !IsUnreachable(c.Pos) && c.Inventory.Any(s => !s.Empty && ColonyManager.IsEmptyBowl(s.Itemstack)));
+                        if (bowls != null)
+                        {
+                            SetStatus("fetching-bowls");
+                            return FetchSupplies(bowls.Pos, ColonyManager.IsEmptyBowl, free.Count);
+                        }
+                        var spare = m.WarehouseContainers(colony).SelectMany(c => c.Inventory).FirstOrDefault(s => !s.Empty && ColonyManager.IsEmptyBowl(s.Itemstack));
+                        if (spare != null) m.EnsureCookRequest(colony, hut, spare.Itemstack!.Collectible.Code.ToString(), free.Count);
+                    }
+                }
+            }
+        }
+        if (!m.PackFull(citizen) && m.DirtyServingSpot(hut, IsUnreachable) is { } dirty)
+        {
+            work = Work.Clear;
+            SetStatus("clearing-tables");
+            return GoWork(dirty);
+        }
+        return false;
+    }
+
+    /// <summary>
     /// Gets a cooked pot and an empty crock together so the pot can be poured out: a crock from the kitchen for the pot
     /// it carries, or a pot from the kitchen when it has a crock at hand. With no empty crock in the kitchen it asks
     /// couriers for one from the warehouse; with none anywhere the Potter's Hut makes more.
@@ -285,8 +349,26 @@ public class AiTaskSettlerCook : AiTaskSettlerWorker
             return false;
         }
 
+        // Water for the pot: fill a bucket at the nearest water first (ColonyManager.Serving.cs).
+        if (plan.Water > 0 && m.CookWaterPortions(citizen) < plan.Water)
+        {
+            if (!m.PackItems(citizen).Any(ColonyManager.IsWaterVessel))
+            {
+                var vessel = m.KitchenStores(colony, hut).FirstOrDefault(c => !IsUnreachable(c.Pos) && c.Inventory.Any(s => !s.Empty && ColonyManager.IsWaterVessel(s.Itemstack)));
+                if (vessel == null || m.PackFull(citizen)) return null;
+                SetStatus("fetching-bucket");
+                return FetchSupplies(vessel.Pos, ColonyManager.IsWaterVessel, 1);
+            }
+            var water = m.WashWater(colony, hut.HutPos);
+            if (water == null || IsUnreachable(water)) return null;
+            work = Work.Water;
+            SetStatus("fetching-water");
+            return GoWork(water);
+        }
+
         foreach (var (sample, count) in plan.Slots)
         {
+            if (ColonyManager.IsWater(sample)) continue;
             var code = sample.Collectible.Code;
             ItemMatch same = s => s.Collectible.Code.Equals(code);
             // Two slots of the same item need it twice over.
@@ -451,6 +533,23 @@ public class AiTaskSettlerCook : AiTaskSettlerWorker
     protected override void DoWork(Colony colony, CitizenRecord citizen, Building hut)
     {
         var m = manager!;
+        switch (work)
+        {
+            case Work.Serve:
+                if (!m.SetOutBowl(colony, citizen, target)) MarkUnreachable(target);
+                return;
+            case Work.Clear:
+                if (!m.ClearBowl(colony, citizen, target)) MarkUnreachable(target);
+                return;
+            case Work.Ladle:
+                if (entity.World.BlockAccessor.GetBlockEntity(target) is not BlockEntityContainer pot
+                    || m.LadleBowls(colony, citizen, pot, System.Math.Max(1, m.FreeServingSpots(hut).Count)) == 0) MarkUnreachable(target);
+                return;
+            case Work.Water:
+                m.FillWater(colony, citizen);
+                entity.World.PlaySoundAt(new AssetLocation("sounds/block/water"), target.X + 0.5, target.Y + 0.5, target.Z + 0.5, null);
+                return;
+        }
         if (work == Work.Shelve)
         {
             if (entity.World.BlockAccessor.GetBlockEntity(target) is BlockEntityContainer shelf && ColonyManager.IsFoodShelf(shelf)

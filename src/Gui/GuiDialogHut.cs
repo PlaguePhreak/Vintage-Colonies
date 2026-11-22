@@ -1392,6 +1392,7 @@ public partial class GuiDialogHut : GuiDialog
             y = composer.Text(mode, GuiKit.Muted(), 0, y + 2, Width - 180, 10);
         }
         else y = composer.Text(mode, GuiKit.Muted(), 0, y, Width, 10);
+        if (snapshot.KitchenServing.Length > 0) y = composer.Text(snapshot.KitchenServing, GuiKit.Detail(), 0, y, Width, 10);
         y = Math.Max(y, 30 + 24);
         ComposeKeepList(composer, snapshot.Kitchen, "kitchen", ColonyAction.SetKitchenKeep, y, Math.Max(120, KeepListHeight + 60 - y));
     }

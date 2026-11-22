@@ -36,6 +36,8 @@ public partial class ColonyManager
         ["payday"] = (3, 24),
         // A request this settler posted in the quest book was done (ColonyManager.Requests.cs).
         ["requestdone"] = (3, 48),
+        // A meal served at a Cook's Hut table (ColonyManager.Serving.cs).
+        ["ateattable"] = (2, 24),
         ["newhome"] = (8, 48),
         // The church (ColonyManager.Church.cs): a service (more when the bishop leads it), a missed one, a funeral.
         ["service"] = (8, 24),

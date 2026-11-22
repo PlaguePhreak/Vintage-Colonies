@@ -398,6 +398,8 @@ public class HutSnapshot
     [ProtoMember(30)] public List<PotteryView> Kitchen = new();
     /// <summary>Kitchen: the food the cook has to cook with (its inventory, the hut, the warehouse), most first.</summary>
     [ProtoMember(190)] public List<HutItemView> KitchenOnHand = new();
+    /// <summary>Cook's Hut serving (0.192.0): tables, and who ate at them at today's meal times.</summary>
+    [ProtoMember(4300)] public string KitchenServing = "";
     /// <summary>Kitchen: an officer has picked dishes; else the cook makes what it can.</summary>
     [ProtoMember(191)] public bool KitchenChosen;
 

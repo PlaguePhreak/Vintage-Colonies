@@ -1743,6 +1743,19 @@ public class ColonyConfig
     public int HomeFireFirewoodPerDay = 6;
     /// <summary>Farmers with nothing to grow in winter help the couriers.</summary>
     public bool WinterFarmersHaul = true;
+
+    // ---- Cook's Hut serving (0.192.0) ----
+    /// <summary>At meal times the cook sets bowls of pot meals on the Cook's Hut tables, and settlers come in to eat.</summary>
+    public bool CookServes = true;
+    /// <summary>The hours the meal times start (morning, evening), and how long each lasts.</summary>
+    public float[] MealTimes = { 7f, 18f };
+    public float MealTimeHours = 2f;
+    /// <summary>How many settlers a Cook's Hut serves at one meal time, by level (1, 2, 3; higher levels use the last).</summary>
+    public int[] ServeSeatsByLevel = { 6, 12, 20 };
+    /// <summary>At a meal time, settlers with less than this share of a full belly come in to eat.</summary>
+    public float ServeHungerBelow = 0.8f;
+    /// <summary>The cook fetches water in a bucket for pot recipes that need it.</summary>
+    public bool CookUsesWater = true;
 }
 
 /// <summary>One kind of item the Archive takes as a hand-in (ColonyConfig.ResearchHandIns).</summary>

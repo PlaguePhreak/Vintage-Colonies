@@ -90,6 +90,8 @@ public partial class ColonyManager
             }
             float dist = (float)Math.Sqrt(container.Pos.DistanceSqTo(eater.Pos.X, eater.Pos.Y, eater.Pos.Z));
             float value = choice.Score * (atMarket ? MarketMealPull : 1) / (1 + dist / FoodDistanceHalving);
+            // At a meal time the bowls on the Cook's Hut tables come first (ColonyManager.Serving.cs).
+            if (container is BlockEntityMeal && MealTimeNow() >= 0 && IsServedMeal(colony, container)) value *= ServedMealPull;
             if (value <= bestValue) continue;
             best = choice;
             bestValue = value;
@@ -97,6 +99,9 @@ public partial class ColonyManager
         if (wantedMeal && MarketOpen(colony) && MarketSells(colony, "meal") && HasMood(citizen) && Earners(colony).Contains(citizen)) CantAfford(citizen);
         return best;
     }
+
+    /// <summary>At a meal time a bowl on a Cook's Hut table counts this much better than other food the same distance away.</summary>
+    const float ServedMealPull = 4f;
 
     /// <summary>A settler who can pay weighs a Market meal this much better than free food the same distance away.</summary>
     const float MarketMealPull = 2f;

@@ -12,6 +12,19 @@ domain (`assets/createacolony/`, block and item codes like `createacolony:townha
 (`ModConfig/createacolony.json`), the release zips (`createacolony_<version>.zip`) and all save data keys.
 Changing any of those would stop old worlds from loading their colonies, so leave them as they are.
 
+## The Cook's Hut serves meals (0.192.0)
+
+- **Tables.** A table inside the Cook's Hut with a chair, stool or bench within 2 blocks of it is a place to eat. Level 1 serves 6 at a time, level 2 serves 12, level 3 serves 20.
+- **Meal times.** Twice a day, from 7 to 9 and from 18 to 20. The cook fills bowls from the hut's crocks and pots and sets them on the tables. It takes empty bowls from the kitchen or the warehouse.
+- **Coming in to eat.** At a meal time, settlers who have eaten less than 80% of a full belly come in, take a bowl, sit down and eat. Eating at a table gives the thought "Ate a meal at a table" (+2 for a day). Hungry settlers go for the bowls on the tables first. Outside meal times, or without tables, settlers eat as before.
+- **Clearing up.** The cook takes the empty bowls off the tables.
+- **Water.** The cook can now cook pot recipes that need water. It fills a bucket or jug from the hut's storage at the nearest water. The Kitchen tab counts those dishes too.
+- **Kitchen tab.** It shows how many tables the cook serves at, and how many settlers ate at the tables and elsewhere at the last meal times.
+- Server config: `CookServes`, `MealTimes`, `MealTimeHours`, `ServeSeatsByLevel`, `ServeHungerBelow`, `CookUsesWater`.
+- Your Cook's Hut buildings need tables and chairs inside for serving. Until then, the cook works as before.
+
+Not tested in game yet.
+
 ## Getting ready for winter (0.190.0, 0.191.0)
 
 The colony now looks ahead to the winter where its Town Hall stands, using your world's own seasons.

@@ -1397,6 +1397,7 @@ public partial class ColonyNetwork : ModSystem
                     Locked = dish.Locked
                 });
             }
+            snapshot.KitchenServing = Manager.ServingText(colony, building);
             foreach (var (sample, count) in Manager.KitchenOnHand(colony, building, cook).Take(KitchenOnHandShown))
             {
                 var one = sample.Clone();

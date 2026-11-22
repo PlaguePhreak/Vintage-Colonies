@@ -25,6 +25,8 @@ public partial class ColonyManager
         public int Servings;
 
         public string Key => MealKey(Recipe);
+        /// <summary>Water portions the pot takes (0 for none).</summary>
+        public int Water => Slots.Where(x => IsWater(x.Sample)).Sum(x => x.Count);
         public bool Uses(ItemStack s) => Slots.Any(x => x.Sample.Collectible.Code.Equals(s.Collectible.Code));
     }
 
@@ -112,8 +114,11 @@ public partial class ColonyManager
         if (pot?.Block is not BlockCookingContainer potBlock) return null;
         int slots = pot.ItemAttributes?["cookingContainerSlots"].AsInt(4) ?? 4;
         int maxSlotStack = pot.ItemAttributes?["maxContainerSlotStackSize"].AsInt(999) ?? 999;
+        float slotLitres = pot.ItemAttributes?["cookingSlotCapacityLitres"].AsFloat(6f) ?? 6f;
 
         var larder = Larder(colony, hut, cook);
+        // Water for soups and the like: the cook fetches it in a bucket (ColonyManager.Serving.cs).
+        if (WaterAvailable(colony, hut, cook) && WaterSample() is { } water) larder[water.Collectible.Code] = (water, 1_000_000);
         // Getting ready for winter: food that keeps is left for the winter while there is enough to eat now.
         if (PrepsForWinter(hut) && sapi.World.GetEntityById(cook.EntityId) is EntityAgent cookEntity && !FoodLow(colony, cookEntity))
         {
@@ -122,7 +127,7 @@ public partial class ColonyManager
         foreach (var (recipe, shortBy) in wanted)
         {
             int servings = Math.Clamp(shortBy, 1, potBlock.MaxServingSize);
-            if (PlanMeal(recipe, larder, slots, servings, maxSlotStack) is { } plan) return plan;
+            if (PlanMeal(recipe, larder, slots, servings, maxSlotStack, slotLitres) is { } plan) return plan;
         }
         return null;
     }
@@ -148,10 +153,18 @@ public partial class ColonyManager
     /// picked where there is a choice, and spare slots get extra ingredients the recipe allows, as a player
     /// would for a richer meal. The game's own recipe check has the last word.
     /// </summary>
-    MealPlan? PlanMeal(CookingRecipe recipe, Dictionary<AssetLocation, (ItemStack Sample, int Count)> larder, int slots, int maxServings, int maxSlotStack)
+    MealPlan? PlanMeal(CookingRecipe recipe, Dictionary<AssetLocation, (ItemStack Sample, int Count)> larder, int slots, int maxServings, int maxSlotStack, float slotLitres = 6f)
     {
+        // A liquid's portion is in litres (as the game counts it in CookingRecipe.Matches); its slot holds slotLitres.
+        int PortionOf(CookingRecipeIngredient i, ItemStack sample)
+        {
+            int size = i.GetMatchingStack(sample)?.StackSize ?? 0;
+            if (size <= 0 || BlockLiquidContainerBase.GetContainableProps(sample) is not { } liquid) return size;
+            return (int)(size * liquid.ItemsPerLitre * i.PortionSizeLitres);
+        }
+        int SlotMax(ItemStack sample) => BlockLiquidContainerBase.GetContainableProps(sample) is { } liquid ? (int)(slotLitres * liquid.ItemsPerLitre) : maxSlotStack;
         var options = recipe.Ingredients!.ToDictionary(i => i, i => larder
-            .Select(a => (Code: a.Key, a.Value.Sample, Portion: i.GetMatchingStack(a.Value.Sample)?.StackSize ?? 0))
+            .Select(a => (Code: a.Key, a.Value.Sample, Portion: PortionOf(i, a.Value.Sample)))
             .Where(c => c.Portion > 0)
             .ToList());
         if (recipe.Ingredients!.Sum(i => i.MinQuantity) > slots) return null;
@@ -180,7 +193,7 @@ public partial class ColonyManager
             bool Pick(CookingRecipeIngredient ingredient, int n, bool distinct)
             {
                 var best = options[ingredient]
-                    .Where(c => c.Portion * n <= maxSlotStack && left[c.Code] >= c.Portion * n)
+                    .Where(c => c.Portion * n <= SlotMax(c.Sample) && left[c.Code] >= c.Portion * n)
                     .Where(c => !distinct || !chosen.Any(x => x.Code.Equals(c.Code)))
                     .OrderBy(c => chosen.Count(x => x.Code.Equals(c.Code)))
                     .ThenByDescending(c => left[c.Code] / c.Portion)
@@ -242,6 +255,11 @@ public partial class ColonyManager
         {
             var code = plan.Slots[i].Sample.Collectible.Code;
             int need = plan.Slots[i].Count;
+            if (IsWater(plan.Slots[i].Sample))
+            {
+                PourWater(colony, cook, slots[i], need);
+                continue;
+            }
             while (need > 0 && TakeFromPack(colony, cook, s => s.Collectible.Code.Equals(code), need) is { } part)
             {
                 var source = new DummySlot(part);

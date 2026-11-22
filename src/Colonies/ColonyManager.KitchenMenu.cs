@@ -60,6 +60,7 @@ public partial class ColonyManager
         }
 
         var (slots, maxSlotStack, _) = PotSize(colony, hut, cook);
+        if (cook != null && WaterAvailable(colony, hut, cook) && WaterSample() is { } water) larder[water.Collectible.Code] = (water, 1_000_000);
         foreach (var recipe in MealRecipes())
         {
             var plan = slots > 0 ? PlanMeal(recipe, larder, slots, 1, maxSlotStack) : null;
