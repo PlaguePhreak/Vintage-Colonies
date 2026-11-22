@@ -738,10 +738,27 @@
           "y": -1.88,
           "shape": "square",
           "requires": [
-            "kingdom-q32"
+            "kingdom-q31"
           ],
-          "soon": true,
-          "objectives": []
+          "icon": "createacolony:hut-school",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "school",
+              "level": 1
+            },
+            {
+              "type": "job",
+              "code": "teacher",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 2
+            }
+          ]
         },
         {
           "code": "kingdom-q24",
