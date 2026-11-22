@@ -113,7 +113,8 @@ public partial class ColonyManager
     public void AddSkillXp(Colony colony, CitizenRecord c, string code, int amount)
     {
         if (!Config.Skills || amount <= 0 || !c.Alive || c.IsChild || Skill(code) == null || IsIncapable(c, code)) return;
-        double scaled = amount * Math.Max(0, Config.SkillXpMultiplier) * PassionXpFactor(c, code) * TraitMult(c, "learning") * MoodLearnFactor(c) * ChurchLearnFactor(c);
+        double scaled = amount * Math.Max(0, Config.SkillXpMultiplier) * PassionXpFactor(c, code) * TraitMult(c, "learning") * MoodLearnFactor(c) * ChurchLearnFactor(c)
+            * ResearchMult(colony, "skillXp"); // Schooling
         // The daily soft cap: past SkillDailyCap a skill only gets SkillOverCapFactor of the XP.
         int today = (int)sapi.World.Calendar.TotalDays;
         if (c.SkillXpDay != today)
@@ -219,6 +220,9 @@ public partial class ColonyManager
         speed *= MoodWorkFactor(c); // Joyful works faster, Miserable slower
         speed *= BailiffWorkFactor(colony, c); // a bailiff on duty keeps everyone at it
         if (Jobs.IsCrafter(c.JobCode)) speed *= ResearchMult(colony, "crafterSpeed"); // Specialized Craftsmen
+        if (c.JobCode == Jobs.Builder) speed *= ResearchMult(colony, "builderSpeed"); // Master Masons
+        if (c.JobCode is Jobs.Quarrier or Jobs.Miner) speed *= ResearchMult(colony, "quarrySpeed"); // Stonecutting
+        if (c.JobCode == Jobs.Healer) speed *= ResearchMult(colony, "healerSpeed"); // Burial Rites
         return ClampEffect(1f / speed);
     }
 
@@ -243,6 +247,7 @@ public partial class ColonyManager
         if (carrying && c.JobCode == Jobs.Courier) f += 0.04f * UsableLevel(colony, c, "hauling");
         if (carrying && c.JobCode == Jobs.Courier) f *= ResearchMult(colony, "courierWalk"); // Organized Storage
         if (c.JobCode == Jobs.Explorer) f *= ResearchMult(colony, "explorerWalk"); // Cartographer's Guild
+        f *= ResearchMult(colony, "walkSpeed"); // Road Building
         f *= TraitMult(c, "walkSpeed"); // Fleet-footed, Sluggish
         return ClampEffect(f);
     }

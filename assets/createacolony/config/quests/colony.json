@@ -2075,6 +2075,409 @@
           ]
         }
       ]
+    },
+    {
+      "code": "research",
+      "quests": [
+        {
+          "code": "research-burialrites",
+          "x": 16.0,
+          "y": 0.0,
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "research",
+              "code": "burialrites",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "research-archery",
+          "x": 23.0,
+          "y": 0.0,
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "research",
+              "code": "archery",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "research-roadbuilding",
+          "x": 2.0,
+          "y": 3.5,
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "research",
+              "code": "roadbuilding",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "research-mastermasons",
+          "x": 4.2,
+          "y": 3.5,
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "research",
+              "code": "mastermasons",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "research-stonecutting",
+          "x": 6.4,
+          "y": 3.5,
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "research",
+              "code": "stonecutting",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "research-cropscience",
+          "x": 9.0,
+          "y": 3.5,
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "research",
+              "code": "cropscience",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "research-guildworkshops",
+          "x": 11.2,
+          "y": 3.5,
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "research",
+              "code": "guildworkshops",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "research-efficientsmelting",
+          "x": 13.4,
+          "y": 3.5,
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "research",
+              "code": "efficientsmelting",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "research-medicine",
+          "x": 16.0,
+          "y": 3.5,
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "research",
+              "code": "medicine",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "research-schooling",
+          "x": 18.2,
+          "y": 3.5,
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "research",
+              "code": "schooling",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "research-townlife",
+          "x": 20.4,
+          "y": 3.5,
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "research",
+              "code": "townlife",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "research-drillyards",
+          "x": 23.0,
+          "y": 3.5,
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "research",
+              "code": "drillyards",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "research-stonewalls",
+          "x": 25.2,
+          "y": 3.5,
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "research",
+              "code": "stonewalls",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "research-surveying",
+          "x": 30.0,
+          "y": 3.5,
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "research",
+              "code": "surveying",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "research-expeditions",
+          "x": 32.2,
+          "y": 3.5,
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "research",
+              "code": "expeditions",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "research-grandlibrary",
+          "x": 16.0,
+          "y": 7.0,
+          "shape": "hexagon",
+          "requires": [
+            "research-schooling"
+          ],
+          "objectives": [
+            {
+              "type": "research",
+              "code": "grandlibrary",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "research-charterrealm",
+          "x": 2.0,
+          "y": 7.0,
+          "shape": "hexagon",
+          "requires": [
+            "research-roadbuilding",
+            "research-mastermasons"
+          ],
+          "objectives": [
+            {
+              "type": "research",
+              "code": "charterrealm",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "research-mechanics",
+          "x": 9.0,
+          "y": 7.0,
+          "shape": "hexagon",
+          "requires": [
+            "research-guildworkshops"
+          ],
+          "objectives": [
+            {
+              "type": "research",
+              "code": "mechanics",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "research-standingarmy",
+          "x": 23.0,
+          "y": 7.0,
+          "shape": "hexagon",
+          "requires": [
+            "research-drillyards",
+            "research-stonewalls"
+          ],
+          "objectives": [
+            {
+              "type": "research",
+              "code": "standingarmy",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "research-atlasworld",
+          "x": 30.0,
+          "y": 7.0,
+          "shape": "hexagon",
+          "requires": [
+            "research-surveying",
+            "research-expeditions"
+          ],
+          "objectives": [
+            {
+              "type": "research",
+              "code": "atlasworld",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        }
+      ]
     }
   ]
 }

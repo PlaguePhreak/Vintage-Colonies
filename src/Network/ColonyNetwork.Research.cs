@@ -1,6 +1,7 @@
 using System.Linq;
 using CreateAColony.Colonies;
 using Vintagestory.API.Config;
+using Vintagestory.API.Server;
 
 namespace CreateAColony.Network;
 
@@ -21,6 +22,10 @@ public partial class ColonyNetwork
         if (!room.Shelf) snapshot.ResearchNotes.Add(Lang.Get("createacolony:archive-no-shelf"));
         if (!room.Light) snapshot.ResearchNotes.Add(Lang.Get("createacolony:archive-no-light"));
         if (room.Noisy > 0) snapshot.ResearchNotes.Add(Lang.Get("createacolony:archive-noisy", room.Noisy));
+        snapshot.StoredResearchPoints = (int)colony.StoredResearchPoints;
+        (snapshot.HandInToday, snapshot.HandInCap) = m.HandInToday(colony);
+        snapshot.FieldTripsOpen = m.FieldTripsOpen(colony);
+        snapshot.FieldTrips = m.FieldTripLines(colony, archive);
 
         foreach (var def in m.ResearchDefs())
         {
@@ -47,6 +52,14 @@ public partial class ColonyNetwork
             }
             snapshot.Research.Add(view);
         }
+    }
+
+    string? HandInAction(IServerPlayer player, Colony colony, ColonyRole role, ColonyActionPacket packet)
+    {
+        if (role < ColonyRole.Member) return "createacolony:denied-member";
+        var archive = colony.Buildings.Find(b => b.BuildingId == packet.BuildingId);
+        if (archive == null) return "createacolony:bad-building";
+        return Manager.HandInFromPlayer(colony, archive, player);
     }
 
     string? ResearchAction(Colony colony, ColonyRole role, ColonyActionPacket packet)

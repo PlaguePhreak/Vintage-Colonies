@@ -307,6 +307,19 @@ public partial class ColonyManager
         }
     }
 
+    /// <summary>Efficient Smelting: gives back the researched share of fuel just put in a fire (rounded by chance), so less is used.</summary>
+    public void SaveFuel(Colony colony, CitizenRecord worker, ItemStack fuel)
+    {
+        float share = Math.Clamp(ResearchAdd(colony, "fuelSaving"), 0f, 0.9f);
+        if (share <= 0 || fuel.StackSize <= 0) return;
+        double exact = fuel.StackSize * share;
+        int back = (int)exact + (sapi.World.Rand.NextDouble() < exact - (int)exact ? 1 : 0);
+        if (back <= 0) return;
+        var saved = fuel.Clone();
+        saved.StackSize = back;
+        AddToPack(colony, worker, saved);
+    }
+
     /// <summary>Adds fuel hot enough for this if the fire pit has none, and lights it.</summary>
     public void FuelSmelterFire(Colony colony, CitizenRecord smelter, BlockEntityFirepit pit, int temperature)
     {
@@ -316,6 +329,7 @@ public partial class ColonyManager
             if (!pit.fuelSlot.Empty) AddToPack(colony, smelter, pit.fuelSlot.Itemstack);
             pit.fuelSlot.Itemstack = fuel;
             pit.fuelSlot.MarkDirty();
+            SaveFuel(colony, smelter, fuel);
         }
         if (!pit.IsBurning && !pit.fuelSlot.Empty)
         {

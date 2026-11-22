@@ -1060,6 +1060,47 @@ public class ColonyConfig
     public int ArchiveNoiseRadius = 16;
     public float ArchiveNoisePenalty = 0.1f;
     public string[] ArchiveNoisyHuts = { "smelter", "blacksmith", "armourer", "weaponsmith", "sawmill", "quarry" };
+    /// <summary>Tier 3 and higher research needs an Archive at (tier - 1) or more, both to be open and at the Archive it starts at.</summary>
+    public bool ResearchTierGate = true;
+    /// <summary>What the Archive takes on its Hand in button, and from its storage once a day: item codes (wildcards allowed), the points and Knowledge Tokens each gives. Field notes give what is written in them. Rusty gears are money, so they are not here.</summary>
+    public HandInDef[] ResearchHandIns =
+    {
+        // Checked against the game's own files (Vintage Story 1.22), 2026-11-22.
+        new HandInDef { Code = "game:book-*", Points = 40 },              // books, also old ones from ruins
+        new HandInDef { Code = "game:lore-*", Points = 100 },             // lore journals, notes and scrolls found in ruins
+        new HandInDef { Code = "game:tuningcylinder-*", Points = 150 },   // resonance archives
+        new HandInDef { Code = "game:jonasparts-*", Points = 30 },
+        new HandInDef { Code = "game:rustypart-*", Points = 30 },
+        new HandInDef { Code = "game:clutter-art/*", Points = 50 },       // statuettes, tablets, old gears and other art
+        new HandInDef { Code = "game:clutter-device*", Points = 50 },
+        new HandInDef { Code = "game:clutter-amber-insect", Points = 50 },
+        new HandInDef { Code = "game:clutter-skull/*", Points = 30 },
+        new HandInDef { Code = "game:clutter-sabretooth", Points = 30 },
+        new HandInDef { Code = "game:clutter-hourglass", Points = 30 },
+        new HandInDef { Code = "game:gear-temporal", Points = 0, Tokens = 1 }
+    };
+    /// <summary>Most Research Points hand-ins give a colony in one in-game day (Knowledge Tokens are not capped). 0 = no cap.</summary>
+    public int HandInPointsPerDay = 300;
+    /// <summary>Failed experiments: the chance a piece of research work fails, how much each Research skill level takes off it, and how many works' points a failure loses.</summary>
+    public bool ResearchFailures = true;
+    public float ResearchFailChance = 0.04f;
+    public float ResearchFailPerSkillLevel = 0.003f;
+    /// <summary>A failure is this much less likely when the Archive has its table, shelf and light.</summary>
+    public float ResearchFailGoodRoomCut = 0.01f;
+    public int ResearchFailWorksLost = 3;
+    /// <summary>The chance a piece of work is a lucky find worth this many works.</summary>
+    public float ResearchLuckyChance = 0.01f;
+    public int ResearchLuckyWorks = 2;
+    /// <summary>Field trips (ColonyManager.FieldTrips.cs): how many the Archive offers, the pieces of study at the spot, the points per kind of landmark, and whether ruins and translocators give a Knowledge Token.</summary>
+    public int FieldTripsOffered = 3;
+    public int FieldTripWorks = 4;
+    public Dictionary<string, int> FieldTripPoints = new()
+    {
+        ["landmark-ruins"] = 250, ["landmark-translocator"] = 300, ["landmark-mountain"] = 150, ["story-any"] = 300
+    };
+    public string[] FieldTripTokenKinds = { "landmark-ruins", "landmark-translocator", "story-any" };
+    /// <summary>Researchers sit on a seat next to a table within ArchiveRoomRadius of the hut while they study.</summary>
+    public bool ResearchersSit = true;
     /// <summary>The Coinage mod's coins, as item codes with wildcards. With Coinage installed these are the colony's money instead of rusty gears, and one can be picked on the Bailiff tab.</summary>
     public string[] OtherCoins = { "coinage:coin", "coinage:coin-*" };
     /// <summary>Mood points a settler loses per percent of tax while the bailiff collects taxes (10% is -2).</summary>
@@ -1461,4 +1502,12 @@ public class ColonyConfig
     public float FirePourSeconds = 1.5f;
     /// <summary>Before lighting its pit kiln the potter cuts the grass and plants this many blocks around it, so the fire cannot spread. 0 turns it off.</summary>
     public int KilnClearRadius = 3;
+}
+
+/// <summary>One kind of item the Archive takes as a hand-in (ColonyConfig.ResearchHandIns).</summary>
+public class HandInDef
+{
+    public string Code = "";
+    public int Points;
+    public int Tokens;
 }

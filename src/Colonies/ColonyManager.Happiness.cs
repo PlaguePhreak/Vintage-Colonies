@@ -44,7 +44,10 @@ public partial class ColonyManager
         ["sawattack"] = (-3, 12),
         ["monsterkill"] = (-8, 96),
         ["monsterslain"] = (3, 24),
-        ["treated"] = (4, 24)
+        ["treated"] = (4, 24),
+        // Research (ColonyManager.Research.cs): a failed experiment, a lucky find.
+        ["researchfail"] = (-2, 24),
+        ["researchlucky"] = (4, 24)
     };
 
     /// <summary>Mood bands from the top: the lowest happiness each starts at, and the word for it.</summary>

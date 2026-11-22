@@ -192,6 +192,7 @@ public partial class ColonyNetwork : ModSystem
             ColonyAction.SetBailiffRule => SetBailiffRule(player, colony, role, packet.Text),
             ColonyAction.SetTithe => SetTithe(colony, role, packet.Text),
             ColonyAction.StartResearch or ColonyAction.PauseResearch => ResearchAction(colony, role, packet),
+            ColonyAction.HandInResearch => HandInAction(player, colony, role, packet),
             ColonyAction.FillRequests => FillRequests(player, colony, role, packet),
             ColonyAction.HireRecruit => HireAction(player, colony, role, packet),
             ColonyAction.RemoveHut => RemoveHut(player, colony, role, packet),

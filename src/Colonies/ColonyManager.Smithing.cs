@@ -275,6 +275,7 @@ public partial class ColonyManager
             if (forge.FuelSlot.Empty) forge.FuelSlot.Itemstack = fuel;
             else forge.FuelSlot.Itemstack.StackSize += fuel.StackSize;
             forge.FuelSlot.MarkDirty();
+            SaveFuel(colony, smith, fuel); // Efficient Smelting
         }
         if (!forge.IsBurning && forge.FuelLevel > 0) forge.TryIgnite();
         forge.MarkDirty(true);

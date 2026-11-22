@@ -559,6 +559,13 @@ public class HutSnapshot
     /// <summary>What slows research here: a missing table, shelf or light, noisy huts nearby.</summary>
     [ProtoMember(406)] public List<string> ResearchNotes = new();
     [ProtoMember(407)] public int ArchiveTier;
+    /// <summary>0.180.0: Stored points from hand-ins, hand-in points today and the day's cap (0 = none).</summary>
+    [ProtoMember(408)] public int StoredResearchPoints;
+    [ProtoMember(409)] public int HandInToday;
+    [ProtoMember(410)] public int HandInCap;
+    /// <summary>Field trips offered, one line each; FieldTripsOpen is false until Field Notes is done.</summary>
+    [ProtoMember(411)] public List<string> FieldTrips = new();
+    [ProtoMember(412)] public bool FieldTripsOpen;
     /// <summary>An Apiary: the Keep the last colony switch on its Work area tab.</summary>
     [ProtoMember(2700)] public bool KeepLastColony;
 }
@@ -993,6 +1000,8 @@ public enum ColonyAction
     StartResearch = 400,
     /// <summary>Pauses the node with code Text; it keeps its points.</summary>
     PauseResearch = 401,
+    /// <summary>The Archive's Research tab (members): hands in what the player holds at the Archive BuildingId.</summary>
+    HandInResearch = 402,
     /// <summary>Requests tab give button (0.167.0): Text holds request ids, comma separated; each is filled from the player's inventory.</summary>
     FillRequests = 333,
     /// <summary>Upgrade tab (officers): raises a hut with no blueprint for its next level up one level, without a build.</summary>

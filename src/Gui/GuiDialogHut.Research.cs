@@ -24,7 +24,21 @@ public partial class GuiDialogHut
         y = composer.Row(Lang.Get("createacolony:research-slots"), Lang.Get("createacolony:research-slots-value", snapshot.ResearchRunning, snapshot.ResearchSlots), 0, y, Width);
         y = composer.Row(Lang.Get("createacolony:research-speed"), snapshot.ResearchSpeed + "%", 0, y, Width);
         y = composer.Row(Lang.Get("createacolony:research-tokens"), snapshot.KnowledgeTokens.ToString(), 0, y, Width);
+        if (snapshot.StoredResearchPoints > 0) y = composer.Row(Lang.Get("createacolony:research-stored"), snapshot.StoredResearchPoints.ToString(), 0, y, Width);
         foreach (var note in snapshot.ResearchNotes) y = composer.Text(note, GuiKit.Detail().WithColor(GuiKit.WarnColor), 0, y, Width, 2);
+
+        // Hand in (0.180.0): books, lore, relics, temporal gears and field notes.
+        y = composer.Section(Lang.Get("createacolony:research-handin-section"), y + 4, Width);
+        string cap = snapshot.HandInCap > 0 ? snapshot.HandInCap.ToString() : "-";
+        y = composer.Text(Lang.Get("createacolony:research-handin-help", snapshot.HandInToday, cap), GuiKit.Detail(), 0, y, Width, 3);
+        composer.AddSmallButton(Lang.Get("createacolony:research-handin"), () => SendText(ColonyAction.HandInResearch, id, ""), ElementBounds.Fixed(0, y, 200, 28));
+        y += 34;
+
+        // Field trips for explorers.
+        y = composer.Section(Lang.Get("createacolony:research-trips-section"), y + 4, Width);
+        if (!snapshot.FieldTripsOpen) y = composer.Text(Lang.Get("createacolony:research-trips-locked"), GuiKit.Muted(), 0, y, Width, 2);
+        else if (snapshot.FieldTrips.Count == 0) y = composer.Text(Lang.Get("createacolony:research-trips-none"), GuiKit.Muted(), 0, y, Width, 3);
+        foreach (var trip in snapshot.FieldTrips) y = composer.Text(trip, GuiKit.Detail(), 10, y, Width - 10, 2);
 
         // Running and paused research first.
         var started = snapshot.Research.Where(r => r.State is 2 or 3).ToList();

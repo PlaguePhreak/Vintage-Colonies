@@ -1,0 +1,13 @@
+{
+	"code": "fieldnotes",
+	"class": "ItemFieldNotes",
+	"creativeinventory": { "general": ["*"], "vintagecolonies": ["*"] },
+	"maxstacksize": 1,
+	// Field notes (0.180.0): a small brown book an Explorer writes on a field trip and hands in at the Archive.
+	"shape": { "base": "createacolony:item/colonyledger" },
+	"textures": { "cover": { "base": "game:block/cloth/linen/brown" } },
+	"guiTransform": { "rotation": { "x": -30, "y": 45, "z": 0 }, "origin": { "x": 0.5, "y": 0.1, "z": 0.5 }, "scale": 2.0 },
+	"fpHandTransform": { "translation": { "x": 0, "y": 0.2, "z": 0 }, "rotation": { "x": 0, "y": 0, "z": 60 }, "scale": 1.4 },
+	"tpHandTransform": { "translation": { "x": -0.8, "y": -0.1, "z": -0.6 }, "rotation": { "x": 0, "y": 0, "z": -60 }, "scale": 0.7 },
+	"groundTransform": { "origin": { "x": 0.5, "y": 0, "z": 0.5 }, "scale": 2.2 }
+}

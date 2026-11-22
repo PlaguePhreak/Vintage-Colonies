@@ -243,7 +243,8 @@ public partial class ColonyManager
         switch (o.Type)
         {
             case ObjectiveTypes.Research:
-                return colony.ResearchDone.Count;
+                // With a Code, that one piece of research (0.180.0); without, how many are done.
+                return o.Code.Length > 0 ? (colony.ResearchDone.Contains(o.Code) ? 1 : 0) : colony.ResearchDone.Count;
             case ObjectiveTypes.Happiness:
                 return Math.Max(0, AverageHappiness(colony));
             case ObjectiveTypes.AverageLevel:
