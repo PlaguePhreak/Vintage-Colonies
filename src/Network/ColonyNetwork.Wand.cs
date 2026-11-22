@@ -167,6 +167,8 @@ public partial class ColonyNetwork
         snapshot.Pack = Manager.PackOf(player.PlayerUID);
         foreach (var type in WandTypes)
         {
+            // The Royal Mint strikes Coinage coins: without that mod there is nothing for it to do (0.177.0).
+            if (type == BuildingTypes.Mint && !Manager.CoinageLoaded) continue;
             snapshot.Types.Add(type);
             snapshot.Have.Add(HutCount(player, type));
             foreach (var style in BlueprintStyles.All)

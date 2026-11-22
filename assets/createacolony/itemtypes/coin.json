@@ -1,8 +1,8 @@
 {
 	"code": "coin",
-	// The colony's money, struck at the Royal Mint. Only copper for now; silver and gold can come later.
+	// The old colony coin (before 0.177.0). The colony's money is now rusty gears (or Coinage coins). Kept, hidden,
+	// so old saves do not get unknown items: colonies swap these for gears, and a player can swap them in the grid.
 	"variantgroups": [ { "code": "metal", "states": ["copper"] } ],
-	"creativeinventory": { "general": ["*"], "vintagecolonies": ["*"] },
 	"maxstacksize": 128,
 	"shape": { "base": "createacolony:item/coin" },
 	"textures": { "metal": { "base": "game:block/metal/ingot/{metal}" } },

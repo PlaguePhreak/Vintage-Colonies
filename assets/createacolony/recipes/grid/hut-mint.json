@@ -1,4 +1,6 @@
+// The Royal Mint only exists with the Coinage mod (0.177.0): patches/coinage.json turns this recipe on.
 {
+	"enabled": false,
 	"ingredientPattern": "PXP,PXP,PPP",
 	"ingredients": {
 		"P": { "type": "item", "code": "game:plank-*" },

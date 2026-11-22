@@ -43,6 +43,8 @@ public class BlockColonyHut : Block, IWandPlaceable
         if (!world.BlockAccessor.GetBlock(pos).IsReplacableBy(this)) return "createacolony:wand-spot-taken";
         // The Archive needs a Town Hall of config ArchiveTownHallLevel (ColonyManager.Research.cs).
         if (BuildingType == BuildingTypes.Archive && !manager.ArchiveAllowed(colony)) return "createacolony:archive-needs-townhall";
+        // The Royal Mint strikes the Coinage mod's coins; without it the colony's money is rusty gears (ColonyManager.Economy.cs).
+        if (BuildingType == BuildingTypes.Mint && !manager.CoinageLoaded) return "createacolony:mint-needs-coinage";
 
         world.BlockAccessor.SetBlock(BlockId, pos);
         manager.AddBuilding(colony, BuildingType, pos, rotation);

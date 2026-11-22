@@ -637,6 +637,6 @@ public partial class ColonyManager
         yield return ServiceUnderway(colony) ? Lang.Get("createacolony:church-service-now")
             : next == today ? Lang.Get("createacolony:church-service-today", (int)Config.ChurchServiceHour)
             : Lang.Get("createacolony:church-service-next", next - today);
-        yield return Lang.Get("createacolony:church-coins", ChurchCoins(colony, church), colony.TithePercent);
+        yield return ColonyMoney.Get(sapi, "createacolony:church-coins", ChurchCoins(colony, church), colony.TithePercent);
     }
 }

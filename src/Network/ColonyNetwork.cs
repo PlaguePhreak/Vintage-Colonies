@@ -308,8 +308,9 @@ public partial class ColonyNetwork : ModSystem
                 break;
             case "currency" when parts[1] == "hand":
                 var held = player.InventoryManager.ActiveHotbarSlot?.Itemstack;
-                if (held == null || !Manager.IsCoin(held)) return "createacolony:currency-not-coin";
-                Manager.SetCurrency(colony, held.Collectible.Code.ToString() == "createacolony:coin-copper" ? null : held);
+                if (!Manager.CoinageLoaded) return "createacolony:currency-needs-coinage";
+                if (held == null || !Manager.IsCoinageCoin(held)) return "createacolony:currency-not-coin";
+                Manager.SetCurrency(colony, held);
                 break;
             case "currency":
                 Manager.SetCurrency(colony, null);
@@ -1307,6 +1308,8 @@ public partial class ColonyNetwork : ModSystem
     public override void StartClientSide(ICoreClientAPI api)
     {
         capi = api;
+        // Is the colony's money Coinage coins or rusty gears? Asked once the game's items are loaded (ColonyMoney).
+        api.Event.LevelFinalize += () => ColonyMoney.CoinageLoaded(api);
         clientChannel = api.Network.GetChannel(ChannelName)
             .SetMessageHandler<ColonySnapshot>(OnSnapshot)
             .SetMessageHandler<HutSnapshot>(OnHutSnapshot)

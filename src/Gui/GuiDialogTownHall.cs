@@ -551,7 +551,7 @@ public class GuiDialogTownHall : GuiDialog
     static string EventText(EventView e)
     {
         var args = e.Args.Select(a => a.StartsWith('@') ? Lang.Get("createacolony:" + a[1..]) : a).Cast<object>().ToArray();
-        return Lang.Get("createacolony:" + e.Key, args);
+        return ColonyMoney.Get("createacolony:" + e.Key, args);
     }
 
     /// <summary>Every building waiting to be built or upgraded, in the order builders take them, with Cancel for officers.</summary>
@@ -1010,20 +1010,27 @@ public class GuiDialogTownHall : GuiDialog
     void ComposeMoney(GuiComposer composer, double y)
     {
         if (!snapshot.EconomyOpen) y = composer.Text(Lang.Get("createacolony:economy-locked", snapshot.EconomyLevel), GuiKit.Body().WithColor(GuiKit.WarnColor), 0, y, Width, 8);
-        else if (!snapshot.HasMint) y = composer.Text(Lang.Get("createacolony:bailiff-no-mint"), GuiKit.Body().WithColor(GuiKit.WarnColor), 0, y, Width, 8);
-        y = composer.Text(Lang.Get("createacolony:bailiff-treasury", snapshot.Treasury, snapshot.WageBill, DayName(snapshot.NextPayday)),
+        else if (snapshot.Treasury == 0) y = composer.Text(ColonyMoney.Get(capi, "createacolony:bailiff-empty"), GuiKit.Body().WithColor(GuiKit.WarnColor), 0, y, Width, 8);
+        y = composer.Text(ColonyMoney.Get(capi, "createacolony:bailiff-treasury", snapshot.Treasury, snapshot.WageBill, DayName(snapshot.NextPayday)),
             snapshot.Treasury < snapshot.WageBill ? GuiKit.Body().WithColor(GuiKit.WarnColor) : GuiKit.Body(), 0, y, Width, 10);
 
+        // The colony's money: rusty gears, or with the Coinage mod one of its coins (ColonyMoney).
         y = composer.Section(Lang.Get("createacolony:currency"), y, Width);
-        y = composer.Text(Lang.Get(snapshot.OwnCoin ? "createacolony:currency-own" : "createacolony:currency-mint", snapshot.CurrencyName, snapshot.CoinMetalName),
-            GuiKit.Body(), 0, y, Width, 6);
-        if (Officer)
+        if (!snapshot.OwnCoin)
         {
-            composer.AddSmallButton(Lang.Get("createacolony:currency-use-held"), () => { SendBailiffRule("currency|hand"); return true; }, ElementBounds.Fixed(0, y, 220, 28));
-            if (snapshot.OwnCoin) composer.AddSmallButton(Lang.Get("createacolony:currency-use-mint"), () => { SendBailiffRule("currency|mint"); return true; }, ElementBounds.Fixed(230, y, 220, 28));
-            y += 36;
+            y = composer.Text(Lang.Get("createacolony:currency-gears"), GuiKit.Body(), 0, y, Width, 10);
         }
-        y = composer.Text(Lang.Get("createacolony:currency-hint"), GuiKit.Muted(), 0, y, Width, 10);
+        else
+        {
+            y = composer.Text(Lang.Get("createacolony:currency-own", snapshot.CurrencyName, snapshot.CoinMetalName), GuiKit.Body(), 0, y, Width, 6);
+            if (Officer)
+            {
+                composer.AddSmallButton(Lang.Get("createacolony:currency-use-held"), () => { SendBailiffRule("currency|hand"); return true; }, ElementBounds.Fixed(0, y, 220, 28));
+                composer.AddSmallButton(Lang.Get("createacolony:currency-use-any"), () => { SendBailiffRule("currency|any"); return true; }, ElementBounds.Fixed(230, y, 220, 28));
+                y += 36;
+            }
+            y = composer.Text(Lang.Get("createacolony:currency-hint"), GuiKit.Muted(), 0, y, Width, 10);
+        }
 
         y = composer.Section(Lang.Get("createacolony:bailiff-tax"), y, Width);
         string[] rates = Enumerable.Range(0, 11).Select(i => (i * 5).ToString()).ToArray();
@@ -1088,15 +1095,15 @@ public class GuiDialogTownHall : GuiDialog
             {
                 composer
                     .AddStaticText(DayName(d.Day), GuiKit.Detail(), ElementBounds.Fixed(10, y + 4, 70, 20))
-                    .AddStaticText(d.Payers > 0 ? Lang.Get("createacolony:ledger-rent", d.Rent, d.Payers) : "-", GuiKit.Detail(), ElementBounds.Fixed(85, y + 4, 110, 20))
-                    .AddStaticText(d.Wages > 0 || d.Unpaid > 0 ? Lang.Get("createacolony:ledger-wages", d.Wages, d.Unpaid) : "-",
+                    .AddStaticText(d.Payers > 0 ? ColonyMoney.Get(capi, "createacolony:ledger-rent", d.Rent, d.Payers) : "-", GuiKit.Detail(), ElementBounds.Fixed(85, y + 4, 110, 20))
+                    .AddStaticText(d.Wages > 0 || d.Unpaid > 0 ? ColonyMoney.Get(capi, "createacolony:ledger-wages", d.Wages, d.Unpaid) : "-",
                         d.Unpaid > 0 ? GuiKit.Detail().WithColor(GuiKit.WarnColor) : GuiKit.Detail(), ElementBounds.Fixed(200, y + 4, 110, 20))
                     .AddStaticText(Lang.Get("createacolony:ledger-wanderers", d.Welcomed, d.TurnedAway), GuiKit.Detail(), ElementBounds.Fixed(315, y + 4, 130, 20))
                     .AddStaticText(Lang.Get("createacolony:ledger-jobs", d.JobsGiven, d.Lent), GuiKit.Detail(), ElementBounds.Fixed(450, y + 4, 110, 20));
                 y += 26;
             }
             y += 14;
-            y = composer.Text(Lang.Get("createacolony:ledger-total", snapshot.Ledger.Sum(d => d.Rent), snapshot.Ledger.Sum(d => d.Wages), snapshot.Ledger.Count),
+            y = composer.Text(ColonyMoney.Get(capi, "createacolony:ledger-total", snapshot.Ledger.Sum(d => d.Rent), snapshot.Ledger.Sum(d => d.Wages), snapshot.Ledger.Count),
                 GuiKit.Body(), 0, y, Width, 6);
         }
         composer.Text(Lang.Get("createacolony:ledger-hint"), GuiKit.Muted(), 0, y, Width, 6);

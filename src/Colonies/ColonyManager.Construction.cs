@@ -40,7 +40,6 @@ public partial class ColonyManager
         colony.Buildings.Add(building);
         // A new Healer's Hut keeps a few bandages from the start (ColonyManager.Healing.cs).
         if (type == BuildingTypes.Healer) KeepBandagesAtStart(building);
-        if (type == BuildingTypes.Mint) KeepCoinsAtStart(building);
         if (type == BuildingTypes.Gatherer) KeepPoulticesAtStart(building);
         LogEvent(colony, "event-placed", "@building-" + type);
         MarkDirty(colony);

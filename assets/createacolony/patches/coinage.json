@@ -1,0 +1,10 @@
+// Optional Coinage mod support (0.177.0). Nothing of Coinage is bundled: these only run when it is installed.
+[
+	{
+		"file": "createacolony:recipes/grid/hut-mint.json",
+		"op": "replace",
+		"path": "/enabled",
+		"value": true,
+		"dependsOn": [ { "modid": "coinage" } ]
+	}
+]
