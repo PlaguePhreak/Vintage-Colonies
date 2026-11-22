@@ -2645,6 +2645,366 @@
           ]
         }
       ]
+    },
+    {
+      "code": "requests",
+      "icon": "game:paper-parchment",
+      "quests": [
+        {
+          "code": "request-firewood",
+          "x": 0.0,
+          "y": 0.0,
+          "shape": "hexagon",
+          "icon": "game:firewood",
+          "request": true,
+          "repeatable": true,
+          "objectives": [
+            {
+              "type": "deliver",
+              "code": "game:firewood",
+              "count": 16
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 2
+            }
+          ],
+          "need": "game:firewood<48"
+        },
+        {
+          "code": "request-grain",
+          "x": 3.0,
+          "y": 0.0,
+          "shape": "hexagon",
+          "icon": "game:grain-spelt",
+          "request": true,
+          "repeatable": true,
+          "objectives": [
+            {
+              "type": "deliver",
+              "code": "game:grain-*",
+              "count": 16,
+              "text": "objective-text-request-grain"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 2
+            }
+          ],
+          "need": "game:grain-*<32"
+        },
+        {
+          "code": "request-meat",
+          "x": 6.0,
+          "y": 0.0,
+          "shape": "hexagon",
+          "icon": "game:redmeat-raw",
+          "request": true,
+          "repeatable": true,
+          "objectives": [
+            {
+              "type": "deliver",
+              "code": "game:redmeat-raw|game:bushmeat-raw|game:poultry-raw",
+              "count": 8,
+              "text": "objective-text-request-meat"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 2
+            }
+          ],
+          "need": "game:redmeat-raw|game:bushmeat-raw|game:poultry-raw<8"
+        },
+        {
+          "code": "request-boards",
+          "x": 9.0,
+          "y": 0.0,
+          "shape": "hexagon",
+          "icon": "game:plank-oak",
+          "request": true,
+          "repeatable": true,
+          "objectives": [
+            {
+              "type": "deliver",
+              "code": "game:plank-*",
+              "count": 16,
+              "text": "objective-text-request-boards"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 2
+            }
+          ],
+          "need": "game:plank-*<24"
+        },
+        {
+          "code": "request-clay",
+          "x": 12.0,
+          "y": 0.0,
+          "shape": "hexagon",
+          "icon": "game:clay-blue",
+          "request": true,
+          "repeatable": true,
+          "objectives": [
+            {
+              "type": "deliver",
+              "code": "game:clay-*",
+              "count": 16,
+              "text": "objective-text-request-clay"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 2
+            }
+          ],
+          "need": "game:clay-*<16"
+        },
+        {
+          "code": "request-drygrass",
+          "x": 15.0,
+          "y": 0.0,
+          "shape": "hexagon",
+          "icon": "game:drygrass",
+          "request": true,
+          "repeatable": true,
+          "objectives": [
+            {
+              "type": "deliver",
+              "code": "game:drygrass",
+              "count": 32
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 2
+            }
+          ],
+          "need": "game:drygrass<32"
+        },
+        {
+          "code": "request-sticks",
+          "x": 18.0,
+          "y": 0.0,
+          "shape": "hexagon",
+          "icon": "game:stick",
+          "request": true,
+          "repeatable": true,
+          "objectives": [
+            {
+              "type": "deliver",
+              "code": "game:stick",
+              "count": 24
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 2
+            }
+          ],
+          "need": "game:stick<24"
+        },
+        {
+          "code": "request-pickaxe",
+          "x": 21.0,
+          "y": 0.0,
+          "shape": "hexagon",
+          "icon": "game:pickaxe-copper",
+          "request": true,
+          "repeatable": true,
+          "objectives": [
+            {
+              "type": "deliver",
+              "code": "game:pickaxe-*",
+              "count": 1,
+              "text": "objective-text-request-pickaxe"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 3
+            }
+          ],
+          "need": "game:pickaxe-*<1"
+        },
+        {
+          "code": "request-axe",
+          "x": 24.0,
+          "y": 0.0,
+          "shape": "hexagon",
+          "icon": "game:axe-felling-copper",
+          "request": true,
+          "repeatable": true,
+          "objectives": [
+            {
+              "type": "deliver",
+              "code": "game:axe-*",
+              "count": 1,
+              "text": "objective-text-request-axe"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 3
+            }
+          ],
+          "need": "game:axe-*<1"
+        },
+        {
+          "code": "request-shovel",
+          "x": 27.0,
+          "y": 0.0,
+          "shape": "hexagon",
+          "icon": "game:shovel-copper",
+          "request": true,
+          "repeatable": true,
+          "objectives": [
+            {
+              "type": "deliver",
+              "code": "game:shovel-*",
+              "count": 1,
+              "text": "objective-text-request-shovel"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 3
+            }
+          ],
+          "need": "game:shovel-*<1"
+        },
+        {
+          "code": "request-hoe",
+          "x": 30.0,
+          "y": 0.0,
+          "shape": "hexagon",
+          "icon": "game:hoe-copper",
+          "request": true,
+          "repeatable": true,
+          "objectives": [
+            {
+              "type": "deliver",
+              "code": "game:hoe-*",
+              "count": 1,
+              "text": "objective-text-request-hoe"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 3
+            }
+          ],
+          "need": "game:hoe-*<1"
+        },
+        {
+          "code": "request-wolves",
+          "x": 33.0,
+          "y": 0.0,
+          "shape": "hexagon",
+          "icon": "game:spear-generic-flint",
+          "request": true,
+          "repeatable": true,
+          "objectives": [
+            {
+              "type": "kill",
+              "code": "predator",
+              "count": 2,
+              "text": "objective-text-request-wolves"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 4
+            }
+          ]
+        },
+        {
+          "code": "request-hunt",
+          "x": 36.0,
+          "y": 0.0,
+          "shape": "hexagon",
+          "icon": "game:bow-simple",
+          "request": true,
+          "repeatable": true,
+          "objectives": [
+            {
+              "type": "kill",
+              "code": "animal|huntable|predator",
+              "count": 3,
+              "text": "objective-text-request-hunt"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 3
+            }
+          ]
+        },
+        {
+          "code": "request-home",
+          "x": 39.0,
+          "y": 0.0,
+          "shape": "hexagon",
+          "icon": "createacolony:hut-residence",
+          "request": true,
+          "repeatable": true,
+          "objectives": [
+            {
+              "type": "buildings",
+              "code": "residence",
+              "count": 1,
+              "level": 1,
+              "text": "objective-text-request-home"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 6
+            }
+          ]
+        },
+        {
+          "code": "request-welcome",
+          "x": 42.0,
+          "y": 0.0,
+          "shape": "hexagon",
+          "icon": "createacolony:hut-tavern",
+          "request": true,
+          "repeatable": true,
+          "objectives": [
+            {
+              "type": "settlers",
+              "code": "",
+              "count": 1,
+              "text": "objective-text-request-welcome"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 2
+            }
+          ]
+        }
+      ]
     }
   ]
 }

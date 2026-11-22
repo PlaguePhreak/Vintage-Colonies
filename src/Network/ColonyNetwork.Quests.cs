@@ -88,8 +88,11 @@ public partial class ColonyNetwork
         foreach (var q in Manager.Quests.All)
         {
             var status = Manager.Evaluate(player, colony, q, out var progress, out var needed);
+            var open = q.Request ? Manager.OpenRequestOf(colony, q) : null;
             states.Add(new QuestStateView
             {
+                Asker = open == null ? "" : colony!.Citizens.Find(c => c.CitizenId == open.CitizenId)?.Name ?? "",
+                DaysLeft = open == null ? 0 : (float)Math.Max(0, ColonyManager.RequestLastsDays - (sapi!.World.Calendar.TotalDays - open.PostedTotalDays)),
                 Code = q.Code,
                 Status = (int)status,
                 Progress = progress.ToList(),

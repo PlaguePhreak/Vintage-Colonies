@@ -34,6 +34,8 @@ public partial class ColonyManager
         ["catharsis"] = (20, 24),
         ["decorated"] = (5, 48),
         ["payday"] = (3, 24),
+        // A request this settler posted in the quest book was done (ColonyManager.Requests.cs).
+        ["requestdone"] = (3, 48),
         ["newhome"] = (8, 48),
         // The church (ColonyManager.Church.cs): a service (more when the bishop leads it), a missed one, a funeral.
         ["service"] = (8, 24),

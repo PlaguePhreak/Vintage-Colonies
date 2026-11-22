@@ -821,6 +821,9 @@ public class QuestStateView
     [ProtoMember(3)] public List<int> Progress = new();
     [ProtoMember(4)] public List<int> Needed = new();
     [ProtoMember(5)] public bool Tracked;
+    /// <summary>For an open settler request: who asked, and how many days it stays.</summary>
+    [ProtoMember(6)] public string Asker = "";
+    [ProtoMember(7)] public float DaysLeft;
 }
 
 /// <summary>Everything the quest book shows: the viewer's colony and where every quest stands for them.</summary>

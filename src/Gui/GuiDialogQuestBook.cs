@@ -70,6 +70,12 @@ public class GuiDialogQuestBook : GuiDialog
     {
         snapshot = fresh;
         states = fresh.Quests.ToDictionary(s => s.Code, s => s);
+        // Open settler requests sit side by side, however many there are.
+        foreach (var chapter in library.Groups.SelectMany(g => g.Chapters))
+        {
+            int n = 0;
+            foreach (var q in chapter.Quests.Where(q => q.Request && StatusOf(q) != QuestStatus.Locked)) { q.X = n++ * 3; q.Y = 0; }
+        }
         lastSignature = string.Join("|", fresh.Quests.Select(s => s.Code + s.Status + (s.Tracked ? "t" : "") + string.Join(",", s.Progress))) + fresh.ColonyId;
     }
 
@@ -137,7 +143,7 @@ public class GuiDialogQuestBook : GuiDialog
 
     (int Done, int Total) ChapterProgress(QuestChapterDef chapter)
     {
-        int total = chapter.Quests.Count(q => !q.Secret || StatusOf(q) != QuestStatus.Locked);
+        int total = chapter.Quests.Count(q => (!q.Secret && !q.Request) || StatusOf(q) != QuestStatus.Locked);
         int done = chapter.Quests.Count(q => StatusOf(q) == QuestStatus.Claimed);
         return (done, total);
     }

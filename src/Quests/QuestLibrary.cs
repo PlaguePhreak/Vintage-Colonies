@@ -261,6 +261,10 @@ public class QuestDef
     public bool Soon;
     /// <summary>Can be done again: claiming it gives the rewards and starts it over. Quests after it open at the first claim.</summary>
     public bool Repeatable;
+    /// <summary>A settler request: only open while it is on the colony's board (ColonyManager.Requests.cs).</summary>
+    public bool Request;
+    /// <summary>For a request, "itemcode&lt;count": it is posted first while the colony's stores hold fewer than count.</summary>
+    public string Need = "";
     /// <summary>Name and description when edited in game; empty uses the lang file (quest-code, quest-code-desc).</summary>
     public string Title = "";
     public string Desc = "";

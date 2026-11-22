@@ -90,6 +90,10 @@ public class GuiDialogQuestCard : GuiDialog
             composer.AddRichtext(desc, GuiKit.Detail(), ElementBounds.Fixed(0, y, Width, descHeight), OnLink, "desc");
             y += descHeight + 8;
         }
+        if (quest.Request && book.StateOf(quest) is { Asker.Length: > 0 } asked)
+        {
+            y = composer.Text(Lang.Get("createacolony:questbook-request-by", asked.Asker, Math.Max(1, (int)Math.Ceiling(asked.DaysLeft))), GuiKit.Muted(), 0, y, Width, 8);
+        }
         if (status == QuestStatus.Locked)
         {
             string why = book.WhyLocked(quest);

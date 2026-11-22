@@ -111,6 +111,8 @@ public partial class ColonyManager
         }
         if (q.Soon) return QuestStatus.Locked;
         if (q.PerColony && colony == null) return QuestStatus.Locked;
+        OpenRequest? open = null;
+        if (q.Request && (open = OpenRequestOf(colony, q)) == null) return QuestStatus.Locked;
         // A quest that is still to come never holds back the ones after it.
         var needs = q.Requires.Select(r => Quests.Get(r)).Where(n => n != null && !n.Soon).ToList();
         if (needs.Count > 0)
@@ -128,6 +130,7 @@ public partial class ColonyManager
             progress[i] = IsManual(o) ? needed[i]
                 : StickyChecks.Contains(o.Type) ? Math.Min(needed[i], StickyProgress(player, q, i, o, needed[i]))
                 : Math.Min(needed[i], Progress(player, colony, o));
+            if (open != null && !IsManual(o) && CountedFromPosting.Contains(o.Type)) progress[i] = Math.Min(needed[i], RequestProgress(player, colony!, open, o, i));
             if (progress[i] < needed[i]) complete = false;
         }
         return complete ? QuestStatus.Complete : QuestStatus.Active;
@@ -384,6 +387,7 @@ public partial class ColonyManager
             {
                 counters.Remove(q.Code + "#" + i);
                 var o = q.Objectives[i];
+                if (q.Request) continue;
                 if (o.Type == ObjectiveTypes.Kill) counters.Remove(o.Code);
                 else if (o.Type is ObjectiveTypes.Break or ObjectiveTypes.Place or ObjectiveTypes.Use) counters.Remove(o.Type + ":" + o.Code);
             }
@@ -391,6 +395,7 @@ public partial class ColonyManager
         }
         else record.Claimed = true;
         SaveRecords(q, player.PlayerUID, colony);
+        if (q.Request && colony != null) FinishRequest(colony, q);
 
         player.SendMessage(0, Lang.GetL(player.LanguageCode, "createacolony:quest-claimed", QuestLibrary.TitleL(player.LanguageCode, q)), EnumChatType.Notification);
         if (q.PerColony && colony != null) LogEvent(colony, "event-quest-done", "@quest-" + q.Code, player.PlayerName);

@@ -727,6 +727,19 @@ public class OreFind
 /// claimed. Everything else (locked, counting, complete) is worked out from the world each time.
 /// </summary>
 [ProtoContract]
+public class OpenRequest
+{
+    /// <summary>The quest of the Requests chapter that is open.</summary>
+    [ProtoMember(1)] public string Code = "";
+    [ProtoMember(2)] public double PostedTotalDays;
+    /// <summary>The settler who asked.</summary>
+    [ProtoMember(3)] public int CitizenId;
+    /// <summary>Where each counted task stood when the request was posted ("#index"), or when a player first saw it for kills ("uid#index").</summary>
+    [ProtoMember(4)] public Dictionary<string, int> Baseline = new();
+}
+
+/// <summary>Where a quest stands: accepted, claimed, and how often.</summary>
+[ProtoContract]
 public class QuestRecord
 {
     [ProtoMember(1)] public bool Accepted;
@@ -957,6 +970,9 @@ public class Colony
     [ProtoMember(3719)] public string LeaveText = "";
     /// <summary>Members get a chat line when a player who is not a member walks in.</summary>
     [ProtoMember(3720)] public bool TellOutsiders;
+    /// <summary>The settler requests open in the quest book now (ColonyManager.Requests.cs).</summary>
+    [ProtoMember(3760)] public List<OpenRequest> QuestRequests = new();
+    [ProtoMember(3761)] public double LastRequestTotalDays;
     [ProtoMember(3500, IsRequired = true)] public int StartingGearsLeft = -1;
     /// <summary>The Market's prices by kind ("meal", "clothing"), set on its For sale tab; kinds not here use config MarketPrices.</summary>
     [ProtoMember(3501)] public Dictionary<string, int> MarketPrices = new();

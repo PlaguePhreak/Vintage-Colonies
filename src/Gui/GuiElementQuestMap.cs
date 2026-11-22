@@ -82,7 +82,7 @@ public class GuiElementQuestMap : GuiElement
         return (((x - Bounds.InnerWidth / 2) / k - view.PanX) / CellSize, ((y - Bounds.InnerHeight / 2) / k - view.PanY) / CellSize);
     }
 
-    bool Shown(QuestDef q) => (!q.Secret || StatusOf(q) != QuestStatus.Locked) && Fogged?.Invoke(q) != true || EditMode;
+    bool Shown(QuestDef q) => ((!q.Secret && !q.Request) || StatusOf(q) != QuestStatus.Locked) && Fogged?.Invoke(q) != true || EditMode;
 
     /// <summary>A quest's centre inside the element, in screen pixels.</summary>
     (double X, double Y) Centre(QuestDef q)
