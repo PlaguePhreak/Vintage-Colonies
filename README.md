@@ -25,6 +25,14 @@ Only when A Culinary Artillery (the library Expanded Foods uses) is installed. W
 
 Not tested in game yet.
 
+## Bug reports: /colony report (0.195.0)
+
+- **`/colony report`** saves a text file with the colony you stand in: the Town Hall, every hut, every settler (job, status, health, position, what they hold, stuck or not), courier requests, and the last 200 Vintage Colonies errors and warnings of this play session. Chat says where the file is: `VintagestoryData/ModData/createacolony/reports/`.
+- A second file ending in `-client.txt` holds the errors on your side of the game (windows, map, quest book). Upload both.
+- `/colony report all` covers all your colonies. Add a note after it: `/colony report farmer won't plant`.
+- **On its own:** after a serious mod error (an error with the mod's own code in it), a report is saved by itself, at most once every 10 minutes, and colony members get a chat line saying where.
+- It only reads. Nothing in the world or the save changes, and nothing is sent anywhere.
+
 ## The School (0.193.0)
 
 - **School and Teacher.** A new hut in the education group, made from planks and a parchment. Give a settler the Teacher job. Level 1 takes 6 children, level 2 takes 12, level 3 takes 20. The model is a placeholder until you build the real School.

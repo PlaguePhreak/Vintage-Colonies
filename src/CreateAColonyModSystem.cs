@@ -241,6 +241,11 @@ public class CreateAColonyModSystem : ModSystem
                     return TextCommandResult.Success(list);
                 })
             .EndSubCommand()
+            .BeginSubCommand("report")
+                .WithDescription("Save the colony's state and recent mod errors to a file you can upload with a bug report. Add 'all' for every colony, and a note if you like")
+                .WithArgs(parsers.OptionalAll("note"))
+                .HandleWith(args => sapi!.ModLoader.GetModSystem<CreateAColony.Report.ColonyReportSystem>().OnReportCommand(args))
+            .EndSubCommand()
             .BeginSubCommand("stuck")
                 .WithDescription("List the settlers of the colony you are standing in that are stuck and building Willpower")
                 .HandleWith(OnStuck)
