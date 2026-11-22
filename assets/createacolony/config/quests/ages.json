@@ -1270,7 +1270,7 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:ore-*-nativecopper|game:ore-*-malachite"
+              "code": "game:ore-*nativecopper*|game:ore-*malachite*"
             }
           ],
           "rewards": [
@@ -1906,6 +1906,1727 @@
               "code": "game:lantern-*"
             }
           ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "bronze",
+      "quests": [
+        {
+          "code": "bronze-cass",
+          "x": 0.0,
+          "y": 0.0,
+          "shape": "square",
+          "requires": [
+            "copper-tin"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:ore-*cassiterite*|game:nugget-cassiterite"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "bronze-tinnug",
+          "x": 1.82,
+          "y": 0.0,
+          "shape": "square",
+          "requires": [
+            "bronze-cass"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "count": 20,
+              "code": "game:nugget-cassiterite"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "bronze-tinbronze",
+          "x": 3.63,
+          "y": 0.0,
+          "shape": "square",
+          "requires": [
+            "bronze-tinnug"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:*-tinbronze"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "bronze-gold",
+          "x": 0.0,
+          "y": -1.39,
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:ore-*nativegold*|game:nugget-nativegold"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "bronze-silver",
+          "x": 0.0,
+          "y": -2.22,
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:ore-*nativesilver*|game:nugget-nativesilver"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "bronze-blackbronze",
+          "x": 3.63,
+          "y": -1.81,
+          "shape": "square",
+          "requires": [
+            "bronze-gold",
+            "bronze-silver"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:*-blackbronze"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "bronze-bism",
+          "x": 0.0,
+          "y": 1.04,
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:ore-*bismuthinite*|game:nugget-bismuthinite"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "bronze-zinc",
+          "x": 0.0,
+          "y": 1.88,
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:ore-*sphalerite*|game:nugget-sphalerite"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "bronze-bisbronze",
+          "x": 3.63,
+          "y": 1.46,
+          "shape": "square",
+          "requires": [
+            "bronze-bism",
+            "bronze-zinc"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:*-bismuthbronze"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "bronze-brass",
+          "x": 1.82,
+          "y": 2.71,
+          "shape": "square",
+          "requires": [
+            "bronze-zinc"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:*-brass"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "bronze-bronze",
+          "x": 5.75,
+          "y": 0.0,
+          "shape": "square",
+          "requires": [
+            "bronze-tinbronze",
+            "bronze-blackbronze",
+            "bronze-bisbronze"
+          ],
+          "requiresAny": true,
+          "objectives": [],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "bronze-tools",
+          "x": 8.48,
+          "y": 0.0,
+          "shape": "square",
+          "requires": [
+            "bronze-bronze"
+          ],
+          "objectives": [],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "bronze-pickaxe",
+          "x": 10.67,
+          "y": 0.0,
+          "shape": "square",
+          "requires": [
+            "bronze-tools"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:pickaxehead-*bronze|game:pickaxe-*bronze"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "bronze-iron",
+          "x": 12.49,
+          "y": 0.0,
+          "shape": "square",
+          "requires": [
+            "bronze-pickaxe"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:ore-*limonite*|game:nugget-limonite|game:ore-*hematite*|game:nugget-hematite|game:ore-*magnetite*|game:nugget-magnetite"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "bronze-propick",
+          "x": 10.23,
+          "y": -1.28,
+          "shape": "square",
+          "requires": [
+            "bronze-tools"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:prospectingpickhead-*bronze|game:prospectingpick-*bronze"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "bronze-deep",
+          "x": 12.05,
+          "y": -1.28,
+          "shape": "square",
+          "requires": [
+            "bronze-propick"
+          ],
+          "objectives": [
+            {
+              "type": "break",
+              "count": 5,
+              "code": "game:prospectingpick-*bronze@"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "bronze-hammer",
+          "x": 10.23,
+          "y": 1.28,
+          "shape": "square",
+          "requires": [
+            "bronze-tools"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:hammerhead-*bronze|game:hammer-*bronze"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "bronze-axe",
+          "x": 9.11,
+          "y": -2.06,
+          "shape": "square",
+          "requires": [
+            "bronze-tools"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:axehead-*bronze|game:axe-*bronze"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "bronze-knife",
+          "x": 7.72,
+          "y": -2.02,
+          "shape": "square",
+          "requires": [
+            "bronze-tools"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:knifeblade-*bronze|game:knife-*bronze"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "bronze-shovel",
+          "x": 9.11,
+          "y": 2.06,
+          "shape": "square",
+          "requires": [
+            "bronze-tools"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:shovelhead-*bronze|game:shovel-*bronze"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "bronze-hoe",
+          "x": 7.72,
+          "y": 2.02,
+          "shape": "square",
+          "requires": [
+            "bronze-tools"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:hoehead-*bronze|game:hoe-*bronze"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "bronze-falx",
+          "x": 6.36,
+          "y": -1.6,
+          "shape": "square",
+          "requires": [
+            "bronze-tools"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:bladehead-falx-*bronze|game:blade-falx-*bronze"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "bronze-spear",
+          "x": 6.36,
+          "y": -2.5,
+          "shape": "square",
+          "requires": [
+            "bronze-tools"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:spearhead-*bronze|game:spear-*bronze"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "bronze-ingots",
+          "x": 6.36,
+          "y": 3.19,
+          "shape": "square",
+          "requires": [
+            "bronze-bronze"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "count": 4,
+              "code": "game:ingot-*bronze"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "bronze-anvil",
+          "x": 8.17,
+          "y": 3.19,
+          "shape": "square",
+          "requires": [
+            "bronze-ingots"
+          ],
+          "objectives": [
+            {
+              "type": "place",
+              "code": "game:anvil-*bronze"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "bronze-smith",
+          "x": 10.29,
+          "y": 4.72,
+          "shape": "square",
+          "requires": [
+            "bronze-anvil",
+            "bronze-hammer"
+          ],
+          "objectives": [],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "bronze-saw",
+          "x": 12.41,
+          "y": 2.22,
+          "shape": "square",
+          "requires": [
+            "bronze-smith"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:sawblade-*bronze|game:saw-*bronze"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "bronze-chisel",
+          "x": 12.41,
+          "y": 3.06,
+          "shape": "square",
+          "requires": [
+            "bronze-smith"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:chiselhead-*bronze|game:chisel-*bronze"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "bronze-shears",
+          "x": 12.41,
+          "y": 3.89,
+          "shape": "square",
+          "requires": [
+            "bronze-smith"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:shears-*bronze"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "bronze-scythe",
+          "x": 12.41,
+          "y": 4.72,
+          "shape": "square",
+          "requires": [
+            "bronze-smith"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:scythehead-*bronze|game:scythe-*bronze"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "bronze-plates",
+          "x": 12.41,
+          "y": 5.56,
+          "shape": "square",
+          "requires": [
+            "bronze-smith"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:metalplate-*bronze"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "bronze-lantern",
+          "x": 14.23,
+          "y": 5.56,
+          "shape": "square",
+          "requires": [
+            "bronze-plates"
+          ],
+          "objectives": [
+            {
+              "type": "place",
+              "code": "game:lantern-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "bronze-chain",
+          "x": 12.41,
+          "y": 6.39,
+          "shape": "square",
+          "requires": [
+            "bronze-smith"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:metalchain-*bronze"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "bronze-chainarm",
+          "x": 14.23,
+          "y": 6.39,
+          "shape": "square",
+          "requires": [
+            "bronze-chain"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:armor-*-chain-*bronze"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "bronze-scales",
+          "x": 12.41,
+          "y": 7.22,
+          "shape": "square",
+          "requires": [
+            "bronze-smith"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:metalscale-*bronze"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "bronze-scalearm",
+          "x": 14.23,
+          "y": 7.22,
+          "shape": "square",
+          "requires": [
+            "bronze-scales"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:armor-*-scale-*bronze"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "bronze-arrow",
+          "x": 12.41,
+          "y": 8.06,
+          "shape": "square",
+          "requires": [
+            "bronze-smith"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:arrowhead-*bronze"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "bronze-master",
+          "x": 17.86,
+          "y": 3.89,
+          "shape": "square",
+          "requires": [
+            "bronze-iron",
+            "bronze-deep",
+            "bronze-saw",
+            "bronze-chisel",
+            "bronze-shears",
+            "bronze-scythe",
+            "bronze-lantern",
+            "bronze-chainarm",
+            "bronze-scalearm",
+            "bronze-arrow"
+          ],
+          "rail": 16.19,
+          "objectives": [],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "iron",
+      "quests": [
+        {
+          "code": "iron-ore",
+          "x": 0.0,
+          "y": 0.0,
+          "shape": "square",
+          "requires": [
+            "bronze-pickaxe"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:ore-*limonite*|game:nugget-limonite|game:ore-*hematite*|game:nugget-hematite|game:ore-*magnetite*|game:nugget-magnetite"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "iron-crush",
+          "x": 1.97,
+          "y": 0.0,
+          "shape": "square",
+          "requires": [
+            "iron-ore"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "count": 20,
+              "code": "game:nugget-limonite|game:nugget-hematite|game:nugget-magnetite"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "iron-fireclay",
+          "x": 0.0,
+          "y": 1.04,
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:clay-fire"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "iron-bloomery",
+          "x": 2.42,
+          "y": 1.04,
+          "shape": "square",
+          "requires": [
+            "iron-fireclay"
+          ],
+          "objectives": [
+            {
+              "type": "place",
+              "code": "bloomerybase*|bloomery*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "iron-fuel",
+          "x": 2.42,
+          "y": -1.04,
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "obtain",
+              "count": 40,
+              "code": "game:charcoal"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "iron-bloom",
+          "x": 4.84,
+          "y": 0.0,
+          "shape": "square",
+          "requires": [
+            "iron-crush",
+            "iron-bloomery",
+            "iron-fuel"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:ironbloom"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "iron-work",
+          "x": 6.96,
+          "y": 0.0,
+          "shape": "square",
+          "requires": [
+            "iron-bloom"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:ingot-iron"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "iron-flux",
+          "x": 6.96,
+          "y": -1.04,
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:powder-borax|game:borax|game:crushed-borax|game:powderedborax"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "iron-ianvil",
+          "x": 9.08,
+          "y": 0.0,
+          "shape": "square",
+          "requires": [
+            "iron-work",
+            "iron-flux"
+          ],
+          "objectives": [
+            {
+              "type": "place",
+              "code": "game:anvil-iron"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "iron-tools",
+          "x": 13.02,
+          "y": -2.92,
+          "shape": "square",
+          "requires": [
+            "iron-ianvil"
+          ],
+          "objectives": [],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "iron-arms",
+          "x": 13.02,
+          "y": 2.5,
+          "shape": "square",
+          "requires": [
+            "iron-ianvil"
+          ],
+          "objectives": [],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "iron-pickaxe",
+          "x": 15.21,
+          "y": -2.92,
+          "shape": "square",
+          "requires": [
+            "iron-tools"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:pickaxehead-*iron|game:pickaxe-*iron"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "iron-propick",
+          "x": 14.77,
+          "y": -4.2,
+          "shape": "square",
+          "requires": [
+            "iron-tools"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:prospectingpickhead-*iron|game:prospectingpick-*iron"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "iron-hammer",
+          "x": 14.77,
+          "y": -1.63,
+          "shape": "square",
+          "requires": [
+            "iron-tools"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:hammerhead-*iron|game:hammer-*iron"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "iron-axe",
+          "x": 13.65,
+          "y": -4.98,
+          "shape": "square",
+          "requires": [
+            "iron-tools"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:axehead-*iron|game:axe-*iron"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "iron-knife",
+          "x": 12.26,
+          "y": -4.94,
+          "shape": "square",
+          "requires": [
+            "iron-tools"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:knifeblade-*iron|game:knife-*iron"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "iron-shovel",
+          "x": 13.65,
+          "y": -0.85,
+          "shape": "square",
+          "requires": [
+            "iron-tools"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:shovelhead-*iron|game:shovel-*iron"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "iron-hoe",
+          "x": 12.26,
+          "y": -0.9,
+          "shape": "square",
+          "requires": [
+            "iron-tools"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:hoehead-*iron|game:hoe-*iron"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "iron-saw",
+          "x": 10.9,
+          "y": -4.51,
+          "shape": "square",
+          "requires": [
+            "iron-tools"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:sawblade-*iron|game:saw-*iron"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "iron-scythe",
+          "x": 10.9,
+          "y": -5.42,
+          "shape": "square",
+          "requires": [
+            "iron-tools"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:scythehead-*iron|game:scythe-*iron"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "iron-falx",
+          "x": 15.74,
+          "y": 0.83,
+          "shape": "square",
+          "requires": [
+            "iron-arms"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:bladehead-falx-*iron|game:blade-falx-*iron"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "iron-spear",
+          "x": 15.74,
+          "y": 1.67,
+          "shape": "square",
+          "requires": [
+            "iron-arms"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:spearhead-*iron|game:spear-*iron"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "iron-arrow",
+          "x": 15.74,
+          "y": 2.5,
+          "shape": "square",
+          "requires": [
+            "iron-arms"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:arrowhead-*iron"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "iron-chain",
+          "x": 15.74,
+          "y": 3.33,
+          "shape": "square",
+          "requires": [
+            "iron-arms"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:metalchain-*iron"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "iron-chainarm",
+          "x": 17.71,
+          "y": 3.33,
+          "shape": "square",
+          "requires": [
+            "iron-chain"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:armor-*-chain-*iron"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "iron-scales",
+          "x": 15.74,
+          "y": 4.17,
+          "shape": "square",
+          "requires": [
+            "iron-arms"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:metalscale-*iron"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "iron-scalearm",
+          "x": 17.71,
+          "y": 4.17,
+          "shape": "square",
+          "requires": [
+            "iron-scales"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:armor-*-scale-*iron"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "iron-plates",
+          "x": 15.74,
+          "y": 5.0,
+          "shape": "square",
+          "requires": [
+            "iron-arms"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:metalplate-*iron"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "iron-platearm",
+          "x": 17.71,
+          "y": 5.0,
+          "shape": "square",
+          "requires": [
+            "iron-plates"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:armor-*-plate-*iron"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "iron-rbrick",
+          "x": 0.0,
+          "y": 7.36,
+          "shape": "square",
+          "requires": [
+            "iron-fireclay"
+          ],
+          "noLine": [
+            "iron-fireclay"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:refractorybrick-*|game:refractorybricks-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "iron-fdoor",
+          "x": 1.97,
+          "y": 6.46,
+          "shape": "square",
+          "requires": [
+            "iron-work"
+          ],
+          "noLine": [
+            "iron-work"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:irondoor*|game:door-iron*|game:*furnacedoor*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "iron-coffin",
+          "x": 1.97,
+          "y": 8.26,
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "place",
+              "code": "stonecoffinsection-*|stonecoffin*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "iron-furnace",
+          "x": 4.24,
+          "y": 7.36,
+          "shape": "square",
+          "requires": [
+            "iron-rbrick",
+            "iron-fdoor",
+            "iron-coffin"
+          ],
+          "objectives": [
+            {
+              "type": "place",
+              "code": "refractorybricks-*|refractorybrick*|firebrick*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "iron-carb",
+          "x": 6.51,
+          "y": 7.36,
+          "shape": "square",
+          "requires": [
+            "iron-furnace",
+            "iron-work"
+          ],
+          "noLine": [
+            "iron-work"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "count": 8,
+              "code": "game:ingot-iron"
+            },
+            {
+              "type": "blocknear",
+              "code": "stonecoffinsection-*|stonecoffin*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "iron-blister",
+          "x": 8.48,
+          "y": 7.36,
+          "shape": "square",
+          "requires": [
+            "iron-carb"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:ingot-blistersteel"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "iron-steel",
+          "x": 10.44,
+          "y": 7.36,
+          "shape": "square",
+          "requires": [
+            "iron-blister"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:ingot-steel"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "iron-sanvil",
+          "x": 12.41,
+          "y": 7.36,
+          "shape": "square",
+          "requires": [
+            "iron-steel"
+          ],
+          "objectives": [
+            {
+              "type": "place",
+              "code": "game:anvil-steel"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "iron-ssmith",
+          "x": 14.38,
+          "y": 7.36,
+          "shape": "square",
+          "requires": [
+            "iron-sanvil"
+          ],
+          "objectives": [],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "iron-spick",
+          "x": 16.65,
+          "y": 6.53,
+          "shape": "square",
+          "requires": [
+            "iron-ssmith"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:pickaxehead-steel|game:pickaxe-steel"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "iron-saxe",
+          "x": 16.65,
+          "y": 7.36,
+          "shape": "square",
+          "requires": [
+            "iron-ssmith"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:axehead-steel|game:axe-steel"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "iron-sfalx",
+          "x": 16.65,
+          "y": 8.19,
+          "shape": "square",
+          "requires": [
+            "iron-ssmith"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:bladehead-falx-steel|game:blade-falx-steel"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "iron-splates",
+          "x": 16.65,
+          "y": 9.03,
+          "shape": "square",
+          "requires": [
+            "iron-ssmith"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:metalplate-steel"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "iron-sarm",
+          "x": 18.62,
+          "y": 9.03,
+          "shape": "square",
+          "requires": [
+            "iron-splates"
+          ],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:armor-*-plate-*steel"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "iron-master",
+          "x": 23.01,
+          "y": 2.78,
+          "shape": "square",
+          "requires": [
+            "iron-pickaxe",
+            "iron-propick",
+            "iron-falx",
+            "iron-spear",
+            "iron-arrow",
+            "iron-chainarm",
+            "iron-scalearm",
+            "iron-platearm",
+            "iron-spick",
+            "iron-saxe",
+            "iron-sfalx",
+            "iron-sarm"
+          ],
+          "rail": 21.19,
+          "objectives": [],
           "rewards": [
             {
               "code": "game:gear-rusty",

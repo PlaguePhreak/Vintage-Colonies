@@ -105,6 +105,13 @@ Built from the design doc Aaron approved on 22 Nov 2026 (https://claude.ai/artif
 - **Old copper coins** are hidden, not deleted, so saves don't get unknown items. Once a minute the colony swaps any in the treasury or the Church for rusty gears, 1 for 1. You can swap ones in your inventory in the crafting grid.
 - Text says "rusty gears" or "coins" to match.
 - Not tested in game.
+## Bronze Age and Iron and Steel quest chapters (0.183.1)
+
+- Two new chapters in the Ages group: **Bronze Age** (38 quests: ores, the three bronzes and brass, cast tools,
+  the bronze anvil, smithing, chain and scale armour) and **Iron and Steel** (44 quests: bloomery iron, the iron
+  anvil, tools, arms and armour, then the cementation furnace, blister steel and steel). 556 quests in all.
+- The seven handbook guide pages were removed in 0.180.1, and the Tutorial quest page is no longer planned.
+
 ## Automatic quests, detailed cards and the quest editor (0.176.0)
 
 - **Every quest checks itself.** There is no "Mark as done" button any more. Quests look at what you carry,
