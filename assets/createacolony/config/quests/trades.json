@@ -323,7 +323,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:crock-*-fired|game:crock-*-meal"
+              "code": "game:crock-*-fired|game:crock-*-meal",
+              "text": "objective-line-kitchen-filled-0"
             },
             {
               "type": "meal",
@@ -434,7 +435,8 @@
             },
             {
               "type": "place",
-              "code": "storagevessel-*|shelf-*|crock-*"
+              "code": "storagevessel-*|shelf-*|crock-*",
+              "text": "objective-line-kitchen-stock-1"
             }
           ],
           "rewards": [
@@ -474,7 +476,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:redmeat-cured|game:bushmeat-cured|game:poultry-cured"
+              "code": "game:redmeat-cured|game:bushmeat-cured|game:poultry-cured",
+              "text": "objective-line-kitchen-cure-0"
             }
           ],
           "rewards": [
@@ -517,7 +520,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:pickledvegetable-*|game:pickledlegume-*"
+              "code": "game:pickledvegetable-*|game:pickledlegume-*",
+              "text": "objective-line-kitchen-pickle-0"
             }
           ],
           "rewards": [
@@ -599,7 +603,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:pie-perfect|game:pie-partbaked"
+              "code": "game:pie-perfect|game:pie-partbaked",
+              "text": "objective-line-kitchen-pie-0"
             }
           ],
           "rewards": [
@@ -638,7 +643,8 @@
           "objectives": [
             {
               "type": "holds",
-              "code": "game:juiceportion*"
+              "code": "game:juiceportion*",
+              "text": "objective-line-kitchen-juice-0"
             }
           ],
           "rewards": [
@@ -660,7 +666,8 @@
           "objectives": [
             {
               "type": "holds",
-              "code": "game:ciderportion*"
+              "code": "game:ciderportion*",
+              "text": "objective-line-kitchen-ferment-0"
             }
           ],
           "rewards": [
@@ -678,7 +685,8 @@
           "objectives": [
             {
               "type": "place",
-              "code": "verticalboiler-*|boiler*"
+              "code": "verticalboiler-*|boiler*",
+              "text": "objective-line-kitchen-boiler-0"
             }
           ],
           "rewards": [
@@ -701,7 +709,8 @@
           "objectives": [
             {
               "type": "holds",
-              "code": "game:spiritportion*"
+              "code": "game:spiritportion*",
+              "text": "objective-line-kitchen-distil-0"
             }
           ],
           "rewards": [
@@ -805,7 +814,7 @@
           "y": -2.5,
           "shape": "square",
           "requires": [
-            "kitchen-broth"
+            "kitchen-pilaf"
           ],
           "mod": "expandedfoods",
           "objectives": [
@@ -927,7 +936,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "efchefstricks:softresin|efchefstricks:hardresin"
+              "code": "efchefstricks:softresin|efchefstricks:hardresin",
+              "text": "objective-line-kitchen-resin-0"
             }
           ],
           "rewards": [
@@ -971,7 +981,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "aculinaryartillery:eggyolk-*|aculinaryartillery:eggshell*"
+              "code": "aculinaryartillery:eggyolk-*|aculinaryartillery:eggshell*",
+              "text": "objective-line-kitchen-egg-0"
             }
           ],
           "rewards": [
@@ -1265,7 +1276,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "expandedfoods:breaded*-*"
+              "code": "expandedfoods:breaded*-*",
+              "text": "objective-line-kitchen-breaded-0"
             }
           ],
           "rewards": [
@@ -1327,7 +1339,6 @@
           "requires": [
             "kitchen-ferment"
           ],
-          "mod": "expandedfoods",
           "objectives": [
             {
               "type": "holds",
@@ -1463,11 +1474,11 @@
           "requires": [
             "kitchen-bowl"
           ],
-          "mod": "expandedfoods",
           "objectives": [
             {
               "type": "obtain",
-              "code": "expandedfoods:pemmican-*|game:pemmican-*"
+              "code": "game:pemmican-*|expandedfoods:pemmican-*",
+              "text": "objective-line-kitchen-pemmican-0"
             }
           ],
           "rewards": [
@@ -1489,7 +1500,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "expandedfoods:trailmix-*|expandedfoods:trailmixvegetarian-*"
+              "code": "expandedfoods:trailmix-*|expandedfoods:trailmixvegetarian-*",
+              "text": "objective-line-kitchen-trailmix-0"
             }
           ],
           "rewards": [
@@ -1511,7 +1523,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "expandedfoods:sushi-*|expandedfoods:sushiveg-*"
+              "code": "expandedfoods:sushi-*|expandedfoods:sushiveg-*",
+              "text": "objective-line-kitchen-sushi-0"
             }
           ],
           "rewards": [
@@ -1577,7 +1590,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "expandedfoods:plaindoughball-*|expandedfoods:pasta-dough"
+              "code": "expandedfoods:plaindoughball-*|expandedfoods:pasta-dough",
+              "text": "objective-line-kitchen-softdough-0"
             }
           ],
           "rewards": [
@@ -1647,7 +1661,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "efchefstricks:saltcrystal-damp|efchefstricks:saltcrystal-dry"
+              "code": "efchefstricks:saltcrystal-damp|efchefstricks:saltcrystal-dry",
+              "text": "objective-line-kitchen-crystal-0"
             }
           ],
           "rewards": [
@@ -1823,7 +1838,8 @@
           "objectives": [
             {
               "type": "place",
-              "code": "aculinaryartillery:bottlerack-*|aculinaryartillery:bottlerackcorner-*"
+              "code": "aculinaryartillery:bottlerack-*|aculinaryartillery:bottlerackcorner-*",
+              "text": "objective-line-kitchen-brack-0"
             }
           ],
           "rewards": [
@@ -1841,7 +1857,8 @@
           "objectives": [
             {
               "type": "place",
-              "code": "condenser*"
+              "code": "condenser*",
+              "text": "objective-line-kitchen-condenser-0"
             }
           ],
           "rewards": [
@@ -1908,6 +1925,29 @@
             {
               "type": "obtain",
               "code": "expandedfoods:roastedgrain-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "code": "kitchen-pilaf",
+          "x": 9.99,
+          "y": -2.5,
+          "shape": "square",
+          "requires": [
+            "kitchen-broth"
+          ],
+          "mod": "expandedfoods",
+          "objectives": [
+            {
+              "type": "meal",
+              "code": "riceandbeans",
+              "text": "objective-line-kitchen-pilaf-0"
             }
           ],
           "rewards": [
@@ -2013,7 +2053,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:grain-*|game:vegetable-*|game:legume-*"
+              "code": "game:grain-*|game:vegetable-*|game:legume-*",
+              "text": "objective-line-farm-harvest-0"
             }
           ],
           "rewards": [
@@ -2199,7 +2240,8 @@
             {
               "type": "obtain",
               "count": 8,
-              "code": "game:vegetable-cassava|game:rawcassava"
+              "code": "game:vegetable-cassava|game:rawcassava",
+              "text": "objective-line-farm-g6-0"
             }
           ],
           "rewards": [
@@ -2627,7 +2669,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:soil-high-*|game:soil-compost-*"
+              "code": "game:soil-high-*|game:soil-compost-*",
+              "text": "objective-line-farm-richsoil-0"
             }
           ],
           "rewards": [
@@ -2959,7 +3002,8 @@
           "objectives": [
             {
               "type": "place",
-              "code": "fruitingbush-*|fruitingbushcutting-*"
+              "code": "fruitingbush-*|fruitingbushcutting-*",
+              "text": "objective-line-farm-bush-0"
             }
           ],
           "rewards": [
@@ -2980,7 +3024,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:fruittree-cutting|fruittreecutting-*"
+              "code": "game:fruittree-cutting|fruittreecutting-*",
+              "text": "objective-line-farm-tcutting-0"
             }
           ],
           "rewards": [
@@ -3040,7 +3085,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:fruit-*berry|game:fruit-*currant"
+              "code": "game:fruit-*berry|game:fruit-*currant",
+              "text": "objective-line-farm-pickb-0"
             }
           ],
           "rewards": [
@@ -3086,7 +3132,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:fruit-*apple|game:fruit-cherry|game:fruit-peach|game:fruit-pear|game:fruit-orange|game:fruit-mango|game:fruit-breadfruit|game:fruit-lychee|game:fruit-pomegranate"
+              "code": "game:fruit-*apple|game:fruit-cherry|game:fruit-peach|game:fruit-pear|game:fruit-orange|game:fruit-mango|game:fruit-breadfruit|game:fruit-lychee|game:fruit-pomegranate",
+              "text": "objective-line-farm-pickf-0"
             }
           ],
           "rewards": [
@@ -3218,7 +3265,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "expandedfoods:fruitbar-*|expandedfoods:fruitbar"
+              "code": "expandedfoods:fruitbar-*|expandedfoods:fruitbar",
+              "text": "objective-line-farm-bars-0"
             }
           ],
           "rewards": [
@@ -3349,7 +3397,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:fruit-redapple|game:fruit-pinkapple|game:fruit-yellowapple"
+              "code": "game:fruit-redapple|game:fruit-pinkapple|game:fruit-yellowapple",
+              "text": "objective-line-farm-f0-0"
             }
           ],
           "rewards": [
@@ -3556,7 +3605,8 @@
           "objectives": [
             {
               "type": "blocknear",
-              "code": "skep-*-populated-*"
+              "code": "skep-*-populated-*",
+              "text": "objective-line-farm-colony-0"
             }
           ],
           "rewards": [
@@ -3716,7 +3766,8 @@
           "objectives": [
             {
               "type": "blocknear",
-              "code": "fromgoldencombs:ceramicbroodpot-*|fromgoldencombs:langstroth*"
+              "code": "fromgoldencombs:ceramicbroodpot-*|fromgoldencombs:langstroth*",
+              "text": "objective-line-farm-pollin-0"
             },
             {
               "type": "blocknear",
@@ -3743,7 +3794,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "fromgoldencombs:langstrothside-*|fromgoldencombs:langstrothbroodtop-*"
+              "code": "fromgoldencombs:langstrothside-*|fromgoldencombs:langstrothbroodtop-*",
+              "text": "objective-line-farm-panels-0"
             }
           ],
           "rewards": [
@@ -3813,7 +3865,8 @@
           "objectives": [
             {
               "type": "place",
-              "code": "fromgoldencombs:langstrothbase-*|fromgoldencombs:langstrothstack-*|fromgoldencombs:langstrothsuper-*"
+              "code": "fromgoldencombs:langstrothbase-*|fromgoldencombs:langstrothstack-*|fromgoldencombs:langstrothsuper-*",
+              "text": "objective-line-farm-lang-0"
             }
           ],
           "rewards": [
@@ -3928,7 +3981,8 @@
             {
               "type": "break",
               "count": 12,
-              "code": "game:axe-*@game:log-grown-*"
+              "code": "game:axe-*@game:log-grown-*",
+              "text": "objective-line-carp-fell-0"
             }
           ],
           "rewards": [
@@ -4337,7 +4391,8 @@
           "objectives": [
             {
               "type": "place",
-              "code": "game:bookshelf|game:bookshelf-*"
+              "code": "game:bookshelf|game:bookshelf-*",
+              "text": "objective-line-carp-bookshelf-0"
             }
           ],
           "rewards": [
@@ -4486,7 +4541,8 @@
           "objectives": [
             {
               "type": "place",
-              "code": "game:crate|game:crate-*"
+              "code": "game:crate|game:crate-*",
+              "text": "objective-line-carp-crate-0"
             }
           ],
           "rewards": [
@@ -4509,7 +4565,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:*baskettrap*"
+              "code": "game:*baskettrap*",
+              "text": "objective-line-herd-trap-0"
             }
           ],
           "rewards": [
@@ -4530,7 +4587,8 @@
           "objectives": [
             {
               "type": "place",
-              "code": "*baskettrap*|trap-*|trapcrate-*"
+              "code": "*baskettrap*|trap-*|trapcrate-*",
+              "text": "objective-line-herd-bait-0"
             }
           ],
           "rewards": [
@@ -4551,7 +4609,8 @@
           "objectives": [
             {
               "type": "entitynear",
-              "code": "hare-*|chicken-*|raccoon-*|fox-*"
+              "code": "hare-*|chicken-*|raccoon-*|fox-*",
+              "text": "objective-line-herd-catch-0"
             }
           ],
           "rewards": [
@@ -4607,7 +4666,8 @@
             {
               "type": "entitynear",
               "count": 2,
-              "code": "chicken-*|pig-*|sheep-*|goat-*|hare-*"
+              "code": "chicken-*|pig-*|sheep-*|goat-*|hare-*",
+              "text": "objective-line-herd-first-1"
             }
           ],
           "rewards": [
@@ -4628,7 +4688,8 @@
           "objectives": [
             {
               "type": "place",
-              "code": "game:trough-*small*"
+              "code": "game:trough-*small*",
+              "text": "objective-line-herd-strough-0"
             }
           ],
           "rewards": [
@@ -4649,7 +4710,8 @@
           "objectives": [
             {
               "type": "holds",
-              "code": "game:grain-*|game:drygrass|game:vegetable-*|game:fruit-*|game:legume-*"
+              "code": "game:grain-*|game:drygrass|game:vegetable-*|game:fruit-*|game:legume-*",
+              "text": "objective-line-herd-feed-0"
             }
           ],
           "rewards": [
@@ -4670,7 +4732,8 @@
           "objectives": [
             {
               "type": "place",
-              "code": "game:trough-*large*"
+              "code": "game:trough-*large*",
+              "text": "objective-line-herd-ltrough-0"
             }
           ],
           "rewards": [
@@ -4708,7 +4771,8 @@
             {
               "type": "entitynear",
               "count": 2,
-              "code": "hare-*"
+              "code": "hare-*",
+              "text": "objective-line-herd-hares-0"
             }
           ],
           "rewards": [
@@ -4730,7 +4794,8 @@
             {
               "type": "entitynear",
               "count": 2,
-              "code": "goat-*"
+              "code": "goat-*",
+              "text": "objective-line-herd-goats-0"
             }
           ],
           "rewards": [
@@ -4752,7 +4817,8 @@
             {
               "type": "entitynear",
               "count": 2,
-              "code": "chicken-*"
+              "code": "chicken-*",
+              "text": "objective-line-herd-chickens-0"
             }
           ],
           "rewards": [
@@ -4774,7 +4840,8 @@
             {
               "type": "entitynear",
               "count": 2,
-              "code": "sheep-*"
+              "code": "sheep-*",
+              "text": "objective-line-herd-sheep-0"
             }
           ],
           "rewards": [
@@ -4796,7 +4863,8 @@
             {
               "type": "entitynear",
               "count": 2,
-              "code": "pig-*"
+              "code": "pig-*",
+              "text": "objective-line-herd-pigs-0"
             }
           ],
           "rewards": [
@@ -4817,7 +4885,8 @@
           "objectives": [
             {
               "type": "place",
-              "code": "game:henbox|game:henbox-*"
+              "code": "game:henbox|game:henbox-*",
+              "text": "objective-line-herd-henbox-0"
             }
           ],
           "rewards": [
@@ -4859,7 +4928,8 @@
           "objectives": [
             {
               "type": "entitynear",
-              "code": "chicken-baby*|chicken-chick*|chicken-*poult"
+              "code": "chicken-baby*|chicken-chick*|chicken-*poult",
+              "text": "objective-line-herd-chicks-0"
             }
           ],
           "rewards": [
@@ -4902,7 +4972,8 @@
             {
               "type": "entitynear",
               "level": 1,
-              "code": "chicken-*|pig-*|sheep-*|goat-*|hare-*"
+              "code": "chicken-*|pig-*|sheep-*|goat-*|hare-*",
+              "text": "objective-line-herd-breed-0"
             }
           ],
           "rewards": [
@@ -4924,7 +4995,8 @@
             {
               "type": "entitynear",
               "level": 2,
-              "code": "chicken-*|pig-*|sheep-*|goat-*|hare-*"
+              "code": "chicken-*|pig-*|sheep-*|goat-*|hare-*",
+              "text": "objective-line-herd-gen2-0"
             }
           ],
           "rewards": [
@@ -4947,7 +5019,8 @@
               "type": "entitynear",
               "level": 3,
               "count": 3,
-              "code": "chicken-*|pig-*|sheep-*|goat-*|hare-*"
+              "code": "chicken-*|pig-*|sheep-*|goat-*|hare-*",
+              "text": "objective-line-herd-tame-0"
             }
           ],
           "rewards": [
@@ -4989,7 +5062,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:redmeat-raw|game:bushmeat-raw|game:poultry-raw"
+              "code": "game:redmeat-raw|game:bushmeat-raw|game:poultry-raw",
+              "text": "objective-line-herd-butcher-0"
             },
             {
               "type": "obtain",
@@ -5125,7 +5199,8 @@
           "objectives": [
             {
               "type": "entitynear",
-              "code": "*elk*"
+              "code": "*elk*",
+              "text": "objective-line-herd-raise-0"
             }
           ],
           "rewards": [
@@ -5146,7 +5221,8 @@
           "objectives": [
             {
               "type": "entitynear",
-              "code": "tameddeer-*|*elk*tame*"
+              "code": "tameddeer-*|*elk*tame*",
+              "text": "objective-line-herd-break-0"
             }
           ],
           "rewards": [
@@ -5164,7 +5240,8 @@
           "objectives": [
             {
               "type": "entitynear",
-              "code": "tameddeer-*|*elk*tame*"
+              "code": "tameddeer-*|*elk*tame*",
+              "text": "objective-line-herd-buy-0"
             }
           ],
           "rewards": [
@@ -5185,7 +5262,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:hoovedwearables-*-saddlebags*"
+              "code": "game:hoovedwearables-*-saddlebags*",
+              "text": "objective-line-herd-pack-0"
             }
           ],
           "rewards": [
@@ -5227,7 +5305,8 @@
           "objectives": [
             {
               "type": "entitynear",
-              "code": "pig-*|sheep-*|goat-*|deer-*"
+              "code": "pig-*|sheep-*|goat-*|deer-*",
+              "text": "objective-line-herd-big-0"
             }
           ],
           "rewards": [
@@ -5356,7 +5435,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:clothes-*-fur*|game:clothes-*-*-fur*|game:armor-*-hide-*"
+              "code": "game:clothes-*-fur*|game:clothes-*-*-fur*|game:armor-*-hide-*",
+              "text": "objective-line-tailor-fur-0"
             }
           ],
           "rewards": [
@@ -5520,7 +5600,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:lime|game:powder-borax"
+              "code": "game:lime|game:powder-borax",
+              "text": "objective-line-tailor-findlime-0"
             }
           ],
           "rewards": [
@@ -5541,7 +5622,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:hoovedwearables-*-saddle1"
+              "code": "game:hoovedwearables-*-saddle1",
+              "text": "objective-line-tailor-saddle-0"
             }
           ],
           "rewards": [
@@ -5562,7 +5644,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:hoovedwearables-*-bridle*"
+              "code": "game:hoovedwearables-*-bridle*",
+              "text": "objective-line-tailor-bridle-0"
             }
           ],
           "rewards": [
@@ -5625,7 +5708,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:armor-*-jerkin-*|game:armor-*-sewn-*|game:armor-*-improvised-*"
+              "code": "game:armor-*-jerkin-*|game:armor-*-sewn-*|game:armor-*-improvised-*",
+              "text": "objective-line-tailor-armour-0"
             }
           ],
           "rewards": [
@@ -5646,7 +5730,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:hide-prepared-huge|game:hide-scraped-huge|game:hide-soaked-huge"
+              "code": "game:hide-prepared-huge|game:hide-scraped-huge|game:hide-soaked-huge",
+              "text": "objective-line-tailor-huge-0"
             }
           ],
           "rewards": [
@@ -5834,7 +5919,8 @@
           "objectives": [
             {
               "type": "holds",
-              "code": "game:dilutedalumportion|game:dilutedboraxportion|game:dilutedcassiteriteportion|game:dilutedchromiteportion"
+              "code": "game:dilutedalumportion|game:dilutedboraxportion|game:dilutedcassiteriteportion|game:dilutedchromiteportion",
+              "text": "objective-line-tailor-alum-0"
             }
           ],
           "rewards": [
@@ -5919,7 +6005,8 @@
           "objectives": [
             {
               "type": "holds",
-              "code": "game:dye-woad|game:dye-blue"
+              "code": "game:dye-woad|game:dye-blue",
+              "text": "objective-line-tailor-woad-0"
             }
           ],
           "rewards": [

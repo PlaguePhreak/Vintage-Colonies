@@ -185,7 +185,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:redmeat-cooked|game:bushmeat-cooked|game:poultry-cooked"
+              "code": "game:redmeat-cooked|game:bushmeat-cooked|game:poultry-cooked",
+              "text": "objective-line-stone-catch-0"
             }
           ],
           "rewards": [
@@ -787,7 +788,8 @@
           "objectives": [
             {
               "type": "place",
-              "code": "pitkiln*"
+              "code": "pitkiln*",
+              "text": "objective-line-clay-kiln-0"
             }
           ],
           "rewards": [
@@ -945,7 +947,8 @@
           "objectives": [
             {
               "type": "holds",
-              "code": "game:grain-*|game:vegetable-*|game:fruit-*|game:redmeat-*|game:bushmeat-*|game:poultry-*|game:bread-*|game:flour-*"
+              "code": "game:grain-*|game:vegetable-*|game:fruit-*|game:redmeat-*|game:bushmeat-*|game:poultry-*|game:bread-*|game:flour-*",
+              "text": "objective-line-clay-store-0"
             }
           ],
           "rewards": [
@@ -1008,7 +1011,8 @@
           "objectives": [
             {
               "type": "place",
-              "code": "clayoven*"
+              "code": "clayoven*",
+              "text": "objective-line-clay-setup-0"
             }
           ],
           "rewards": [
@@ -1031,7 +1035,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:nugget-nativecopper|game:nugget-malachite"
+              "code": "game:nugget-nativecopper|game:nugget-malachite",
+              "text": "objective-line-copper-surface-0"
             }
           ],
           "rewards": [
@@ -1074,7 +1079,8 @@
             },
             {
               "type": "obtain",
-              "code": "game:nugget-nativecopper|game:nugget-malachite"
+              "code": "game:nugget-nativecopper|game:nugget-malachite",
+              "text": "objective-line-copper-panning-1"
             }
           ],
           "rewards": [
@@ -1098,7 +1104,8 @@
             {
               "type": "obtain",
               "count": 20,
-              "code": "game:nugget-nativecopper|game:nugget-malachite"
+              "code": "game:nugget-nativecopper|game:nugget-malachite",
+              "text": "objective-line-copper-nuggets-0"
             }
           ],
           "rewards": [
@@ -1116,7 +1123,8 @@
           "objectives": [
             {
               "type": "place",
-              "code": "charcoalpit|charcoalpile-*"
+              "code": "charcoalpit|charcoalpile-*",
+              "text": "objective-line-copper-pit-0"
             }
           ],
           "rewards": [
@@ -1162,7 +1170,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:ingot-copper|game:*head-copper|game:knifeblade-copper"
+              "code": "game:ingot-copper|game:*head-copper|game:knifeblade-copper",
+              "text": "objective-line-copper-smelt-0"
             }
           ],
           "rewards": [
@@ -1199,7 +1208,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:pickaxehead-copper|game:pickaxe-copper|game:pickaxe-*copper"
+              "code": "game:pickaxehead-copper|game:pickaxe-copper|game:pickaxe-*copper",
+              "text": "objective-line-copper-pickaxe-0"
             }
           ],
           "rewards": [
@@ -1220,7 +1230,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:ore-*nativecopper*|game:ore-*malachite*"
+              "code": "game:ore-*nativecopper*|game:ore-*malachite*",
+              "text": "objective-line-copper-mine-0"
             }
           ],
           "rewards": [
@@ -1241,7 +1252,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:prospectingpickhead-copper|game:prospectingpick-copper|game:prospectingpick-*copper"
+              "code": "game:prospectingpickhead-copper|game:prospectingpick-copper|game:prospectingpick-*copper",
+              "text": "objective-line-copper-propick-0"
             }
           ],
           "rewards": [
@@ -1262,7 +1274,8 @@
           "objectives": [
             {
               "type": "break",
-              "code": "game:prospectingpick-*@"
+              "code": "game:prospectingpick-*@",
+              "text": "objective-line-copper-prospect-0"
             }
           ],
           "rewards": [
@@ -1283,7 +1296,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:hammerhead-copper|game:hammer-copper|game:hammer-*copper"
+              "code": "game:hammerhead-copper|game:hammer-copper|game:hammer-*copper",
+              "text": "objective-line-copper-hammer-0"
             }
           ],
           "rewards": [
@@ -1304,7 +1318,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:axehead-copper|game:axe-copper|game:axe-*copper"
+              "code": "game:axehead-copper|game:axe-copper|game:axe-*copper",
+              "text": "objective-line-copper-axe-0"
             }
           ],
           "rewards": [
@@ -1325,7 +1340,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:knifeblade-copper|game:knife-copper|game:knife-*copper"
+              "code": "game:knifeblade-copper|game:knife-copper|game:knife-*copper",
+              "text": "objective-line-copper-knife-0"
             }
           ],
           "rewards": [
@@ -1346,7 +1362,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:shovelhead-copper|game:shovel-copper|game:shovel-*copper"
+              "code": "game:shovelhead-copper|game:shovel-copper|game:shovel-*copper",
+              "text": "objective-line-copper-shovel-0"
             }
           ],
           "rewards": [
@@ -1367,7 +1384,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:hoehead-copper|game:hoe-copper|game:hoe-*copper"
+              "code": "game:hoehead-copper|game:hoe-copper|game:hoe-*copper",
+              "text": "objective-line-copper-hoe-0"
             }
           ],
           "rewards": [
@@ -1470,7 +1488,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:sawblade-copper|game:saw-copper|game:saw-*copper"
+              "code": "game:sawblade-copper|game:saw-copper|game:saw-*copper",
+              "text": "objective-line-copper-saw-0"
             }
           ],
           "rewards": [
@@ -1512,7 +1531,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:scythehead-copper|game:scythe-copper|game:scythe-*copper"
+              "code": "game:scythehead-copper|game:scythe-copper|game:scythe-*copper",
+              "text": "objective-line-copper-scythe-0"
             }
           ],
           "rewards": [
@@ -1533,7 +1553,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:chiselhead-copper|game:chisel-copper|game:chisel-*copper"
+              "code": "game:chiselhead-copper|game:chisel-copper|game:chisel-*copper",
+              "text": "objective-line-copper-chisel-0"
             }
           ],
           "rewards": [
@@ -1554,7 +1575,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:armor-*-copper"
+              "code": "game:armor-*-copper",
+              "text": "objective-line-copper-armour-0"
             }
           ],
           "rewards": [
@@ -1620,7 +1642,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:ore-lignite|game:ore-bituminouscoal|game:ore-anthracite"
+              "code": "game:ore-lignite|game:ore-bituminouscoal|game:ore-anthracite",
+              "text": "objective-line-copper-coal-0"
             }
           ],
           "rewards": [
@@ -1663,7 +1686,8 @@
             {
               "type": "obtain",
               "count": 40,
-              "code": "game:nugget-nativecopper|game:nugget-malachite"
+              "code": "game:nugget-nativecopper|game:nugget-malachite",
+              "text": "objective-line-copper-breakore-0"
             }
           ],
           "rewards": [
@@ -1726,7 +1750,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:bladehead-falx-copper|game:blade-falx-copper"
+              "code": "game:bladehead-falx-copper|game:blade-falx-copper",
+              "text": "objective-line-copper-falx-0"
             }
           ],
           "rewards": [
@@ -1747,7 +1772,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:spearhead-copper|game:spear-copper|game:spear-*copper"
+              "code": "game:spearhead-copper|game:spear-copper|game:spear-*copper",
+              "text": "objective-line-copper-spear-0"
             }
           ],
           "rewards": [
@@ -1860,7 +1886,8 @@
             {
               "type": "obtain",
               "count": 20,
-              "code": "game:nugget-cassiterite"
+              "code": "game:nugget-cassiterite",
+              "text": "objective-line-bronze-tinnug-0"
             }
           ],
           "rewards": [
@@ -1881,7 +1908,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:*-tinbronze"
+              "code": "game:*-tinbronze",
+              "text": "objective-line-bronze-tinbronze-0"
             }
           ],
           "rewards": [
@@ -1899,7 +1927,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:ore-*nativegold*|game:nugget-nativegold"
+              "code": "game:ore-*nativegold*|game:nugget-nativegold",
+              "text": "objective-line-bronze-gold-0"
             }
           ],
           "rewards": [
@@ -1917,7 +1946,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:ore-*nativesilver*|game:nugget-nativesilver"
+              "code": "game:ore-*nativesilver*|game:nugget-nativesilver",
+              "text": "objective-line-bronze-silver-0"
             }
           ],
           "rewards": [
@@ -1939,7 +1969,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:*-blackbronze"
+              "code": "game:*-blackbronze",
+              "text": "objective-line-bronze-blackbronze-0"
             }
           ],
           "rewards": [
@@ -1957,7 +1988,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:ore-*bismuthinite*|game:nugget-bismuthinite"
+              "code": "game:ore-*bismuthinite*|game:nugget-bismuthinite",
+              "text": "objective-line-bronze-bism-0"
             }
           ],
           "rewards": [
@@ -1975,7 +2007,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:ore-*sphalerite*|game:nugget-sphalerite"
+              "code": "game:ore-*sphalerite*|game:nugget-sphalerite",
+              "text": "objective-line-bronze-zinc-0"
             }
           ],
           "rewards": [
@@ -1997,7 +2030,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:*-bismuthbronze"
+              "code": "game:*-bismuthbronze",
+              "text": "objective-line-bronze-bisbronze-0"
             }
           ],
           "rewards": [
@@ -2018,7 +2052,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:*-brass"
+              "code": "game:*-brass",
+              "text": "objective-line-bronze-brass-0"
             }
           ],
           "rewards": [
@@ -2074,7 +2109,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:pickaxehead-*bronze|game:pickaxe-*bronze"
+              "code": "game:pickaxehead-*bronze|game:pickaxe-*bronze",
+              "text": "objective-line-bronze-pickaxe-0"
             }
           ],
           "rewards": [
@@ -2095,7 +2131,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:ore-*limonite*|game:nugget-limonite|game:ore-*hematite*|game:nugget-hematite|game:ore-*magnetite*|game:nugget-magnetite"
+              "code": "game:ore-*limonite*|game:nugget-limonite|game:ore-*hematite*|game:nugget-hematite|game:ore-*magnetite*|game:nugget-magnetite",
+              "text": "objective-line-bronze-iron-0"
             }
           ],
           "rewards": [
@@ -2116,7 +2153,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:prospectingpickhead-*bronze|game:prospectingpick-*bronze"
+              "code": "game:prospectingpickhead-*bronze|game:prospectingpick-*bronze",
+              "text": "objective-line-bronze-propick-0"
             }
           ],
           "rewards": [
@@ -2138,7 +2176,8 @@
             {
               "type": "break",
               "count": 5,
-              "code": "game:prospectingpick-*bronze@"
+              "code": "game:prospectingpick-*bronze@",
+              "text": "objective-line-bronze-deep-0"
             }
           ],
           "rewards": [
@@ -2159,7 +2198,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:hammerhead-*bronze|game:hammer-*bronze"
+              "code": "game:hammerhead-*bronze|game:hammer-*bronze",
+              "text": "objective-line-bronze-hammer-0"
             }
           ],
           "rewards": [
@@ -2180,7 +2220,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:axehead-*bronze|game:axe-*bronze"
+              "code": "game:axehead-*bronze|game:axe-*bronze",
+              "text": "objective-line-bronze-axe-0"
             }
           ],
           "rewards": [
@@ -2201,7 +2242,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:knifeblade-*bronze|game:knife-*bronze"
+              "code": "game:knifeblade-*bronze|game:knife-*bronze",
+              "text": "objective-line-bronze-knife-0"
             }
           ],
           "rewards": [
@@ -2222,7 +2264,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:shovelhead-*bronze|game:shovel-*bronze"
+              "code": "game:shovelhead-*bronze|game:shovel-*bronze",
+              "text": "objective-line-bronze-shovel-0"
             }
           ],
           "rewards": [
@@ -2243,7 +2286,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:hoehead-*bronze|game:hoe-*bronze"
+              "code": "game:hoehead-*bronze|game:hoe-*bronze",
+              "text": "objective-line-bronze-hoe-0"
             }
           ],
           "rewards": [
@@ -2264,7 +2308,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:bladehead-falx-*bronze|game:blade-falx-*bronze"
+              "code": "game:bladehead-falx-*bronze|game:blade-falx-*bronze",
+              "text": "objective-line-bronze-falx-0"
             }
           ],
           "rewards": [
@@ -2285,7 +2330,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:spearhead-*bronze|game:spear-*bronze"
+              "code": "game:spearhead-*bronze|game:spear-*bronze",
+              "text": "objective-line-bronze-spear-0"
             }
           ],
           "rewards": [
@@ -2307,7 +2353,8 @@
             {
               "type": "obtain",
               "count": 4,
-              "code": "game:ingot-*bronze"
+              "code": "game:ingot-*bronze",
+              "text": "objective-line-bronze-ingots-0"
             }
           ],
           "rewards": [
@@ -2328,7 +2375,8 @@
           "objectives": [
             {
               "type": "place",
-              "code": "game:anvil-*bronze"
+              "code": "game:anvil-*bronze",
+              "text": "objective-line-bronze-anvil-0"
             }
           ],
           "rewards": [
@@ -2366,7 +2414,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:sawblade-*bronze|game:saw-*bronze"
+              "code": "game:sawblade-*bronze|game:saw-*bronze",
+              "text": "objective-line-bronze-saw-0"
             }
           ],
           "rewards": [
@@ -2387,7 +2436,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:chiselhead-*bronze|game:chisel-*bronze"
+              "code": "game:chiselhead-*bronze|game:chisel-*bronze",
+              "text": "objective-line-bronze-chisel-0"
             }
           ],
           "rewards": [
@@ -2408,7 +2458,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:shears-*bronze"
+              "code": "game:shears-*bronze",
+              "text": "objective-line-bronze-shears-0"
             }
           ],
           "rewards": [
@@ -2429,7 +2480,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:scythehead-*bronze|game:scythe-*bronze"
+              "code": "game:scythehead-*bronze|game:scythe-*bronze",
+              "text": "objective-line-bronze-scythe-0"
             }
           ],
           "rewards": [
@@ -2450,7 +2502,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:metalplate-*bronze"
+              "code": "game:metalplate-*bronze",
+              "text": "objective-line-bronze-plates-0"
             }
           ],
           "rewards": [
@@ -2494,7 +2547,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:metalchain-*bronze"
+              "code": "game:metalchain-*bronze",
+              "text": "objective-line-bronze-chain-0"
             }
           ],
           "rewards": [
@@ -2515,7 +2569,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:armor-*-chain-*bronze"
+              "code": "game:armor-*-chain-*bronze",
+              "text": "objective-line-bronze-chainarm-0"
             }
           ],
           "rewards": [
@@ -2536,7 +2591,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:metalscale-*bronze"
+              "code": "game:metalscale-*bronze",
+              "text": "objective-line-bronze-scales-0"
             }
           ],
           "rewards": [
@@ -2557,7 +2613,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:armor-*-scale-*bronze"
+              "code": "game:armor-*-scale-*bronze",
+              "text": "objective-line-bronze-scalearm-0"
             }
           ],
           "rewards": [
@@ -2578,7 +2635,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:arrowhead-*bronze"
+              "code": "game:arrowhead-*bronze",
+              "text": "objective-line-bronze-arrow-0"
             }
           ],
           "rewards": [
@@ -2631,7 +2689,8 @@
             {
               "type": "obtain",
               "count": 20,
-              "code": "game:nugget-limonite|game:nugget-hematite|game:nugget-magnetite"
+              "code": "game:nugget-limonite|game:nugget-hematite|game:nugget-magnetite",
+              "text": "objective-line-iron-crush-0"
             }
           ],
           "rewards": [
@@ -2670,7 +2729,8 @@
           "objectives": [
             {
               "type": "place",
-              "code": "bloomerybase*|bloomery*"
+              "code": "bloomerybase*|bloomery*",
+              "text": "objective-line-iron-bloomery-0"
             }
           ],
           "rewards": [
@@ -2751,7 +2811,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:powder-borax|game:borax|game:crushed-borax|game:powderedborax"
+              "code": "game:powder-borax|game:borax|game:crushed-borax|game:powderedborax",
+              "text": "objective-line-iron-flux-0"
             }
           ],
           "rewards": [
@@ -2826,7 +2887,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:pickaxehead-*iron|game:pickaxe-*iron"
+              "code": "game:pickaxehead-*iron|game:pickaxe-*iron",
+              "text": "objective-line-iron-pickaxe-0"
             }
           ],
           "rewards": [
@@ -2847,7 +2909,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:prospectingpickhead-*iron|game:prospectingpick-*iron"
+              "code": "game:prospectingpickhead-*iron|game:prospectingpick-*iron",
+              "text": "objective-line-iron-propick-0"
             }
           ],
           "rewards": [
@@ -2868,7 +2931,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:hammerhead-*iron|game:hammer-*iron"
+              "code": "game:hammerhead-*iron|game:hammer-*iron",
+              "text": "objective-line-iron-hammer-0"
             }
           ],
           "rewards": [
@@ -2889,7 +2953,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:axehead-*iron|game:axe-*iron"
+              "code": "game:axehead-*iron|game:axe-*iron",
+              "text": "objective-line-iron-axe-0"
             }
           ],
           "rewards": [
@@ -2910,7 +2975,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:knifeblade-*iron|game:knife-*iron"
+              "code": "game:knifeblade-*iron|game:knife-*iron",
+              "text": "objective-line-iron-knife-0"
             }
           ],
           "rewards": [
@@ -2931,7 +2997,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:shovelhead-*iron|game:shovel-*iron"
+              "code": "game:shovelhead-*iron|game:shovel-*iron",
+              "text": "objective-line-iron-shovel-0"
             }
           ],
           "rewards": [
@@ -2952,7 +3019,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:hoehead-*iron|game:hoe-*iron"
+              "code": "game:hoehead-*iron|game:hoe-*iron",
+              "text": "objective-line-iron-hoe-0"
             }
           ],
           "rewards": [
@@ -2973,7 +3041,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:sawblade-*iron|game:saw-*iron"
+              "code": "game:sawblade-*iron|game:saw-*iron",
+              "text": "objective-line-iron-saw-0"
             }
           ],
           "rewards": [
@@ -2994,7 +3063,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:scythehead-*iron|game:scythe-*iron"
+              "code": "game:scythehead-*iron|game:scythe-*iron",
+              "text": "objective-line-iron-scythe-0"
             }
           ],
           "rewards": [
@@ -3015,7 +3085,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:bladehead-falx-*iron|game:blade-falx-*iron"
+              "code": "game:bladehead-falx-*iron|game:blade-falx-*iron",
+              "text": "objective-line-iron-falx-0"
             }
           ],
           "rewards": [
@@ -3036,7 +3107,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:spearhead-*iron|game:spear-*iron"
+              "code": "game:spearhead-*iron|game:spear-*iron",
+              "text": "objective-line-iron-spear-0"
             }
           ],
           "rewards": [
@@ -3057,7 +3129,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:arrowhead-*iron"
+              "code": "game:arrowhead-*iron",
+              "text": "objective-line-iron-arrow-0"
             }
           ],
           "rewards": [
@@ -3078,7 +3151,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:metalchain-*iron"
+              "code": "game:metalchain-*iron",
+              "text": "objective-line-iron-chain-0"
             }
           ],
           "rewards": [
@@ -3099,7 +3173,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:armor-*-chain-*iron"
+              "code": "game:armor-*-chain-*iron",
+              "text": "objective-line-iron-chainarm-0"
             }
           ],
           "rewards": [
@@ -3120,7 +3195,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:metalscale-*iron"
+              "code": "game:metalscale-*iron",
+              "text": "objective-line-iron-scales-0"
             }
           ],
           "rewards": [
@@ -3141,7 +3217,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:armor-*-scale-*iron"
+              "code": "game:armor-*-scale-*iron",
+              "text": "objective-line-iron-scalearm-0"
             }
           ],
           "rewards": [
@@ -3162,7 +3239,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:metalplate-*iron"
+              "code": "game:metalplate-*iron",
+              "text": "objective-line-iron-plates-0"
             }
           ],
           "rewards": [
@@ -3183,7 +3261,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:armor-*-plate-*iron"
+              "code": "game:armor-*-plate-*iron",
+              "text": "objective-line-iron-platearm-0"
             }
           ],
           "rewards": [
@@ -3231,7 +3310,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:metaldoor-*|game:irondoor*|game:*furnacedoor*"
+              "code": "game:metaldoor-*|game:irondoor*|game:*furnacedoor*",
+              "text": "objective-line-iron-fdoor-0"
             }
           ],
           "rewards": [
@@ -3249,7 +3329,8 @@
           "objectives": [
             {
               "type": "place",
-              "code": "stonecoffinsection-*|stonecoffin*"
+              "code": "stonecoffinsection-*|stonecoffin*",
+              "text": "objective-line-iron-coffin-0"
             }
           ],
           "rewards": [
@@ -3272,7 +3353,8 @@
           "objectives": [
             {
               "type": "place",
-              "code": "refractorybricks-*|refractorybrick*|firebrick*"
+              "code": "refractorybricks-*|refractorybrick*|firebrick*",
+              "text": "objective-line-iron-furnace-0"
             }
           ],
           "rewards": [
@@ -3403,7 +3485,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:pickaxehead-steel|game:pickaxe-steel"
+              "code": "game:pickaxehead-steel|game:pickaxe-steel",
+              "text": "objective-line-iron-spick-0"
             }
           ],
           "rewards": [
@@ -3424,7 +3507,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:axehead-steel|game:axe-*steel"
+              "code": "game:axehead-steel|game:axe-*steel",
+              "text": "objective-line-iron-saxe-0"
             }
           ],
           "rewards": [
@@ -3445,7 +3529,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:bladehead-falx-steel|game:blade-falx-steel"
+              "code": "game:bladehead-falx-steel|game:blade-falx-steel",
+              "text": "objective-line-iron-sfalx-0"
             }
           ],
           "rewards": [
@@ -3487,7 +3572,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:armor-*-plate-*steel"
+              "code": "game:armor-*-plate-*steel",
+              "text": "objective-line-iron-sarm-0"
             }
           ],
           "rewards": [
