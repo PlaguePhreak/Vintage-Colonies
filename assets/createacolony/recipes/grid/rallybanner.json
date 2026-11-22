@@ -1,0 +1,11 @@
+{
+	// Aaron's recipe (0.178.0): two sticks in a diagonal, with two cloth in the top middle and top right.
+	"ingredientPattern": "_CC,_S_,S__",
+	"ingredients": {
+		"S": { "type": "item", "code": "game:stick" },
+		"C": { "type": "item", "code": "game:cloth-*" }
+	},
+	"width": 3,
+	"height": 3,
+	"output": { "type": "item", "code": "createacolony:rallybanner" }
+}

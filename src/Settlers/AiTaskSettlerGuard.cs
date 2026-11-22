@@ -30,7 +30,16 @@ public class AiTaskSettlerGuard : SettlerTaskBase
     const float HoldDistance = 3f;
     const float SwingSeconds = 0.6f;
 
-    enum Mode { Idle, Fight, Follow, Post, FetchGear, Hold, Patrol, Bodyguard, Retreat }
+    enum Mode { Idle, Fight, Follow, Post, FetchGear, Hold, Patrol, Bodyguard, Retreat, Rally, Collect }
+
+    /// <summary>The bow or sling in a fight (0.178.0); shooting happens only while shootReady.</summary>
+    readonly RangedShooter shooter = new();
+    bool shootingRanged;
+    bool shootReady;
+    bool steppingBack;
+    Entity? looseAmmo;
+    readonly HashSet<long> unreachableAmmo = new();
+    float ammoLookIn;
 
     Mode mode;
     Entity? threat;
@@ -80,14 +89,17 @@ public class AiTaskSettlerGuard : SettlerTaskBase
             Think(colony, citizen);
         }
 
+        shooter.Tick(entity, dt);
         if (walkingTo != null)
         {
             if (Arrived || PathFailed)
             {
+                bool failed = PathFailed;
                 StopWalking();
                 walkingTo = null;
                 if (mode == Mode.FetchGear) TakeGear(colony, citizen);
                 if (mode == Mode.Patrol) ReachedPatrolPoint(colony);
+                if (mode == Mode.Collect) ReachedAmmo(colony, citizen, failed);
             }
             else
             {
@@ -95,7 +107,17 @@ public class AiTaskSettlerGuard : SettlerTaskBase
             }
         }
 
-        if (mode == Mode.Fight && threat != null && cooldown <= 0 && entity.Pos.DistanceTo(threat.Pos.XYZ) <= Reach) Strike(colony, citizen, threat);
+        if (mode == Mode.Fight && threat != null && shootingRanged)
+        {
+            // Fighting XP for each shot; a kill counts in ColonyManager.OnShotKill.
+            if (!shootReady || Hand is not { } bow) shooter.Cancel(entity, Hand, SyncHand);
+            else if (shooter.Update(manager!, colony, citizen, entity, bow, threat, dt, SyncHand)) manager!.GainWorkXp(colony, citizen, Jobs.Guard, 1);
+        }
+        else
+        {
+            shooter.Cancel(entity, Hand, SyncHand);
+            if (mode == Mode.Fight && threat != null && !steppingBack && cooldown <= 0 && entity.Pos.DistanceTo(threat.Pos.XYZ) <= Reach) Strike(colony, citizen, threat);
+        }
         return true;
     }
 
@@ -103,22 +125,27 @@ public class AiTaskSettlerGuard : SettlerTaskBase
     void Think(Colony colony, CitizenRecord citizen)
     {
         var m = manager!;
-        HoldBestWeapon(colony, citizen);
         var tower = m.EnsureGuardTower(colony, citizen);
         towerId = tower?.BuildingId ?? 0;
+        shootingRanged = shootReady = steppingBack = false;
+        // A ranged guard's bow or sling, if it has something to shoot (Colony militia tab).
+        var ranged = citizen.GuardRanged ? m.ReadyRanged(citizen, Hand?.Itemstack) : null;
 
         if (tower != null && Retreats(tower))
         {
+            HoldBestWeapon(colony, citizen);
             mode = Mode.Retreat;
             threat = null;
             Walk(tower.HutPos.ToVec3d().Add(0.5, 1, 0.5), 2f);
             return;
         }
 
-        // Who or what the guard looks after, and how far around it monsters are fought.
-        EntityPlayer? player = tower?.GuardTask == GuardTasks.Follow ? m.FollowedPlayer(tower) : null;
+        // Who or what the guard looks after, and how far around it monsters are fought. A raised Rally Banner
+        // that calls this guard's post comes first.
+        var rallier = m.RallyFor(colony, tower, entity);
+        EntityPlayer? player = rallier ?? (tower?.GuardTask == GuardTasks.Follow ? m.FollowedPlayer(tower) : null);
         // A tower on Patrol mine sends its guard with the miner of the mine that took it on its Guards tab.
-        CitizenRecord? escorted = tower == null ? m.EscortedBy(colony, citizen)
+        CitizenRecord? escorted = rallier != null ? null : tower == null ? m.EscortedBy(colony, citizen)
             : tower.GuardTask == GuardTasks.PatrolMine ? m.MinerGuardedBy(colony, citizen) : null;
         protectee = player ?? (escorted == null ? null : entity.World.GetEntityById(escorted.EntityId));
         Vec3d center;
@@ -144,14 +171,50 @@ public class AiTaskSettlerGuard : SettlerTaskBase
             if (alarm != null && !answeringAlarm && tower != null) m.AddStat(tower, "alarms");
             answeringAlarm = alarm != null;
             mode = Mode.Fight;
-            if (entity.Pos.DistanceTo(threat.Pos.XYZ) > Reach) Walk(threat.Pos.XYZ, Reach - 0.6f);
+            double distance = entity.Pos.DistanceTo(threat.Pos.XYZ);
+            if (ranged != null && distance > m.Config.RangedCloseRange)
+            {
+                // Shoot from where it stands if it can; walk closer when out of reach or something is in the way.
+                Hold(colony, citizen, ranged);
+                shootingRanged = true;
+                shootReady = distance <= m.RangeOf(ranged) && m.ClearShot(entity, threat);
+                if (shootReady)
+                {
+                    StopWalking();
+                    walkingTo = null;
+                }
+                else Walk(threat.Pos.XYZ, Math.Min(m.RangeOf(ranged) / 2, 8f));
+                return;
+            }
+            bool melee = HoldBestWeapon(colony, citizen);
+            if (ranged != null && !melee)
+            {
+                // Too close for a bow and no blade to draw: step back to shoot again.
+                steppingBack = true;
+                var away = entity.Pos.XYZ - threat.Pos.XYZ;
+                away.Y = 0;
+                if (away.Length() < 0.1) away.Set(1, 0, 0);
+                Walk(entity.Pos.XYZ + away.Normalize() * 5, 1f);
+                return;
+            }
+            if (distance > Reach) Walk(threat.Pos.XYZ, Reach - 0.6f);
             return;
         }
         answeringAlarm = false;
+        // No fight: a ranged guard keeps its bow or sling in hand, the others their best weapon.
+        var bow = citizen.GuardRanged ? m.BestRanged(citizen, Hand?.Itemstack) : null;
+        if (bow != null) Hold(colony, citizen, bow);
+        else HoldBestWeapon(colony, citizen);
 
-        // A quiet moment: pick up a better weapon, armor or shield. An escort stays with its worker instead.
+        // A quiet moment: pick up arrows from the fight, then a better weapon, armor or shield. An escort stays with its worker instead.
         if (escorted == null && player == null)
         {
+            if (bow != null && FindLooseAmmo(colony))
+            {
+                mode = Mode.Collect;
+                Walk(looseAmmo!.Pos.XYZ, 1.2f);
+                return;
+            }
             var chest = m.GearChest(colony, tower, citizen, Hand?.Itemstack);
             if (chest != null)
             {
@@ -160,6 +223,14 @@ public class AiTaskSettlerGuard : SettlerTaskBase
                 Walk(chest.ToVec3d().Add(0.5, 0, 0.5), 1.5f);
                 return;
             }
+            if (bow != null && m.AmmoCount(citizen, bow) < m.Config.GuardAmmoLow) m.EnsureAmmoRequest(colony, tower, bow);
+        }
+
+        if (rallier != null && tower != null)
+        {
+            Bodyguard(rallier, tower, teleport: false);
+            mode = Mode.Rally;
+            return;
         }
 
         if (tower == null)
@@ -216,13 +287,14 @@ public class AiTaskSettlerGuard : SettlerTaskBase
     }
 
     /// <summary>Keeps near the player, loose or tight; a player far away (a long ride, a teleport) gets the guard brought to them.</summary>
-    void Bodyguard(EntityPlayer player, Building tower)
+    void Bodyguard(EntityPlayer player, Building tower, bool teleport = true)
     {
         var m = manager!;
         mode = Mode.Bodyguard;
         float keep = tower.FollowTight ? m.Config.GuardFollowTight : m.Config.GuardFollowLoose;
         double distance = entity.Pos.DistanceTo(player.Pos.XYZ);
-        if (distance > m.Config.GuardFollowTeleport || entity.Pos.Dimension != player.Pos.Dimension)
+        // Rallied guards run to the player; only a player in another dimension (a mine, say) gets them brought along.
+        if (teleport && distance > m.Config.GuardFollowTeleport || entity.Pos.Dimension != player.Pos.Dimension)
         {
             var spot = m.FreeSpotNear(entity, player.Pos.AsBlockPos, 3);
             if (spot != null)
@@ -308,19 +380,62 @@ public class AiTaskSettlerGuard : SettlerTaskBase
         cooldown = manager!.Config.GuardSecondsPerHit * manager.WorkTimeFactor(colony, citizen) / manager.SwingFactor(colony, citizen); // Fighting skill and traits swing faster
     }
 
-    /// <summary>Holds the hardest-hitting weapon it carries.</summary>
-    void HoldBestWeapon(Colony colony, CitizenRecord citizen)
+    /// <summary>Holds the hardest-hitting melee weapon it carries. True when one is in hand after.</summary>
+    bool HoldBestWeapon(Colony colony, CitizenRecord citizen)
     {
         var hand = Hand;
-        if (hand == null) return;
+        if (hand == null) return false;
         var best = manager!.CarriedItems(citizen).Where(ColonyManager.IsWeapon).OrderByDescending(ColonyManager.WeaponDamage).FirstOrDefault();
-        if (best == null) return;
-        if (hand.Itemstack is { } held && ColonyManager.IsWeapon(held) && ColonyManager.WeaponDamage(held) >= ColonyManager.WeaponDamage(best)) return;
-        var weapon = manager.TakeFromPack(colony, citizen, s => s.Collectible.Code.Equals(best.Collectible.Code), 1);
+        bool holding = hand.Itemstack is { } held && ColonyManager.IsWeapon(held);
+        if (best == null) return holding;
+        if (holding && ColonyManager.WeaponDamage(hand.Itemstack!) >= ColonyManager.WeaponDamage(best)) return true;
+        Hold(colony, citizen, best);
+        return hand.Itemstack is { } now && ColonyManager.IsWeapon(now);
+    }
+
+    /// <summary>Takes this weapon (or one just like it) out of its inventory into its hand, putting away what it held.</summary>
+    void Hold(Colony colony, CitizenRecord citizen, ItemStack want)
+    {
+        var hand = Hand;
+        if (hand == null || hand.Itemstack?.Collectible.Code.Equals(want.Collectible.Code) == true) return;
+        var weapon = manager!.TakeFromPack(colony, citizen, s => s.Collectible.Code.Equals(want.Collectible.Code), 1);
         if (weapon == null) return;
+        shooter.Cancel(entity, hand, SyncHand);
         PutAwayHand(colony, citizen);
+        if (!hand.Empty)
+        {
+            manager.AddToPack(colony, citizen, weapon);
+            return;
+        }
         hand.Itemstack = weapon;
         SyncHand();
+    }
+
+    /// <summary>Looks (every few seconds) for an arrow or stone the colony shot lying near the guard. True when it found one.</summary>
+    bool FindLooseAmmo(Colony colony)
+    {
+        if (looseAmmo is { Alive: true } && !unreachableAmmo.Contains(looseAmmo.EntityId)) return true;
+        looseAmmo = null;
+        if ((ammoLookIn -= ThinkSeconds) > 0) return false;
+        ammoLookIn = 3f;
+        looseAmmo = manager!.LooseAmmoNear(colony, entity, manager.Config.ArrowPickupRadius, unreachableAmmo);
+        return looseAmmo != null;
+    }
+
+    /// <summary>At the arrow: picks it up if it is within reach, else leaves it be from now on.</summary>
+    void ReachedAmmo(Colony colony, CitizenRecord citizen, bool failed)
+    {
+        mode = Mode.Idle;
+        var loose = looseAmmo;
+        looseAmmo = null;
+        if (loose == null || !loose.Alive) return;
+        double dx = loose.Pos.X - entity.Pos.X, dz = loose.Pos.Z - entity.Pos.Z, dy = loose.Pos.Y - entity.Pos.Y;
+        if (dx * dx + dz * dz <= 2.5 * 2.5 && dy > -1.5 && dy < 3 && manager!.PickUpAmmo(colony, citizen, entity, loose))
+        {
+            ammoLookIn = 0; // look for the next one straight away
+            return;
+        }
+        if (failed || loose.Alive) unreachableAmmo.Add(loose.EntityId);
     }
 
     /// <summary>At the chest it walked to: swaps in a better weapon, armor and shield, leaving the old ones there.</summary>
@@ -332,8 +447,11 @@ public class AiTaskSettlerGuard : SettlerTaskBase
         if (Hand is { } hand)
         {
             // Only a weapon belongs in a guard's hand.
-            if (hand.Itemstack is { } held && !ColonyManager.IsWeapon(held)) PutAwayHand(colony, citizen);
+            if (hand.Itemstack is { } held && !ColonyManager.IsWeapon(held) && !ColonyManager.IsRangedWeapon(held)) PutAwayHand(colony, citizen);
+            // Only a weapon belongs in a guard's hand: a bow or sling counts for a ranged guard.
             if (m.TakeBetterWeapon(colony, citizen, chest, hand)) SyncHand();
+            m.TakeRangedGear(colony, citizen, chest, hand);
+            SyncHand();
         }
         if (m.Config.GuardsWearArmor) m.PutOnArmorFrom(colony, citizen, chest);
         m.TakeBetterShield(colony, citizen, chest);
@@ -342,6 +460,7 @@ public class AiTaskSettlerGuard : SettlerTaskBase
     public override void FinishExecute(bool cancelled)
     {
         if (Citizen is { } citizen) manager?.SetShieldUp(citizen, entity, false);
+        shooter.Stop(entity, Hand, SyncHand);
         if (swingAnim != null) StopAnimation(swingAnim);
         swingAnim = null;
         walkingTo = null;
@@ -353,7 +472,10 @@ public class AiTaskSettlerGuard : SettlerTaskBase
         var m = manager!;
         return mode switch
         {
+            Mode.Fight when shootingRanged => Lang.Get("createacolony:activity-guard-shoot", threat?.GetName() ?? ""),
             Mode.Fight => Lang.Get(answeringAlarm ? "createacolony:activity-guard-alarm" : "createacolony:activity-guard-fight", threat?.GetName() ?? ""),
+            Mode.Rally => Lang.Get("createacolony:activity-guard-rally", protectee?.GetName() ?? ""),
+            Mode.Collect => Lang.Get("createacolony:activity-guard-arrows"),
             Mode.Follow => Lang.Get("createacolony:activity-guard-escort", (m.EscortedBy(colony, citizen) ?? m.MinerGuardedBy(colony, citizen))?.Name ?? ""),
             Mode.FetchGear => Lang.Get("createacolony:activity-guard-gear"),
             Mode.Hold => Lang.Get("createacolony:activity-guard-hold"),

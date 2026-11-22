@@ -569,6 +569,32 @@ public class ColonyConfig
     /// <summary>Guards only swap a weapon, armor piece or shield for one that is this much better (0.15 = 15%).</summary>
     public float GearUpgradeMargin = 0.15f;
 
+    // Bows and slings (0.178.0)
+    /// <summary>A ranged guard (Colony militia tab) shoots from up to this far with a bow; a sling reaches SlingRange.</summary>
+    public float BowRange = 24f;
+    public float SlingRange = 16f;
+    /// <summary>Shooting from closer than this, the guard switches to its melee weapon (or steps back without one).</summary>
+    public float RangedCloseRange = 3.5f;
+    /// <summary>Seconds a settler draws a bow (or swings a sling) before it shoots; the game asks the same of players.</summary>
+    public float BowDrawSeconds = 1.0f;
+    public float SlingDrawSeconds = 1.1f;
+    /// <summary>Seconds between shots, before the Fighting skill.</summary>
+    public float RangedSecondsPerShot = 1.6f;
+    /// <summary>How fast arrows and stones leave the bow or sling, in blocks a second.</summary>
+    public float ArrowSpeed = 40f;
+    public float SlingStoneSpeed = 30f;
+    /// <summary>How far off a shot can go, in degrees, for a settler with no Fighting skill; better fighters aim truer.</summary>
+    public float RangedSpreadDegrees = 3f;
+    /// <summary>A ranged guard keeps this many arrows (or stones) and fetches more from its tower or the warehouse when it has fewer than GuardAmmoLow.</summary>
+    public int GuardAmmoCarried = 32;
+    public int GuardAmmoLow = 8;
+    /// <summary>After a fight, a ranged guard picks up arrows the colony's settlers shot within this many blocks.</summary>
+    public float ArrowPickupRadius = 24f;
+
+    // Rally Banner (0.178.0)
+    /// <summary>A raised Rally Banner calls its linked guards from up to this many blocks away; guards further off stay put.</summary>
+    public float RallyRange = 256f;
+
     // Running away
     /// <summary>Settlers who are not guards run home, or to a guard, when a creature hurts them.</summary>
     public bool FleeWhenAttacked = true;

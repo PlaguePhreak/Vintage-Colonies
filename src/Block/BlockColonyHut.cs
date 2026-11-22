@@ -79,6 +79,8 @@ public class BlockColonyHut : Block, IWandPlaceable
     {
         // With the Builder's Wand in hand the placement window opens instead.
         if (Items.ItemBuildersWand.TryUse(world, byPlayer, blockSel.Position)) return true;
+        // With the Rally Banner in hand a Guard Tower or Barracks is linked to it (or unlinked).
+        if (Items.ItemRallyBanner.TryLink(world, byPlayer, blockSel.Position)) return true;
         // Sneaking opens the hut's own storage, like a chest; the server sends the inventory window.
         if (byPlayer.Entity.Controls.ShiftKey)
         {

@@ -1,6 +1,6 @@
 # Vintage Colonies: roadmap
 
-Vintage Colonies brings the ideas of the Minecraft mod MineColonies to Vintage Story. This page shows what the mod has today (version 0.177.1), what it does not have yet, and the order we plan to build it in. It comes from a side-by-side check against the MineColonies wiki. Plans can change as things get tested in game.
+Vintage Colonies brings the ideas of the Minecraft mod MineColonies to Vintage Story. This page shows what the mod has today (version 0.178.0), what it does not have yet, and the order we plan to build it in. It comes from a side-by-side check against the MineColonies wiki. Plans can change as things get tested in game.
 
 Things marked *(tested)* have been tried in game. Everything else is built but still waiting for an in-game test.
 
@@ -87,6 +87,8 @@ Things marked *(tested)* have been tried in game. Everything else is built but s
 - Quests check themselves, cards explain what to do and how, a Quest completed popup, quests stay hidden until you reach them (with a Settings switch to show them), 1 rusty gear per quest for now (0.176.0-0.177.1, not tested yet)
 - Quest editor for admins: move, add, link and edit quests in the book, and set quests to repeat (0.176.0, not tested yet)
 - Rusty gears are the colony's money; Coinage coins are used when that mod is installed, and the Royal Mint needs it (0.177.0, not tested yet)
+- Ranged guards: each guard can be set to melee or ranged on the Colony militia tab, ranged guards shoot bows and slings and pick up their arrows after a fight, and armed settlers prefer spears and shields (0.178.0, not tested yet)
+- Rally Banner: link guard posts to it, raise it to call their guards to you, lower it to send them back (0.178.0, not tested yet)
 
 ## Partly done
 
@@ -94,7 +96,7 @@ Things marked *(tested)* have been tried in game. Everything else is built but s
 - **Town Hall window**: alliances, happiness, reordering work orders, custom ranks, permission logs, auto hiring and housing, and enter and leave messages say "Coming later" *(tested)*
 - **Permissions**: no custom ranks, no hostile or neutral list, no log of who did what *(tested)*
 - **Hiring and housing**: no auto-hire switch (choosing who lives in each home came in 0.75.0)
-- **Guards**: no ranged guards yet; the Barracks came in 0.54.0 and the militia tab in 0.85.0 *(not tested yet)*
+- **Guards**: ranged guards and the Rally Banner came in 0.178.0; still no raids, no Combat Academy or archery range, and the Rally Banner does not show the colony's Heraldry design yet *(not tested yet)*
 - **Blueprints**: no in-game scan tool for your own buildings, and the wand's Education, Walls and Decoration tabs are still empty *(tested)*
 - **Death**: corpses, grave markers and causes of death came in 0.77.0-0.94.0, and the priest holds funerals at graves (0.137.0), but there is no graveyard yet
 - **Quests**: the new quest book is in (0.175.0-0.177.1). Still to do: real rewards, the Bronze Age, Iron and Steel, Mechanical Power, Kilns and Glass and Tutorial chapters, 31 Colony quests that wait for huts we do not have yet, and Tavern jobs and settler requests as quests
@@ -103,7 +105,7 @@ Things marked *(tested)* have been tried in game. Everything else is built but s
 ## Not built yet
 
 **Next, in this order**
-1. **Ranged guards and a rally banner** (the Barracks came in 0.54.0), then **Raids**: now and then, enemies turn up and attack the player's colony. The player is warned in chat and on the Town Hall window. There are several raid factions, from bandits (who use the settler models) to the game's own monsters such as drifters and shivers.
+1. **Raids** (ranged guards and the Rally Banner came in 0.178.0): now and then, enemies turn up and attack the player's colony. The player is warned in chat and on the Town Hall window. There are several raid factions, from bandits (who use the settler models) to the game's own monsters such as drifters and shivers.
 2. **Graveyard**: an undertaker who buries the dead (the Healer, bandages and poultices came in 0.117.0)
 3. **More research**: tier 3 and higher nodes, nodes that unlock new buildings, handing in books, gears and relics at the Archive, field research quests for the Explorer, failed experiments, and researchers sitting and writing at a table
 4. **Armourer's and Weaponsmith's buildings**: the jobs came in 0.114.0, the buildings are still to design

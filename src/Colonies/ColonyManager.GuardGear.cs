@@ -78,6 +78,7 @@ public partial class ColonyManager
                 if (IsWeapon(stack) && Beats(WeaponScore(stack), weapon)) return container.Pos;
                 if (shield >= 0 && IsShield(stack) && Beats(ShieldScore(stack), shield)) return container.Pos;
                 if (worn != null && Beats(stack, worn)) return container.Pos;
+                if (RangedGearWanted(citizen, held, stack)) return container.Pos;
             }
         }
         return null;

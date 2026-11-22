@@ -117,7 +117,7 @@ public partial class ColonyManager
         .Concat(WarehouseContainers(colony));
 
     /// <summary>At a Guard Tower couriers take away everything but weapons, armor, shields and what the Minimum stock tab keeps.</summary>
-    System.Func<ItemStack, bool> GuardTowerJunk(Building tower) => s => !IsWeapon(s) && !IsArmor(s) && !IsShield(s) && !IsMinStock(tower, s);
+    System.Func<ItemStack, bool> GuardTowerJunk(Building tower) => s => !IsWeapon(s) && !IsArmor(s) && !IsShield(s) && !IsRangedWeapon(s) && !IsAmmo(s) && !IsMinStock(tower, s);
 
     // ---- Where guards go ------------------------------------------------------------------
 
@@ -215,7 +215,7 @@ public partial class ColonyManager
     /// </summary>
     public Entity? AlarmFor(Colony colony, EntityAgent guardEntity, Building? tower)
     {
-        if (tower?.GuardTask == GuardTasks.Follow || GuardsRetreating.Contains(guardEntity.EntityId)) return null;
+        if (tower?.GuardTask == GuardTasks.Follow || GuardsRetreating.Contains(guardEntity.EntityId) || RallyFor(colony, tower, guardEntity) != null) return null;
         foreach (var threat in AlarmThreats(colony))
         {
             if (!IsThreatFor(tower, threat)) continue;
@@ -226,7 +226,7 @@ public partial class ColonyManager
                 if (!other.Alive || other.IsDowned || other.JobCode != Jobs.Guard || other.EntityId == guardEntity.EntityId) continue;
                 if (sapi.World.GetEntityById(other.EntityId) is not EntityAgent { Alive: true } e || GuardsRetreating.Contains(e.EntityId)) continue;
                 var otherTower = TowerOf(colony, other);
-                if (otherTower?.GuardTask == GuardTasks.Follow || !IsThreatFor(otherTower, threat)) continue;
+                if (otherTower?.GuardTask == GuardTasks.Follow || !IsThreatFor(otherTower, threat) || RallyFor(colony, otherTower, e) != null) continue;
                 if (e.Pos.SquareDistanceTo(threat.Pos.XYZ) < mine) { nearest = false; break; }
             }
             if (nearest) return threat;

@@ -69,6 +69,7 @@ public partial class ColonyManager : ModSystem
         api.Event.OnEntityLoaded += OnCreatureReady;
         api.Event.OnEntityDeath += OnMonsterDeath;
         api.Event.OnEntityDeath += OnQuestKill;
+        api.Event.OnEntityDeath += OnShotKill;
         api.Event.DidBreakBlock += OnQuestBreak;
         api.Event.DidPlaceBlock += OnQuestPlace;
         api.Event.RegisterGameTickListener(OnFarWorkTick, FarWorkTickMs);

@@ -894,6 +894,7 @@ public class GuiDialogTownHall : GuiDialog
             .OrderByDescending(c => c.Job == Jobs.Guard).ThenByDescending(c => c.Weapon.Length > 0).ThenBy(c => c.Name).ToList();
         int guards = people.Count(c => c.Job == Jobs.Guard), armed = people.Count(c => c.Job != Jobs.Guard && c.Weapon.Length > 0);
         top = composer.Text(Lang.Get("createacolony:militia-summary", guards, armed, people.Count - guards - armed), GuiKit.Detail(), 0, top, Width, 6);
+        if (snapshot.RalliedBy.Count > 0) top = composer.Text(Lang.Get("createacolony:militia-rallied", string.Join(", ", snapshot.RalliedBy)), GuiKit.Detail().WithColor(GuiKit.GoodColor), 0, top, Width, 6);
         double y;
         if (people.Count == 0)
         {
@@ -921,8 +922,20 @@ public class GuiDialogTownHall : GuiDialog
                 composer
                     .AddStaticText(c.Name, GuiKit.Body(), ElementBounds.Fixed(10, y + 6, 150, 25))
                     .AddStaticText(JobName(c.Job), GuiKit.Detail(), ElementBounds.Fixed(165, y + 8, 120, 25))
-                    .AddStaticText(Lang.Get(guard ? "createacolony:militia-guard" : "createacolony:militia-civilian"), roleFont, ElementBounds.Fixed(290, y + 8, 90, 25))
                     .AddStaticText(c.Weapon.Length > 0 ? c.Weapon : Lang.Get("createacolony:militia-no-weapon"), weaponFont, ElementBounds.Fixed(385, y + 8, 175, 25));
+                // A guard fights up close or with a bow or sling (0.178.0); officers switch it here.
+                string role = Lang.Get(!guard ? "createacolony:militia-civilian" : c.GuardRanged ? "createacolony:militia-guard-ranged" : "createacolony:militia-guard-melee");
+                if (guard && Officer)
+                {
+                    int id = c.CitizenId;
+                    bool next = !c.GuardRanged;
+                    composer.AddSmallButton(role, () =>
+                    {
+                        network.SendAction(new ColonyActionPacket { ColonyId = ColonyId, Action = ColonyAction.SetGuardRanged, CitizenId = id, Text = next ? "1" : "0" });
+                        return true;
+                    }, ElementBounds.Fixed(288, y + 4, 92, 26), EnumButtonStyle.Small);
+                }
+                else composer.AddStaticText(role, roleFont, ElementBounds.Fixed(290, y + 8, 90, 25));
                 y += RowHeight;
             }
             composer.Pager(page, pages, y + 14, Width, p => { page = p; Compose(); });
@@ -930,6 +943,7 @@ public class GuiDialogTownHall : GuiDialog
         }
 
         y = composer.Section(Lang.Get("createacolony:militia-settings"), y, Width);
+        if (people.Any(c => c.Job == Jobs.Guard)) y = composer.Text(Lang.Get("createacolony:militia-ranged-hint"), GuiKit.Muted(), 0, y, Width, 8);
         y = MilitiaSwitch(composer, "selfdefence", ColonyAction.SetSelfDefence, snapshot.SelfDefence, "militia-selfdefence", "militia-selfdefence-hint", y);
         MilitiaSwitch(composer, "supportallies", ColonyAction.SetSupportAllies, snapshot.SupportAllies, "militia-supportallies", "militia-supportallies-hint", y);
     }

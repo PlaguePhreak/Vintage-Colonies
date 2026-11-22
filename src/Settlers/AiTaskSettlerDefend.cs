@@ -26,6 +26,10 @@ public class AiTaskSettlerDefend : SettlerTaskBase
     float swingLeft;
     string? swingAnim;
     long nextAimMs;
+    readonly RangedShooter shooter = new();
+    /// <summary>Whether the last look found a clear shot, looked again twice a second.</summary>
+    bool clearShot;
+    long clearLookMs;
 
     public AiTaskSettlerDefend(EntityAgent entity, JsonObject taskConfig, JsonObject aiConfig) : base(entity, taskConfig, aiConfig) { }
 
@@ -75,10 +79,37 @@ public class AiTaskSettlerDefend : SettlerTaskBase
         }
 
         cooldown -= dt;
+        shooter.Tick(entity, dt);
         if (swingAnim != null && (swingLeft -= dt) <= 0)
         {
             StopAnimation(swingAnim);
             swingAnim = null;
+        }
+        m.SetShieldUp(citizen, entity, true);
+
+        // Only a bow or sling to hand (its last choice): shoot from where it stands while it can, else close in.
+        if (Hand is { Itemstack: { } held } bow && ColonyManager.IsRangedWeapon(held) && m.AmmoCount(citizen, held) > 0)
+        {
+            double distance = entity.Pos.DistanceTo(attacker.Pos.XYZ);
+            if (entity.World.ElapsedMilliseconds >= clearLookMs)
+            {
+                clearLookMs = entity.World.ElapsedMilliseconds + 500;
+                clearShot = m.ClearShot(entity, attacker);
+            }
+            if (distance <= m.RangeOf(held) && distance > 1.5 && clearShot)
+            {
+                StopWalking();
+                if (shooter.Update(m, colony, citizen, entity, bow, attacker, dt, SyncHand)) m.GainWorkXp(colony, citizen, Jobs.Guard, 1);
+                return true;
+            }
+            shooter.Cancel(entity, bow, SyncHand);
+            if (entity.World.ElapsedMilliseconds >= nextAimMs || PathFailed || Arrived)
+            {
+                nextAimMs = entity.World.ElapsedMilliseconds + AimMs;
+                WalkTo(attacker.Pos.XYZ, 6f);
+            }
+            KeepWalking();
+            return true;
         }
 
         if (entity.Pos.DistanceTo(attacker.Pos.XYZ) <= Reach)
@@ -132,14 +163,16 @@ public class AiTaskSettlerDefend : SettlerTaskBase
         cooldown = m.Config.GuardSecondsPerHit * m.WorkTimeFactor(colony, citizen) / m.SwingFactor(colony, citizen);
     }
 
-    /// <summary>Holds the hardest-hitting weapon it carries, putting its tool away.</summary>
+    /// <summary>
+    /// Holds the weapon it fights with (ColonyManager.CivilianWeapon, Aaron 0.178.0): a spear first, then its
+    /// hardest-hitting other weapon, and a bow or sling only when it has nothing else. Puts its tool away.
+    /// </summary>
     void HoldBestWeapon(Colony colony, CitizenRecord citizen)
     {
         var hand = Hand;
         if (hand == null) return;
-        var best = manager!.CarriedItems(citizen).Where(ColonyManager.IsWeapon).OrderByDescending(ColonyManager.WeaponDamage).FirstOrDefault();
-        if (best == null) return;
-        if (hand.Itemstack is { } held && ColonyManager.IsWeapon(held) && ColonyManager.WeaponDamage(held) >= ColonyManager.WeaponDamage(best)) return;
+        var best = manager!.CivilianWeapon(citizen, hand.Itemstack);
+        if (best == null || hand.Itemstack?.Collectible.Code.Equals(best.Collectible.Code) == true) return;
         var weapon = manager.TakeFromPack(colony, citizen, s => s.Collectible.Code.Equals(best.Collectible.Code), 1);
         if (weapon == null) return;
         PutAwayHand(colony, citizen);
@@ -151,8 +184,10 @@ public class AiTaskSettlerDefend : SettlerTaskBase
     {
         if (swingAnim != null) StopAnimation(swingAnim);
         swingAnim = null;
+        shooter.Stop(entity, Hand, SyncHand);
+        if (Citizen is { } fighter) manager?.SetShieldUp(fighter, entity, false);
         // Back to work: the job's task takes its tool out again.
-        if (Hand?.Itemstack is { } held && ColonyManager.IsWeapon(held) && Colony is { } colony && Citizen is { } citizen) PutAwayHand(colony, citizen);
+        if (Hand?.Itemstack is { } held && (ColonyManager.IsWeapon(held) || ColonyManager.IsRangedWeapon(held)) && Colony is { } colony && Citizen is { } citizen) PutAwayHand(colony, citizen);
         attacker = null;
         base.FinishExecute(cancelled);
     }

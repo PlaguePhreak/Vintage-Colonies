@@ -95,7 +95,8 @@ public partial class ColonyManager
         if (!(helping ? SupportAllies(colony) : SelfDefence(colony))) return false;
         if (citizen.JobCode == Jobs.Guard || citizen.IsDowned || citizen.IsChild || citizen.Visitor) return false;
         if (settler.GetBehavior<EntityBehaviorHealth>() is { } hp && hp.Health < hp.MaxHealth * Config.FightBackMinHealth) return false;
-        if (!(Settlers.AiTaskSettlerEat.ToolInHand(settler) is { } held && IsWeapon(held)) && PackCount(citizen, IsWeapon) == 0) return false;
+        // A melee weapon, or a bow or sling with something to shoot (Aaron, 0.178.0: ranged is the last choice, see CivilianWeapon).
+        if (CivilianWeapon(citizen, Settlers.AiTaskSettlerEat.ToolInHand(settler)) == null) return false;
         return !GuardNear(colony, settler.Pos.XYZ, Config.FightBackGuardRadius);
     }
 
@@ -103,7 +104,10 @@ public partial class ColonyManager
     public void TakeSpareWeapon(Colony colony, CitizenRecord citizen, IEnumerable<BlockEntityContainer> storage)
     {
         if (!Config.FightBackWhenAttacked || PackCount(citizen, IsWeapon) > 0) return;
-        if (TakeItems(storage, IsWeapon, 1) is { } weapon) AddToPack(colony, citizen, weapon);
+        // A spear if there is one (Aaron, 0.178.0: settlers prefer spears), else any weapon.
+        var list = storage.ToList();
+        var weapon = TakeItems(list, s => IsWeapon(s) && s.Collectible.Tool == EnumTool.Spear, 1) ?? TakeItems(list, IsWeapon, 1);
+        if (weapon != null) AddToPack(colony, citizen, weapon);
     }
 
     /// <summary>

@@ -1,0 +1,286 @@
+{
+	"textureWidth": 16,
+	"textureHeight": 16,
+	"textures": {
+		"pole": "game:block/wood/planks/aged1",
+		"cloth": "game:block/cloth/linen/red"
+	},
+	"elements": [
+		{
+			"name": "Pole",
+			"from": [
+				7.5,
+				0,
+				7.5
+			],
+			"to": [
+				8.5,
+				16,
+				8.5
+			],
+			"faces": {
+				"north": {
+					"texture": "#pole",
+					"uv": [
+						0,
+						0,
+						1.0,
+						16
+					]
+				},
+				"south": {
+					"texture": "#pole",
+					"uv": [
+						0,
+						0,
+						1.0,
+						16
+					]
+				},
+				"east": {
+					"texture": "#pole",
+					"uv": [
+						0,
+						0,
+						1.0,
+						16
+					]
+				},
+				"west": {
+					"texture": "#pole",
+					"uv": [
+						0,
+						0,
+						1.0,
+						16
+					]
+				},
+				"up": {
+					"texture": "#pole",
+					"uv": [
+						0,
+						0,
+						1.0,
+						1.0
+					]
+				},
+				"down": {
+					"texture": "#pole",
+					"uv": [
+						0,
+						0,
+						1.0,
+						1.0
+					]
+				}
+			}
+		},
+		{
+			"name": "Bar",
+			"from": [
+				8.5,
+				14.5,
+				7.5
+			],
+			"to": [
+				15.5,
+				15.5,
+				8.5
+			],
+			"faces": {
+				"north": {
+					"texture": "#pole",
+					"uv": [
+						0,
+						0,
+						7.0,
+						1.0
+					]
+				},
+				"south": {
+					"texture": "#pole",
+					"uv": [
+						0,
+						0,
+						7.0,
+						1.0
+					]
+				},
+				"east": {
+					"texture": "#pole",
+					"uv": [
+						0,
+						0,
+						1.0,
+						1.0
+					]
+				},
+				"west": {
+					"texture": "#pole",
+					"uv": [
+						0,
+						0,
+						1.0,
+						1.0
+					]
+				},
+				"up": {
+					"texture": "#pole",
+					"uv": [
+						0,
+						0,
+						7.0,
+						1.0
+					]
+				},
+				"down": {
+					"texture": "#pole",
+					"uv": [
+						0,
+						0,
+						7.0,
+						1.0
+					]
+				}
+			}
+		},
+		{
+			"name": "Flag",
+			"from": [
+				8.5,
+				6.5,
+				7.75
+			],
+			"to": [
+				15,
+				14.5,
+				8.25
+			],
+			"faces": {
+				"north": {
+					"texture": "#cloth",
+					"uv": [
+						0,
+						0,
+						6.5,
+						8.0
+					]
+				},
+				"south": {
+					"texture": "#cloth",
+					"uv": [
+						0,
+						0,
+						6.5,
+						8.0
+					]
+				},
+				"east": {
+					"texture": "#cloth",
+					"uv": [
+						0,
+						0,
+						0.5,
+						8.0
+					]
+				},
+				"west": {
+					"texture": "#cloth",
+					"uv": [
+						0,
+						0,
+						0.5,
+						8.0
+					]
+				},
+				"up": {
+					"texture": "#cloth",
+					"uv": [
+						0,
+						0,
+						6.5,
+						0.5
+					]
+				},
+				"down": {
+					"texture": "#cloth",
+					"uv": [
+						0,
+						0,
+						6.5,
+						0.5
+					]
+				}
+			}
+		},
+		{
+			"name": "Knob",
+			"from": [
+				7,
+				16,
+				7
+			],
+			"to": [
+				9,
+				17,
+				9
+			],
+			"faces": {
+				"north": {
+					"texture": "#pole",
+					"uv": [
+						0,
+						0,
+						2,
+						1
+					]
+				},
+				"south": {
+					"texture": "#pole",
+					"uv": [
+						0,
+						0,
+						2,
+						1
+					]
+				},
+				"east": {
+					"texture": "#pole",
+					"uv": [
+						0,
+						0,
+						2,
+						1
+					]
+				},
+				"west": {
+					"texture": "#pole",
+					"uv": [
+						0,
+						0,
+						2,
+						1
+					]
+				},
+				"up": {
+					"texture": "#pole",
+					"uv": [
+						0,
+						0,
+						2,
+						2
+					]
+				},
+				"down": {
+					"texture": "#pole",
+					"uv": [
+						0,
+						0,
+						2,
+						2
+					]
+				}
+			}
+		}
+	]
+}

@@ -59,6 +59,7 @@ public class CreateAColonyModSystem : ModSystem
         api.RegisterBlockClass("BlockPainting", typeof(BlockPainting));
         api.RegisterItemClass("ItemBuildersWand", typeof(Items.ItemBuildersWand));
         api.RegisterItemClass("ItemGuardScepter", typeof(Items.ItemGuardScepter));
+        api.RegisterItemClass("ItemRallyBanner", typeof(Items.ItemRallyBanner));
         api.RegisterItemClass("ItemColonyLedger", typeof(Items.ItemColonyLedger));
         api.RegisterItemClass("ItemCarcass", typeof(Items.ItemCarcass));
 

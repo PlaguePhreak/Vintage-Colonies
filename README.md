@@ -12,6 +12,21 @@ domain (`assets/createacolony/`, block and item codes like `createacolony:townha
 (`ModConfig/createacolony.json`), the release zips (`createacolony_<version>.zip`) and all save data keys.
 Changing any of those would stop old worlds from loading their colonies, so leave them as they are.
 
+## Ranged guards and the Rally Banner (0.178.0)
+Built from the design doc Aaron approved on 22 Nov 2026 (https://claude.ai/artifact/X1rem76HRLvrBPbsY3UWZp).
+- **Each guard fights up close or at range.** On the Town Hall's **Colony militia** tab, officers click a guard's role (Guard: melee / Guard: ranged) to switch it. One tower can hold both kinds.
+- **Ranged guards use bows and slings.** They take the best bow or sling and up to 32 arrows (or stones for a sling) from their tower's storage, then the warehouse, the same way guards take better weapons. Below 8 they fetch more, or ask couriers to bring some to the tower. Towers keep bows, slings, arrows and stones, so couriers don't carry them off.
+- **In a fight** a ranged guard stops within range (24 blocks for a bow, 16 for a sling), draws for as long as a player has to, and shoots a real arrow or stone. Shots fly on an arc, aimed at where the target is going, and can miss, break or stick in the ground. Damage is the bow's plus the arrow's, as in the game, times the guard's Fighting and Strength. Better fighters aim truer and shoot faster.
+- **No shooting into a crowd.** A guard holds its shot while a block, a player, a settler or an animal that isn't a monster is in the way, and walks closer to get a clear shot.
+- **Up close** (within 3.5 blocks) it switches to its melee weapon, or steps back to shoot again if it has none. Without a bow, or out of arrows, it fights up close like any guard.
+- **Picking up arrows.** When the fight is over, a ranged guard picks up the arrows and stones the colony's settlers shot within 24 blocks, and loose arrows lying on the colony's land.
+- **Armed settlers** now prefer a **spear**, then their hardest-hitting other weapon, and use a bow or sling only when they have nothing else (Aaron). Workers who take a spare weapon from their hut take a spear first. Settlers who carry a shield raise it while they fight back.
+- **Rally Banner**: a new item. Recipe: two sticks in a diagonal with two cloth (any) in the top middle and top right. Right-click a Guard Tower or Barracks hut block with it to link that post (again to unlink); its tooltip lists the linked posts. Right-click the air to **raise** it: every guard of the linked posts comes to you and fights around you, like the Follow task, wherever you go within 256 blocks. Right-click again to **lower** it and they go back to their posts. It also lowers if you log off or die, and after a restart. Guards walk to you; only a guard in another dimension is brought along. While raised, the Colony militia tab says who rallied the guards, and the event log notes it.
+- Arrow and stone kills count for the shooter (Veteran, Fighting XP, tower statistics).
+- Config: `BowRange`, `SlingRange`, `RangedCloseRange`, `BowDrawSeconds`, `SlingDrawSeconds`, `RangedSecondsPerShot`, `ArrowSpeed`, `SlingStoneSpeed`, `RangedSpreadDegrees`, `GuardAmmoCarried`, `GuardAmmoLow`, `ArrowPickupRadius`, `RallyRange`.
+- Not in this update: the banner doesn't copy the Heraldry colony banner's design (it is a plain red flag), and there are no new quests yet (the Colony star has no free spot near the Barracks quest; say where they should go).
+- Not tested in game.
+
 ## Rusty gears are the colony's money (0.177.0)
 - **The mod's copper coin is gone.** Taxes, wages, the treasury and the Church's tithe and charity now use vanilla **rusty gears**. Tavern recruits already cost gears.
 - **Gears can't be made**, so you fill the treasury yourself: put gears in the Town Hall's chests or the warehouse. If it runs dry, settlers go unpaid and are unhappy, as before.

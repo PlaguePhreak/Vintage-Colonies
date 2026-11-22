@@ -151,6 +151,8 @@ public class CitizenRecord
     [ProtoMember(301, IsRequired = true)] public int LastServiceDay = -1;
     /// <summary>After a service they learn faster until this time (total days).</summary>
     [ProtoMember(302)] public double LearnBoostUntilTotalDays;
+    /// <summary>A guard that fights with a bow or sling (Colony militia tab), as long as it has one and something to shoot.</summary>
+    [ProtoMember(3100)] public bool GuardRanged;
 
     public bool IsDowned => DownedUntilTotalDays > 0;
     public bool IsChild => GrowsUpTotalDays > 0;

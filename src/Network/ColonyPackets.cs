@@ -49,6 +49,8 @@ public class CitizenView
     [ProtoMember(21)] public int WorkRole;
     /// <summary>Colony militia tab: the weapon the settler would fight with, empty for none.</summary>
     [ProtoMember(30)] public string Weapon = "";
+    /// <summary>Colony militia tab: a guard set to fight with a bow or sling.</summary>
+    [ProtoMember(31)] public bool GuardRanged;
 }
 
 /// <summary>One person in a family list: who, how they are related, and what they do.</summary>
@@ -719,6 +721,8 @@ public class ColonySnapshot
     [ProtoMember(37)] public List<QuestStateView> Quests = new();
     /// <summary>Colony militia switches.</summary>
     [ProtoMember(60)] public bool SelfDefence;
+    /// <summary>Colony militia tab: players whose Rally Banner is raised for this colony right now.</summary>
+    [ProtoMember(3100)] public List<string> RalliedBy = new();
     [ProtoMember(61)] public bool SupportAllies;
     /// <summary>The Bailiff tab (110-119): the bailiff's name ("" for none) and whether they are on duty (BailiffState), the rules, the ledger and the estate report.</summary>
     [ProtoMember(110)] public string BailiffName = "";
@@ -960,6 +964,8 @@ public enum ColonyAction
     /// <summary>Colony militia switches (officers); Text is "1" or "0".</summary>
     SetSelfDefence = 140,
     SetSupportAllies = 141,
+    /// <summary>Colony militia tab (officers): the guard with CitizenId fights with a bow or sling ("1") or up close ("0").</summary>
+    SetGuardRanged = 3100,
     /// <summary>Remove hut: the hut's workers lose their job, a builder takes the building down and the hut block comes back.</summary>
     RemoveHut = 150,
     /// <summary>Stops taking a trader's old house down; BuildingId is the TeardownOrder id.</summary>

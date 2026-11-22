@@ -188,6 +188,7 @@ public partial class ColonyNetwork : ModSystem
             ColonyAction.SetColonyBanner or ColonyAction.ReplaceBanners or ColonyAction.SetBannerOnNew => BannerAction(player, colony, role, packet),
             ColonyAction.SetPermadeath => SetPermadeath(colony, role, packet.Text == "1"),
             ColonyAction.SetSelfDefence or ColonyAction.SetSupportAllies => SetMilitia(colony, role, packet),
+            ColonyAction.SetGuardRanged => SetGuardRanged(colony, role, packet),
             ColonyAction.SetBailiffRule => SetBailiffRule(player, colony, role, packet.Text),
             ColonyAction.SetTithe => SetTithe(colony, role, packet.Text),
             ColonyAction.StartResearch or ColonyAction.PauseResearch => ResearchAction(colony, role, packet),
@@ -265,6 +266,17 @@ public partial class ColonyNetwork : ModSystem
     {
         if (role < ColonyRole.Owner) return "createacolony:denied-owner";
         colony.Permadeath = on;
+        return null;
+    }
+
+    /// <summary>Colony militia tab: a guard fights with a bow or sling, or up close; officers set it.</summary>
+    string? SetGuardRanged(Colony colony, ColonyRole role, ColonyActionPacket packet)
+    {
+        if (role < ColonyRole.Officer) return "createacolony:denied-officer";
+        var citizen = colony.Citizens.Find(c => c.CitizenId == packet.CitizenId);
+        if (citizen == null || citizen.JobCode != Jobs.Guard) return "createacolony:bad-citizen";
+        citizen.GuardRanged = packet.Text == "1";
+        Manager.MarkDirty(colony);
         return null;
     }
 
@@ -803,6 +815,7 @@ public partial class ColonyNetwork : ModSystem
             DropOffs = colony.DropOffs.Count,
             Permadeath = Manager.Permadeath(colony),
             SelfDefence = Manager.SelfDefence(colony),
+            RalliedBy = Manager.RalliedBy(colony),
             SupportAllies = Manager.SupportAllies(colony),
             FreeBeds = Manager.FreeBeds(colony),
             WandererDays = config.Wanderers ? Manager.WandererEveryDays(colony) : 0,
@@ -876,7 +889,8 @@ public partial class ColonyNetwork : ModSystem
                 Buried = c.Buried,
                 VisitorHoursLeft = c.Visitor ? (int)System.Math.Ceiling(System.Math.Max(0, c.VisitorUntilTotalDays - sapi!.World.Calendar.TotalDays) * sapi.World.Calendar.HoursPerDay) : 0,
                 TraitsText = Manager.TraitsText(c),
-                Weapon = c.Alive && !c.IsChild && !c.Visitor ? Manager.BestWeapon(c)?.GetName() ?? "" : ""
+                Weapon = c.Alive && !c.IsChild && !c.Visitor ? Manager.WeaponText(c) : "",
+                GuardRanged = c.GuardRanged
             });
         }
 
