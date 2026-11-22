@@ -30,6 +30,10 @@ public partial class ColonyManager
         public int CustomId;
         /// <summary>What it is made from, for its row, where the parts' own names would not say it; null for the usual text.</summary>
         public string? Text;
+        /// <summary>A food mod station the recipe is made at (ColonyManager.FoodStations.cs), or null for the hut.</summary>
+        public string? Station;
+        /// <summary>Water portions a station recipe takes from the cook's bucket.</summary>
+        public int Water;
 
         public int InputCount => Inputs.Sum(i => i.Quantity);
         public bool IsInput(ItemStack s) => Inputs.Any(i => i.Part.SatisfiesAsIngredient(s, false));

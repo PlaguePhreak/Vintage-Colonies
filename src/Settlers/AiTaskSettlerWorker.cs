@@ -186,7 +186,7 @@ public abstract class AiTaskSettlerWorker : SettlerTaskBase
 
         foreach (var want in wanted)
         {
-            var ready = want.Recipes.FirstOrDefault(r => m.HasRecipeInputs(citizen, r, Hand?.Itemstack));
+            var ready = want.Recipes.FirstOrDefault(r => r.Station == null && m.HasRecipeInputs(citizen, r, Hand?.Itemstack));
             if (ready == null) continue;
             craftKind = want;
             craftRecipe = ready;
@@ -201,6 +201,7 @@ public abstract class AiTaskSettlerWorker : SettlerTaskBase
                 1, m.Config.HutRecipeBatch);
             foreach (var r in want.Recipes)
             {
+                if (r.Station != null) continue; // the cook makes these at the station (AiTaskSettlerCook.PlanStation)
                 // A recipe a player taught the hut: the worker gets the tool it takes from the hut storage, or asks couriers for one.
                 if (r.CustomId != 0 && FetchTaughtTool(colony, citizen, hut, storage, want, r)) return true;
                 // The tool must be carried already; the worker never fetches one just for a game recipe.
@@ -219,6 +220,7 @@ public abstract class AiTaskSettlerWorker : SettlerTaskBase
             }
             foreach (var r in want.Recipes)
             {
+                if (r.Station != null) continue;
                 var codes = r.Inputs.Select(i => (Code: m.CodeInWarehouse(colony, s => i.Part.SatisfiesAsIngredient(s, false)), i.Quantity)).ToList();
                 if (codes.Any(c => c.Code == null)) continue;
                 foreach (var (code, quantity) in codes) m.EnsureCraftRequest(colony, hut, code!, quantity * batches);

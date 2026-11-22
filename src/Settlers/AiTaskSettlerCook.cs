@@ -22,12 +22,15 @@ namespace CreateAColony.Settlers;
 /// </summary>
 public class AiTaskSettlerCook : AiTaskSettlerWorker
 {
-    enum Work { Load, LoadMeal, Fuel, Empty, Shelve, OvenLoad, OvenFuel, OvenEmpty, Wash, Brew, Serve, Ladle, Clear, Water }
+    enum Work { Load, LoadMeal, Fuel, Empty, Shelve, OvenLoad, OvenFuel, OvenEmpty, Wash, Brew, Serve, Ladle, Clear, Water, Station, ClayFuel, ClayCold }
 
     Work work;
     ColonyManager.KitchenKind? kind;
     ColonyManager.MealPlan? meal;
     ColonyManager.BakePlan? bake;
+    /// <summary>The food station recipe the cook is making (ColonyManager.FoodStations.cs).</summary>
+    ColonyManager.SawRecipe? stationRecipe;
+    ColonyManager.SawKind? stationKind;
     /// <summary>The cool chest or shelf the food just fetched is for, and which food that is.</summary>
     BlockPos? coolTo;
     ItemMatch? coolMatch;
@@ -53,7 +56,9 @@ public class AiTaskSettlerCook : AiTaskSettlerWorker
         || brewing && (manager.HoldsBrewLiquid(stack) || manager.IsBrewSolid(stack))
         // Bowls to set out on the tables at meal times, and a bucket of water for the meal (ColonyManager.Serving.cs).
         || ColonyManager.IsBowl(stack) && (manager.IsFilledBowl(stack) || manager.MealTimeNow() >= 0)
-        || meal?.Water > 0 && ColonyManager.IsWaterVessel(stack);
+        || meal?.Water > 0 && ColonyManager.IsWaterVessel(stack)
+        // What a food station recipe takes (ColonyManager.FoodStations.cs).
+        || stationRecipe != null && (stationRecipe.IsInput(stack) || stationRecipe.Water > 0 && ColonyManager.IsWaterVessel(stack));
 
     /// <summary>Whether the cook is brewing now, so it keeps what it fetched for the barrels.</summary>
     bool brewing;
@@ -127,6 +132,8 @@ public class AiTaskSettlerCook : AiTaskSettlerWorker
         storage = storage.Concat(m.KitchenShelves(colony, hut)).ToList();
         // The oven first: baked bread burns if it is left in too long.
         if (PlanOven(colony, citizen, hut, storage) is { } baking) return baking;
+        // Expanded Foods: dough at the mixing bowl, boiled food at the saucepan, as the Crafting recipes tab asks.
+        if (PlanStation(colony, citizen, hut, storage) is { } atStation) return atStation;
         var pit = m.CookFirepit(colony, hut);
         if (pit == null)
         {
@@ -409,6 +416,7 @@ public class AiTaskSettlerCook : AiTaskSettlerWorker
             SetStatus("oven-emptying");
             return GoWork(done.Pos);
         }
+        if (oven.Clay is { } clay) return PlanClayOven(colony, citizen, hut, storage, oven, clay);
         if (oven.Fire == null)
         {
             SetStatus("oven-nofire");
@@ -452,6 +460,131 @@ public class AiTaskSettlerCook : AiTaskSettlerWorker
         work = Work.OvenLoad;
         SetStatus(plan.Kind.IsPie ? "oven-loading-pie" : "oven-loading");
         return GoWork(free.Pos);
+    }
+
+    /// <summary>
+    /// A game clay oven (0.194.0): it is fired first, with firewood and nothing else in it; once the fire has burned
+    /// down and it is hot, the bake goes in and bakes as it cools. Bread still baking in an oven that went cold comes
+    /// out again, so the oven can be fired once more. Null when the oven needs nothing now.
+    /// </summary>
+    bool? PlanClayOven(Colony colony, CitizenRecord citizen, Building hut, List<BlockEntityContainer> storage, ColonyManager.StoneOven oven, BlockEntityOven clay)
+    {
+        var m = manager!;
+        if (IsUnreachable(clay.Pos) || clay.IsBurning) return null;
+        if (m.OvenIsBaking(clay))
+        {
+            if (clay.ovenTemperature >= m.Config.ClayOvenColdTemp || m.PackFull(citizen)) return null;
+            work = Work.ClayCold;
+            SetStatus("clayoven-cold");
+            return GoWork(clay.Pos);
+        }
+        var plan = m.NextBake(colony, hut, citizen, oven);
+        if (plan == null) return null;
+        if (!m.ClayOvenReady(clay))
+        {
+            // Fire it: firewood in, then light it.
+            if (clay.HasFuel || m.PackCount(citizen, ColonyManager.IsFirewood) > 0)
+            {
+                work = Work.ClayFuel;
+                SetStatus("clayoven-firing");
+                return GoWork(clay.Pos);
+            }
+            return FetchFirewood(colony, hut, storage);
+        }
+        bake = plan;
+        foreach (var (code, count) in plan.Needs)
+        {
+            ItemMatch same = s => s.Collectible.Code.Equals(code);
+            int have = m.PackCount(citizen, same);
+            if (have >= count) continue;
+            var chest = m.SoonestToSpoil(storage, same);
+            if (chest != null && !m.PackFull(citizen))
+            {
+                SetStatus("fetching-dough");
+                return FetchSupplies(chest.Pos, same, count - have);
+            }
+            m.EnsureCookRequest(colony, hut, code.ToString(), count - have);
+            if (have == 0) return null;
+            break; // bake what it has while the oven is hot
+        }
+        work = Work.OvenLoad;
+        SetStatus(plan.Kind.IsPie ? "oven-loading-pie" : "oven-loading");
+        return GoWork(clay.Pos);
+    }
+
+    /// <summary>
+    /// Food station work (ColonyManager.FoodStations.cs): the first wanted station recipe whose station is by the hut.
+    /// It makes it if it carries everything, else fetches what it lacks from the hut, asks couriers for it, or fills a
+    /// bucket for one that takes water. Null when there is nothing to make at the stations.
+    /// </summary>
+    bool? PlanStation(Colony colony, CitizenRecord citizen, Building hut, List<BlockEntityContainer> storage)
+    {
+        var m = manager!;
+        stationRecipe = null;
+        stationKind = null;
+        if (!m.FoodStationsOn || hut.RecipeKeep.Count == 0) return null;
+        foreach (var want in m.WantedRecipes(colony, hut, citizen))
+        {
+            foreach (var r in want.Recipes.Where(r => r.Station != null))
+            {
+                if (m.StationPos(hut, r.Station!) is not { } at || IsUnreachable(at)) continue;
+                bool hasWater = r.Water <= 0 || m.CookWaterPortions(citizen) >= r.Water;
+                if (m.HasSawInputs(citizen, r) && hasWater)
+                {
+                    stationRecipe = r;
+                    stationKind = want;
+                    work = Work.Station;
+                    workRange = 2f;
+                    SetStatus(r.Station == ColonyManager.MixingBowlStation ? "station-kneading" : "station-simmering");
+                    return GoWork(at);
+                }
+            }
+        }
+        // Nothing ready: fetch for the first recipe whose station is there and whose things can be had.
+        foreach (var want in m.WantedRecipes(colony, hut, citizen))
+        {
+            foreach (var r in want.Recipes.Where(r => r.Station != null && m.StationPos(hut, r.Station!) != null))
+            {
+                bool allFound = true;
+                foreach (var (part, quantity) in r.Inputs)
+                {
+                    ItemMatch fits = s => part.SatisfiesAsIngredient(s, false);
+                    int missing = quantity - m.PackCount(citizen, fits);
+                    if (missing <= 0) continue;
+                    var chest = storage.FirstOrDefault(c => !IsUnreachable(c.Pos) && c.Inventory.Any(s => !s.Empty && fits(s.Itemstack)));
+                    if (chest != null && !m.PackFull(citizen))
+                    {
+                        stationRecipe = r;
+                        stationKind = want;
+                        SetStatus("recipes-fetching");
+                        return FetchSupplies(chest.Pos, fits, missing);
+                    }
+                    if (m.CodeInWarehouse(colony, fits) is { } code) m.EnsureCraftRequest(colony, hut, code, quantity);
+                    allFound = false;
+                }
+                if (!allFound) continue;
+                if (r.Water > 0 && m.CookWaterPortions(citizen) < r.Water)
+                {
+                    stationRecipe = r;
+                    stationKind = want;
+                    if (!m.PackItems(citizen).Any(ColonyManager.IsWaterVessel))
+                    {
+                        var vessel = m.KitchenStores(colony, hut).FirstOrDefault(c => !IsUnreachable(c.Pos) && c.Inventory.Any(s => !s.Empty && ColonyManager.IsWaterVessel(s.Itemstack)));
+                        if (vessel == null || m.PackFull(citizen)) continue;
+                        SetStatus("fetching-bucket");
+                        return FetchSupplies(vessel.Pos, ColonyManager.IsWaterVessel, 1);
+                    }
+                    var water = m.WashWater(colony, hut.HutPos);
+                    if (water == null || IsUnreachable(water)) continue;
+                    work = Work.Water;
+                    SetStatus("fetching-water");
+                    return GoWork(water);
+                }
+            }
+        }
+        stationRecipe = null;
+        stationKind = null;
+        return null;
     }
 
     bool FetchFirewood(Colony colony, Building hut, List<BlockEntityContainer> storage)
@@ -545,6 +678,16 @@ public class AiTaskSettlerCook : AiTaskSettlerWorker
                 if (entity.World.BlockAccessor.GetBlockEntity(target) is not BlockEntityContainer pot
                     || m.LadleBowls(colony, citizen, pot, System.Math.Max(1, m.FreeServingSpots(hut).Count)) == 0) MarkUnreachable(target);
                 return;
+            case Work.Station:
+                if (stationRecipe == null || !m.CraftAtStation(colony, hut, citizen, stationRecipe)) MarkUnreachable(target);
+                stationRecipe = null;
+                return;
+            case Work.ClayFuel:
+                if (entity.World.BlockAccessor.GetBlockEntity(target) is not BlockEntityOven fireOven || !m.FuelClayOven(colony, citizen, fireOven)) MarkUnreachable(target);
+                return;
+            case Work.ClayCold:
+                if (entity.World.BlockAccessor.GetBlockEntity(target) is BlockEntityOven coldOven) m.EmptyColdOven(colony, citizen, coldOven);
+                return;
             case Work.Water:
                 m.FillWater(colony, citizen);
                 entity.World.PlaySoundAt(new AssetLocation("sounds/block/water"), target.X + 0.5, target.Y + 0.5, target.Z + 0.5, null);
@@ -608,5 +751,6 @@ public class AiTaskSettlerCook : AiTaskSettlerWorker
 
     protected override string DescribeWork() => work == Work.LoadMeal && meal != null
         ? Lang.Get("createacolony:activity-cook-loadmeal", manager!.MealName(meal.Recipe))
+        : work == Work.Station && stationKind != null ? Lang.Get("createacolony:activity-cook-station", stationKind.Sample.GetName())
         : Lang.Get("createacolony:activity-cook-" + work.ToString().ToLowerInvariant());
 }

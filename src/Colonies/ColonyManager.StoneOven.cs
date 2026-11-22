@@ -63,6 +63,8 @@ public partial class ColonyManager
     {
         public required List<BlockEntityContainer> Tops;
         public BlockEntityFirepit? Fire;
+        /// <summary>A game clay oven instead (0.194.0, with Expanded Foods): its own fire, fuelled before the bake. Tops holds just it.</summary>
+        public BlockEntityOven? Clay;
     }
 
     public static bool IsOvenFire(BlockEntity? be) => be?.GetType().Name == OvenControllerEntity;
@@ -72,17 +74,67 @@ public partial class ColonyManager
     /// <summary>The oven the cook uses: baking spaces within CookFirepitRadius of the hut, and the heat source nearest them. Null without one.</summary>
     public StoneOven? CookOven(Colony colony, Building hut)
     {
-        if (!sapi.ModLoader.IsModEnabled(StoneOvenDomain)) return null;
         int r = Config.CookFirepitRadius;
         var h = hut.HutPos;
         var area = new Cuboidi(h.X - r, h.Y - 4, h.Z - r, h.X + r, h.Y + 4, h.Z + r);
+        if (!sapi.ModLoader.IsModEnabled(StoneOvenDomain)) return ClayOven(hut, area);
         var tops = FindBlockEntities<BlockEntityContainer>(area).Where(IsOvenTop).OrderBy(t => t.Pos.DistanceSqTo(h.X, h.Y, h.Z)).ToList();
-        if (tops.Count == 0) return null;
+        if (tops.Count == 0) return ClayOven(hut, area);
         var first = tops[0].Pos;
         var fire = FindBlockEntities<BlockEntityFirepit>(new Cuboidi(h.X - r - 4, h.Y - 4, h.Z - r - 4, h.X + r + 4, h.Y + 4, h.Z + r + 4)).Where(IsOvenFire)
             .OrderBy(p => p.Pos.DistanceSqTo(first.X, first.Y, first.Z)).FirstOrDefault();
         return new StoneOven { Tops = tops, Fire = fire };
     }
+
+    /// <summary>The game clay oven nearest the Cook's Hut, when ClayOvensOn; null otherwise.</summary>
+    StoneOven? ClayOven(Building hut, Cuboidi area)
+    {
+        if (!ClayOvensOn) return null;
+        var h = hut.HutPos;
+        var clay = FindBlockEntities<BlockEntityOven>(area).OrderBy(o => o.Pos.DistanceSqTo(h.X, h.Y, h.Z)).FirstOrDefault();
+        return clay == null ? null : new StoneOven { Tops = new List<BlockEntityContainer> { clay }, Clay = clay };
+    }
+
+    static MethodInfo? clayAddFuel;
+
+    /// <summary>Puts the cook's firewood in a cold, empty clay oven (up to what it holds) and lights it. True when it is burning.</summary>
+    public bool FuelClayOven(Colony colony, CitizenRecord cook, BlockEntityOven oven)
+    {
+        if (oven.IsBurning) return true;
+        if (!oven.HasFuel || oven.FuelSlot.StackSize < oven.fuelitemCapacity)
+        {
+            clayAddFuel ??= typeof(BlockEntityOven).GetMethod("TryAddFuel", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public, null, new[] { typeof(ItemSlot) }, null);
+            int room = oven.fuelitemCapacity - (oven.FuelSlot.Empty ? 0 : oven.FuelSlot.StackSize);
+            if (clayAddFuel != null && room > 0 && TakeFromPack(colony, cook, IsFirewood, room) is { } wood)
+            {
+                var slot = new DummySlot(wood);
+                try { clayAddFuel.Invoke(oven, new object[] { slot }); }
+                catch (Exception e) { sapi.Logger.Warning("[createacolony] Could not fuel a clay oven: {0}", e.InnerException?.Message ?? e.Message); }
+                if (!slot.Empty) AddToPack(colony, cook, slot.Itemstack);
+            }
+        }
+        bool lit = oven.TryIgnite();
+        oven.MarkDirty(true);
+        return lit || oven.IsBurning;
+    }
+
+    /// <summary>Takes everything still baking out of a clay oven that went cold, so it can be fired again.</summary>
+    public int EmptyColdOven(Colony colony, CitizenRecord cook, BlockEntityOven oven)
+    {
+        int taken = 0;
+        foreach (var slot in oven.Inventory)
+        {
+            if (slot.Empty || IsFirewood(slot.Itemstack)) continue;
+            AddToPack(colony, cook, slot.TakeOutWhole());
+            slot.MarkDirty();
+            taken++;
+        }
+        if (taken > 0) oven.MarkDirty(true);
+        return taken;
+    }
+
+    /// <summary>True when a clay oven is hot enough to bake in and its fire has burned down.</summary>
+    public bool ClayOvenReady(BlockEntityOven oven) => !oven.IsBurning && !oven.HasFuel && oven.ovenTemperature >= Config.ClayOvenLoadTemp;
 
     // ---- What it bakes ------------------------------------------------------------------------
 
@@ -127,7 +179,7 @@ public partial class ColonyManager
     public List<OvenKind> OvenKinds()
     {
         if (ovenKinds != null) return ovenKinds;
-        if (!sapi.ModLoader.IsModEnabled(StoneOvenDomain)) return ovenKinds = new List<OvenKind>();
+        if (!sapi.ModLoader.IsModEnabled(StoneOvenDomain) && !ClayOvensOn) return ovenKinds = new List<OvenKind>();
         var next = new Dictionary<AssetLocation, AssetLocation>();
         var byCode = new Dictionary<AssetLocation, CollectibleObject>();
         foreach (var obj in sapi.World.Collectibles)
@@ -268,7 +320,9 @@ public partial class ColonyManager
                 pie.Needs.Add((filling, 8));
                 return pie;
             }
-            var raw = larder.Where(a => kind.IsRaw(a.Value.Sample)).OrderByDescending(a => a.Value.Count).FirstOrDefault();
+            // Raw dough first; part-baked bread taken out of a clay oven that went cold goes back in too.
+            var raw = larder.Where(a => kind.IsRaw(a.Value.Sample) || oven.Clay != null && kind.IsBaking(a.Value.Sample))
+                .OrderByDescending(a => kind.IsRaw(a.Value.Sample) ? 0 : 1).ThenByDescending(a => a.Value.Count).FirstOrDefault();
             if (raw.Key == null) continue;
             var plan = new BakePlan { Kind = kind };
             plan.Needs.Add((raw.Key, Math.Min(Math.Min(shortBy, freeSlots), raw.Value.Count)));
@@ -395,6 +449,13 @@ public partial class ColonyManager
     {
         var oven = CookOven(colony, hut);
         if (oven == null) return null;
+        if (oven.Clay is { } clay)
+        {
+            var inside = clay.Inventory.Where(s => !s.Empty && !IsFirewood(s.Itemstack)).Select(s => s.Itemstack!).ToList();
+            if (clay.IsBurning) return Lang.Get("createacolony:clayoven-heating", (int)clay.ovenTemperature);
+            if (inside.Count == 0) return Lang.Get("createacolony:clayoven-empty", (int)clay.ovenTemperature);
+            return Lang.Get("createacolony:clayoven-baking", string.Join(", ", inside.GroupBy(s => s.GetName()).Select(g => g.Sum(s => s.StackSize) + "x " + g.Key)), (int)clay.ovenTemperature);
+        }
         if (oven.Fire == null) return Lang.Get("createacolony:oven-nofire");
         var baking = oven.Tops.SelectMany(t => t.Inventory).Where(s => !s.Empty).Select(s => s.Itemstack!).ToList();
         if (baking.Count == 0) return Lang.Get("createacolony:oven-empty", oven.Tops.Count);

@@ -6131,5 +6131,18 @@
 	"activity-child-following": "Following {0}",
 	"activity-child-watching": "Watching {0} work",
 	"thought-childatschool": "My child went to school",
-	"thought-childbored": "My child had nothing to do"
+	"thought-childbored": "My child had nothing to do",
+	"workstatus-station-kneading": "kneading at the mixing bowl",
+	"workstatus-station-simmering": "simmering at the saucepan",
+	"workstatus-clayoven-firing": "firing the clay oven",
+	"workstatus-clayoven-cold": "taking the bake out of the cold clay oven to fire it again",
+	"activity-cook-station": "Making {0}",
+	"activity-cook-clayfuel": "Firing the clay oven",
+	"activity-cook-claycold": "Emptying the cold clay oven",
+	"stations-info": "Food stations: mixing bowl {0}, saucepan {1}. Set what to make on the Crafting recipes tab.",
+	"stations-yes": "yes",
+	"stations-no": "none nearby",
+	"clayoven-heating": "Clay oven: heating up ({0}°C).",
+	"clayoven-empty": "Clay oven: empty ({0}°C).",
+	"clayoven-baking": "Clay oven: baking {0} ({1}°C)."
 }

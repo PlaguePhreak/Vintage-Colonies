@@ -47,6 +47,7 @@ public partial class ColonyManager
                 type == BuildingTypes.Armourer ? System.Math.Max(Config.HutRecipeMaxInputs, Config.ArmourerMaxInputs) : Config.HutRecipeMaxInputs,
                 traits, type is BuildingTypes.Tailor or BuildingTypes.Jeweller ? 2 : 1);
         }
+        if (type == BuildingTypes.Cook && HasHutRecipes(type)) kinds = WithStationKinds(kinds);
         return hutRecipeKinds[type] = kinds;
     }
 

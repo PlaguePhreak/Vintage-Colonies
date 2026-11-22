@@ -1756,6 +1756,16 @@ public class ColonyConfig
     public float ServeHungerBelow = 0.8f;
     /// <summary>The cook fetches water in a bucket for pot recipes that need it.</summary>
     public bool CookUsesWater = true;
+    /// <summary>With A Culinary Artillery (Expanded Foods), the cook makes kneading recipes at a mixing bowl and simmering recipes at a saucepan near the hut.</summary>
+    public bool CookUsesFoodStations = true;
+    /// <summary>Most mixes of one kneading recipe the cook knows (each ingredient can be one of several things).</summary>
+    public int StationRecipeMixes = 32;
+    /// <summary>With Expanded Foods, the cook bakes bread in a game clay oven near the hut.</summary>
+    public bool CookUsesClayOven = true;
+    /// <summary>The clay oven is loaded once the fire has burned down and it is at least this hot.</summary>
+    public float ClayOvenLoadTemp = 200f;
+    /// <summary>Below this, something still baking in a clay oven is taken out to heat the oven again.</summary>
+    public float ClayOvenColdTemp = 140f;
 
     // School and children (0.193.0, see Colonies/ColonyManager.School.cs)
     /// <summary>Children go to the School in the morning and follow a parent in the afternoon.</summary>

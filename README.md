@@ -12,6 +12,19 @@ domain (`assets/createacolony/`, block and item codes like `createacolony:townha
 (`ModConfig/createacolony.json`), the release zips (`createacolony_<version>.zip`) and all save data keys.
 Changing any of those would stop old worlds from loading their colonies, so leave them as they are.
 
+## Expanded Foods stations for the cook (0.194.0)
+
+Only when A Culinary Artillery (the library Expanded Foods uses) is installed. Without it nothing changes.
+
+- **Mixing bowl.** Put a mixing bowl near the Cook's Hut. The cook kneads Expanded Foods dough and breaded food there.
+- **Saucepan.** Put a saucepan near the hut, on the ground or in a fire pit. The cook boils food there, such as boiled eggs. If a recipe needs water, the cook fills a bucket first. Recipes that make a liquid (broth, syrup) are left out for now.
+- **What it makes.** Set amounts to keep on the Cook's Hut's Crafting recipes tab, as for other huts. The cook only makes what that tab asks for. The work is done by hand at the station, so the station's own crank and heat are not used.
+- **Clay oven.** With Expanded Foods, the cook bakes bread in a game clay oven near the hut. It fires the oven with firewood, waits for the fire to burn down, then puts the dough in to bake while the oven cools. When the bread is done it takes it out. Bread still half-baked in an oven that went cold comes out, and the oven is fired again.
+- The Cook's Hut window shows which stations it found and how the clay oven is doing.
+- Server config: `CookUsesFoodStations`, `StationRecipeMixes`, `CookUsesClayOven`, `ClayOvenLoadTemp`, `ClayOvenColdTemp`.
+
+Not tested in game yet.
+
 ## The School (0.193.0)
 
 - **School and Teacher.** A new hut in the education group, made from planks and a parchment. Give a settler the Teacher job. Level 1 takes 6 children, level 2 takes 12, level 3 takes 20. The model is a placeholder until you build the real School.
