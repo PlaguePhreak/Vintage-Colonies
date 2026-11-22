@@ -17,6 +17,12 @@
               "type": "meal",
               "code": "*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -31,6 +37,12 @@
             {
               "type": "meal",
               "code": "scrambledeggs"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -47,6 +59,12 @@
               "type": "meal",
               "code": "soup"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -61,6 +79,12 @@
             {
               "type": "meal",
               "code": "porridge"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -77,6 +101,12 @@
               "type": "meal",
               "code": "meatystew"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -91,6 +121,12 @@
             {
               "type": "meal",
               "code": "vegetablestew"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -112,6 +148,12 @@
               "count": 6,
               "code": "*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -123,6 +165,12 @@
             {
               "type": "holds",
               "code": "game:milkportion"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -139,6 +187,12 @@
             {
               "type": "holds",
               "code": "game:curdledmilkportion"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -159,6 +213,12 @@
               "type": "holds",
               "code": "game:cottagecheeseportion"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -173,6 +233,12 @@
             {
               "type": "obtain",
               "code": "game:rawcheese-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -193,6 +259,12 @@
               "type": "obtain",
               "code": "game:cheese-cheddar-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -207,6 +279,12 @@
             {
               "type": "obtain",
               "code": "game:cheese-blue-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -223,6 +301,12 @@
               "type": "obtain",
               "code": "game:cheese-waxedcheddar-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -234,6 +318,12 @@
             {
               "type": "obtain",
               "code": "game:crock-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -254,6 +344,12 @@
               "type": "meal",
               "code": "*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -270,6 +366,12 @@
               "level": 1,
               "code": "*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -285,6 +387,12 @@
               "type": "meal",
               "code": "jam"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -296,6 +404,12 @@
             {
               "type": "place",
               "code": "game:shelf-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -309,6 +423,12 @@
               "type": "room",
               "code": "cellar"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -320,6 +440,12 @@
             {
               "type": "place",
               "code": "game:storagevessel-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -343,6 +469,12 @@
               "type": "place",
               "code": "storagevessel-*|shelf-*|crock-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -354,6 +486,12 @@
             {
               "type": "obtain",
               "code": "game:salt"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -371,6 +509,12 @@
               "type": "obtain",
               "code": "game:redmeat-cured|game:bushmeat-cured|game:poultry-cured"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -387,6 +531,12 @@
               "type": "holds",
               "code": "game:brineportion"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -402,6 +552,12 @@
               "type": "obtain",
               "code": "game:pickledvegetable-*|game:pickledlegume-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -413,6 +569,12 @@
             {
               "type": "obtain",
               "code": "game:flour-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -428,6 +590,12 @@
             {
               "type": "obtain",
               "code": "game:dough-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -445,6 +613,12 @@
               "type": "obtain",
               "code": "game:bread-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -460,6 +634,12 @@
               "type": "obtain",
               "code": "game:pie-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -471,6 +651,12 @@
             {
               "type": "place",
               "code": "game:fruitpress-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -486,6 +672,12 @@
             {
               "type": "holds",
               "code": "game:juiceportion*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -503,6 +695,12 @@
               "type": "holds",
               "code": "game:ciderportion*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -514,6 +712,12 @@
             {
               "type": "place",
               "code": "boiler*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -532,6 +736,12 @@
               "type": "holds",
               "code": "game:spiritportion*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -548,7 +758,13 @@
             "kitchen-distil"
           ],
           "rail": 15.8,
-          "objectives": []
+          "objectives": [],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
         },
         {
           "code": "kitchen-pan",
@@ -563,6 +779,12 @@
             {
               "type": "obtain",
               "code": "aculinaryartillery:saucepan-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -580,6 +802,12 @@
               "type": "holds",
               "code": "expandedfoods:brothportion-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -595,6 +823,12 @@
             {
               "type": "obtain",
               "code": "expandedfoods:lard"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -612,6 +846,12 @@
               "type": "meal",
               "code": "*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -627,6 +867,12 @@
             {
               "type": "meal",
               "code": "augratin"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -644,6 +890,12 @@
               "type": "obtain",
               "code": "game:salt"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -659,6 +911,12 @@
             {
               "type": "obtain",
               "code": "aculinaryartillery:spile-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -676,6 +934,12 @@
               "type": "place",
               "code": "aculinaryartillery:spile-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -691,6 +955,12 @@
             {
               "type": "holds",
               "code": "expandedfoods:treesyrupportion-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -708,6 +978,12 @@
               "type": "obtain",
               "code": "efchefstricks:softresin|efchefstricks:hardresin"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -723,6 +999,12 @@
             {
               "type": "obtain",
               "code": "aculinaryartillery:mixingbowl-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -740,6 +1022,12 @@
               "type": "obtain",
               "code": "aculinaryartillery:eggyolk-*|aculinaryartillery:eggshell*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -755,6 +1043,12 @@
             {
               "type": "obtain",
               "code": "expandedfoods:pasta-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -772,6 +1066,12 @@
               "type": "meal",
               "code": "pastahot"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -788,6 +1088,12 @@
               "type": "meal",
               "code": "pastacold"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -803,6 +1109,12 @@
             {
               "type": "obtain",
               "code": "expandedfoods:meatnugget-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -824,6 +1136,12 @@
               "type": "obtain",
               "code": "expandedfoods:sausage-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -840,6 +1158,12 @@
               "type": "place",
               "code": "aculinaryartillery:meathooks-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -855,6 +1179,12 @@
             {
               "type": "obtain",
               "code": "expandedfoods:agedmeat-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -876,6 +1206,12 @@
               "type": "obtain",
               "code": "expandedfoods:dumpling-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -891,6 +1227,12 @@
             {
               "type": "meal",
               "code": "*salad*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -908,6 +1250,12 @@
               "type": "holds",
               "code": "expandedfoods:yogurt-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -923,6 +1271,12 @@
             {
               "type": "meal",
               "code": "yogurtmeal"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -940,6 +1294,12 @@
               "type": "holds",
               "code": "expandedfoods:breadstarter-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -955,6 +1315,12 @@
             {
               "type": "obtain",
               "code": "expandedfoods:breaded*-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -972,6 +1338,12 @@
               "type": "obtain",
               "code": "expandedfoods:berrybread-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -987,6 +1359,12 @@
             {
               "type": "obtain",
               "code": "aculinaryartillery:bottle-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -1004,6 +1382,12 @@
               "type": "holds",
               "code": "game:vinegarportion"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -1019,6 +1403,12 @@
             {
               "type": "holds",
               "code": "expandedfoods:fruitsyrupportion-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -1036,6 +1426,12 @@
               "type": "meal",
               "code": "compote"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -1051,6 +1447,12 @@
             {
               "type": "obtain",
               "code": "expandedfoods:candy-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -1072,6 +1474,12 @@
               "type": "obtain",
               "code": "expandedfoods:hardtack-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -1087,6 +1495,12 @@
             {
               "type": "obtain",
               "code": "expandedfoods:gozinaki-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -1104,6 +1518,12 @@
               "type": "obtain",
               "code": "expandedfoods:pemmican-*|game:pemmican-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -1119,6 +1539,12 @@
             {
               "type": "obtain",
               "code": "expandedfoods:trailmix-*|expandedfoods:trailmixvegetarian-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -1136,6 +1562,12 @@
               "type": "obtain",
               "code": "expandedfoods:sushi-*|expandedfoods:sushiveg-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -1151,6 +1583,12 @@
             {
               "type": "obtain",
               "code": "expandedfoods:stuffedpepper-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -1168,6 +1606,12 @@
               "type": "obtain",
               "code": "expandedfoods:muffin-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -1183,6 +1627,12 @@
             {
               "type": "obtain",
               "code": "expandedfoods:plaindoughball-*|expandedfoods:pasta-dough"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -1204,6 +1654,12 @@
               "type": "holds",
               "code": "expandedfoods:pasteurizedmilkportion"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -1219,6 +1675,12 @@
             {
               "type": "holds",
               "code": "expandedfoods:yogurt-starter"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -1236,6 +1698,12 @@
               "type": "obtain",
               "code": "efchefstricks:saltcrystal-damp|efchefstricks:saltcrystal-dry"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -1251,6 +1719,12 @@
             {
               "type": "obtain",
               "code": "efchefstricks:saltcrystal-dry"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -1268,6 +1742,12 @@
               "type": "holds",
               "code": "expandedfoods:fermentedfish-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -1283,6 +1763,12 @@
             {
               "type": "holds",
               "code": "expandedfoods:fishsauce"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -1300,6 +1786,12 @@
               "type": "holds",
               "code": "expandedfoods:strongwineportion-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -1315,6 +1807,12 @@
             {
               "type": "holds",
               "code": "expandedfoods:potentwineportion-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -1332,6 +1830,12 @@
               "type": "holds",
               "code": "expandedfoods:strongspiritportion-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -1347,6 +1851,12 @@
             {
               "type": "holds",
               "code": "expandedfoods:potentspiritportion-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -1364,6 +1874,12 @@
               "type": "place",
               "code": "aculinaryartillery:bottlerack-*|aculinaryartillery:bottlerackcorner-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -1375,6 +1891,12 @@
             {
               "type": "place",
               "code": "condenser*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -1392,6 +1914,12 @@
               "type": "obtain",
               "code": "expandedfoods:breadcrumbs-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -1408,6 +1936,12 @@
               "type": "obtain",
               "code": "efchefstricks:breadcrumbfeed"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -1423,6 +1957,12 @@
             {
               "type": "obtain",
               "code": "expandedfoods:roastedgrain-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         }
@@ -1441,6 +1981,12 @@
               "type": "obtain",
               "code": "game:hoe-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -1456,6 +2002,12 @@
               "type": "place",
               "code": "farmland-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -1468,6 +2020,12 @@
               "type": "obtain",
               "count": 4,
               "code": "game:seeds-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -1485,6 +2043,12 @@
               "type": "place",
               "code": "crop-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -1500,6 +2064,12 @@
               "type": "obtain",
               "code": "game:grain-*|game:vegetable-*|game:legume-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -1510,7 +2080,13 @@
           "requires": [
             "farm-harvest"
           ],
-          "objectives": []
+          "objectives": [],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
         },
         {
           "code": "farm-gveg",
@@ -1520,7 +2096,13 @@
           "requires": [
             "farm-harvest"
           ],
-          "objectives": []
+          "objectives": [],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
         },
         {
           "code": "farm-g0",
@@ -1535,6 +2117,12 @@
               "type": "obtain",
               "count": 8,
               "code": "game:grain-spelt"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -1552,6 +2140,12 @@
               "count": 8,
               "code": "game:grain-rye"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -1567,6 +2161,12 @@
               "type": "obtain",
               "count": 8,
               "code": "game:grain-flax"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -1584,6 +2184,12 @@
               "count": 8,
               "code": "game:grain-rice"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -1599,6 +2205,12 @@
               "type": "obtain",
               "count": 8,
               "code": "game:grain-amaranth"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -1616,6 +2228,12 @@
               "count": 8,
               "code": "game:grain-sunflower"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -1631,6 +2249,12 @@
               "type": "obtain",
               "count": 8,
               "code": "game:grain-cassava"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -1648,6 +2272,12 @@
               "count": 8,
               "code": "game:vegetable-carrot"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -1663,6 +2293,12 @@
               "type": "obtain",
               "count": 8,
               "code": "game:vegetable-onion"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -1680,6 +2316,12 @@
               "count": 8,
               "code": "game:vegetable-turnip"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -1695,6 +2337,12 @@
               "type": "obtain",
               "count": 8,
               "code": "game:vegetable-parsnip"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -1712,6 +2360,12 @@
               "count": 8,
               "code": "game:vegetable-cabbage"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -1728,6 +2382,12 @@
               "count": 4,
               "code": "game:vegetable-pumpkin"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -1743,6 +2403,12 @@
               "type": "obtain",
               "count": 8,
               "code": "game:vegetable-bellpepper"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -1766,6 +2432,12 @@
               "count": 32,
               "code": "game:vegetable-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -1780,6 +2452,12 @@
             {
               "type": "obtain",
               "code": "game:compost"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -1798,6 +2476,12 @@
               "count": 8,
               "code": "game:legume-soybean"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -1813,6 +2497,12 @@
             {
               "type": "obtain",
               "code": "expandedfoods:soyprep-soaked"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -1830,6 +2520,12 @@
               "type": "obtain",
               "code": "expandedfoods:soyprep-powdered"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -1845,6 +2541,12 @@
             {
               "type": "holds",
               "code": "expandedfoods:soymilk-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -1862,6 +2564,12 @@
               "type": "obtain",
               "code": "expandedfoods:soyprep-cultured"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -1878,6 +2586,12 @@
               "type": "holds",
               "code": "expandedfoods:soysauce"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -1893,6 +2607,12 @@
               "type": "place",
               "code": "game:quern-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -1907,6 +2627,12 @@
             {
               "type": "obtain",
               "code": "game:wateringcan-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -1927,6 +2653,12 @@
               "type": "blocknear",
               "code": "farmland-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -1941,6 +2673,12 @@
             {
               "type": "place",
               "code": "game:woodenfence-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -1957,6 +2695,12 @@
               "type": "obtain",
               "code": "game:soil-high-*|game:soil-compost-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -1971,6 +2715,12 @@
             {
               "type": "obtain",
               "code": "game:scythe-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -1988,6 +2738,12 @@
               "count": 8,
               "code": "game:legume-peanut"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -2003,6 +2759,12 @@
             {
               "type": "obtain",
               "code": "expandedfoods:peanut-cooked"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -2020,6 +2782,12 @@
               "type": "holds",
               "code": "expandedfoods:peanutliquid-paste"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -2036,6 +2804,12 @@
               "type": "holds",
               "code": "expandedfoods:peanutliquid-butter"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -2050,6 +2824,12 @@
             {
               "type": "obtain",
               "code": "game:fruit-pineapple"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -2070,6 +2850,12 @@
               "type": "obtain",
               "code": "game:bonemeal"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -2084,6 +2870,12 @@
             {
               "type": "obtain",
               "code": "game:potash"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -2106,6 +2898,12 @@
               "type": "obtain",
               "code": "game:bonemeal|game:potash|game:saltpeter|game:compost"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -2122,6 +2920,12 @@
               "count": 12,
               "code": "crop-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -2136,6 +2940,12 @@
             {
               "type": "room",
               "code": "greenhouse"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -2153,7 +2963,13 @@
             "farm-honey"
           ],
           "rail": 23.98,
-          "objectives": []
+          "objectives": [],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
         },
         {
           "code": "farm-oil",
@@ -2168,6 +2984,12 @@
             {
               "type": "holds",
               "code": "expandedfoods:foodoilportion-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -2184,6 +3006,12 @@
               "type": "obtain",
               "code": "game:*cutting*|game:clipping-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -2198,6 +3026,12 @@
             {
               "type": "place",
               "code": "*berrybush*|fruitingbush-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -2214,6 +3048,12 @@
               "type": "obtain",
               "code": "game:fruittreecutting-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -2229,6 +3069,12 @@
               "type": "place",
               "code": "fruittree-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -2240,6 +3086,12 @@
             {
               "type": "obtain",
               "code": "game:shears-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -2255,6 +3107,12 @@
             {
               "type": "obtain",
               "code": "game:fruit-*berry|game:fruit-*currant"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -2275,6 +3133,12 @@
               "type": "obtain",
               "code": "game:knife-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -2289,6 +3153,12 @@
             {
               "type": "obtain",
               "code": "game:fruit-*apple|game:fruit-cherry|game:fruit-peach|game:fruit-pear|game:fruit-orange|game:fruit-mango|game:fruit-breadfruit|game:fruit-lychee|game:fruit-pomegranate"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -2307,6 +3177,12 @@
               "count": 4,
               "code": "fruittree-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -2321,6 +3197,12 @@
             {
               "type": "holds",
               "code": "game:seeds-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -2338,6 +3220,12 @@
               "type": "obtain",
               "code": "expandedfoods:dryfruit-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -2353,6 +3241,12 @@
             {
               "type": "obtain",
               "code": "expandedfoods:fruitleather-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -2370,6 +3264,12 @@
               "type": "obtain",
               "code": "expandedfoods:candiedfruit-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -2385,6 +3285,12 @@
             {
               "type": "obtain",
               "code": "expandedfoods:fruitbar-*|expandedfoods:fruitbar"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -2402,6 +3308,12 @@
               "count": 8,
               "code": "game:fruit-blueberry"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -2417,6 +3329,12 @@
               "type": "obtain",
               "count": 8,
               "code": "game:fruit-cranberry"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -2434,6 +3352,12 @@
               "count": 8,
               "code": "game:fruit-redcurrant"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -2449,6 +3373,12 @@
               "type": "obtain",
               "count": 8,
               "code": "game:fruit-blackcurrant"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -2466,6 +3396,12 @@
               "count": 8,
               "code": "game:fruit-whitecurrant"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -2480,6 +3416,12 @@
             {
               "type": "obtain",
               "code": "game:fruit-redapple|game:fruit-pinkapple|game:fruit-yellowapple"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -2496,6 +3438,12 @@
               "type": "obtain",
               "code": "game:fruit-cherry"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -2510,6 +3458,12 @@
             {
               "type": "obtain",
               "code": "game:fruit-peach"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -2526,6 +3480,12 @@
               "type": "obtain",
               "code": "game:fruit-pear"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -2540,6 +3500,12 @@
             {
               "type": "obtain",
               "code": "game:fruit-orange"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -2556,6 +3522,12 @@
               "type": "obtain",
               "code": "game:fruit-mango"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -2570,6 +3542,12 @@
             {
               "type": "obtain",
               "code": "game:fruit-breadfruit"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -2586,6 +3564,12 @@
               "type": "obtain",
               "code": "game:fruit-lychee"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -2601,6 +3585,12 @@
               "type": "obtain",
               "code": "game:fruit-pomegranate"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -2612,6 +3602,12 @@
             {
               "type": "place",
               "code": "game:skep-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -2628,6 +3624,12 @@
               "type": "blocknear",
               "code": "skep-populated-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -2642,6 +3644,12 @@
             {
               "type": "obtain",
               "code": "game:honeycomb"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -2658,6 +3666,12 @@
               "type": "obtain",
               "code": "game:beeswax"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -2672,6 +3686,12 @@
             {
               "type": "holds",
               "code": "game:honeyportion"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -2694,6 +3714,12 @@
               "type": "obtain",
               "code": "fromgoldencombs:hivetop-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -2709,6 +3735,12 @@
             {
               "type": "place",
               "code": "fromgoldencombs:ceramicbroodpot-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -2729,6 +3761,12 @@
             {
               "type": "obtain",
               "code": "game:honeycomb"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -2751,6 +3789,12 @@
               "count": 4,
               "code": "crop-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -2767,6 +3811,12 @@
               "type": "obtain",
               "code": "fromgoldencombs:langstrothside-*|fromgoldencombs:langstrothbroodtop-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -2782,6 +3832,12 @@
             {
               "type": "place",
               "code": "fromgoldencombs:framerack-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -2803,6 +3859,12 @@
               "type": "obtain",
               "code": "fromgoldencombs:frameliner"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -2818,6 +3880,12 @@
             {
               "type": "place",
               "code": "fromgoldencombs:langstrothbase-*|fromgoldencombs:langstrothstack-*|fromgoldencombs:langstrothsuper-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -2839,6 +3907,12 @@
               "type": "obtain",
               "code": "game:honeycomb"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -2854,6 +3928,12 @@
             {
               "type": "obtain",
               "code": "fromgoldencombs:waxedflaxtwine"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         }
@@ -2871,6 +3951,12 @@
             {
               "type": "place",
               "code": "game:sapling-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -2891,6 +3977,12 @@
               "type": "blocknear",
               "code": "log-grown-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -2907,6 +3999,12 @@
               "count": 12,
               "code": "game:axe-*@game:log-grown-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -2922,6 +4020,12 @@
               "type": "obtain",
               "code": "game:resin"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -2933,6 +4037,12 @@
             {
               "type": "obtain",
               "code": "game:saw-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -2950,6 +4060,12 @@
               "count": 16,
               "code": "game:plank-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -2964,6 +4080,12 @@
             {
               "type": "obtain",
               "code": "game:woodbucket"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -2980,6 +4102,12 @@
               "type": "place",
               "code": "game:barrel"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -2994,6 +4122,12 @@
             {
               "type": "place",
               "code": "game:chest-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -3010,6 +4144,12 @@
               "type": "place",
               "code": "game:trunk-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -3024,6 +4164,12 @@
             {
               "type": "place",
               "code": "game:door-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -3040,6 +4186,12 @@
               "type": "place",
               "code": "game:trapdoor-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -3054,6 +4206,12 @@
             {
               "type": "place",
               "code": "game:ladder-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -3070,6 +4228,12 @@
               "type": "place",
               "code": "game:woodenfence-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -3084,6 +4248,12 @@
             {
               "type": "place",
               "code": "game:plankstairs-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -3100,6 +4270,12 @@
               "type": "obtain",
               "code": "game:supportbeam-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -3114,6 +4290,12 @@
             {
               "type": "place",
               "code": "game:table-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -3130,6 +4312,12 @@
               "type": "place",
               "code": "game:chair-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -3144,6 +4332,12 @@
             {
               "type": "place",
               "code": "game:bed-wood-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -3160,6 +4354,12 @@
               "type": "place",
               "code": "game:sign-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -3174,6 +4374,12 @@
             {
               "type": "place",
               "code": "game:toolrack-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -3190,6 +4396,12 @@
               "type": "place",
               "code": "game:bookshelf-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -3205,6 +4417,12 @@
               "type": "place",
               "code": "game:woodenaxle-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -3216,6 +4434,12 @@
             {
               "type": "obtain",
               "code": "game:boat-raft-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -3236,6 +4460,12 @@
               "type": "entitynear",
               "code": "boat-sailed*|boat-construction*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -3254,7 +4484,13 @@
             "carp-sailboat"
           ],
           "rail": 13.17,
-          "objectives": []
+          "objectives": [],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
         },
         {
           "code": "carp-brack",
@@ -3269,6 +4505,12 @@
             {
               "type": "place",
               "code": "foodshelves:barrelrack-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -3286,6 +4528,12 @@
               "type": "place",
               "code": "foodshelves:tun-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -3302,6 +4550,12 @@
               "type": "place",
               "code": "foodshelves:tunrack-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -3316,6 +4570,12 @@
             {
               "type": "place",
               "code": "game:crate-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         }
@@ -3334,6 +4594,12 @@
               "type": "obtain",
               "code": "game:*baskettrap*|game:trap-*|game:trapcrate-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -3349,6 +4615,12 @@
               "type": "place",
               "code": "*baskettrap*|trap-*|trapcrate-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -3363,6 +4635,12 @@
             {
               "type": "entitynear",
               "code": "hare-*|chicken-*|raccoon-*|fox-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -3383,6 +4661,12 @@
             {
               "type": "place",
               "code": "woodenfencegate-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -3408,6 +4692,12 @@
               "count": 2,
               "code": "chicken-*|pig-*|sheep-*|goat-*|hare-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -3422,6 +4712,12 @@
             {
               "type": "place",
               "code": "game:trough-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -3438,6 +4734,12 @@
               "type": "holds",
               "code": "game:grain-*|game:drygrass|game:vegetable-*|game:fruit-*|game:legume-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -3453,6 +4755,12 @@
               "type": "place",
               "code": "game:trough-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -3463,7 +4771,13 @@
           "requires": [
             "herd-first"
           ],
-          "objectives": []
+          "objectives": [],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
         },
         {
           "code": "herd-hares",
@@ -3478,6 +4792,12 @@
               "type": "entitynear",
               "count": 2,
               "code": "hare-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -3495,6 +4815,12 @@
               "count": 2,
               "code": "goat-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -3510,6 +4836,12 @@
               "type": "entitynear",
               "count": 2,
               "code": "chicken-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -3527,6 +4859,12 @@
               "count": 2,
               "code": "sheep-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -3543,6 +4881,12 @@
               "count": 2,
               "code": "pig-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -3557,6 +4901,12 @@
             {
               "type": "place",
               "code": "game:henbox-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -3573,6 +4923,12 @@
               "type": "obtain",
               "code": "game:egg-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -3588,6 +4944,12 @@
               "type": "entitynear",
               "code": "chicken-baby*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -3602,6 +4964,12 @@
             {
               "type": "obtain",
               "code": "game:feather"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -3619,6 +4987,12 @@
               "level": 1,
               "code": "chicken-*|pig-*|sheep-*|goat-*|hare-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -3634,6 +5008,12 @@
               "type": "entitynear",
               "level": 2,
               "code": "chicken-*|pig-*|sheep-*|goat-*|hare-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -3652,6 +5032,12 @@
               "count": 3,
               "code": "chicken-*|pig-*|sheep-*|goat-*|hare-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -3666,6 +5052,12 @@
             {
               "type": "holds",
               "code": "game:milkportion"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -3686,6 +5078,12 @@
               "type": "obtain",
               "code": "game:hide-raw-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -3701,6 +5099,12 @@
               "type": "obtain",
               "code": "game:hide-raw-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -3715,6 +5119,12 @@
             {
               "type": "obtain",
               "code": "game:fat"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -3732,6 +5142,12 @@
             {
               "type": "mounted"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -3748,7 +5164,13 @@
             "herd-pack"
           ],
           "rail": 17.71,
-          "objectives": []
+          "objectives": [],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
         },
         {
           "code": "herd-calf",
@@ -3767,6 +5189,12 @@
               "type": "entitynear",
               "code": "*elk*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -3781,6 +5209,12 @@
             {
               "type": "entitynear",
               "code": "*elk*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -3797,6 +5231,12 @@
               "type": "entitynear",
               "code": "*elk*tame*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -3808,6 +5248,12 @@
             {
               "type": "entitynear",
               "code": "*elk*tame*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -3824,6 +5270,12 @@
               "type": "obtain",
               "code": "game:*medallion*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -3838,6 +5290,12 @@
             {
               "type": "obtain",
               "code": "game:hoovedwearables-*-saddlebags*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -3854,6 +5312,12 @@
               "type": "obtain",
               "code": "game:trapcrate-*|game:*cratetrap*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -3868,6 +5332,12 @@
             {
               "type": "entitynear",
               "code": "pig-*|sheep-*|goat-*|deer-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         }
@@ -3886,6 +5356,12 @@
               "type": "obtain",
               "code": "game:hide-raw-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -3900,6 +5376,12 @@
             {
               "type": "obtain",
               "code": "game:hide-salted-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -3917,6 +5399,12 @@
               "type": "obtain",
               "code": "game:hide-soaked-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -3931,6 +5419,12 @@
             {
               "type": "obtain",
               "code": "game:hide-oiled-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -3947,6 +5441,12 @@
               "type": "obtain",
               "code": "game:hide-pelt-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -3961,6 +5461,12 @@
             {
               "type": "obtain",
               "code": "game:clothes-*-fur*|game:clothes-*-*-fur*|game:armor-*-hide-*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -3977,6 +5483,12 @@
               "type": "obtain",
               "code": "game:hide-scraped-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -3992,6 +5504,12 @@
               "type": "holds",
               "code": "game:limewaterportion"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -4003,6 +5521,12 @@
             {
               "type": "holds",
               "code": "game:weaktanninportion"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -4018,6 +5542,12 @@
             {
               "type": "holds",
               "code": "game:strongtanninportion"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -4035,6 +5565,12 @@
               "type": "obtain",
               "code": "game:hide-prepared-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -4051,6 +5587,12 @@
               "type": "obtain",
               "code": "game:leather-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -4066,6 +5608,12 @@
               "type": "obtain",
               "code": "game:backpack-normal"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -4077,6 +5625,12 @@
             {
               "type": "obtain",
               "code": "game:lime|game:borax|game:powderedborax"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -4093,6 +5647,12 @@
               "type": "obtain",
               "code": "game:hoovedwearables-*-saddle1"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -4107,6 +5667,12 @@
             {
               "type": "obtain",
               "code": "game:hoovedwearables-*-bridle*"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -4123,6 +5689,12 @@
               "type": "obtain",
               "code": "game:leather-sturdy-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -4137,6 +5709,12 @@
             {
               "type": "obtain",
               "code": "game:backpack-sturdy"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -4153,6 +5731,12 @@
               "type": "obtain",
               "code": "game:armor-*-jerkin-*|game:armor-*-sewn-*|game:armor-*-improvised-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -4167,6 +5751,12 @@
             {
               "type": "obtain",
               "code": "game:hide-prepared-huge|game:hide-scraped-huge|game:hide-soaked-huge"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -4188,7 +5778,13 @@
             "tailor-dyeblue"
           ],
           "rail": 15.37,
-          "objectives": []
+          "objectives": [],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
         },
         {
           "code": "tailor-twine",
@@ -4199,6 +5795,12 @@
             {
               "type": "obtain",
               "code": "game:flaxtwine"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -4215,6 +5817,12 @@
               "type": "obtain",
               "code": "game:linen-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -4229,6 +5837,12 @@
             {
               "type": "obtain",
               "code": "game:sewingkit"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -4245,6 +5859,12 @@
               "type": "obtain",
               "code": "game:linensack"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -4259,6 +5879,12 @@
             {
               "type": "obtain",
               "code": "game:cloth-plain"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -4275,6 +5901,12 @@
               "type": "obtain",
               "code": "game:clothes-upperbody-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -4290,6 +5922,12 @@
               "type": "obtain",
               "code": "game:clothes-lowerbody-*"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -4301,6 +5939,12 @@
             {
               "type": "holds",
               "code": "game:dilutedalumportion|game:dilutedboraxportion|game:dilutedcassiteriteportion|game:dilutedchromiteportion"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -4318,6 +5962,12 @@
               "type": "obtain",
               "code": "game:cloth-mordant"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -4332,6 +5982,12 @@
             {
               "type": "holds",
               "code": "game:dye-yellow"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         },
@@ -4348,6 +6004,12 @@
               "type": "obtain",
               "code": "game:cloth-yellow"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -4363,6 +6025,12 @@
               "type": "holds",
               "code": "game:dye-woad|game:dye-blue"
             }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
           ]
         },
         {
@@ -4377,6 +6045,12 @@
             {
               "type": "obtain",
               "code": "game:cloth-blue"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
             }
           ]
         }
