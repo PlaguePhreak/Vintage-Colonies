@@ -454,29 +454,6 @@
           ]
         },
         {
-          "code": "stone-roots",
-          "x": 10.59,
-          "y": 3.47,
-          "shape": "square",
-          "requires": [
-            "stone-cat",
-            "stone-fire"
-          ],
-          "objectives": [
-            {
-              "type": "obtain",
-              "code": "game:vegetable-cookedcattailroot|game:vegetable-cooked*root",
-              "text": "objective-text-roots"
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:gear-rusty",
-              "count": 1
-            }
-          ]
-        },
-        {
           "code": "stone-basket",
           "x": 7.57,
           "y": 5.07,
@@ -1600,27 +1577,6 @@
           ]
         },
         {
-          "code": "copper-bit",
-          "x": 12.41,
-          "y": 6.39,
-          "shape": "square",
-          "requires": [
-            "copper-smith"
-          ],
-          "objectives": [
-            {
-              "type": "obtain",
-              "code": "game:hoovedwearables-*-bridle*|game:metalbit-copper"
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:gear-rusty",
-              "count": 1
-            }
-          ]
-        },
-        {
           "code": "copper-armour",
           "x": 12.41,
           "y": 8.06,
@@ -1656,7 +1612,6 @@
             "copper-chisel",
             "copper-nails",
             "copper-lantern",
-            "copper-bit",
             "copper-arrowheads",
             "copper-armour"
           ],

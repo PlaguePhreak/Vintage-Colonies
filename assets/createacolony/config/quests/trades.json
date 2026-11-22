@@ -4444,31 +4444,6 @@
           ]
         },
         {
-          "code": "carp-sailboat",
-          "x": 1.82,
-          "y": 3.96,
-          "shape": "square",
-          "requires": [
-            "carp-raft",
-            "carp-boards"
-          ],
-          "noLine": [
-            "carp-boards"
-          ],
-          "objectives": [
-            {
-              "type": "entitynear",
-              "code": "boat-sailed*|boat-construction*"
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:gear-rusty",
-              "count": 1
-            }
-          ]
-        },
-        {
           "code": "carp-master",
           "x": 14.68,
           "y": 0.0,
@@ -4480,8 +4455,7 @@
             "carp-trapdoor",
             "carp-sign",
             "carp-beams",
-            "carp-bookshelf",
-            "carp-sailboat"
+            "carp-bookshelf"
           ],
           "rail": 13.17,
           "objectives": [],
@@ -5160,7 +5134,6 @@
             "herd-milk",
             "herd-hides",
             "herd-fat",
-            "herd-medal",
             "herd-pack"
           ],
           "rail": 17.71,
@@ -5248,27 +5221,6 @@
             {
               "type": "entitynear",
               "code": "tameddeer-*|*elk*tame*"
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:gear-rusty",
-              "count": 1
-            }
-          ]
-        },
-        {
-          "code": "herd-medal",
-          "x": 16.35,
-          "y": 5.0,
-          "shape": "square",
-          "requires": [
-            "herd-ride"
-          ],
-          "objectives": [
-            {
-              "type": "obtain",
-              "code": "game:*medallion*"
             }
           ],
           "rewards": [
