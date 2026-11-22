@@ -1756,6 +1756,37 @@ public class ColonyConfig
     public float ServeHungerBelow = 0.8f;
     /// <summary>The cook fetches water in a bucket for pot recipes that need it.</summary>
     public bool CookUsesWater = true;
+
+    // School and children (0.193.0, see Colonies/ColonyManager.School.cs)
+    /// <summary>Children go to the School in the morning and follow a parent in the afternoon.</summary>
+    public bool Schools = true;
+    /// <summary>Lessons run from this hour to LessonToHour.</summary>
+    public float LessonFromHour = 8;
+    public float LessonToHour = 12;
+    /// <summary>After lessons, children follow a parent at work until this hour.</summary>
+    public float PlayToHour = 17;
+    /// <summary>Children a School takes, by its level.</summary>
+    public int[] SchoolPlaces = { 6, 12, 20 };
+    /// <summary>Real seconds a child sits in class before the lesson counts for the day.</summary>
+    public float LessonSeconds = 60f;
+    /// <summary>Real seconds a child watches a parent work before it counts for the day.</summary>
+    public float WatchSeconds = 60f;
+    /// <summary>XP in the parent's job skill a child gets for a day of watching them work.</summary>
+    public int WatchXp = 40;
+    /// <summary>Lessons a child needs before school gives extra levels when they grow up.</summary>
+    public int SchoolMinDays = 2;
+    /// <summary>One more extra level for each this many lessons (2 to 4 in all).</summary>
+    public int SchoolDaysPerExtraLevel = 2;
+    public int SchoolMinLevels = 2;
+    public int SchoolMaxLevels = 4;
+    /// <summary>Chance that a schooled child grows up with a flame in their most-taught skill.</summary>
+    public float SchoolPassionChance = 0.5f;
+    /// <summary>Jobs too dangerous for a child to tag along.</summary>
+    public string[] ChildNoFollowJobs = { "guard", "miner", "prospector", "hunter", "quarrier" };
+    /// <summary>How far the teacher looks for a seat by a table, and children for a seat, around the School's hut block.</summary>
+    public int SchoolRoomRadius = 8;
+    /// <summary>Real seconds per piece of the teacher's work.</summary>
+    public float TeacherSecondsPerWork = 20f;
 }
 
 /// <summary>One kind of item the Archive takes as a hand-in (ColonyConfig.ResearchHandIns).</summary>

@@ -215,6 +215,8 @@ public class CitizenSnapshot
     /// <summary>Their Faith (0 to 100, -1 unknown) and the word for it (ColonyManager.Church.cs).</summary>
     [ProtoMember(300, IsRequired = true)] public int Faith = -1;
     [ProtoMember(301)] public string FaithWord = "";
+    /// <summary>A child's school line (ColonyManager.SchoolText), empty for adults.</summary>
+    [ProtoMember(4400)] public string SchoolText = "";
 }
 
 /// <summary>A click on a slot of the settler window: which settler, which area and slot, and how.</summary>

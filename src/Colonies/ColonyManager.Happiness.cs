@@ -38,6 +38,8 @@ public partial class ColonyManager
         ["requestdone"] = (3, 48),
         // A meal served at a Cook's Hut table (ColonyManager.Serving.cs).
         ["ateattable"] = (2, 24),
+        ["childatschool"] = (2, 24),
+        ["childbored"] = (-2, 24),
         ["newhome"] = (8, 48),
         // The church (ColonyManager.Church.cs): a service (more when the bishop leads it), a missed one, a funeral.
         ["service"] = (8, 24),

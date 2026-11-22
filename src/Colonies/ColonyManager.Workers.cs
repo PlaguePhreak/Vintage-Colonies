@@ -78,6 +78,7 @@ public partial class ColonyManager
         BuildingTypes.Market => Jobs.MarketTrader,
         BuildingTypes.Tavern => Jobs.TavernKeeper,
         BuildingTypes.Archive => Jobs.Researcher,
+        BuildingTypes.School => Jobs.Teacher,
         BuildingTypes.Tannery => Jobs.Tanner,
         BuildingTypes.Stonemason => Jobs.Stonemason,
         BuildingTypes.Fletcher => Jobs.Fletcher,
@@ -392,6 +393,7 @@ public partial class ColonyManager
         if (hut.Type == BuildingTypes.Bakery) lines.AddRange(BakeryInfo(colony, hut));
         if (hut.Type == BuildingTypes.Fisher) lines.AddRange(FisherInfo(colony, hut));
         if (hut.Type == BuildingTypes.Composter) lines.AddRange(ComposterInfo(hut));
+        if (hut.Type == BuildingTypes.School) lines.AddRange(SchoolInfo(colony, hut));
         lines.Add("");
         lines.Add(Lang.Get("createacolony:hint-" + hut.Type + (hut.IsStation ? "-station" : ""), GatherRadius(hut)));
         return string.Join("<br>", lines);

@@ -183,6 +183,17 @@ public class CitizenRecord
     [ProtoMember(3100)] public bool GuardRanged;
     /// <summary>Ill from a bite of the Restless (0.187.0) until this time (total days); 0 when well. ColonyManager.IsSick.</summary>
     [ProtoMember(3800)] public double SickUntilTotalDays;
+    // 4400-4409: school (0.193.0, ColonyManager.School.cs). Children only; used when they grow up.
+    /// <summary>Lessons had at the School.</summary>
+    [ProtoMember(4400)] public int SchoolDays;
+    /// <summary>The in-game day of the last lesson; -1 for never.</summary>
+    [ProtoMember(4401, IsRequired = true)] public int LastLessonDay = -1;
+    /// <summary>Lessons had in each skill.</summary>
+    [ProtoMember(4402)] public Dictionary<string, int> LessonSkills = new();
+    /// <summary>XP picked up by watching a parent work, by skill.</summary>
+    [ProtoMember(4403)] public Dictionary<string, int> WatchedXp = new();
+    /// <summary>The in-game day they last watched a parent work; -1 for never.</summary>
+    [ProtoMember(4404, IsRequired = true)] public int LastWatchDay = -1;
 
     public bool IsDowned => DownedUntilTotalDays > 0;
     public bool IsChild => GrowsUpTotalDays > 0;

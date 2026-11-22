@@ -12,6 +12,18 @@ domain (`assets/createacolony/`, block and item codes like `createacolony:townha
 (`ModConfig/createacolony.json`), the release zips (`createacolony_<version>.zip`) and all save data keys.
 Changing any of those would stop old worlds from loading their colonies, so leave them as they are.
 
+## The School (0.193.0)
+
+- **School and Teacher.** A new hut in the education group, made from planks and a parchment. Give a settler the Teacher job. Level 1 takes 6 children, level 2 takes 12, level 3 takes 20. The model is a placeholder until you build the real School.
+- **Mornings.** From 8 to 12 the teacher gives a lesson and the children walk over and sit in class, on a seat near the hut block or on the floor. Each day's lesson is in one of the teacher's three best skills, a different one each day. The teacher gets better at Teaching (a new skill).
+- **Afternoons.** Until 5 in the evening a child follows a parent at work and watches. That gives a little XP in the parent's job skill once a day. Children never follow guards, miners, prospectors, hunters or quarriers, and stay away during raids.
+- **Growing up.** A child with 2 or more lessons grows up with 2 to 4 extra skill levels in what they were taught most (more lessons, more levels), and half the time a passion for it. What they picked up watching is added too.
+- **Feelings.** Children have no mood in the mod, so the parents feel it instead: "My child went to school" (+2 for a day) and "My child had nothing to do" (-2 for a day) when a child had no lesson and no parent to watch.
+- **Windows.** The School's window shows pupils and places, today's lesson, and children with no place. A child's settler page shows their school and lessons so far.
+- Server config: `Schools`, `LessonFromHour`, `LessonToHour`, `PlayToHour`, `SchoolPlaces`, `LessonSeconds`, `WatchSeconds`, `WatchXp`, `SchoolMinDays`, `SchoolDaysPerExtraLevel`, `SchoolMinLevels`, `SchoolMaxLevels`, `SchoolPassionChance`, `ChildNoFollowJobs`, `SchoolRoomRadius`, `TeacherSecondsPerWork`.
+
+Not tested in game yet.
+
 ## The Cook's Hut serves meals (0.192.0)
 
 - **Tables.** A table inside the Cook's Hut with a chair, stool or bench within 2 blocks of it is a place to eat. Level 1 serves 6 at a time, level 2 serves 12, level 3 serves 20.

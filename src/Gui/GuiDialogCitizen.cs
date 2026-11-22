@@ -307,7 +307,11 @@ public class GuiDialogCitizen : GuiDialog
         var capped = value.Clone().WithColor(GuiKit.WarnColor);
 
         y = WideHeading(composer, Lang.Get("createacolony:citizen-tab-skills"), x, y);
-        if (snapshot.Child) return composer.Text(Lang.Get("createacolony:skills-child"), GuiKit.Muted(), x, y, BodyWidth);
+        if (snapshot.Child)
+        {
+            y = composer.Text(Lang.Get("createacolony:skills-child"), GuiKit.Muted(), x, y, BodyWidth);
+            return snapshot.SchoolText.Length > 0 ? composer.Text(snapshot.SchoolText, GuiKit.Muted(), x, y, BodyWidth) : y;
+        }
         var passionFont = label.Clone().WithColor(GuiKit.GoodColor);
         var muted = GuiKit.Muted();
         int half = (snapshot.Skills.Count + 1) / 2;

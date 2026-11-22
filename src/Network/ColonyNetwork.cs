@@ -1209,6 +1209,7 @@ public partial class ColonyNetwork : ModSystem
             Family = FamilyOf(colony, citizen),
             Child = citizen.IsChild,
             GrowsUpHours = Manager.HoursToGrowUp(citizen),
+            SchoolText = Manager.SchoolText(colony, citizen),
             Home = citizen.HomeBedPos != null && Manager.ResidenceAt(colony, citizen.HomeBedPos) is { } home ? ColonyManager.BuildingName(home) : "",
             FamilyNote = FamilyNote(colony, citizen),
             Surname = citizen.Surname,

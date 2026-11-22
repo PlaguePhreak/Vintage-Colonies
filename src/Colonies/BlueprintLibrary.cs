@@ -957,6 +957,8 @@ public static class BuildingTypes
     public const string Fletcher = "fletcher";
     /// <summary>The Composter's Hut: turns the colony's rot and bones into fertilizer and compost soil (ColonyManager.Composting.cs).</summary>
     public const string Composter = "composter";
+    /// <summary>The School (0.193.0): a teacher gives the colony's children lessons (ColonyManager.School.cs).</summary>
+    public const string School = "school";
     public const string Barracks = "barracks";
     /// <summary>Put at a mine's entrance; several Miner's Huts can work the one mine through it.</summary>
     public const string MineshaftEntrance = "mineshaftentrance";

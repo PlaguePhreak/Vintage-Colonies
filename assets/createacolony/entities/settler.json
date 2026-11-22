@@ -112,6 +112,7 @@
 					{ "code": "settlerbaker", "animation": "walk", "priority": 1.2, "movespeed": 0.02 },
 					{ "code": "settlerfisher", "animation": "walk", "priority": 1.2, "movespeed": 0.02 },
 					{ "code": "settlercomposter", "animation": "walk", "priority": 1.2, "movespeed": 0.02 },
+					{ "code": "settlerteacher", "animation": "walk", "priority": 1.2, "movespeed": 0.02 },
 					{ "code": "settlerguard", "animation": "walk", "priority": 1.2, "movespeed": 0.024 },
 					{ "code": "settlerbailiff", "animation": "walk", "priority": 1.2, "movespeed": 0.02 },
 					{ "code": "settlervisitor", "animation": "walk", "priority": 1.1, "movespeed": 0.02 },
