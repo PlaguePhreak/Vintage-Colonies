@@ -1,0 +1,66 @@
+{
+	"code": "hut-charcoalburner",
+	"class": "BlockColonyHut",
+	"entityClass": "ColonyHut",
+	"attributes": {
+		"buildingType": "charcoalburner",
+		"defaultType": "hut",
+		"inventoryClassName": "colonyhut",
+		"quantitySlots": {
+			"hut": 25
+		},
+		"quantityColumns": {
+			"hut": 5
+		},
+		"dialogTitleLangCode": {
+			"hut": "createacolony:hut-storage"
+		}
+	},
+	"creativeinventory": {
+		"general": [
+			"*"
+		],
+		"vintagecolonies": [
+			"*"
+		]
+	},
+	"blockmaterial": "Wood",
+	"drawtype": "json",
+	// The seed of the Charcoal Burner's Hut. Its storage holds the firewood for the pits. Simple placeholder model; Aaron designs the buildings.
+	"shape": {
+		"base": "createacolony:block/hut-charcoalburner"
+	},
+	"textures": {
+		"sides": {
+			"base": "game:block/wood/table/aged/sides"
+		},
+		"planks": {
+			"base": "game:block/wood/planks/aged1"
+		},
+		"a": {
+			"base": "game:block/cloth/basic/brown"
+		},
+		"b": {
+			"base": "game:block/coal/charcoal"
+		},
+		"c": {
+			"base": "game:block/metal/ingot/iron"
+		}
+	},
+	"sideopaque": {
+		"all": false
+	},
+	"sidesolid": {
+		"all": false
+	},
+	"emitSideAo": {
+		"all": false
+	},
+	"lightAbsorption": 0,
+	"resistance": 2,
+	"sounds": {
+		"place": "game:block/planks",
+		"break": "game:block/planks",
+		"hit": "game:block/planks"
+	}
+}

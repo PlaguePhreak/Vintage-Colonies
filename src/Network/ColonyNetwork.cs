@@ -137,17 +137,22 @@ public partial class ColonyNetwork : ModSystem
         }
         var colony = Manager.GetById(packet.ColonyId);
         if (colony == null) return;
-        var role = colony.RoleOf(player.PlayerUID);
+        // A custom rank lets a Member do the ticked things as an officer would (ColonyManager.Ranks.cs).
+        var perm = ColonyManager.PermFor(packet.Action);
+        var role = ColonyManager.RoleFor(colony, player.PlayerUID, perm);
+        string? logAt = packet.BuildingId != 0 && colony.Buildings.Find(b => b.BuildingId == packet.BuildingId) is { } logHut ? ColonyManager.BuildingName(logHut) : null;
 
         if (packet.Action == ColonyAction.OpenStorage)
         {
             OpenStorage(player, colony, role, packet.BuildingId);
+            if (role >= ColonyRole.Officer) Manager.LogPermission(colony, player.PlayerUID, player.PlayerName, perm, logAt);
             return;
         }
 
         if (packet.Action is >= ColonyAction.OpenPlacement and <= ColonyAction.ReopenPlacement or ColonyAction.PlacementLevel or ColonyAction.PlacementVariant)
         {
             PlacementAction(player, colony, role, packet);
+            if (role >= ColonyRole.Officer && packet.Action is ColonyAction.PlacementConfirm) Manager.LogPermission(colony, player.PlayerUID, player.PlayerName, perm, logAt);
             return;
         }
 
@@ -200,6 +205,9 @@ public partial class ColonyNetwork : ModSystem
             ColonyAction.RemoveHut => RemoveHut(player, colony, role, packet),
             ColonyAction.LinkMineHut or ColonyAction.UnlinkMineHut => LinkMineAction(colony, role, packet),
             ColonyAction.SetCollect or >= ColonyAction.RenameBuilding and <= ColonyAction.SetMinStock => HutAction(player, colony, role, packet),
+            ColonyAction.SetAutoHiring or ColonyAction.SetAutoHousing or ColonyAction.SetEnterMessages => AutoTownAction(colony, role, packet),
+            ColonyAction.SetHutAutoFlag => HutAutoFlag(colony, role, packet),
+            ColonyAction.RankChange => role < ColonyRole.Owner ? "createacolony:denied-owner" : Manager.RankChange(colony, packet.Text),
             _ => null
         };
 
@@ -209,9 +217,66 @@ public partial class ColonyNetwork : ModSystem
         }
         else
         {
+            Manager.LogPermission(colony, player.PlayerUID, player.PlayerName, perm, logAt);
             Manager.MarkDirty(colony);
         }
         RefreshViewers(colony);
+    }
+
+    /// <summary>Town Hall Settings: auto hiring, auto housing and the enter/leave messages; officers only.</summary>
+    string? AutoTownAction(Colony colony, ColonyRole role, ColonyActionPacket packet)
+    {
+        if (role < ColonyRole.Officer) return "createacolony:denied-officer";
+        bool on = packet.Text == "1";
+        switch (packet.Action)
+        {
+            case ColonyAction.SetAutoHiring:
+                colony.AutoHiring = on;
+                if (on) Manager.AutoHire(colony);
+                break;
+            case ColonyAction.SetAutoHousing:
+                colony.AutoHousing = on;
+                if (on) Manager.AutoHouse(colony);
+                break;
+            case ColonyAction.SetEnterMessages:
+            {
+                // "on|1", "outsiders|1", "enter|text", "leave|text"
+                var parts = packet.Text.Split('|', 2);
+                if (parts.Length < 2) return "createacolony:bad-request";
+                string value = parts[1];
+                switch (parts[0])
+                {
+                    case "on": colony.EnterMessages = value == "1"; break;
+                    case "outsiders": colony.TellOutsiders = value == "1"; break;
+                    case "enter": colony.EnterText = CleanMessage(value); break;
+                    case "leave": colony.LeaveText = CleanMessage(value); break;
+                    default: return "createacolony:bad-request";
+                }
+                break;
+            }
+        }
+        return null;
+    }
+
+    static string CleanMessage(string text)
+    {
+        text = text.Replace("\n", " ").Replace("\r", " ").Trim();
+        return text.Length > 80 ? text[..80] : text;
+    }
+
+    /// <summary>A hut's Take auto hires / Take auto residents switch. Text "hire|1" or "home|0".</summary>
+    string? HutAutoFlag(Colony colony, ColonyRole role, ColonyActionPacket packet)
+    {
+        if (role < ColonyRole.Officer) return "createacolony:denied-officer";
+        var building = colony.Buildings.Find(b => b.BuildingId == packet.BuildingId);
+        if (building == null) return "createacolony:bad-request";
+        var parts = packet.Text.Split('|');
+        if (parts.Length < 2) return "createacolony:bad-request";
+        bool on = parts[1] == "1";
+        if (parts[0] == "hire") building.TakesAutoHires = on;
+        else if (parts[0] == "home") building.TakesAutoResidents = on;
+        else return "createacolony:bad-request";
+        return null;
     }
 
     string? SetAnyWoodOrStone(Colony colony, ColonyRole role, bool on)
@@ -785,6 +850,8 @@ public partial class ColonyNetwork : ModSystem
         var member = colony.Members.Find(m => m.PlayerUid == targetUid);
         if (member == null) return "createacolony:bad-member";
         Manager.SetMemberRole(colony, targetUid, member.LastKnownName, newRole);
+        // Making someone a Member or Officer by hand takes their custom rank away.
+        if (colony.Members.Find(m => m.PlayerUid == targetUid) is { } changed) changed.RankId = 0;
         return null;
     }
 
@@ -832,7 +899,7 @@ public partial class ColonyNetwork : ModSystem
             Level = colony.Level,
             PopulationCap = Manager.PopulationCap(colony),
             AverageHappiness = Manager.Config.Happiness ? Manager.AverageHappiness(colony) : -1,
-            ViewerRole = (int)colony.RoleOf(viewerUid),
+            ViewerRole = (int)ColonyManager.RoleFor(colony, viewerUid, (RankPerm)~0),
             BedCount = colony.Citizens.Count(c => c.Alive && c.HomeBedPos != null),
             OpenWindow = openWindow,
             HasWarehouse = colony.WarehousePos != null,
@@ -933,8 +1000,19 @@ public partial class ColonyNetwork : ModSystem
 
         foreach (var m in colony.Members.OrderByDescending(m => m.Role))
         {
-            snapshot.Members.Add(new MemberView { PlayerUid = m.PlayerUid, Name = m.LastKnownName, Role = (int)m.Role });
+            snapshot.Members.Add(new MemberView { PlayerUid = m.PlayerUid, Name = m.LastKnownName, Role = (int)m.Role, RankId = m.RankId, RankName = ColonyManager.RankName(colony, m) });
         }
+        snapshot.AutoHiring = colony.AutoHiring;
+        snapshot.AutoHousing = colony.AutoHousing;
+        snapshot.EnterMessages = colony.EnterMessages;
+        snapshot.TellOutsiders = colony.TellOutsiders;
+        snapshot.EnterText = colony.EnterText;
+        snapshot.LeaveText = colony.LeaveText;
+        snapshot.MaxRanks = Manager.Config.MaxRanks;
+        snapshot.Ranks = colony.Ranks.Select(r => new RankView { Id = r.Id, Name = r.Name, Perms = r.Perms }).ToList();
+        if (colony.RoleOf(viewerUid) == ColonyRole.Owner)
+            snapshot.PermissionLog = colony.PermissionLog.AsEnumerable().Reverse()
+                .Select(e => new EventView { TotalDays = e.TotalHours / sapi!.World.Calendar.HoursPerDay, Key = "permlog-line", Args = new List<string> { e.Player, e.What } }).ToList();
 
         // The Town map: buildings with the ground they stand on, and the colony's land.
         foreach (var b in colony.Buildings)
@@ -1171,7 +1249,9 @@ public partial class ColonyNetwork : ModSystem
         {
             ColonyId = colony.ColonyId,
             Building = BuildingViewFor(colony, building),
-            ViewerRole = (int)colony.RoleOf(viewerUid),
+            ViewerRole = (int)ColonyManager.RoleFor(colony, viewerUid, (RankPerm)~0),
+            TakesAutoHires = building.TakesAutoHires,
+            TakesAutoResidents = building.TakesAutoResidents,
             IsBuilderHut = building.Type == BuildingTypes.Builder,
             AnyWoodOrStone = colony.AnyWoodOrStone,
             HasStorage = ColonyManager.HasOwnStorage(building.Type),
@@ -1210,7 +1290,7 @@ public partial class ColonyNetwork : ModSystem
             or BuildingTypes.Prospector or BuildingTypes.Miner or BuildingTypes.Quarry
             or BuildingTypes.Smelter or BuildingTypes.Blacksmith or BuildingTypes.Armourer or BuildingTypes.Weaponsmith or BuildingTypes.Sawmill or BuildingTypes.Craftsman or BuildingTypes.Tailor or BuildingTypes.Jeweller or BuildingTypes.Healer or BuildingTypes.Mint or BuildingTypes.Church
             or BuildingTypes.Explorer or BuildingTypes.Gatherer or BuildingTypes.Hunter or BuildingTypes.Butcher or BuildingTypes.Tannery or BuildingTypes.Apiary or BuildingTypes.Graveyard or BuildingTypes.Market
-            || ColonyManager.IsHerderHut(building.Type)) snapshot.Info = Manager.WorkerHutInfo(colony, building);
+            || ColonyManager.IsHerderHut(building.Type) || ColonyManager.IsSupplyHut(building.Type)) snapshot.Info = Manager.WorkerHutInfo(colony, building);
         if (building.Type == BuildingTypes.Tavern)
         {
             snapshot.IsTavern = true;

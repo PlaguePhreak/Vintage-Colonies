@@ -162,7 +162,7 @@ public partial class ColonyManager
     public bool WantsPottery(Colony colony, Building hut, CitizenRecord potter) =>
         PotteryKinds().Any(k => PotteryKeep(hut, k) is > 0 and var keep && keep > PotteryStock(colony, hut, k, potter) || PotteryOrderOpen(colony, hut, k, potter));
 
-    bool SameItem(ItemStack a, ItemStack b) => a.Equals(sapi.World, b, GlobalConstants.IgnoredStackAttributes);
+    public bool SameItem(ItemStack a, ItemStack b) => a.Equals(sapi.World, b, GlobalConstants.IgnoredStackAttributes);
 
     // ---- Clay forming -----------------------------------------------------------------------
 

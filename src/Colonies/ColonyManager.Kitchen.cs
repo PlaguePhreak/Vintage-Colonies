@@ -97,8 +97,10 @@ public partial class ColonyManager
         var pit = CookFirepit(colony, hut);
         // With a Stone Bake Oven, dough goes in the oven rather than the fire pit.
         bool oven = CookOven(colony, hut) != null;
+        // With a Bakery and its baker, bread is the baker's (ColonyManager.Baking.cs).
+        bool baker = hut.Type != BuildingTypes.Bakery && BakerWorks(colony);
         return ByPriority(hut, KitchenKinds()
-            .Where(k => KitchenKeep(hut, k) > 0 && !(oven && k.Raw.All(IsBakeableCode)))
+            .Where(k => KitchenKeep(hut, k) > 0 && !(oven && k.Raw.All(IsBakeableCode)) && !(baker && k.Raw.All(r => r.Path.StartsWith("dough"))))
             .Select(k => (Kind: k, k.Key, Short: KitchenKeep(hut, k) - KitchenStock(colony, hut, k, cook, pit)))
             .Where(k => k.Short > 0))
             .ToList();

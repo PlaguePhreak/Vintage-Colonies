@@ -918,7 +918,10 @@ public class ColonyConfig
         // Bandages, and poultices too (any settler can make a poultice, config HomemadeRemedies).
         ["healer"] = new[] { "bandage", "poultice" },
         // The colony's coins (ColonyManager.Economy.cs).
-        ["mint"] = new[] { "coin" }
+        ["mint"] = new[] { "coin" },
+        // 0.184.0: anything made of stone alone (config HutRecipeInputParts), and arrows and bows.
+        ["stonemason"] = new[] { "*" },
+        ["fletcher"] = new[] { "arrow", "bow" }
     };
     /// <summary>The mods whose things a hut may make, by hut type; "game" alone where a hut is not listed.</summary>
     public System.Collections.Generic.Dictionary<string, string[]> HutRecipeDomains = new()
@@ -951,7 +954,9 @@ public class ColonyConfig
         ["jeweller"] = new[] { "hammer", "chisel" },
         ["armourer"] = new[] { "hammer" },
         ["healer"] = new[] { "knife", "shears", "scissors" },
-        ["mint"] = new[] { "hammer" }
+        ["mint"] = new[] { "hammer" },
+        ["stonemason"] = new[] { "chisel", "saw", "hammer", "pickaxe" },
+        ["fletcher"] = new[] { "knife" }
     };
     /// <summary>Seconds a worker takes to craft one recipe at its hut.</summary>
     public float HutRecipeSecondsPerCraft = 4f;
@@ -1578,6 +1583,90 @@ public class ColonyConfig
     public float FirePourSeconds = 1.5f;
     /// <summary>Before lighting its pit kiln the potter cuts the grass and plants this many blocks around it, so the fire cannot spread. 0 turns it off.</summary>
     public int KilnClearRadius = 3;
+
+    // Charcoal Burner (0.184.0, see Colonies/ColonyManager.Charcoal.cs)
+    /// <summary>How far from the Charcoal Burner's Hut its pits may be dug (blocks), and how close they may be (never nearer).</summary>
+    public int CharcoalPitRange = 10;
+    public int CharcoalPitMinDistance = 3;
+    /// <summary>How many charcoal pits the hut has at levels 0 (the hut block alone) to 5.</summary>
+    public int[] CharcoalPitsByLevel = { 1, 1, 2, 2, 3, 4 };
+    /// <summary>How many firewood piles deep each pit is (a block each; the game turns up to 8 charcoal out of each).</summary>
+    public int CharcoalPilesPerPit = 2;
+    /// <summary>Firewood in each pile (the game's piles hold 32 at most).</summary>
+    public int CharcoalFirewoodPerPile = 32;
+    /// <summary>The burner stops lighting pits once the colony has this much charcoal, plus what huts asked couriers for.</summary>
+    public int CharcoalKeep = 64;
+    /// <summary>Seconds it takes to build and light a pit, or to open one.</summary>
+    public float CharcoalWorkSeconds = 8f;
+    /// <summary>How long the game's charcoal pit burns, in hours (for the hut window only; the game decides).</summary>
+    public double CharcoalBurnHours = 18.5;
+
+    // Stonemason and Fletcher (0.184.0, see Colonies/ColonyManager.SupplyHuts.cs)
+    /// <summary>
+    /// Huts whose recipes may only take inputs whose code starts with one of these (by hut type). The Stonemason works stone
+    /// alone. Huts not listed take any inputs.
+    /// </summary>
+    public System.Collections.Generic.Dictionary<string, string[]> HutRecipeInputParts = new()
+    {
+        ["stonemason"] = new[] { "rock", "stone", "cobblestone", "stonebrick", "stonebricks", "polishedrock", "rockpolished", "stonepath", "stoneslab", "stonestairs", "cobblestoneslab", "cobblestonestairs", "polishedrockslab" }
+    };
+    /// <summary>What a new hut's Crafting recipes tab keeps from the start (code patterns and amounts, the first match wins), by hut type.</summary>
+    public System.Collections.Generic.Dictionary<string, System.Collections.Generic.Dictionary<string, int>> HutRecipeStartKeep = new()
+    {
+        ["stonemason"] = new() { ["game:stonebrick-*"] = 32 },
+        ["fletcher"] = new() { ["game:arrow-flint"] = 32, ["game:arrow-copper"] = 16 }
+    };
+
+    // Bakery (0.184.0, see Colonies/ColonyManager.Baking.cs)
+    /// <summary>The baker bakes until the colony has this much bread.</summary>
+    public int BakerBreadKeep = 24;
+    /// <summary>How far from the Bakery its quern and fire pit may stand.</summary>
+    public int BakeryWorkRadius = 8;
+    /// <summary>The Cook leaves bread to a Bakery of this level or higher (0: the hut block alone is enough).</summary>
+    public int BakeryWorksFromLevel = 0;
+    /// <summary>Grain it grinds at the quern in one go, and batches of dough it mixes in one go.</summary>
+    public int BakerGrindBatch = 8;
+    public int BakerDoughBatch = 4;
+    public float BakerSecondsPerStep = 5f;
+
+    // Fisher (0.184.0, see Colonies/ColonyManager.Fishing.cs)
+    /// <summary>How far from the Fisher's Hut its fisher looks for water.</summary>
+    public int FisherRadius = 24;
+    /// <summary>Water smaller than this has no fish (the game's own limit is 100 blocks).</summary>
+    public int FisherMinPond = 100;
+    /// <summary>Seconds per cast, and the chance a cast catches something where fish are plenty.</summary>
+    public float FisherSecondsPerCast = 20f;
+    public double FisherCatchChance = 0.35;
+    /// <summary>The catch chance without bait, as a share of the chance with bait.</summary>
+    public double FisherNoBaitFactor = 0.5;
+    /// <summary>Casts without a bite before the fisher tries another spot.</summary>
+    public int FisherMissesBeforeMoving = 6;
+    /// <summary>How much bait the fisher takes from the hut at a time.</summary>
+    public int FisherBaitCarried = 8;
+
+    // Composter (0.184.0, see Colonies/ColonyManager.Composting.cs)
+    /// <summary>How far the composter goes for rot and bones.</summary>
+    public int ComposterRadius = 64;
+    /// <summary>The composter fills each Farmer's Hut up to this much fertilizer.</summary>
+    public int ComposterFertilizerPerFarm = 16;
+    /// <summary>What the compost heap holds, and what one block of compost soil takes from it.</summary>
+    public int CompostHeapRot = 64;
+    public int CompostHeapGrass = 32;
+    public int CompostRotPerSoil = 8;
+    public int CompostGrassPerSoil = 4;
+    /// <summary>In-game days a new heap stands before it makes compost.</summary>
+    public double CompostDays = 3;
+    public float ComposterSecondsPerTask = 4f;
+
+    // ---- Town Hall: auto hiring, auto housing, ranks, enter messages (0.184.0) ----
+    /// <summary>The hour of the morning auto hiring gives jobless settlers work.</summary>
+    public int AutoHireHour = 6;
+    /// <summary>How often (in-game hours) auto housing moves homeless settlers into free homes.</summary>
+    public double AutoHousingEveryHours = 6;
+    /// <summary>How many custom ranks a colony may have.</summary>
+    public int MaxRanks = 6;
+    /// <summary>How many lines the permission log keeps.</summary>
+    public int PermissionLogSize = 50;
 }
 
 /// <summary>One kind of item the Archive takes as a hand-in (ColonyConfig.ResearchHandIns).</summary>

@@ -211,6 +211,8 @@ public partial class GuiDialogHut : GuiDialog
         SingleComposer.GetSwitch("keeplast")?.SetValue(snapshot.KeepLastColony);
         SingleComposer.GetSwitch("retreat")?.SetValue(snapshot.Retreat);
         SingleComposer.GetSwitch("teachany")?.SetValue(teachAnyType);
+        SingleComposer.GetSwitch("autohires")?.SetValue(snapshot.TakesAutoHires);
+        SingleComposer.GetSwitch("autoresidents")?.SetValue(snapshot.TakesAutoResidents);
         for (int i = 0; SingleComposer.GetSwitch("hostile-" + i) is { } toggle; i++) toggle.SetValue(hostileSwitchStates[i]);
         for (int i = 0; SingleComposer.GetSwitch("collect-" + i) is { } toggle; i++) toggle.SetValue(collectSwitchStates[i]);
         for (int i = 0; SingleComposer.GetSwitch("markers-" + i) is { } toggle; i++) toggle.SetValue(!snapshot.MarkersOff.Contains(snapshot.MarkerGroups[i]));
@@ -450,6 +452,7 @@ public partial class GuiDialogHut : GuiDialog
         double y = BackHeading(composer, Lang.Get("createacolony:hut-manage-workers"));
         string job = Lang.Get("createacolony:job-" + snapshot.Job);
         y = composer.Text(Lang.Get("createacolony:manage-hint", job), GuiKit.Muted(), 0, y, Width, 8);
+        y = AutoFlagSwitch(composer, "autohires", "hire", "createacolony:hut-takes-autohires", snapshot.TakesAutoHires, y);
 
         y = composer.Section(Lang.Get("createacolony:manage-here", snapshot.Workers.Count, snapshot.WorkerSlots), y, Width);
         if (snapshot.Workers.Count == 0) y = composer.Text(Lang.Get("createacolony:hut-workers-none", job), GuiKit.Detail(), 0, y, Width, 8);
@@ -1119,6 +1122,15 @@ public partial class GuiDialogHut : GuiDialog
         ? Lang.Get("createacolony:stat-kill", CreatureName(key[5..]))
         : Lang.Get("createacolony:stat-" + key);
 
+    /// <summary>A hut's Take auto hires or Take auto residents switch (0.184.0); officers change it.</summary>
+    double AutoFlagSwitch(GuiComposer composer, string key, string flag, string label, bool value, double y)
+    {
+        if (Officer) composer.AddSwitch(on => SendText(ColonyAction.SetHutAutoFlag, BuildingId, flag + "|" + (on ? "1" : "0")), ElementBounds.Fixed(0, y, 30, 30), key);
+        else composer.AddStaticText(Lang.Get(value ? "createacolony:on" : "createacolony:off"), GuiKit.Body(), ElementBounds.Fixed(0, y + 5, 36, 25));
+        composer.AddStaticText(Lang.Get(label), GuiKit.Body(), ElementBounds.Fixed(40, y + 5, Width - 40, 25));
+        return y + 38;
+    }
+
     bool SendText(ColonyAction action, int buildingId, string text)
     {
         network.SendAction(new ColonyActionPacket { ColonyId = snapshot.ColonyId, Action = action, BuildingId = buildingId, Text = text });
@@ -1425,6 +1437,7 @@ public partial class GuiDialogHut : GuiDialog
         composer.AddSmallButton(Lang.Get("createacolony:residence-choose"), () => Open(ChooseResidentsView), ElementBounds.Fixed(Width - 170, 28, 170, 28));
         double y = composer.Text(Lang.Get("createacolony:residence-beds", snapshot.ResidenceBeds, snapshot.ResidenceFreeBeds), GuiKit.Body(), 0, 34, Width - 180);
         y = composer.Text(Lang.Get("createacolony:residence-hint"), GuiKit.Muted(), 0, y, Width, 10);
+        y = AutoFlagSwitch(composer, "autoresidents", "home", "createacolony:hut-takes-autoresidents", snapshot.TakesAutoResidents, y);
         if (snapshot.Households.Count == 0)
         {
             composer.Text(Lang.Get("createacolony:residence-empty"), GuiKit.Body(), 0, y, Width);

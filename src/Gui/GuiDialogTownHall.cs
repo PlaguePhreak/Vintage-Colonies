@@ -67,6 +67,14 @@ public class GuiDialogTownHall : GuiDialog
     int citizensPage;
     // Which page of the Bailiff tab: 0 the bailiff and their rules, 1 the ledger, 2 the estate report.
     int bailiffPage;
+    // Which page of the Permissions tab (0 players, 1 ranks, 2 the log) and of Settings (0 general, 1 town).
+    int permPage;
+    int settingsPage;
+    int chosenRank;
+    string pendingRankName = "";
+    string pendingRankRename = "";
+    string pendingEnter;
+    string pendingLeave;
     // Where the Town map is looking and how far zoomed in, kept while the window is open.
     readonly ColonyMapView mapView = new();
     GuiElementColonyMap? mapElement;
@@ -80,6 +88,8 @@ public class GuiDialogTownHall : GuiDialog
         this.network = network;
         this.snapshot = snapshot;
         pendingName = snapshot.Name;
+        pendingEnter = snapshot.EnterText;
+        pendingLeave = snapshot.LeaveText;
         Compose();
     }
 
@@ -87,6 +97,8 @@ public class GuiDialogTownHall : GuiDialog
     {
         // Keep a half-typed name unless the name really changed.
         if (fresh.Name != snapshot.Name && !renaming) pendingName = fresh.Name;
+        if (fresh.EnterText != snapshot.EnterText) pendingEnter = fresh.EnterText;
+        if (fresh.LeaveText != snapshot.LeaveText) pendingLeave = fresh.LeaveText;
         snapshot = fresh;
         // On the Town map, timed refreshes only move the dots, so a zoom or a drag in progress is kept.
         if (fresh.Periodic && currentTab == MapTab && mapElement != null && MapBox(fresh) is not null)
@@ -95,7 +107,7 @@ public class GuiDialogTownHall : GuiDialog
             return;
         }
         // Timed progress refreshes would close an open dropdown or take the focus from the name box.
-        if (fresh.Periodic && (renaming || currentTab is CitizensTab or PermissionsTab or BailiffTab)) return;
+        if (fresh.Periodic && (renaming || currentTab is CitizensTab or PermissionsTab or BailiffTab or SettingsTab)) return;
         Compose();
     }
 
@@ -146,6 +158,17 @@ public class GuiDialogTownHall : GuiDialog
         SingleComposer.GetSwitch("bailiffrent")?.SetValue(snapshot.BailiffCollectsRent);
         SingleComposer.GetSwitch("bailifflend")?.SetValue(snapshot.BailiffLendsWorkers);
         SingleComposer.GetSwitch("bailiffwages")?.SetValue(snapshot.BailiffPaysWages);
+        SingleComposer.GetSwitch("autohiring")?.SetValue(snapshot.AutoHiring);
+        SingleComposer.GetSwitch("autohousing")?.SetValue(snapshot.AutoHousing);
+        SingleComposer.GetSwitch("entermessages")?.SetValue(snapshot.EnterMessages);
+        SingleComposer.GetSwitch("telloutsiders")?.SetValue(snapshot.TellOutsiders);
+        SingleComposer.GetTextInput("text-enter")?.SetValue(pendingEnter);
+        SingleComposer.GetTextInput("text-leave")?.SetValue(pendingLeave);
+        SingleComposer.GetTextInput("rankname")?.SetValue(pendingRankName);
+        SingleComposer.GetTextInput("rankrename")?.SetValue(pendingRankRename);
+        if (snapshot.Ranks.Find(r => r.Id == chosenRank) is { } shownRank)
+            foreach (var perm in ColonyManager.AllPerms)
+                SingleComposer.GetSwitch("perm-" + (int)perm)?.SetValue((shownRank.Perms & (int)perm) != 0);
     }
 
     /// <summary>A row of page buttons along the top of a tab, the chosen one marked. Returns the y below them.</summary>
@@ -846,10 +869,25 @@ public class GuiDialogTownHall : GuiDialog
     void ComposePermissions(GuiComposer composer)
     {
         bool isOwner = ViewerRole == ColonyRole.Owner;
-        string[] roleCodes = { ((int)ColonyRole.Member).ToString(), ((int)ColonyRole.Officer).ToString() };
-        string[] roleNames = { Lang.Get("createacolony:role-member"), Lang.Get("createacolony:role-officer") };
+        double top = 30;
+        if (isOwner) top = PageButtons(composer, new[] { "perm-players", "perm-ranks", "perm-log" }, permPage, p => permPage = p, 30, 150);
+        else permPage = 0;
+        switch (permPage)
+        {
+            case 1: ComposeRanks(composer, top); return;
+            case 2: ComposePermissionLog(composer, top); return;
+        }
 
-        double y = 30;
+        // Member, Officer, then the owner's own ranks (0.184.0).
+        var codes = new List<string> { "role:" + (int)ColonyRole.Member, "role:" + (int)ColonyRole.Officer };
+        var names = new List<string> { Lang.Get("createacolony:role-member"), Lang.Get("createacolony:role-officer") };
+        foreach (var r in snapshot.Ranks)
+        {
+            codes.Add("rank:" + r.Id);
+            names.Add(r.Name);
+        }
+
+        double y = top;
         composer
             .AddStaticText(Lang.Get("createacolony:col-player"), GuiKit.Muted(), ElementBounds.Fixed(10, y, 210, 20))
             .AddStaticText(Lang.Get("createacolony:col-role"), GuiKit.Muted(), ElementBounds.Fixed(230, y, 160, 20));
@@ -864,21 +902,116 @@ public class GuiDialogTownHall : GuiDialog
             if (isOwner && role != ColonyRole.Owner)
             {
                 string uid = m.PlayerUid;
-                int selected = role == ColonyRole.Officer ? 1 : 0;
+                string current = role == ColonyRole.Member && m.RankId != 0 ? "rank:" + m.RankId : "role:" + (int)role;
+                int selected = Math.Max(0, codes.IndexOf(current));
                 composer
-                    .AddDropDown(roleCodes, roleNames, selected, (code, on) => OnSetRole(uid, int.Parse(code)),
+                    .AddDropDown(codes.ToArray(), names.ToArray(), selected, (code, on) => OnPickRank(uid, code),
                         ElementBounds.Fixed(230, y + 2, 160, 28), "role-" + uid)
                     .AddSmallButton(Lang.Get("createacolony:remove"), () => OnRemove(uid), ElementBounds.Fixed(Width - 130, y + 2, 120, 28));
             }
             else
             {
-                composer.AddStaticText(RoleName(role), GuiKit.Body(), ElementBounds.Fixed(230, y + 6, 160, 25));
+                composer.AddStaticText(m.RankName.Length > 0 ? m.RankName : RoleName(role), GuiKit.Body(), ElementBounds.Fixed(230, y + 6, 160, 25));
             }
             y += RowHeight;
         }
 
         y = composer.Text(Lang.Get("createacolony:invite-hint"), GuiKit.Muted(), 0, y + 12, Width, 8);
         y = composer.Text(Lang.Get("createacolony:townhall-roles-hint"), GuiKit.Muted(), 0, y, Width, 8);
+    }
+
+    void OnPickRank(string uid, string code)
+    {
+        var parts = code.Split(':');
+        if (parts[0] == "role") OnSetRole(uid, int.Parse(parts[1]));
+        else SendText(ColonyAction.RankChange, "assign|" + uid + "|" + parts[1]);
+    }
+
+    /// <summary>The owner's Ranks page: make a rank, pick one, rename or delete it, and tick what it may do.</summary>
+    void ComposeRanks(GuiComposer composer, double y)
+    {
+        y = composer.Text(Lang.Get("createacolony:ranks-hint"), GuiKit.Muted(), 0, y, Width, 10);
+        if (snapshot.Ranks.Count < snapshot.MaxRanks)
+        {
+            composer
+                .AddTextInput(ElementBounds.Fixed(0, y, 260, 28), text => pendingRankName = text, GuiKit.Body(), "rankname")
+                .AddSmallButton(Lang.Get("createacolony:rank-add"), () =>
+                {
+                    if (pendingRankName.Trim().Length == 0) return true;
+                    SendText(ColonyAction.RankChange, "add|" + pendingRankName);
+                    pendingRankName = "";
+                    return true;
+                }, ElementBounds.Fixed(270, y, 130, 28));
+            y += 40;
+        }
+        else
+        {
+            y = composer.Text(Lang.Get("createacolony:ranks-full", snapshot.MaxRanks), GuiKit.Detail(), 0, y, Width, 10);
+        }
+        if (snapshot.Ranks.Count == 0)
+        {
+            composer.Text(Lang.Get("createacolony:ranks-none"), GuiKit.Body(), 0, y, Width);
+            return;
+        }
+
+        var rank = snapshot.Ranks.Find(r => r.Id == chosenRank) ?? snapshot.Ranks[0];
+        chosenRank = rank.Id;
+        composer
+            .AddStaticText(Lang.Get("createacolony:rank"), GuiKit.Body(), ElementBounds.Fixed(0, y + 5, 60, 25))
+            .AddDropDown(snapshot.Ranks.Select(r => r.Id.ToString()).ToArray(), snapshot.Ranks.Select(r => r.Name).ToArray(),
+                snapshot.Ranks.IndexOf(rank), (code, on) => { chosenRank = int.Parse(code); Compose(); }, ElementBounds.Fixed(60, y, 200, 28), "rankpick")
+            .AddSmallButton(Lang.Get("createacolony:delete"), () => SendText(ColonyAction.RankChange, "delete|" + rank.Id), ElementBounds.Fixed(Width - 110, y, 110, 28));
+        y += 38;
+        composer
+            .AddTextInput(ElementBounds.Fixed(0, y, 260, 28), text => pendingRankRename = text, GuiKit.Body(), "rankrename")
+            .AddSmallButton(Lang.Get("createacolony:rank-rename"), () =>
+            {
+                if (pendingRankRename.Trim().Length == 0) return true;
+                SendText(ColonyAction.RankChange, "rename|" + rank.Id + "|" + pendingRankRename);
+                pendingRankRename = "";
+                return true;
+            }, ElementBounds.Fixed(270, y, 130, 28));
+        y += 44;
+
+        y = composer.Section(Lang.Get("createacolony:rank-may", rank.Name), y, Width);
+        int i = 0;
+        foreach (var perm in ColonyManager.AllPerms)
+        {
+            int bit = (int)perm;
+            double x = i % 2 == 0 ? 0 : Width / 2;
+            double rowY = y + i / 2 * 34;
+            string label = Lang.Get("createacolony:perm-" + perm.ToString().ToLowerInvariant());
+            composer
+                .AddSwitch(on => SendText(ColonyAction.RankChange, "perm|" + rank.Id + "|" + bit), ElementBounds.Fixed(x, rowY, 30, 30), "perm-" + bit)
+                .AddStaticText(label, GuiKit.Body(), ElementBounds.Fixed(x + 38, rowY + 5, Width / 2 - 45, 25));
+            i++;
+        }
+        y += (ColonyManager.AllPerms.Length + 1) / 2 * 34 + 8;
+        composer.Text(Lang.Get("createacolony:ranks-officer-hint"), GuiKit.Muted(), 0, y, Width, 8);
+    }
+
+    /// <summary>The owner's log of what members, officers and ranked players did, newest first.</summary>
+    void ComposePermissionLog(GuiComposer composer, double y)
+    {
+        var log = snapshot.PermissionLog;
+        if (log.Count == 0)
+        {
+            composer.Text(Lang.Get("createacolony:permlog-none"), GuiKit.Body(), 0, y, Width);
+            return;
+        }
+        int pages = (log.Count + EventsPerPage - 1) / EventsPerPage;
+        page = Math.Clamp(page, 0, pages - 1);
+        int shown = Math.Min(EventsPerPage, log.Count - page * EventsPerPage);
+        composer.AddInset(ElementBounds.Fixed(0, y, Width, shown * EventRowHeight + 8), 3, 0.8f);
+        y += 4;
+        foreach (var e in log.Skip(page * EventsPerPage).Take(EventsPerPage))
+        {
+            composer
+                .AddStaticText(When(e.TotalDays), GuiKit.Muted(), ElementBounds.Fixed(10, y + 5, 140, 20))
+                .AddStaticText(EventText(e), GuiKit.Detail(), ElementBounds.Fixed(155, y + 4, Width - 165, 20));
+            y += EventRowHeight;
+        }
+        composer.Pager(page, pages, y + 12, Width, p => { page = p; Compose(); });
     }
 
     // ---- Colony militia tab ---------------------------------------------------------------
@@ -1155,7 +1288,13 @@ public class GuiDialogTownHall : GuiDialog
     /// <summary>Permadeath (the owner's switch), and how wanderers and the warehouse are set up.</summary>
     void ComposeSettings(GuiComposer composer)
     {
-        double y = composer.Section(Lang.Get("createacolony:permadeath"), 30, Width);
+        double top = PageButtons(composer, new[] { "settings-general", "settings-town" }, settingsPage, p => settingsPage = p, 30, 150);
+        if (settingsPage == 1)
+        {
+            ComposeTownSettings(composer, top);
+            return;
+        }
+        double y = composer.Section(Lang.Get("createacolony:permadeath"), top, Width);
         if (ViewerRole == ColonyRole.Owner)
         {
             composer
@@ -1182,6 +1321,50 @@ public class GuiDialogTownHall : GuiDialog
             : Lang.Get("createacolony:overview-no-warehouse"), GuiKit.Detail(), 0, y, Width, 12);
 
         ComposeRaidSettings(composer, y);
+    }
+
+    /// <summary>
+    /// The Town page of Settings (0.184.0): auto hiring, auto housing, and the messages players see when they walk into
+    /// or out of the colony. Officers change them.
+    /// </summary>
+    void ComposeTownSettings(GuiComposer composer, double y)
+    {
+        y = TownSwitch(composer, "autohiring", "createacolony:autohiring", "createacolony:autohiring-hint", snapshot.AutoHiring,
+            on => SendText(ColonyAction.SetAutoHiring, on ? "1" : "0"), y);
+        y = TownSwitch(composer, "autohousing", "createacolony:autohousing", "createacolony:autohousing-hint", snapshot.AutoHousing,
+            on => SendText(ColonyAction.SetAutoHousing, on ? "1" : "0"), y);
+        y = TownSwitch(composer, "entermessages", "createacolony:entermessages", "createacolony:entermessages-hint", snapshot.EnterMessages,
+            on => SendText(ColonyAction.SetEnterMessages, "on|" + (on ? "1" : "0")), y);
+        y = TownSwitch(composer, "telloutsiders", "createacolony:telloutsiders", "createacolony:telloutsiders-hint", snapshot.TellOutsiders,
+            on => SendText(ColonyAction.SetEnterMessages, "outsiders|" + (on ? "1" : "0")), y);
+
+        y = composer.Section(Lang.Get("createacolony:enter-texts"), y, Width);
+        if (!Officer)
+        {
+            y = composer.Text(Lang.Get("createacolony:enter-text") + " " + (snapshot.EnterText.Length > 0 ? snapshot.EnterText : Lang.Get("createacolony:enter-colony", snapshot.Name)), GuiKit.Body(), 0, y, Width, 4);
+            composer.Text(Lang.Get("createacolony:leave-text") + " " + (snapshot.LeaveText.Length > 0 ? snapshot.LeaveText : Lang.Get("createacolony:leave-colony", snapshot.Name)), GuiKit.Body(), 0, y, Width, 4);
+            return;
+        }
+        foreach (var (kind, label) in new[] { ("enter", "createacolony:enter-text"), ("leave", "createacolony:leave-text") })
+        {
+            string which = kind;
+            composer
+                .AddStaticText(Lang.Get(label), GuiKit.Body(), ElementBounds.Fixed(0, y + 5, 90, 25))
+                .AddTextInput(ElementBounds.Fixed(90, y, Width - 200, 28), text => { if (which == "enter") pendingEnter = text; else pendingLeave = text; }, GuiKit.Body(), "text-" + kind)
+                .AddSmallButton(Lang.Get("createacolony:save"), () => SendText(ColonyAction.SetEnterMessages, which + "|" + (which == "enter" ? pendingEnter : pendingLeave)),
+                    ElementBounds.Fixed(Width - 100, y, 100, 28));
+            y += 38;
+        }
+        composer.Text(Lang.Get("createacolony:enter-texts-hint", snapshot.Name), GuiKit.Muted(), 0, y, Width, 8);
+    }
+
+    double TownSwitch(GuiComposer composer, string key, string label, string hint, bool value, Action<bool> set, double y)
+    {
+        if (Officer) composer.AddSwitch(set, ElementBounds.Fixed(0, y, 30, 30), key);
+        else composer.AddStaticText(Lang.Get(value ? "createacolony:on" : "createacolony:off"), GuiKit.Body(), ElementBounds.Fixed(0, y + 5, 36, 25));
+        composer.AddStaticText(Lang.Get(label), GuiKit.Body(), ElementBounds.Fixed(40, y + 5, Width - 40, 25));
+        y += 32;
+        return composer.Text(Lang.Get(hint), GuiKit.Muted(), 40, y, Width - 40, 10);
     }
 
     /// <summary>Raids (0.183.0): on, off or only when sent; their size; send one now; when the next may come.</summary>

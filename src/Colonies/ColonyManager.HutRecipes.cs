@@ -39,7 +39,9 @@ public partial class ColonyManager
             var domains = Config.HutRecipeDomains.GetValueOrDefault(type) ?? new[] { "game" };
             var traits = Config.HutRecipeTraits.GetValueOrDefault(type);
             var tools = ToolSamples(Config.HutRecipeTools.GetValueOrDefault(type) ?? System.Array.Empty<string>());
-            kinds = ScanGridRecipes(_ => true,
+            // Some huts only work one kind of material (the Stonemason: stone), by the first part of each input's code.
+            var inputParts = Config.HutRecipeInputParts.GetValueOrDefault(type);
+            kinds = ScanGridRecipes(part => inputParts == null || inputParts.Contains(FirstPart(part.Code)),
                 tool => tools.Any(s => tool.SatisfiesAsIngredient(s, false)),
                 output => domains.Contains(output.Collectible.Code.Domain) && outputs.Any(o => OutputMatches(o, output.Collectible.Code)) && JewelleryFits(type, output),
                 type == BuildingTypes.Armourer ? System.Math.Max(Config.HutRecipeMaxInputs, Config.ArmourerMaxInputs) : Config.HutRecipeMaxInputs,

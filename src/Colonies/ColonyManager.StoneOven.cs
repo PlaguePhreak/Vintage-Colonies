@@ -245,6 +245,8 @@ public partial class ColonyManager
         if (freeSlots == 0) return null;
         var wanted = OvenKinds()
             .Where(k => KnowsBake(colony, cook, k))
+            // Bread is the Bakery's once it has a baker; the cook still bakes pies.
+            .Where(k => k.IsPie || !BakerWorks(colony))
             .Select(k => (Kind: k, Short: BakeKeep(hut, k) - BakeStock(colony, hut, k, cook, oven)))
             .Where(w => w.Short > 0)
             .OrderBy(w => hut.Priorities.Count == 0 ? 0 : PriorityIndex(hut.Priorities, w.Kind.Key))

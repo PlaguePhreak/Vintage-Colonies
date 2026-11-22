@@ -1,0 +1,634 @@
+{
+ "textureWidth": 16,
+ "textureHeight": 16,
+ "textures": {
+  "sides": "sides",
+  "planks": "planks",
+  "a": "a",
+  "b": "b",
+  "c": "c"
+ },
+ "elements": [
+  {
+   "name": "Crate",
+   "from": [
+    1,
+    0,
+    1
+   ],
+   "to": [
+    15,
+    8,
+    15
+   ],
+   "faces": {
+    "north": {
+     "texture": "#sides",
+     "uv": [
+      0,
+      0,
+      14,
+      8
+     ]
+    },
+    "east": {
+     "texture": "#sides",
+     "uv": [
+      0,
+      0,
+      14,
+      8
+     ]
+    },
+    "south": {
+     "texture": "#sides",
+     "uv": [
+      0,
+      0,
+      14,
+      8
+     ]
+    },
+    "west": {
+     "texture": "#sides",
+     "uv": [
+      0,
+      0,
+      14,
+      8
+     ]
+    },
+    "up": {
+     "texture": "#sides",
+     "uv": [
+      0,
+      0,
+      14,
+      14
+     ]
+    },
+    "down": {
+     "texture": "#sides",
+     "uv": [
+      0,
+      0,
+      14,
+      14
+     ]
+    }
+   }
+  },
+  {
+   "name": "Lid",
+   "from": [
+    0,
+    8,
+    0
+   ],
+   "to": [
+    16,
+    9,
+    16
+   ],
+   "faces": {
+    "north": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      16,
+      1
+     ]
+    },
+    "east": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      16,
+      1
+     ]
+    },
+    "south": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      16,
+      1
+     ]
+    },
+    "west": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      16,
+      1
+     ]
+    },
+    "up": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      16,
+      16
+     ]
+    },
+    "down": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      16,
+      16
+     ]
+    }
+   }
+  },
+  {
+   "name": "Mound",
+   "from": [
+    2.5,
+    9,
+    2.5
+   ],
+   "to": [
+    10.5,
+    12,
+    10.5
+   ],
+   "faces": {
+    "north": {
+     "texture": "#a",
+     "uv": [
+      0,
+      0,
+      8.0,
+      3
+     ]
+    },
+    "east": {
+     "texture": "#a",
+     "uv": [
+      0,
+      0,
+      8.0,
+      3
+     ]
+    },
+    "south": {
+     "texture": "#a",
+     "uv": [
+      0,
+      0,
+      8.0,
+      3
+     ]
+    },
+    "west": {
+     "texture": "#a",
+     "uv": [
+      0,
+      0,
+      8.0,
+      3
+     ]
+    },
+    "up": {
+     "texture": "#a",
+     "uv": [
+      0,
+      0,
+      8.0,
+      8.0
+     ]
+    },
+    "down": {
+     "texture": "#a",
+     "uv": [
+      0,
+      0,
+      8.0,
+      8.0
+     ]
+    }
+   }
+  },
+  {
+   "name": "MoundTop",
+   "from": [
+    4,
+    12,
+    4
+   ],
+   "to": [
+    9,
+    13.5,
+    9
+   ],
+   "faces": {
+    "north": {
+     "texture": "#a",
+     "uv": [
+      0,
+      0,
+      5,
+      1.5
+     ]
+    },
+    "east": {
+     "texture": "#a",
+     "uv": [
+      0,
+      0,
+      5,
+      1.5
+     ]
+    },
+    "south": {
+     "texture": "#a",
+     "uv": [
+      0,
+      0,
+      5,
+      1.5
+     ]
+    },
+    "west": {
+     "texture": "#a",
+     "uv": [
+      0,
+      0,
+      5,
+      1.5
+     ]
+    },
+    "up": {
+     "texture": "#a",
+     "uv": [
+      0,
+      0,
+      5,
+      5
+     ]
+    },
+    "down": {
+     "texture": "#a",
+     "uv": [
+      0,
+      0,
+      5,
+      5
+     ]
+    }
+   }
+  },
+  {
+   "name": "Hole",
+   "from": [
+    5.75,
+    13.5,
+    5.75
+   ],
+   "to": [
+    7.25,
+    14,
+    7.25
+   ],
+   "faces": {
+    "north": {
+     "texture": "#b",
+     "uv": [
+      0,
+      0,
+      1.5,
+      0.5
+     ]
+    },
+    "east": {
+     "texture": "#b",
+     "uv": [
+      0,
+      0,
+      1.5,
+      0.5
+     ]
+    },
+    "south": {
+     "texture": "#b",
+     "uv": [
+      0,
+      0,
+      1.5,
+      0.5
+     ]
+    },
+    "west": {
+     "texture": "#b",
+     "uv": [
+      0,
+      0,
+      1.5,
+      0.5
+     ]
+    },
+    "up": {
+     "texture": "#b",
+     "uv": [
+      0,
+      0,
+      1.5,
+      1.5
+     ]
+    },
+    "down": {
+     "texture": "#b",
+     "uv": [
+      0,
+      0,
+      1.5,
+      1.5
+     ]
+    }
+   }
+  },
+  {
+   "name": "Coal1",
+   "from": [
+    11,
+    9,
+    11
+   ],
+   "to": [
+    13.5,
+    10.5,
+    13.5
+   ],
+   "faces": {
+    "north": {
+     "texture": "#b",
+     "uv": [
+      0,
+      0,
+      2.5,
+      1.5
+     ]
+    },
+    "east": {
+     "texture": "#b",
+     "uv": [
+      0,
+      0,
+      2.5,
+      1.5
+     ]
+    },
+    "south": {
+     "texture": "#b",
+     "uv": [
+      0,
+      0,
+      2.5,
+      1.5
+     ]
+    },
+    "west": {
+     "texture": "#b",
+     "uv": [
+      0,
+      0,
+      2.5,
+      1.5
+     ]
+    },
+    "up": {
+     "texture": "#b",
+     "uv": [
+      0,
+      0,
+      2.5,
+      2.5
+     ]
+    },
+    "down": {
+     "texture": "#b",
+     "uv": [
+      0,
+      0,
+      2.5,
+      2.5
+     ]
+    }
+   }
+  },
+  {
+   "name": "Coal2",
+   "from": [
+    12,
+    9,
+    8.5
+   ],
+   "to": [
+    14,
+    10,
+    10.5
+   ],
+   "faces": {
+    "north": {
+     "texture": "#b",
+     "uv": [
+      0,
+      0,
+      2,
+      1
+     ]
+    },
+    "east": {
+     "texture": "#b",
+     "uv": [
+      0,
+      0,
+      2.0,
+      1
+     ]
+    },
+    "south": {
+     "texture": "#b",
+     "uv": [
+      0,
+      0,
+      2,
+      1
+     ]
+    },
+    "west": {
+     "texture": "#b",
+     "uv": [
+      0,
+      0,
+      2.0,
+      1
+     ]
+    },
+    "up": {
+     "texture": "#b",
+     "uv": [
+      0,
+      0,
+      2,
+      2.0
+     ]
+    },
+    "down": {
+     "texture": "#b",
+     "uv": [
+      0,
+      0,
+      2,
+      2.0
+     ]
+    }
+   }
+  },
+  {
+   "name": "ShovelHandle",
+   "from": [
+    12,
+    9,
+    3
+   ],
+   "to": [
+    13,
+    16,
+    4
+   ],
+   "faces": {
+    "north": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      1,
+      7
+     ]
+    },
+    "east": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      1,
+      7
+     ]
+    },
+    "south": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      1,
+      7
+     ]
+    },
+    "west": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      1,
+      7
+     ]
+    },
+    "up": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      1,
+      1
+     ]
+    },
+    "down": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      1,
+      1
+     ]
+    }
+   }
+  },
+  {
+   "name": "ShovelBlade",
+   "from": [
+    11,
+    9,
+    3.1
+   ],
+   "to": [
+    14,
+    11.5,
+    3.9
+   ],
+   "faces": {
+    "north": {
+     "texture": "#c",
+     "uv": [
+      0,
+      0,
+      3,
+      2.5
+     ]
+    },
+    "east": {
+     "texture": "#c",
+     "uv": [
+      0,
+      0,
+      0.8,
+      2.5
+     ]
+    },
+    "south": {
+     "texture": "#c",
+     "uv": [
+      0,
+      0,
+      3,
+      2.5
+     ]
+    },
+    "west": {
+     "texture": "#c",
+     "uv": [
+      0,
+      0,
+      0.8,
+      2.5
+     ]
+    },
+    "up": {
+     "texture": "#c",
+     "uv": [
+      0,
+      0,
+      3,
+      0.8
+     ]
+    },
+    "down": {
+     "texture": "#c",
+     "uv": [
+      0,
+      0,
+      3,
+      0.8
+     ]
+    }
+   }
+  }
+ ]
+}

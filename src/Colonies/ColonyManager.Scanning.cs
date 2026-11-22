@@ -50,6 +50,9 @@ public partial class ColonyManager
             BuildingTypes.ChickenCoop or BuildingTypes.Piggery or BuildingTypes.Shepherd or BuildingTypes.Goatherd or BuildingTypes.Herdsman => Config.HerdRadius,
             BuildingTypes.Apiary => Config.ApiaryRadius,
             BuildingTypes.Graveyard => Config.UndertakerRange,
+            BuildingTypes.CharcoalBurner => Config.CharcoalPitRange,
+            BuildingTypes.Fisher => Config.FisherRadius,
+            BuildingTypes.Composter => Config.ComposterRadius,
             _ => Config.FarmerOrchardRadius
         };
     }

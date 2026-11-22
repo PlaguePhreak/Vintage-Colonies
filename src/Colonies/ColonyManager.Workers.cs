@@ -48,6 +48,12 @@ public partial class ColonyManager
         [BuildingTypes.Apiary] = new WorkerHutKind(Jobs.Beekeeper, EnumTool.Knife, _ => false, IsHivePart),
         // The undertaker digs graves with a shovel and keeps the bodies it carries (ColonyManager.Graveyard.cs).
         [BuildingTypes.Graveyard] = new WorkerHutKind(Jobs.Undertaker, EnumTool.Shovel, _ => false, IsShroudedBody),
+        // 0.184.0: the charcoal burner digs its pits with a shovel and keeps firewood for the next one (ColonyManager.Charcoal.cs).
+        [BuildingTypes.CharcoalBurner] = new WorkerHutKind(Jobs.CharcoalBurner, EnumTool.Shovel, _ => false, IsFirewood),
+        // The fisher's pole has no tool type (AiTaskSettlerFisher.IsToolStack); it keeps its pole and bait.
+        [BuildingTypes.Fisher] = new WorkerHutKind(Jobs.Fisher, EnumTool.Knife, _ => false, s => IsFishingPole(s) || IsFishBait(s)),
+        // The composter needs no tool; its Work area is how far it goes for rot and bones.
+        [BuildingTypes.Composter] = new WorkerHutKind(Jobs.Composter, EnumTool.Shovel, _ => false, s => IsPoorSoil(s) || IsDryGrass(s)),
     };
 
     /// <summary>Huts a settler works from, whose chests are never warehouse storage.</summary>
@@ -72,6 +78,9 @@ public partial class ColonyManager
         BuildingTypes.Market => Jobs.MarketTrader,
         BuildingTypes.Archive => Jobs.Researcher,
         BuildingTypes.Tannery => Jobs.Tanner,
+        BuildingTypes.Stonemason => Jobs.Stonemason,
+        BuildingTypes.Fletcher => Jobs.Fletcher,
+        BuildingTypes.Bakery => Jobs.Baker,
         BuildingTypes.Church => Jobs.Priest,
         BuildingTypes.GuardTower => Jobs.Guard,
         BuildingTypes.Barracks => Jobs.Guard,
@@ -177,6 +186,10 @@ public partial class ColonyManager
         if (hut.Type == BuildingTypes.Market) return MarketHutJunk(colony);
         if (hut.Type == BuildingTypes.Archive) return ArchiveJunk(colony, hut);
         if (hut.Type == BuildingTypes.Tannery) return TannerHutJunk(colony, hut);
+        if (hut.Type is BuildingTypes.Stonemason or BuildingTypes.Fletcher) return MakerHutJunk(colony, hut);
+        if (hut.Type == BuildingTypes.Bakery) return BakeryHutJunk();
+        if (hut.Type == BuildingTypes.Fisher) return FisherHutJunk();
+        if (hut.Type == BuildingTypes.Composter) return ComposterHutJunk(hut);
         if (IsHerderHut(hut.Type)) return HerderHutJunk(colony, hut);
         if (hut.Type == BuildingTypes.Church) return ChurchJunk(colony, hut);
         if (IsGuardPost(hut.Type)) return GuardTowerJunk(hut);
@@ -371,6 +384,11 @@ public partial class ColonyManager
         if (hut.Type == BuildingTypes.Apiary) lines.AddRange(ApiaryInfo(colony, hut));
         if (hut.Type == BuildingTypes.Graveyard) lines.AddRange(GraveyardInfo(colony, hut));
         if (hut.Type == BuildingTypes.Market) lines.AddRange(MarketInfo(colony, hut));
+        if (hut.Type == BuildingTypes.CharcoalBurner) lines.AddRange(CharcoalInfo(colony, hut));
+        if (hut.Type is BuildingTypes.Stonemason or BuildingTypes.Fletcher) lines.Add(MakerInfo(colony, hut));
+        if (hut.Type == BuildingTypes.Bakery) lines.AddRange(BakeryInfo(colony, hut));
+        if (hut.Type == BuildingTypes.Fisher) lines.AddRange(FisherInfo(colony, hut));
+        if (hut.Type == BuildingTypes.Composter) lines.AddRange(ComposterInfo(hut));
         lines.Add("");
         lines.Add(Lang.Get("createacolony:hint-" + hut.Type + (hut.IsStation ? "-station" : ""), GatherRadius(hut)));
         return string.Join("<br>", lines);

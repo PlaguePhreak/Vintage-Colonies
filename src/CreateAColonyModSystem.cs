@@ -109,6 +109,12 @@ public class CreateAColonyModSystem : ModSystem
         AiTaskRegistry.Register<AiTaskSettlerTanner>("settlertanner");
         AiTaskRegistry.Register<AiTaskSettlerBeekeeper>("settlerbeekeeper");
         AiTaskRegistry.Register<AiTaskSettlerUndertaker>("settlerundertaker");
+        AiTaskRegistry.Register<AiTaskSettlerCharcoalBurner>("settlercharcoalburner");
+        AiTaskRegistry.Register<AiTaskSettlerStonemason>("settlerstonemason");
+        AiTaskRegistry.Register<AiTaskSettlerFletcher>("settlerfletcher");
+        AiTaskRegistry.Register<AiTaskSettlerBaker>("settlerbaker");
+        AiTaskRegistry.Register<AiTaskSettlerFisher>("settlerfisher");
+        AiTaskRegistry.Register<AiTaskSettlerComposter>("settlercomposter");
         AiTaskRegistry.Register<AiTaskSettlerCook>("settlercook");
         AiTaskRegistry.Register<AiTaskSettlerProspector>("settlerprospector");
         AiTaskRegistry.Register<AiTaskSettlerMiner>("settlerminer");
@@ -177,6 +183,11 @@ public class CreateAColonyModSystem : ModSystem
                 .WithDescription("Invite an online player to join your colony")
                 .WithArgs(parsers.OnlinePlayer("player"))
                 .HandleWith(OnInvite)
+            .EndSubCommand()
+            .BeginSubCommand("messages")
+                .WithDescription("Turn the on-screen 'You enter/leave a colony' messages on or off for yourself")
+                .WithArgs(parsers.OptionalWord("onoff"))
+                .HandleWith(OnMessages)
             .EndSubCommand()
             .BeginSubCommand("join")
                 .WithDescription("Accept your pending colony invite")
@@ -538,15 +549,25 @@ public class CreateAColonyModSystem : ModSystem
         var manager = sapi!.ModLoader.GetModSystem<ColonyManager>();
 
         // Invite into the colony you stand in if you manage it, else into the one you own.
-        var colony = manager.GetAt(inviter.Entity.Pos.AsBlockPos) is { } here && here.CanManage(inviter.PlayerUID)
+        var colony = manager.GetAt(inviter.Entity.Pos.AsBlockPos) is { } here && ColonyManager.RoleFor(here, inviter.PlayerUID, RankPerm.Invite) >= ColonyRole.Officer
             ? here
             : manager.GetOwnedBy(inviter.PlayerUID);
         if (colony == null) return TextCommandResult.Error(Lang.Get("createacolony:no-colony"));
         if (colony.RoleOf(invitee.PlayerUID) >= ColonyRole.Member) return TextCommandResult.Error(Lang.Get("createacolony:already-member", invitee.PlayerName));
 
         pendingInvites[invitee.PlayerUID] = colony.ColonyId;
+        manager.LogPermission(colony, inviter.PlayerUID, inviter.PlayerName, RankPerm.Invite, invitee.PlayerName);
         invitee.SendMessage(0, Lang.Get("createacolony:invited", inviter.PlayerName, colony.Name), EnumChatType.Notification);
         return TextCommandResult.Success(Lang.Get("createacolony:invite-sent", invitee.PlayerName));
+    }
+
+    TextCommandResult OnMessages(TextCommandCallingArgs args)
+    {
+        var player = (IServerPlayer)args.Caller.Player;
+        string word = (args[0] as string ?? "").ToLowerInvariant();
+        bool off = word == "off" || (word != "on" && !ColonyManager.MessagesOff(player));
+        ColonyManager.SetMessagesOff(player, off);
+        return TextCommandResult.Success(Lang.Get(off ? "createacolony:messages-off" : "createacolony:messages-on"));
     }
 
     TextCommandResult OnJoin(TextCommandCallingArgs args)
