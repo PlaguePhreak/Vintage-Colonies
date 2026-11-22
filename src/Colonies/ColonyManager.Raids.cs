@@ -98,6 +98,12 @@ public partial class ColonyManager
         double day = sapi.World.Calendar.TotalDays;
         foreach (var colony in colonies.Values)
         {
+            // Test setting (0.196.0): no enemies means no raids, and one under way is called off.
+            if (NoEnemiesOn)
+            {
+                if (RaidOn(colony) is { } calledOff) CallOffRaid(colony, calledOff);
+                continue;
+            }
             if (RaidOn(colony) is { } raid)
             {
                 UpdateRaid(colony, raid);
@@ -124,6 +130,7 @@ public partial class ColonyManager
     public string? StartRaid(Colony colony, string? faction)
     {
         StartRaids();
+        if (NoEnemiesOn) return "createacolony:raid-noenemies";
         if (RaidOn(colony) != null) return "createacolony:raid-already";
         bool night = IsNightHour(sapi.World.Calendar.HourOfDay);
         var choices = Config.RaidFactions.Where(f => f switch

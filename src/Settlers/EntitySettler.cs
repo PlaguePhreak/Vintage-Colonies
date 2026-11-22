@@ -116,6 +116,8 @@ public class EntitySettler : EntityHumanoid
     {
         if (Api.Side == EnumAppSide.Server && Alive && damageSource.Type != EnumDamageType.Heal)
         {
+            // Test setting (0.196.0): the colony's settlers can't be hurt.
+            if (Api.ModLoader.GetModSystem<Colonies.ColonyManager>().SettlerUnhurt(this)) return false;
             damage = Api.ModLoader.GetModSystem<Colonies.ColonyManager>().OnSettlerHurt(this, damageSource, damage);
         }
         return base.ReceiveDamage(damageSource, damage);
