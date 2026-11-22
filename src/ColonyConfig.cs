@@ -1728,6 +1728,21 @@ public class ColonyConfig
     public int WinterForesterFirewoodKeep = 32;
     /// <summary>In autumn the cook leaves food that keeps longer than this many days for the winter, unless food is low now.</summary>
     public double WinterCookSavesAboveDays = 30;
+    /// <summary>Home fires (0.191.0): homes with a fire pit get firewood in the cold months and their people light it in the evening; inside, nobody is cold.</summary>
+    public bool HomeFires = true;
+    /// <summary>Homes light their fires in winter, and whenever it is colder than this at the Town Hall.</summary>
+    public float HomeFireBelowTemperature = 5f;
+    /// <summary>Fires are lit from this hour in the evening until this hour in the morning.</summary>
+    public float HomeFireFromHour = 17f;
+    public float HomeFireToHour = 7f;
+    /// <summary>A home asks couriers for firewood when it has less than this.</summary>
+    public int HomeFireKeep = 8;
+    /// <summary>Firewood put in the fire pit at once.</summary>
+    public int HomeFireLoad = 4;
+    /// <summary>Firewood a home fire burns on a winter day, for the Firewood line of the Winter tab.</summary>
+    public int HomeFireFirewoodPerDay = 6;
+    /// <summary>Farmers with nothing to grow in winter help the couriers.</summary>
+    public bool WinterFarmersHaul = true;
 }
 
 /// <summary>One kind of item the Archive takes as a hand-in (ColonyConfig.ResearchHandIns).</summary>

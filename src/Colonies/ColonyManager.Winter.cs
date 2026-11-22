@@ -194,7 +194,7 @@ public partial class ColonyManager
             r.FirewoodNeeded = days * (kitchens * Math.Max(0, Config.WinterCookFirewoodPerDay) + HomeFireWoodPerDay(colony));
 
             float limit = BodyTemperatureResistance();
-            r.Dressed = people.Count(c => f.Coldest + WornClothes(c).Sum(s => s == null ? 0 : WarmthOf(s)) + WarmHomeBonus(colony, c) >= limit);
+            r.Dressed = people.Count(c => f.Coldest + WornClothes(c).Sum(s => s == null ? 0 : WarmthOf(s)) >= limit);
         }
         winterReadiness[colony.ColonyId] = r;
 
@@ -212,11 +212,9 @@ public partial class ColonyManager
         return r;
     }
 
-    /// <summary>Firewood the colony's home fires burn on a winter day (none until home fires come in).</summary>
-    int HomeFireWoodPerDay(Colony colony) => 0;
-
-    /// <summary>Warmth a settler's home gives on top of its clothes in the winter count (none until home fires come in).</summary>
-    float WarmHomeBonus(Colony colony, CitizenRecord c) => 0;
+    /// <summary>Firewood the colony's home fires burn on a winter day: each lived-in home with a hearth.</summary>
+    int HomeFireWoodPerDay(Colony colony) => !Config.HomeFires ? 0
+        : LivedInHomes(colony).Count(h => HomeHearth(colony, h) != null) * Math.Max(0, Config.HomeFireFirewoodPerDay);
 
     /// <summary>True while the colony's settlers get ready for winter.</summary>
     public bool WinterPrepping(Colony colony) => colony.WinterPrep && Readiness(colony) is { State: WinterState.Coming } r
@@ -254,6 +252,130 @@ public partial class ColonyManager
         r.WoodShort ? Vintagestory.API.Config.Lang.Get("createacolony:winter-short-firewood") : null,
         r.ClothesShort ? Vintagestory.API.Config.Lang.Get("createacolony:winter-short-clothes") : null
     }.OfType<string>());
+
+    // ---- Home fires (0.191.0) ------------------------------------------------------------------
+
+    /// <summary>How often home fires are looked after.</summary>
+    const long HomeFireTickMs = 10_000;
+    /// <summary>How long a home's hearth is remembered before it is looked for again.</summary>
+    const long HearthCacheMs = 60_000;
+
+    readonly Dictionary<string, long> nextHomeFireTick = new();
+    readonly Dictionary<Building, (long Ms, BlockPos? Pos)> hearths = new();
+    /// <summary>Settlers whose home's fire burns right now, with that home: inside it they are never cold.</summary>
+    readonly Dictionary<int, Building> warmResidents = new();
+
+    /// <summary>Homes (Residences and Boarding Houses) that are built and have someone living in them.</summary>
+    IEnumerable<Building> LivedInHomes(Colony colony)
+    {
+        var lived = colony.Citizens.Where(c => c.Alive && !c.Visitor && c.HomeBedPos != null).Select(c => HomeOf(colony, c)).OfType<Building>().ToHashSet();
+        return colony.Buildings.Where(b => IsHome(b.Type) && b.Level > 0 && lived.Contains(b));
+    }
+
+    /// <summary>The home's fire pit (in it or right by it; see HomeFirepit), remembered for a minute.</summary>
+    BlockEntityFirepit? HomeHearth(Colony colony, Building home)
+    {
+        long now = sapi.World.ElapsedMilliseconds;
+        if (hearths.TryGetValue(home, out var known) && now - known.Ms < HearthCacheMs)
+        {
+            return known.Pos == null ? null : sapi.World.BlockAccessor.GetBlockEntity(known.Pos) as BlockEntityFirepit;
+        }
+        var pit = HomeFirepit(colony, home);
+        hearths[home] = (now, pit?.Pos.Copy());
+        return pit;
+    }
+
+    /// <summary>True in the cold months: winter at the Town Hall, or colder than HomeFireBelowTemperature there now.</summary>
+    bool HomeFireWeather(Colony colony)
+    {
+        if (IsWinterAt(colony.TownHallPos)) return true;
+        var climate = sapi.World.BlockAccessor.GetClimateAt(colony.TownHallPos, EnumGetClimateMode.NowValues);
+        return climate != null && climate.Temperature < Config.HomeFireBelowTemperature;
+    }
+
+    /// <summary>
+    /// Part of the colony tick (every 10 seconds): in the cold months each lived-in home with a hearth asks couriers
+    /// for firewood when it has less than HomeFireKeep in its chests, and in the evening and at night, when someone
+    /// who lives there is at home, the fire is fed from those chests and lit. Settlers in a home whose fire burns are warm.
+    /// </summary>
+    void TickHomeFires(Colony colony)
+    {
+        if (!Config.HomeFires) return;
+        long now = sapi.World.ElapsedMilliseconds;
+        if (nextHomeFireTick.TryGetValue(colony.ColonyId, out long next) && now < next) return;
+        nextHomeFireTick[colony.ColonyId] = now + HomeFireTickMs;
+
+        foreach (var id in colony.Citizens.Select(c => c.CitizenId)) warmResidents.Remove(id);
+        if (!HomeFireWeather(colony)) return;
+        float hour = sapi.World.Calendar.HourOfDay;
+        bool evening = hour >= Config.HomeFireFromHour || hour < Config.HomeFireToHour;
+        foreach (var home in LivedInHomes(colony).ToList())
+        {
+            if (HomeHearth(colony, home) is not { } pit) continue;
+            var chests = HomeChests(home);
+            var residents = colony.Citizens.Where(c => c.Alive && !c.Visitor && HomeOf(colony, c) == home).ToList();
+
+            // Firewood delivered: one open request at a time, from the warehouse.
+            if (chests.Count > 0)
+            {
+                int have = CountItems(chests, IsFirewood) + (pit.fuelSlot.Empty ? 0 : pit.fuelSlot.StackSize);
+                string tag = RequestTag(home);
+                if (have < Config.HomeFireKeep && !colony.Requests.Any(r => r.RequestedBy == tag && r.ItemCode == FirewoodCode)
+                    && CountItems(WarehouseContainers(colony), IsFirewood) > 0)
+                {
+                    AddRequest(colony, FirewoodCode, Config.HomeFireKeep - have, chests[0].Pos, tag);
+                }
+            }
+
+            // Lit in the evening while someone is home.
+            if (!pit.IsBurning && evening && residents.Any(c => AtHome(home, c)))
+            {
+                if (pit.fuelSlot.Empty)
+                {
+                    foreach (var chest in chests)
+                    {
+                        var slot = chest.Inventory.FirstOrDefault(s => !s.Empty && IsFirewood(s.Itemstack));
+                        if (slot == null) continue;
+                        pit.fuelSlot.Itemstack = slot.TakeOut(Math.Min(Math.Max(1, Config.HomeFireLoad), slot.StackSize));
+                        slot.MarkDirty();
+                        pit.fuelSlot.MarkDirty();
+                        break;
+                    }
+                }
+                if (!pit.fuelSlot.Empty && IsFirewood(pit.fuelSlot.Itemstack))
+                {
+                    pit.igniteFuel();
+                    pit.canIgniteFuel = true;
+                    pit.MarkDirty(true);
+                }
+            }
+
+            if (pit.IsBurning) foreach (var c in residents) warmResidents[c.CitizenId] = home;
+        }
+    }
+
+    const string FirewoodCode = "game:firewood";
+
+    /// <summary>True when the settler is loaded and inside its home's walls.</summary>
+    bool AtHome(Building home, CitizenRecord c) =>
+        c.IsDowned == false && sapi.World.GetEntityById(c.EntityId) is { Alive: true } e && InsideHome(home, e.Pos.AsBlockPos);
+
+    bool InsideHome(Building home, BlockPos pos)
+    {
+        var (min, max) = ZoneOf(home);
+        return pos.X >= min.X && pos.X <= max.X && pos.Y >= min.Y - 1 && pos.Y <= max.Y && pos.Z >= min.Z && pos.Z <= max.Z;
+    }
+
+    /// <summary>True when the settler stands in its home while the home's fire burns (IsCold asks).</summary>
+    bool WarmAtHome(CitizenRecord c, BlockPos pos) => warmResidents.TryGetValue(c.CitizenId, out var home) && InsideHome(home, pos);
+
+    /// <summary>A farmer with nothing to grow in winter helps the couriers (AiTaskSettlerCourier).</summary>
+    public bool WinterFarmerHelps(Colony colony, CitizenRecord c)
+    {
+        if (!Config.WinterFarmersHaul || c.JobCode != Jobs.Farmer || c.WorkplacePos == null || IsBrokenDown(c)) return false;
+        if (!WorkerStatus.TryGetValue(c.CitizenId, out var status)) return false;
+        return status == "no-sowing-winter" || (status is "growing" or "no-sowing-weather" && IsWinterAt(c.WorkplacePos));
+    }
 
     // ---- Getting ready in autumn ------------------------------------------------------------
 

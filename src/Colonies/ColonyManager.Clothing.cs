@@ -128,7 +128,8 @@ public partial class ColonyManager
             float warmth = WornClothes(c).Sum(s => s == null ? 0 : WarmthOf(s));
             // Indoors, out of the wind (an enclosed room), is a little warmer.
             if (sapi.ModLoader.GetModSystem<RoomRegistry>()?.GetRoomForPosition(settler.Pos.AsBlockPos) is { ExitCount: 0 }) warmth += Config.RoomWarmth;
-            cold = climate.Temperature + warmth < BodyTemperatureResistance();
+            // A home whose fire burns is warm, however thin the clothes (home fires, ColonyManager.Winter.cs).
+            cold = climate.Temperature + warmth < BodyTemperatureResistance() && !WarmAtHome(c, settler.Pos.AsBlockPos);
         }
         coldCache[c.CitizenId] = (now + ColdCheckMs, cold);
         return cold;

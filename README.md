@@ -12,7 +12,7 @@ domain (`assets/createacolony/`, block and item codes like `createacolony:townha
 (`ModConfig/createacolony.json`), the release zips (`createacolony_<version>.zip`) and all save data keys.
 Changing any of those would stop old worlds from loading their colonies, so leave them as they are.
 
-## Getting ready for winter (0.190.0)
+## Getting ready for winter (0.190.0, 0.191.0)
 
 The colony now looks ahead to the winter where its Town Hall stands, using your world's own seasons.
 
@@ -24,7 +24,16 @@ The colony now looks ahead to the winter where its Town Hall stands, using your 
 - **Settlers get ready.** In the last two months before the frost: foresters keep more firewood if it is short, tailors make warm clothes first if clothes are short, and cooks leave grain and other food that keeps for the winter (unless food is low now). Turn this off with the switch at the bottom of the Winter tab.
 - **No winter.** Where it never freezes, the tab says so and nothing else changes.
 - Server config: `WinterReadiness`, `WinterWarnDays`, `WinterPrepMonths`, `WinterCookFirewoodPerDay`, `WinterForesterFirewoodKeep`, `WinterCookSavesAboveDays`.
-- Not in this release: home fires (next release). Farmers already bring in every ripe crop first, so nothing changed there.
+- Farmers already bring in every ripe crop first, so nothing changed there.
+
+### Home fires (0.191.0)
+
+- In the cold months (winter, or colder than 5°C at the Town Hall), every lived-in home with a fire pit inside or right by it asks couriers for firewood when its chests hold less than 8. The home needs a chest.
+- In the evening and at night, when someone who lives there is home, the fire is fed from the home's chests and lit.
+- A settler inside a home whose fire burns is never cold, however thin their clothes.
+- Home fires count towards the Firewood line on the Winter tab (6 a day per home).
+- Farmers with nothing to grow in winter help the couriers carry things, like settlers with no job do.
+- Server config: `HomeFires`, `HomeFireBelowTemperature`, `HomeFireFromHour`, `HomeFireToHour`, `HomeFireKeep`, `HomeFireLoad`, `HomeFireFirewoodPerDay`, `WinterFarmersHaul`.
 
 Not tested in game yet.
 

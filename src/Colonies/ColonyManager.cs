@@ -325,6 +325,7 @@ public partial class ColonyManager : ModSystem
             TickChurch(colony);
             TickGraveyard(colony);
             TickWinter(colony);
+            TickHomeFires(colony);
             TickRequests(colony, now);
             EnsureMinStock(colony);
             TickUpkeep(colony);
