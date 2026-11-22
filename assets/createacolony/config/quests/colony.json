@@ -118,12 +118,35 @@
           ]
         },
         {
-          "code": "kingdom-q18",
+          "code": "kingdom-tax1",
           "x": 12.93,
           "y": -13.37,
           "shape": "square",
           "requires": [
             "kingdom-q17"
+          ],
+          "icon": "game:gear-rusty",
+          "objectives": [
+            {
+              "type": "event",
+              "code": "event-bailiff-taxes",
+              "text": "objective-text-firsttaxes"
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 20
+            }
+          ]
+        },
+        {
+          "code": "kingdom-q18",
+          "x": 12.93,
+          "y": -15.27,
+          "shape": "square",
+          "requires": [
+            "kingdom-tax1"
           ],
           "objectives": [
             {
