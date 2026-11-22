@@ -575,7 +575,7 @@ public class HutSnapshot
     [ProtoMember(412)] public bool FieldTripsOpen;
     /// <summary>An Apiary: the Keep the last colony switch on its Work area tab.</summary>
     [ProtoMember(2700)] public bool KeepLastColony;
-    /// <summary>The hut's Take auto hires and Take auto residents switches (0.184.0).</summary>
+    /// <summary>The hut's Take auto hires and Take auto residents switches (0.185.0).</summary>
     [ProtoMember(3700)] public bool TakesAutoHires;
     [ProtoMember(3701)] public bool TakesAutoResidents;
 }
@@ -677,7 +677,7 @@ public class MemberView
     [ProtoMember(1)] public string PlayerUid = "";
     [ProtoMember(2)] public string Name = "";
     [ProtoMember(3)] public int Role;
-    /// <summary>0.184.0: their custom rank (0 for none) and its name or the role's.</summary>
+    /// <summary>0.185.0: their custom rank (0 for none) and its name or the role's.</summary>
     [ProtoMember(3710)] public int RankId;
     [ProtoMember(3711)] public string RankName = "";
 }
@@ -761,7 +761,7 @@ public class ColonySnapshot
     [ProtoMember(3205)] public int RaidsTotal;
     [ProtoMember(3206)] public bool RaidsAllowed;
     [ProtoMember(3207)] public int RaidMinSettlers;
-    /// <summary>0.184.0 Town Hall features: the Settings tab switches, the Ranks page and the permission log (newest first).</summary>
+    /// <summary>0.185.0 Town Hall features: the Settings tab switches, the Ranks page and the permission log (newest first).</summary>
     [ProtoMember(3700)] public bool AutoHiring;
     [ProtoMember(3701)] public bool AutoHousing;
     [ProtoMember(3702)] public bool EnterMessages;
@@ -1057,7 +1057,7 @@ public enum ColonyAction
     SetKeepLastColony = 2700,
     /// <summary>A Market's For sale tab (officers): Text "kind|on", "kind|off" or "kind|price" (ColonyManager.SetMarketRule).</summary>
     SetMarketRule = 3500,
-    /// <summary>0.184.0 Town Hall features (officers; owner for ranks). Text "1"/"0" for the switches.</summary>
+    /// <summary>0.185.0 Town Hall features (officers; owner for ranks). Text "1"/"0" for the switches.</summary>
     SetAutoHiring = 3700,
     SetAutoHousing = 3701,
     /// <summary>BuildingId, Text "hire|1" (Take auto hires) or "home|1" (Take auto residents).</summary>

@@ -9,7 +9,7 @@ using Vintagestory.GameContent;
 namespace CreateAColony.Colonies;
 
 /// <summary>
-/// The Charcoal Burner (0.184.0): its burner makes charcoal the way a player does, in the game's own charcoal pit.
+/// The Charcoal Burner (0.185.0): its burner makes charcoal the way a player does, in the game's own charcoal pit.
 /// Each pit is a spot of soft ground near the hut. The burner digs it out (CharcoalPilesPerPit blocks deep), stacks a
 /// firewood pile in each block, puts the game's charcoal pit block on top, seals it with the soil it dug and lights it.
 /// The game burns it (about 18 hours) and turns the firewood into charcoal piles. The burner then opens the pit, takes

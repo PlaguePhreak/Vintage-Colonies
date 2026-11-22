@@ -1,5 +1,5 @@
 """
-Writes the simple placeholder models of the six huts of 0.184.0: Charcoal Burner, Stonemason, Bakery, Fisher,
+Writes the simple placeholder models of the six huts of 0.185.0: Charcoal Burner, Stonemason, Bakery, Fisher,
 Fletcher and Composter. Each is the hut crate with a small sign of its trade on the lid. Aaron makes the real
 buildings; these are only stand-ins.
 

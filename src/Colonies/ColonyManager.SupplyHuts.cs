@@ -8,7 +8,7 @@ using ItemMatch = System.Func<Vintagestory.API.Common.ItemStack, bool>;
 namespace CreateAColony.Colonies;
 
 /// <summary>
-/// What the six huts of 0.184.0 share (Charcoal Burner, Stonemason, Bakery, Fisher, Fletcher, Composter). The
+/// What the six huts of 0.185.0 share (Charcoal Burner, Stonemason, Bakery, Fisher, Fletcher, Composter). The
 /// Stonemason and the Fletcher do all their work on the Crafting recipes tab (AiTaskSettlerRecipeMaker): the Stonemason
 /// makes anything the game's grid recipes make from stone alone (config HutRecipeInputParts), the Fletcher arrows and
 /// bows. Both start with a few things to keep (config HutRecipeStartKeep), and make what builders and guard towers ask
@@ -16,7 +16,7 @@ namespace CreateAColony.Colonies;
 /// </summary>
 public partial class ColonyManager
 {
-    /// <summary>The huts added in 0.184.0, for the lists of hut types that show worker info and their placing message.</summary>
+    /// <summary>The huts added in 0.185.0, for the lists of hut types that show worker info and their placing message.</summary>
     public static bool IsSupplyHut(string type) => type is BuildingTypes.CharcoalBurner or BuildingTypes.Stonemason or BuildingTypes.Bakery
         or BuildingTypes.Fisher or BuildingTypes.Fletcher or BuildingTypes.Composter;
 

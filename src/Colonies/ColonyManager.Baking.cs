@@ -9,7 +9,7 @@ using ItemMatch = System.Func<Vintagestory.API.Common.ItemStack, bool>;
 namespace CreateAColony.Colonies;
 
 /// <summary>
-/// The Bakery (0.184.0). Its baker keeps the colony in bread: it grinds grain into flour at a quern by the Bakery (the
+/// The Bakery (0.185.0). Its baker keeps the colony in bread: it grinds grain into flour at a quern by the Bakery (the
 /// game's grinding: what the quern would make of it), mixes flour into dough as the game's crafting recipe does (water
 /// comes from the Bakery's own water), and bakes the dough on the fire pit by the Bakery, the way the Cook does. While a
 /// Bakery has its baker, the Cook leaves bread to it and only cooks meals. The bread goes to the warehouse, and the

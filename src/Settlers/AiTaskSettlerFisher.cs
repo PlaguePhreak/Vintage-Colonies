@@ -31,6 +31,8 @@ public class AiTaskSettlerFisher : AiTaskSettlerWorker
 
     protected override bool IsToolStack(ItemStack? stack) => ColonyManager.IsFishingPole(stack);
 
+    protected override string NeedsToolStatus => "fisher-needs-pole";
+
     protected override bool AlsoKeeps(ItemStack stack) => ColonyManager.IsFishBait(stack);
 
     protected override void RequestTool(Colony colony, Building hut)

@@ -9,7 +9,7 @@ using ItemMatch = System.Func<Vintagestory.API.Common.ItemStack, bool>;
 namespace CreateAColony.Colonies;
 
 /// <summary>
-/// The Composter (0.184.0). Its composter goes round the warehouse and the huts' storage for rotten food and bones,
+/// The Composter (0.185.0). Its composter goes round the warehouse and the huts' storage for rotten food and bones,
 /// grinds bones into bone meal at a quern by the hut (the game's grinding), and takes fertilizer to the Farmer's Huts
 /// that are short of it. Rot and dry grass go on the hut's compost heap; once the heap has stood CompostDays, it turns a
 /// block of poor soil into the game's compost soil, which farmers lay on their fields (ColonyManager.SoilUpgrade.cs).

@@ -7,7 +7,7 @@ using Vintagestory.API.Server;
 namespace CreateAColony.Colonies;
 
 /// <summary>
-/// Enter and leave messages (0.184.0). A player walking into a colony's land sees "You enter (name)" on screen, and
+/// Enter and leave messages (0.185.0). A player walking into a colony's land sees "You enter (name)" on screen, and
 /// "You leave (name)" on the way out, or the colony's own welcome and goodbye text. An officer can turn the messages off
 /// on the Town Hall's Settings tab, and have members told in chat when an outsider walks in. A player who does not want
 /// them turns them off for themselves with /colony messages off.

@@ -878,7 +878,7 @@ public class GuiDialogTownHall : GuiDialog
             case 2: ComposePermissionLog(composer, top); return;
         }
 
-        // Member, Officer, then the owner's own ranks (0.184.0).
+        // Member, Officer, then the owner's own ranks (0.185.0).
         var codes = new List<string> { "role:" + (int)ColonyRole.Member, "role:" + (int)ColonyRole.Officer };
         var names = new List<string> { Lang.Get("createacolony:role-member"), Lang.Get("createacolony:role-officer") };
         foreach (var r in snapshot.Ranks)
@@ -946,7 +946,7 @@ public class GuiDialogTownHall : GuiDialog
         }
         else
         {
-            y = composer.Text(Lang.Get("createacolony:ranks-full", snapshot.MaxRanks), GuiKit.Detail(), 0, y, Width, 10);
+            y = composer.Text(Lang.Get("createacolony:ranks-full-hint", snapshot.MaxRanks), GuiKit.Detail(), 0, y, Width, 10);
         }
         if (snapshot.Ranks.Count == 0)
         {
@@ -1324,7 +1324,7 @@ public class GuiDialogTownHall : GuiDialog
     }
 
     /// <summary>
-    /// The Town page of Settings (0.184.0): auto hiring, auto housing, and the messages players see when they walk into
+    /// The Town page of Settings (0.185.0): auto hiring, auto housing, and the messages players see when they walk into
     /// or out of the colony. Officers change them.
     /// </summary>
     void ComposeTownSettings(GuiComposer composer, double y)

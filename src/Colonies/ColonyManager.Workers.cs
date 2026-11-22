@@ -48,7 +48,7 @@ public partial class ColonyManager
         [BuildingTypes.Apiary] = new WorkerHutKind(Jobs.Beekeeper, EnumTool.Knife, _ => false, IsHivePart),
         // The undertaker digs graves with a shovel and keeps the bodies it carries (ColonyManager.Graveyard.cs).
         [BuildingTypes.Graveyard] = new WorkerHutKind(Jobs.Undertaker, EnumTool.Shovel, _ => false, IsShroudedBody),
-        // 0.184.0: the charcoal burner digs its pits with a shovel and keeps firewood for the next one (ColonyManager.Charcoal.cs).
+        // 0.185.0: the charcoal burner digs its pits with a shovel and keeps firewood for the next one (ColonyManager.Charcoal.cs).
         [BuildingTypes.CharcoalBurner] = new WorkerHutKind(Jobs.CharcoalBurner, EnumTool.Shovel, _ => false, IsFirewood),
         // The fisher's pole has no tool type (AiTaskSettlerFisher.IsToolStack); it keeps its pole and bait.
         [BuildingTypes.Fisher] = new WorkerHutKind(Jobs.Fisher, EnumTool.Knife, _ => false, s => IsFishingPole(s) || IsFishBait(s)),

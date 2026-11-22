@@ -94,13 +94,15 @@ Things marked *(tested)* have been tried in game. Everything else is built but s
 - Graveyard and Undertaker: grave plots, the undertaker brings the dead home, buries them under a named grave marker and holds a small funeral; belongings go to the Graveyard's storage (0.179.0, not tested yet)
 - Economy step 1: the Market and Market Trader, settlers spend spare gears on meals and clothes, the economy starts at Town Hall level 2 with 60 starting gears (0.182.0, not tested yet)
 - Economy step 2: Tavern Keeper, the Cook brews drinks in barrels, evenings at the Tavern with drinks for 1 gear, hangovers (0.184.0, not tested yet)
+- Charcoal Burner's Hut: the charcoal burner digs charcoal pits, fills them with firewood, lights them and digs out the charcoal for the Smelter and Blacksmith (0.185.0, not tested yet)
+- Five new huts: Stonemason (stone bricks and other stone pieces), Bakery (grinds flour, mixes dough, bakes bread), Fisher (the game's own fish, bait and fished-out spots), Fletcher (arrows and bows, also for the guard towers) and Composter (compost soil and bone meal for the farms). They use placeholder models until Aaron designs their buildings (0.185.0, not tested yet)
+- Town Hall: auto hiring and auto housing switches, custom ranks with tick boxes and a permission log, and enter and leave messages with your own text (0.185.0, not tested yet)
 
 ## Partly done
 
 - **Cook's Hut**: baking comes from the Stone Bake Oven mod (0.55.0); still no place where the Cook serves food, no food-mod cooking stations *(tested)*
-- **Town Hall window**: alliances, happiness, reordering work orders, custom ranks, permission logs, auto hiring and housing, and enter and leave messages say "Coming later" *(tested)*
-- **Permissions**: no custom ranks, no hostile or neutral list, no log of who did what *(tested)*
-- **Hiring and housing**: no auto-hire switch (choosing who lives in each home came in 0.75.0)
+- **Town Hall window**: alliances and reordering work orders are still to do; custom ranks, the permission log, auto hiring and housing, and enter and leave messages came in 0.185.0 *(not tested yet)*
+- **Permissions**: custom ranks and the permission log came in 0.185.0; still no hostile or neutral list *(not tested yet)*
 - **Guards**: ranged guards and the Rally Banner came in 0.178.0, raids (outlaws, wolves, drifters) in 0.183.0; still no other bandit groups, no Combat Academy or archery range, and the Rally Banner does not show the colony's Heraldry design yet *(not tested yet)*
 - **Blueprints**: no in-game scan tool for your own buildings, and the wand's Education, Walls and Decoration tabs are still empty *(tested)*
 - **Death**: the Graveyard and Undertaker came in 0.179.0. Still to do: a memorial stone, laying the body out on a table first, family visiting graves, and the Graveyard's buildings (Aaron designs them) *(not tested yet)*
@@ -113,15 +115,14 @@ Things marked *(tested)* have been tried in game. Everything else is built but s
 1. **Armourer's and Weaponsmith's buildings**: the jobs came in 0.114.0, the buildings are still to design
 2. **Butcher's Hut, the rest**: the building, smoking racks, and offal and sinew from the mod. Original plan: a butcher takes the animals the Hunter (0.99.0) and herders bring home and cuts them up for meat, hides, fat and bones, then stores the meat with the food from 0.100.0. Works with the **Butchering** mod by CaptainOats when it is installed: the butcher hangs carcasses on its hooks, uses its tables, catches blood in buckets and smokes meat on its racks for more food per animal. Without the mod, the butcher uses a knife like the game does. The mod lists no licence, so we will never copy or bundle its files. It stays an optional extra that players download themselves.
 3. **Langstroth hives for the Beekeeper**: frames, the Frame Rack and waxed twine from From Golden Combs (the Apiary came in 0.174.0)
-4. **Buildings for the newer huts**: herder huts, Tannery, Butcher's Hut, Apiary, Boarding House and Graveyard still use placeholder models (Aaron designs every building)
+4. **Buildings for the newer huts**: herder huts, Tannery, Butcher's Hut, Apiary, Boarding House, Graveyard, Charcoal Burner, Stonemason, Bakery, Fisher, Fletcher and Composter still use placeholder models (Aaron designs every building)
 
 **Later**
 - **More bandit groups for raids**: Hill Raiders, River Reavers, Rust Brigands, Storm Cultists and Deserters, each with their own look and way of fighting (written up 22 Nov 2026)
 - **Economy** (design doc https://claude.ai/artifact/54wQA4dYCoNTKviikB23iN, approved 22 Nov 2026): step 1, the Market, came in 0.182.0; step 2, the Tavern Keeper and drinks, in 0.184.0 (a Brewer job comes later). Still to do: step 3 home comfort, furniture, rent and better houses, step 4 market day traders, fines and the Bailiff's money report. The Royal Mint, taxes and wages came in 0.136.0.
-- More huts from MineColonies: Stonemason, Baker, Fisher, Plantation (reeds and cattails), Composter, Crusher and Sifter (quern and panning), Florist, Dyer, Fletcher and Mechanic (windmills and gears)
+- More huts from MineColonies: Plantation (reeds and cattails), Crusher and Sifter (quern and panning), Florist, Dyer and Mechanic (windmills and gears). Stonemason, Baker, Fisher, Composter and Fletcher came in 0.185.0
 - A Combat Academy and an archery range to train guards
 - **Stonemason carving**: a Stonemason adds chiseled detail to buildings by copying carvings you made yourself (builders place chiseled blocks from builds since 0.159.0)
-- Charcoal burner for the Smelter and Blacksmith
 - Settler chat bubbles where settlers ask for things or complain
 - Walls, wells, roads and other decorations to order from the Builder's Wand
 - **Outposts**: a ready-made bundle of buildings that can be placed outside the colony's border. Its buildings level up all together or one at a time. An outpost works as its own small base and tries to look after itself. It keeps a small military force away from home to protect workers out in the field, and gives them a safe place to go when they are attacked, or at night when the outpost is closer than home.

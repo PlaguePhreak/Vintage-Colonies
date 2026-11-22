@@ -11,7 +11,7 @@ using ItemMatch = System.Func<Vintagestory.API.Common.ItemStack, bool>;
 namespace CreateAColony.Colonies;
 
 /// <summary>
-/// The Fisher (0.184.0). Its fisher stands on the bank of water near the hut with the game's fishing pole and catches
+/// The Fisher (0.185.0). Its fisher stands on the bank of water near the hut with the game's fishing pole and catches
 /// the fish the game's own fishing gives there: the fish that live in that water's climate, eating the bait it uses
 /// (bait from the hut storage; without bait only the fish that bite on nothing). Ponds under 100 blocks of water have no
 /// fish, as in the game, and every catch counts towards the game's fish depletion, so a spot fished out rests.

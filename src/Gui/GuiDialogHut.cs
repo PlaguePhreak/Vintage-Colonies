@@ -1122,7 +1122,7 @@ public partial class GuiDialogHut : GuiDialog
         ? Lang.Get("createacolony:stat-kill", CreatureName(key[5..]))
         : Lang.Get("createacolony:stat-" + key);
 
-    /// <summary>A hut's Take auto hires or Take auto residents switch (0.184.0); officers change it.</summary>
+    /// <summary>A hut's Take auto hires or Take auto residents switch (0.185.0); officers change it.</summary>
     double AutoFlagSwitch(GuiComposer composer, string key, string flag, string label, bool value, double y)
     {
         if (Officer) composer.AddSwitch(on => SendText(ColonyAction.SetHutAutoFlag, BuildingId, flag + "|" + (on ? "1" : "0")), ElementBounds.Fixed(0, y, 30, 30), key);

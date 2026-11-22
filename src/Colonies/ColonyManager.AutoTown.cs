@@ -7,7 +7,7 @@ using Vintagestory.API.MathTools;
 namespace CreateAColony.Colonies;
 
 /// <summary>
-/// Auto hiring and auto housing (0.184.0), the Town Hall's Settings switches, both off until an officer turns them on.
+/// Auto hiring and auto housing (0.185.0), the Town Hall's Settings switches, both off until an officer turns them on.
 /// Auto hiring: each morning, every jobless grown settler takes an open place, the best fit first (skill, passion,
 /// trait, the way the Bailiff hands out jobs). Food comes first: Farmer, Cook and Bakery places fill before the rest,
 /// then huts nobody works at, then the others. Huts with Take auto hires off, the Church and the Bailiff's post are left

@@ -96,6 +96,9 @@ public abstract class AiTaskSettlerWorker : SettlerTaskBase
     protected virtual bool IsToolStack(ItemStack? stack) => ColonyManager.ToolFits(stack, Tool, 0);
 
     /// <summary>Asks couriers to bring the job's tool to the hut.</summary>
+    /// <summary>The work status shown while the worker has no tool.</summary>
+    protected virtual string NeedsToolStatus => "needs-tool-" + Tool.ToString().ToLowerInvariant();
+
     protected virtual void RequestTool(Colony colony, Building hut) => manager!.EnsureToolRequest(colony, hut, hut, new ColonyManager.ToolNeed(Tool, 0));
 
     /// <summary>True when the worker can work on the target from where it stands, without walking.</summary>
@@ -148,7 +151,7 @@ public abstract class AiTaskSettlerWorker : SettlerTaskBase
             if (toolChest != null) return Go(Step.FetchTool, toolChest.Pos);
             if (HasSurplus(citizen)) return Go(Step.Deposit, storage[0].Pos);
             RequestTool(colony, hut);
-            SetStatus("needs-tool-" + Tool.ToString().ToLowerInvariant());
+            SetStatus(NeedsToolStatus);
             return Wait();
         }
 

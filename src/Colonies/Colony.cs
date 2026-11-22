@@ -941,7 +941,7 @@ public class Colony
     [ProtoMember(120)] public byte[]? Currency;
     // 3500-3519: spending (ColonyManager.Market.cs).
     /// <summary>Gears still to be given to the treasury when the economy starts (config StartingGears); -1 until it starts.</summary>
-    // Town Hall features (0.184.0, ColonyManager.AutoTown.cs and ColonyManager.Ranks.cs)
+    // Town Hall features (0.185.0, ColonyManager.AutoTown.cs and ColonyManager.Ranks.cs)
     /// <summary>Jobless settlers take open places in huts by themselves each morning.</summary>
     [ProtoMember(3711)] public bool AutoHiring;
     /// <summary>Settlers with no home move into homes with free beds by themselves.</summary>

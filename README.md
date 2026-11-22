@@ -46,6 +46,23 @@ Research goes from 12 pieces to 32 (design: "More Research", approved by Aaron 2
 | Standing Army | Defence | 4 | Drill Yards, Stone Walls | 3,000 points, 16 iron ingots, 2 tokens | Guards get 4 more health and hit 15% harder |
 | Atlas of the World | Exploration | 4 | Surveying, Expeditions | 3,000 points, 32 parchment, 2 tokens | Explorers go 50% further and walk 15% faster |
 
+## Charcoal Burner, five new huts and Town Hall features (0.185.0)
+
+New huts (placeholder models until Aaron designs the buildings; each is crafted from planks and an item of its trade):
+
+- **Charcoal Burner's Hut** (planks + charcoal): the charcoal burner digs a pit in soil, sand or gravel near the hut, fills it with firewood, covers and lights it the game's way, and after about 18 in-game hours digs out the charcoal and fills the hole. 1 pit at level 1, 2 at level 2, 3 at level 4, 4 at level 5. It stops when the colony has 64 charcoal (config `CharcoalKeep`) plus what is asked for. Needs a shovel; couriers bring firewood.
+- **Stonemason's Hut** (planks + stone): makes stone recipes ticked on the Crafting recipes tab (bricks, slabs, stairs and the like). Needs a chisel, some recipes a saw, hammer or pickaxe. Starts keeping 32 stone bricks. Builders' stone brick requests go here.
+- **Bakery** (planks + flour): the baker grinds grain into flour at a quern near the Bakery, mixes dough (the game's recipe, water is free) and bakes bread on a fire pit near the Bakery. It keeps 24 bread (`BakerBreadKeep`). While the Bakery has a baker the Cook leaves bread alone, and the stone oven only bakes pies.
+- **Fisher's Hut** (planks + cattail tops): the fisher stands on a bank near water within 24 blocks and fishes. Catches are the game's own fish for that climate and bait; ponds under 100 water blocks have none; catches count towards the game's fish depletion. Needs a fishing pole; bait from the hut storage.
+- **Fletcher's Hut** (planks + feather): makes arrows and bows ticked on the Crafting recipes tab. Needs a knife. Starts keeping 32 flint and 16 copper arrows. Guard towers that ask for arrows get them from here.
+- **Composter's Hut** (planks + rot): collects rot and bones from the warehouse and other huts, cuts dry grass, feeds a compost heap that turns poor soil into compost soil after 3 days, grinds bones into bone meal at a quern, and takes fertilizer to the Farmer's Huts.
+
+Town Hall:
+
+- **Settings > Town**: Auto hiring (each morning jobless settlers take open places they fit, food huts first), Auto housing (homeless settlers move into free homes every few hours), Enter and leave messages with your own welcome and goodbye text, and Tell members when outsiders come in. Huts get a Take auto hires switch on Manage workers, homes a Take auto residents switch.
+- **Permissions > Ranks**: the owner makes up to 6 ranks and ticks what each may do (build, storage, workers, hut settings, town settings, visitors, invite, guards), then gives players a rank in the Players list. **Permissions > Log** shows what members and officers did.
+- `/colony messages on|off` turns the enter and leave messages off for yourself.
+
 ## Economy step 2: the Tavern (0.184.0)
 Step 2 of the economy design doc (https://claude.ai/artifact/54wQA4dYCoNTKviikB23iN).
 - **Tavern Keeper**: a new job at the Tavern (1 keeper, skill Hospitality). It keeps about 10 litres of drink at the Tavern: jugs of drink from the warehouse first, else it fills empty jugs and buckets at a Cook's finished barrel. With no empty jugs it says so on the hut.

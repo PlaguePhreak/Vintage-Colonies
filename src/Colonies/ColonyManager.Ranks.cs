@@ -30,7 +30,7 @@ public enum RankPerm
 }
 
 /// <summary>
-/// Custom ranks and the permission log (0.184.0). The owner makes up to MaxRanks ranks on the Permissions tab, names
+/// Custom ranks and the permission log (0.185.0). The owner makes up to MaxRanks ranks on the Permissions tab, names
 /// them and ticks what each may do. A player with a rank is a Member who may also do the ticked things, as an officer
 /// would. Member and Officer stay as they were. Every guarded thing a non-owner does goes into the colony's permission
 /// log (the last PermissionLogSize lines), shown on the same page.

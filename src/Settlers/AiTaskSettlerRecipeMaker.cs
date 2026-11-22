@@ -10,7 +10,7 @@ using ItemMatch = System.Func<Vintagestory.API.Common.ItemStack, bool>;
 namespace CreateAColony.Settlers;
 
 /// <summary>
-/// A worker whose whole job is its hut's Crafting recipes tab (0.184.0): the Stonemason cuts stone, the Fletcher makes
+/// A worker whose whole job is its hut's Crafting recipes tab (0.185.0): the Stonemason cuts stone, the Fletcher makes
 /// arrows and bows. What the hut can make is in config HutRecipeOutputs / HutRecipeInputParts / HutRecipeTools; a new hut
 /// starts with config HutRecipeStartKeep, and builders' and guard towers' requests are made here when the warehouse is
 /// short (ColonyManager.Orders.cs). The work itself is the base worker's recipe crafting. It picks up its tools from
