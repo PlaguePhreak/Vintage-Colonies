@@ -46,6 +46,7 @@ Things marked *(tested)* have been tried in game. Everything else is built but s
 - Apiary and Beekeeper: harvests full skeps, sets out empty skeps for swarms, brings in wild hives the gatherer marked, and works From Golden Combs ceramic hives when that mod is installed (0.174.0, placeholder model, no building yet, not tested yet)
 - Smelter alloys and the bloomery: the smelter mixes alloys such as bronze and makes iron blooms, which the blacksmith works into ingots (0.169.0, not tested yet)
 - Research: the Archive, Researchers, Research Points, Knowledge Tokens and the first 12 pieces of research (0.166.0, not tested yet)
+- More research: 32 pieces in all with tier 3 and tier 4, handing in books, relics, field notes and temporal gears at the Archive, Explorer field trips, failed experiments and researchers sitting at a table (0.180.0, not tested yet)
 - Boarding House: many beds in one building for new settlers, who are less happy there and move out when a home is free (0.173.0, no building yet, not tested yet)
 
 **Colony systems**
@@ -107,11 +108,10 @@ Things marked *(tested)* have been tried in game. Everything else is built but s
 
 **Next, in this order**
 1. **Raids** (ranged guards and the Rally Banner came in 0.178.0): now and then, enemies turn up and attack the player's colony. The player is warned in chat and on the Town Hall window. There are several raid factions, from bandits (who use the settler models) to the game's own monsters such as drifters and shivers.
-2. **More research**: tier 3 and higher nodes, nodes that unlock new buildings, handing in books, gears and relics at the Archive, field research quests for the Explorer, failed experiments, and researchers sitting and writing at a table
-3. **Armourer's and Weaponsmith's buildings**: the jobs came in 0.114.0, the buildings are still to design
-4. **Butcher's Hut, the rest**: the building, smoking racks, and offal and sinew from the mod. Original plan: a butcher takes the animals the Hunter (0.99.0) and herders bring home and cuts them up for meat, hides, fat and bones, then stores the meat with the food from 0.100.0. Works with the **Butchering** mod by CaptainOats when it is installed: the butcher hangs carcasses on its hooks, uses its tables, catches blood in buckets and smokes meat on its racks for more food per animal. Without the mod, the butcher uses a knife like the game does. The mod lists no licence, so we will never copy or bundle its files. It stays an optional extra that players download themselves.
-5. **Langstroth hives for the Beekeeper**: frames, the Frame Rack and waxed twine from From Golden Combs (the Apiary came in 0.174.0)
-6. **Buildings for the newer huts**: herder huts, Tannery, Butcher's Hut, Apiary, Boarding House and Graveyard still use placeholder models (Aaron designs every building)
+2. **Armourer's and Weaponsmith's buildings**: the jobs came in 0.114.0, the buildings are still to design
+3. **Butcher's Hut, the rest**: the building, smoking racks, and offal and sinew from the mod. Original plan: a butcher takes the animals the Hunter (0.99.0) and herders bring home and cuts them up for meat, hides, fat and bones, then stores the meat with the food from 0.100.0. Works with the **Butchering** mod by CaptainOats when it is installed: the butcher hangs carcasses on its hooks, uses its tables, catches blood in buckets and smokes meat on its racks for more food per animal. Without the mod, the butcher uses a knife like the game does. The mod lists no licence, so we will never copy or bundle its files. It stays an optional extra that players download themselves.
+4. **Langstroth hives for the Beekeeper**: frames, the Frame Rack and waxed twine from From Golden Combs (the Apiary came in 0.174.0)
+5. **Buildings for the newer huts**: herder huts, Tannery, Butcher's Hut, Apiary, Boarding House and Graveyard still use placeholder models (Aaron designs every building)
 
 **Later**
 - **Economy**: settlers spend their coins (a market, the Tavern, buying furniture and clothes), coins of other metals, fines and market fees for the Bailiff. The Royal Mint, taxes and wages came in 0.136.0.

@@ -12,6 +12,40 @@ domain (`assets/createacolony/`, block and item codes like `createacolony:townha
 (`ModConfig/createacolony.json`), the release zips (`createacolony_<version>.zip`) and all save data keys.
 Changing any of those would stop old worlds from loading their colonies, so leave them as they are.
 
+## More research (0.180.0)
+
+Research goes from 12 pieces to 32 (design: "More Research", approved by Aaron 2026-11-22). Nothing in the Builder's Wand is locked by research.
+
+- **20 new pieces**: 2 more at tier 2, 13 at tier 3 and 5 tier 4 "great works". Tier 3 needs Town Hall 3 and an Archive at tier 2; tier 4 needs Town Hall 5, an Archive at tier 3 and 2 Knowledge Tokens (`ResearchTierGate`). The Archive keeps 3 tiers.
+- **Hand in** on the Archive's Research tab: hold a book (`game:book-*`), a lore journal or scroll (`game:lore-*`), a resonance archive (`game:tuningcylinder-*`), Jonas parts, ruin finds (`game:clutter-art/*` and others), Field notes or a temporal gear (1 Knowledge Token) and press the button. Researchers also take them from the Archive's storage once a day. Hand-ins give at most `HandInPointsPerDay` 300 points a day. Points go to the oldest research running there, or wait as **Stored points**. Rusty gears are money, so they are not taken. The list is `ResearchHandIns` in the config.
+- **Field trips**: once Field Notes is done, the Archive offers up to 3 trips to the colony's ruins, translocators, peaks and story places (from the Explorer's map markers, nearest the Town Hall first). An Explorer with parchment (keep some in its hut) walks there, studies the spot and writes a **Field notes** book, then carries it to the Archive: 150 to 300 points, and 1 Knowledge Token for ruins, translocators and story places. Each spot counts once.
+- **Failed experiments** (`ResearchFailures`, on): each piece of work has a 4% chance to fail, 0.3% less per Research skill level and 1% less with a table, shelf and light. A failure loses 3 works of points, logs a line and gives a small sad thought. 1% of works are a lucky find worth 2.
+- **Sitting and writing**: researchers sit on a chair, stool or bench beside a table within 6 blocks of the Archive (`ResearchersSit`). With none they study standing, as before.
+- **Quest book**: a new Research chapter in the colony book, one quest per new piece.
+
+| Research | Branch | Tier | Needs | Cost | Does |
+| --- | --- | --- | --- | --- | --- |
+| Burial Rites | Population | 2 | Herbal Remedies, a Church | 600 points, 8 parchment, 16 planks | The Healer works 15% faster |
+| Archery | Defence | 2 | Guard Training | 600 points, 16 arrows | Guards hit 10% harder |
+| Road Building | Settlement | 3 | Organized Storage | 1,000 points, 64 gravel | All settlers walk 10% faster |
+| Master Masons | Settlement | 3 | Colony Expansion | 1,200 points, 32 stone bricks | Builders work 20% faster |
+| Stonecutting | Settlement | 3 | Colony Expansion | 1,200 points, 32 stone blocks | Quarriers and miners dig 20% faster |
+| Crop Science | Production | 3 | Irrigation | 1,200 points, 16 bone meal | Farmers harvest 10% more |
+| Guild Workshops | Production | 3 | Specialized Craftsmen | 1,200 points, 8 tin bronze ingots | Crafting jobs work 15% faster |
+| Efficient Smelting | Production | 3 | Specialized Craftsmen | 1,200 points, 16 fired fire bricks | Smelters and smiths use 20% less fuel |
+| Medicine | Population | 3 | Herbal Remedies | 1,200 points, 16 poultices | Healing in bed 50% faster |
+| Schooling | Population | 3 | Scribe Training | 1,200 points, 16 parchment, 4 books | Settlers learn skills 20% faster |
+| Town Life | Population | 3 | Bigger Village, 25 settlers | 1,500 points, 32 linen | 2 more settlers per Town Hall level |
+| Drill Yards | Defence | 3 | Guard Training | 1,200 points, 8 bronze spears | Guards hit 15% harder |
+| Stone Walls | Defence | 3 | Basic Fortifications | 1,200 points, 64 stone blocks | Guards get 4 more health |
+| Surveying | Exploration | 3 | Cartographer's Guild | 1,000 points, 16 parchment | Explorers go 25% further |
+| Expeditions | Exploration | 3 | Field Notes | 1,200 points, 8 parchment | Field notes give 50% more points, gives 1 Knowledge Token |
+| Grand Library | Population | 4 | Schooling | 3,000 points, 32 books, 2 tokens | Research 25% faster, each Archive runs 1 more at once |
+| Charter of the Realm | Settlement | 4 | Road Building, Master Masons | 3,000 points, 8 gold ingots, 2 tokens | Claim grows 32 more blocks each way, 2 more settlers per Town Hall level |
+| Mechanics | Production | 4 | Guild Workshops | 3,000 points, 16 iron ingots, 2 tokens | Crafting jobs work 15% faster |
+| Standing Army | Defence | 4 | Drill Yards, Stone Walls | 3,000 points, 16 iron ingots, 2 tokens | Guards get 4 more health and hit 15% harder |
+| Atlas of the World | Exploration | 4 | Surveying, Expeditions | 3,000 points, 32 parchment, 2 tokens | Explorers go 50% further and walk 15% faster |
+
 ## Graveyard and Undertaker (0.179.0)
 Built from the design doc Aaron approved on 22 Nov 2026 (https://claude.ai/artifact/UNBVULi6TXAb2FGjUmB3hp).
 - **Graveyard**: a new hut (Education tab, recipe: planks around a stone). Placeholder model only; Aaron designs the buildings. It takes 1 undertaker at levels 1-2, 2 at levels 3-4 and 3 at level 5.
