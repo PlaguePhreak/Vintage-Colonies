@@ -96,6 +96,7 @@ public partial class ColonyManager
             Lang.Get("createacolony:tavern-beds", FreeBeds(colony))
         };
         if (PopulationCap(colony) > 0) lines.Add(Lang.Get(IsFull(colony) ? "createacolony:tavern-full" : "createacolony:tavern-population", Population(colony), PopulationCap(colony)));
+        lines.AddRange(TavernDrinkInfo(colony, tavern));
         return string.Join("<br>", lines);
     }
 

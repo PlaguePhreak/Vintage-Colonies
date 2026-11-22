@@ -70,6 +70,7 @@ public partial class ColonyManager
         BuildingTypes.Healer => Jobs.Healer,
         BuildingTypes.Mint => Jobs.Minter,
         BuildingTypes.Market => Jobs.MarketTrader,
+        BuildingTypes.Tavern => Jobs.TavernKeeper,
         BuildingTypes.Archive => Jobs.Researcher,
         BuildingTypes.Tannery => Jobs.Tanner,
         BuildingTypes.Church => Jobs.Priest,
@@ -175,6 +176,8 @@ public partial class ColonyManager
         if (hut.Type == BuildingTypes.Healer) return HealerHutJunk(colony, hut);
         if (hut.Type == BuildingTypes.Mint) return MintHutJunk(colony, hut);
         if (hut.Type == BuildingTypes.Market) return MarketHutJunk(colony);
+        // The Tavern's storage holds gears for hiring, drinks and jugs; players may keep other things there too.
+        if (hut.Type == BuildingTypes.Tavern) return _ => false;
         if (hut.Type == BuildingTypes.Archive) return ArchiveJunk(colony, hut);
         if (hut.Type == BuildingTypes.Tannery) return TannerHutJunk(colony, hut);
         if (IsHerderHut(hut.Type)) return HerderHutJunk(colony, hut);

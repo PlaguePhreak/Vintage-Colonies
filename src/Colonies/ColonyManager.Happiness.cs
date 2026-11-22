@@ -56,7 +56,11 @@ public partial class ColonyManager
         ["smallfuneral"] = (2, 24),
         // Spending (ColonyManager.Market.cs): bought something at the Market, or wanted to and could not afford it.
         ["bought"] = (2, 24),
-        ["cantafford"] = (-1, 12)
+        ["cantafford"] = (-1, 12),
+        // The Tavern (ColonyManager.Tavern.cs): a drink with friends, a chat with no drink, a hangover.
+        ["drink"] = (3, 12),
+        ["chat"] = (1, 6),
+        ["hangover"] = (-2, 12)
     };
 
     /// <summary>Mood bands from the top: the lowest happiness each starts at, and the word for it.</summary>
