@@ -1,0 +1,38 @@
+{
+	"code": "gravemarker",
+	"entityClass": "GraveMarker",
+	// Put up over a grave by the undertaker (ColonyManager.Graveyard.cs); looking at it shows who lies there.
+	// Wood at Graveyard level 1, stone from level 2. Only undertakers make these, so it drops nothing.
+	"behaviors": [{ "name": "HorizontalOrientable", "properties": { "dropBlockFace": "north" } }],
+	"variantgroups": [
+		{ "code": "material", "states": ["wood", "stone"] },
+		{ "code": "side", "states": ["north", "east", "south", "west"] }
+	],
+	"creativeinventory": { "general": ["*-north"], "vintagecolonies": ["*-north"] },
+	"blockmaterialByType": { "*-wood-*": "Wood", "*": "Stone" },
+	"drawtype": "json",
+	"shapeByType": {
+		"*-wood-north": { "base": "createacolony:block/gravemarker-wood", "rotateY": 0 },
+		"*-wood-east": { "base": "createacolony:block/gravemarker-wood", "rotateY": 270 },
+		"*-wood-south": { "base": "createacolony:block/gravemarker-wood", "rotateY": 180 },
+		"*-wood-west": { "base": "createacolony:block/gravemarker-wood", "rotateY": 90 },
+		"*-stone-north": { "base": "createacolony:block/gravemarker-stone", "rotateY": 0 },
+		"*-stone-east": { "base": "createacolony:block/gravemarker-stone", "rotateY": 270 },
+		"*-stone-south": { "base": "createacolony:block/gravemarker-stone", "rotateY": 180 },
+		"*-stone-west": { "base": "createacolony:block/gravemarker-stone", "rotateY": 90 }
+	},
+	"textures": {
+		"planks": { "base": "game:block/wood/planks/aged1" },
+		"stone": { "base": "game:block/stone/rock/granite1" },
+		"soil": { "base": "game:block/cloth/basic/brown" }
+	},
+	"drops": [],
+	"collisionbox": { "x1": 0, "y1": 0, "z1": 0, "x2": 1, "y2": 0.125, "z2": 1 },
+	"selectionbox": { "x1": 0, "y1": 0, "z1": 0, "x2": 1, "y2": 0.875, "z2": 1 },
+	"sideopaque": { "all": false },
+	"sidesolid": { "all": false },
+	"emitSideAo": { "all": false },
+	"lightAbsorption": 0,
+	"resistanceByType": { "*-wood-*": 1.5, "*": 4 },
+	"sounds": { "place": "game:block/planks", "break": "game:block/planks", "hit": "game:block/planks" }
+}

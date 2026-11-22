@@ -886,7 +886,7 @@ public partial class ColonyNetwork : ModSystem
                 GrowsUpHours = Manager.HoursToGrowUp(c),
                 DiedTotalDays = c.DiedTotalDays,
                 DeathCause = c.DeathCause,
-                Buried = c.Buried,
+                Buried = c.Buried || c.Interred,
                 VisitorHoursLeft = c.Visitor ? (int)System.Math.Ceiling(System.Math.Max(0, c.VisitorUntilTotalDays - sapi!.World.Calendar.TotalDays) * sapi.World.Calendar.HoursPerDay) : 0,
                 TraitsText = Manager.TraitsText(c),
                 Weapon = c.Alive && !c.IsChild && !c.Visitor ? Manager.WeaponText(c) : "",
@@ -1175,7 +1175,7 @@ public partial class ColonyNetwork : ModSystem
         if (building.Type is BuildingTypes.Forester or BuildingTypes.Farmer or BuildingTypes.Potter or BuildingTypes.Cook
             or BuildingTypes.Prospector or BuildingTypes.Miner or BuildingTypes.Quarry
             or BuildingTypes.Smelter or BuildingTypes.Blacksmith or BuildingTypes.Armourer or BuildingTypes.Weaponsmith or BuildingTypes.Sawmill or BuildingTypes.Craftsman or BuildingTypes.Tailor or BuildingTypes.Jeweller or BuildingTypes.Healer or BuildingTypes.Mint or BuildingTypes.Church
-            or BuildingTypes.Explorer or BuildingTypes.Gatherer or BuildingTypes.Hunter or BuildingTypes.Butcher or BuildingTypes.Tannery or BuildingTypes.Apiary
+            or BuildingTypes.Explorer or BuildingTypes.Gatherer or BuildingTypes.Hunter or BuildingTypes.Butcher or BuildingTypes.Tannery or BuildingTypes.Apiary or BuildingTypes.Graveyard
             || ColonyManager.IsHerderHut(building.Type)) snapshot.Info = Manager.WorkerHutInfo(colony, building);
         if (building.Type == BuildingTypes.Tavern)
         {

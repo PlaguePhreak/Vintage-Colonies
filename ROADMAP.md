@@ -89,6 +89,7 @@ Things marked *(tested)* have been tried in game. Everything else is built but s
 - Rusty gears are the colony's money; Coinage coins are used when that mod is installed, and the Royal Mint needs it (0.177.0, not tested yet)
 - Ranged guards: each guard can be set to melee or ranged on the Colony militia tab, ranged guards shoot bows and slings and pick up their arrows after a fight, and armed settlers prefer spears and shields (0.178.0, not tested yet)
 - Rally Banner: link guard posts to it, raise it to call their guards to you, lower it to send them back (0.178.0, not tested yet)
+- Graveyard and Undertaker: grave plots, the undertaker brings the dead home, buries them under a named grave marker and holds a small funeral; belongings go to the Graveyard's storage (0.179.0, not tested yet)
 
 ## Partly done
 
@@ -98,7 +99,7 @@ Things marked *(tested)* have been tried in game. Everything else is built but s
 - **Hiring and housing**: no auto-hire switch (choosing who lives in each home came in 0.75.0)
 - **Guards**: ranged guards and the Rally Banner came in 0.178.0; still no raids, no Combat Academy or archery range, and the Rally Banner does not show the colony's Heraldry design yet *(not tested yet)*
 - **Blueprints**: no in-game scan tool for your own buildings, and the wand's Education, Walls and Decoration tabs are still empty *(tested)*
-- **Death**: corpses, grave markers and causes of death came in 0.77.0-0.94.0, and the priest holds funerals at graves (0.137.0), but there is no graveyard yet
+- **Death**: the Graveyard and Undertaker came in 0.179.0. Still to do: a memorial stone, laying the body out on a table first, family visiting graves, and the Graveyard's buildings (Aaron designs them) *(not tested yet)*
 - **Quests**: the new quest book is in (0.175.0-0.177.1). Still to do: real rewards, the Bronze Age, Iron and Steel, Mechanical Power, Kilns and Glass and Tutorial chapters, 31 Colony quests that wait for huts we do not have yet, and Tavern jobs and settler requests as quests
 - **Stash and Postbox**: drop-off points exist, but there is no postbox to order items to the player *(tested)*
 
@@ -106,12 +107,11 @@ Things marked *(tested)* have been tried in game. Everything else is built but s
 
 **Next, in this order**
 1. **Raids** (ranged guards and the Rally Banner came in 0.178.0): now and then, enemies turn up and attack the player's colony. The player is warned in chat and on the Town Hall window. There are several raid factions, from bandits (who use the settler models) to the game's own monsters such as drifters and shivers.
-2. **Graveyard**: an undertaker who buries the dead (the Healer, bandages and poultices came in 0.117.0)
-3. **More research**: tier 3 and higher nodes, nodes that unlock new buildings, handing in books, gears and relics at the Archive, field research quests for the Explorer, failed experiments, and researchers sitting and writing at a table
-4. **Armourer's and Weaponsmith's buildings**: the jobs came in 0.114.0, the buildings are still to design
-5. **Butcher's Hut, the rest**: the building, smoking racks, and offal and sinew from the mod. Original plan: a butcher takes the animals the Hunter (0.99.0) and herders bring home and cuts them up for meat, hides, fat and bones, then stores the meat with the food from 0.100.0. Works with the **Butchering** mod by CaptainOats when it is installed: the butcher hangs carcasses on its hooks, uses its tables, catches blood in buckets and smokes meat on its racks for more food per animal. Without the mod, the butcher uses a knife like the game does. The mod lists no licence, so we will never copy or bundle its files. It stays an optional extra that players download themselves.
-6. **Langstroth hives for the Beekeeper**: frames, the Frame Rack and waxed twine from From Golden Combs (the Apiary came in 0.174.0)
-7. **Buildings for the newer huts**: herder huts, Tannery, Butcher's Hut, Apiary and Boarding House still use placeholder models (Aaron designs every building)
+2. **More research**: tier 3 and higher nodes, nodes that unlock new buildings, handing in books, gears and relics at the Archive, field research quests for the Explorer, failed experiments, and researchers sitting and writing at a table
+3. **Armourer's and Weaponsmith's buildings**: the jobs came in 0.114.0, the buildings are still to design
+4. **Butcher's Hut, the rest**: the building, smoking racks, and offal and sinew from the mod. Original plan: a butcher takes the animals the Hunter (0.99.0) and herders bring home and cuts them up for meat, hides, fat and bones, then stores the meat with the food from 0.100.0. Works with the **Butchering** mod by CaptainOats when it is installed: the butcher hangs carcasses on its hooks, uses its tables, catches blood in buckets and smokes meat on its racks for more food per animal. Without the mod, the butcher uses a knife like the game does. The mod lists no licence, so we will never copy or bundle its files. It stays an optional extra that players download themselves.
+5. **Langstroth hives for the Beekeeper**: frames, the Frame Rack and waxed twine from From Golden Combs (the Apiary came in 0.174.0)
+6. **Buildings for the newer huts**: herder huts, Tannery, Butcher's Hut, Apiary, Boarding House and Graveyard still use placeholder models (Aaron designs every building)
 
 **Later**
 - **Economy**: settlers spend their coins (a market, the Tavern, buying furniture and clothes), coins of other metals, fines and market fees for the Bailiff. The Royal Mint, taxes and wages came in 0.136.0.

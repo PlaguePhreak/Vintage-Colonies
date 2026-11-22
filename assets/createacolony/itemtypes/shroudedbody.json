@@ -1,0 +1,16 @@
+{
+	"code": "shroudedbody",
+	"class": "ItemShroudedBody",
+	// A dead settler wrapped in a shroud, for the undertaker (ColonyManager.Graveyard.cs). Settlers make these;
+	// it is not in the creative inventory, as an empty one is nobody.
+	"maxstacksize": 1,
+	"shape": { "base": "createacolony:item/shroudedbody" },
+	"textures": {
+		"linen": { "base": "game:block/cloth/linen/white" },
+		"rope": { "base": "game:block/cloth/reedrope" }
+	},
+	"guiTransform": { "rotation": { "x": -30, "y": 135, "z": 0 }, "origin": { "x": 0.5, "y": 0.2, "z": 0.5 }, "scale": 1.4 },
+	"fpHandTransform": { "translation": { "x": 0, "y": 0.1, "z": 0 }, "rotation": { "x": 0, "y": 90, "z": 0 }, "scale": 1.4 },
+	"tpHandTransform": { "translation": { "x": -0.9, "y": -0.3, "z": -0.6 }, "rotation": { "x": 0, "y": 90, "z": 0 }, "scale": 0.7 },
+	"groundTransform": { "origin": { "x": 0.5, "y": 0, "z": 0.5 }, "scale": 2 }
+}

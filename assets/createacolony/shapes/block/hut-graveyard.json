@@ -1,0 +1,565 @@
+{
+ "textureWidth": 16,
+ "textureHeight": 16,
+ "textures": {
+  "sides": "sides",
+  "planks": "planks",
+  "stone": "stone",
+  "log": "log",
+  "metal": "metal"
+ },
+ "elements": [
+  {
+   "name": "Crate",
+   "from": [
+    1,
+    0,
+    1
+   ],
+   "to": [
+    15,
+    8,
+    15
+   ],
+   "faces": {
+    "north": {
+     "texture": "#sides",
+     "uv": [
+      0,
+      0,
+      14,
+      8
+     ]
+    },
+    "east": {
+     "texture": "#sides",
+     "uv": [
+      0,
+      0,
+      14,
+      8
+     ]
+    },
+    "south": {
+     "texture": "#sides",
+     "uv": [
+      0,
+      0,
+      14,
+      8
+     ]
+    },
+    "west": {
+     "texture": "#sides",
+     "uv": [
+      0,
+      0,
+      14,
+      8
+     ]
+    },
+    "up": {
+     "texture": "#sides",
+     "uv": [
+      0,
+      0,
+      14,
+      14
+     ]
+    },
+    "down": {
+     "texture": "#sides",
+     "uv": [
+      0,
+      0,
+      14,
+      14
+     ]
+    }
+   }
+  },
+  {
+   "name": "Lid",
+   "from": [
+    0,
+    8,
+    0
+   ],
+   "to": [
+    16,
+    9,
+    16
+   ],
+   "faces": {
+    "north": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      16,
+      1
+     ]
+    },
+    "east": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      16,
+      1
+     ]
+    },
+    "south": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      16,
+      1
+     ]
+    },
+    "west": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      16,
+      1
+     ]
+    },
+    "up": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      16,
+      16
+     ]
+    },
+    "down": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      16,
+      16
+     ]
+    }
+   }
+  },
+  {
+   "name": "Stone",
+   "from": [
+    2.5,
+    9,
+    3
+   ],
+   "to": [
+    8.5,
+    15,
+    5
+   ],
+   "faces": {
+    "north": {
+     "texture": "#stone",
+     "uv": [
+      0,
+      0,
+      6.0,
+      6
+     ]
+    },
+    "east": {
+     "texture": "#stone",
+     "uv": [
+      0,
+      0,
+      2,
+      6
+     ]
+    },
+    "south": {
+     "texture": "#stone",
+     "uv": [
+      0,
+      0,
+      6.0,
+      6
+     ]
+    },
+    "west": {
+     "texture": "#stone",
+     "uv": [
+      0,
+      0,
+      2,
+      6
+     ]
+    },
+    "up": {
+     "texture": "#stone",
+     "uv": [
+      0,
+      0,
+      6.0,
+      2
+     ]
+    },
+    "down": {
+     "texture": "#stone",
+     "uv": [
+      0,
+      0,
+      6.0,
+      2
+     ]
+    }
+   }
+  },
+  {
+   "name": "StoneTop",
+   "from": [
+    3.5,
+    15,
+    3
+   ],
+   "to": [
+    7.5,
+    16,
+    5
+   ],
+   "faces": {
+    "north": {
+     "texture": "#stone",
+     "uv": [
+      0,
+      0,
+      4.0,
+      1
+     ]
+    },
+    "east": {
+     "texture": "#stone",
+     "uv": [
+      0,
+      0,
+      2,
+      1
+     ]
+    },
+    "south": {
+     "texture": "#stone",
+     "uv": [
+      0,
+      0,
+      4.0,
+      1
+     ]
+    },
+    "west": {
+     "texture": "#stone",
+     "uv": [
+      0,
+      0,
+      2,
+      1
+     ]
+    },
+    "up": {
+     "texture": "#stone",
+     "uv": [
+      0,
+      0,
+      4.0,
+      2
+     ]
+    },
+    "down": {
+     "texture": "#stone",
+     "uv": [
+      0,
+      0,
+      4.0,
+      2
+     ]
+    }
+   }
+  },
+  {
+   "name": "Mound",
+   "from": [
+    9,
+    9,
+    6
+   ],
+   "to": [
+    14,
+    10.5,
+    14
+   ],
+   "faces": {
+    "north": {
+     "texture": "#log",
+     "uv": [
+      0,
+      0,
+      5,
+      1.5
+     ]
+    },
+    "east": {
+     "texture": "#log",
+     "uv": [
+      0,
+      0,
+      8,
+      1.5
+     ]
+    },
+    "south": {
+     "texture": "#log",
+     "uv": [
+      0,
+      0,
+      5,
+      1.5
+     ]
+    },
+    "west": {
+     "texture": "#log",
+     "uv": [
+      0,
+      0,
+      8,
+      1.5
+     ]
+    },
+    "up": {
+     "texture": "#log",
+     "uv": [
+      0,
+      0,
+      5,
+      8
+     ]
+    },
+    "down": {
+     "texture": "#log",
+     "uv": [
+      0,
+      0,
+      5,
+      8
+     ]
+    }
+   }
+  },
+  {
+   "name": "ShovelHandle",
+   "from": [
+    11,
+    10.5,
+    9.5
+   ],
+   "to": [
+    12,
+    18,
+    10.5
+   ],
+   "faces": {
+    "north": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      1,
+      7.5
+     ]
+    },
+    "east": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      1.0,
+      7.5
+     ]
+    },
+    "south": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      1,
+      7.5
+     ]
+    },
+    "west": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      1.0,
+      7.5
+     ]
+    },
+    "up": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      1,
+      1.0
+     ]
+    },
+    "down": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      1,
+      1.0
+     ]
+    }
+   }
+  },
+  {
+   "name": "ShovelGrip",
+   "from": [
+    10,
+    18,
+    9.5
+   ],
+   "to": [
+    13,
+    18.8,
+    10.5
+   ],
+   "faces": {
+    "north": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      3,
+      0.8
+     ]
+    },
+    "east": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      1.0,
+      0.8
+     ]
+    },
+    "south": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      3,
+      0.8
+     ]
+    },
+    "west": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      1.0,
+      0.8
+     ]
+    },
+    "up": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      3,
+      1.0
+     ]
+    },
+    "down": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      3,
+      1.0
+     ]
+    }
+   }
+  },
+  {
+   "name": "ShovelBlade",
+   "from": [
+    10,
+    9.5,
+    9.6
+   ],
+   "to": [
+    13,
+    12,
+    10.4
+   ],
+   "faces": {
+    "north": {
+     "texture": "#metal",
+     "uv": [
+      0,
+      0,
+      3,
+      2.5
+     ]
+    },
+    "east": {
+     "texture": "#metal",
+     "uv": [
+      0,
+      0,
+      0.8,
+      2.5
+     ]
+    },
+    "south": {
+     "texture": "#metal",
+     "uv": [
+      0,
+      0,
+      3,
+      2.5
+     ]
+    },
+    "west": {
+     "texture": "#metal",
+     "uv": [
+      0,
+      0,
+      0.8,
+      2.5
+     ]
+    },
+    "up": {
+     "texture": "#metal",
+     "uv": [
+      0,
+      0,
+      3,
+      0.8
+     ]
+    },
+    "down": {
+     "texture": "#metal",
+     "uv": [
+      0,
+      0,
+      3,
+      0.8
+     ]
+    }
+   }
+  }
+ ]
+}

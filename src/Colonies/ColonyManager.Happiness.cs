@@ -44,7 +44,12 @@ public partial class ColonyManager
         ["sawattack"] = (-3, 12),
         ["monsterkill"] = (-8, 96),
         ["monsterslain"] = (3, 24),
-        ["treated"] = (4, 24)
+        ["treated"] = (4, 24),
+        // The Graveyard (ColonyManager.Graveyard.cs): a body seen, bodies left unburied, the undertaker's small funeral.
+        ["sawbody"] = (-3, 6),
+        ["unburied"] = (-3, 6),
+        ["unburiedfamily"] = (-8, 6),
+        ["smallfuneral"] = (2, 24)
     };
 
     /// <summary>Mood bands from the top: the lowest happiness each starts at, and the word for it.</summary>

@@ -195,7 +195,11 @@ public class EntityColonyCorpse : EntityAgent
             {
                 if (Api.Side == EnumAppSide.Server)
                 {
-                    if (Inventory == null || Inventory.Count == 0)
+                    if ((Inventory == null || Inventory.Empty) && KeepsBody())
+                    {
+                        if (byPlayer is IServerPlayer sp) sp.SendIngameError("", Lang.Get("createacolony:corpse-for-undertaker"));
+                    }
+                    else if (Inventory == null || Inventory.Count == 0)
                     {
                         Corpses?.Log("{0} at {1} is empty and was removed, id {2}", GetName(), RelativePos(), EntityId);
                         Die();
@@ -244,8 +248,14 @@ public class EntityColonyCorpse : EntityAgent
         }
         Corpses?.Log("{0} at {1} was collected by {2}, id {3}", GetName(), RelativePos(), byPlayer.PlayerName, EntityId);
         Corpses?.OnCollected(this, byPlayer);
+        // With a Graveyard the body stays where it lies, for the undertaker.
+        if (KeepsBody()) return;
         Die();
     }
+
+    /// <summary>A dead settler's body, in a colony with a Graveyard: only the undertaker takes it away (ColonyManager.Graveyard.cs).</summary>
+    bool KeepsBody() => IsSettler && !KnockedOut && Api.Side == EnumAppSide.Server
+        && Api.ModLoader.GetModSystem<ColonyManager>()?.KeepsBodies(ColonyId) == true;
 
     public override void Die(EnumDespawnReason reason = EnumDespawnReason.Death, DamageSource? damageSourceForDeath = null)
     {
@@ -256,6 +266,11 @@ public class EntityColonyCorpse : EntityAgent
             Inventory.DropAll(SidedPos.XYZ.AddCopy(0, 1, 0));
         }
         if (Api.Side == EnumAppSide.Server) Corpses?.Log("{0} at {1} was removed, id {2}", GetName(), RelativePos(), EntityId);
+        // A settler's body gone some other way than with the undertaker: there is nothing left to bury.
+        if (Api.Side == EnumAppSide.Server && IsSettler && !KnockedOut && !WatchedAttributes.GetBool(ColonyManager.UndertakenAttr))
+        {
+            Api.ModLoader.GetModSystem<ColonyManager>()?.OnBodyGone(ColonyId, CitizenId);
+        }
         base.Die(reason, damageSourceForDeath);
     }
 

@@ -248,7 +248,11 @@ public class CorpseSystem : ModSystem
     /// </summary>
     public Vec3d? SpawnSettlerCorpse(Entity settler, Colony colony, CitizenRecord citizen, List<ItemStack> things, bool knockedOut)
     {
-        if (sapi == null || Config?.SettlerCorpses != true || things.Count == 0) return null;
+        if (sapi == null || Config?.SettlerCorpses != true) return null;
+        var manager = sapi.ModLoader.GetModSystem<ColonyManager>();
+        // With a Graveyard a settler who died always leaves a body, for the undertaker to bury.
+        bool body = !knockedOut && manager != null && manager.HasGraveyard(colony);
+        if (things.Count == 0 && !body) return null;
         var corpse = CreateCorpse(settler.ServerPos.AsBlockPos, citizen.Name);
         if (corpse == null) return null;
         corpse.ColonyId = colony.ColonyId;
@@ -259,6 +263,7 @@ public class CorpseSystem : ModSystem
         corpse.Inventory = inv;
         sapi.World.SpawnEntity(corpse);
         Log("Created {0} at {1}, id {2}", corpse.GetName(), corpse.RelativePos(), corpse.EntityId);
+        if (!knockedOut) manager?.OnBodyMade(colony, citizen);
         return corpse.ServerPos.XYZ;
     }
 

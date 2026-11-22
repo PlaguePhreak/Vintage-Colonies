@@ -1,0 +1,217 @@
+{
+ "textureWidth": 16,
+ "textureHeight": 16,
+ "textures": {
+  "planks": "planks",
+  "soil": "soil"
+ },
+ "elements": [
+  {
+   "name": "Post",
+   "from": [
+    7,
+    0,
+    1.5
+   ],
+   "to": [
+    9,
+    14,
+    3
+   ],
+   "faces": {
+    "north": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      2,
+      14
+     ]
+    },
+    "east": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      1.5,
+      14
+     ]
+    },
+    "south": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      2,
+      14
+     ]
+    },
+    "west": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      1.5,
+      14
+     ]
+    },
+    "up": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      2,
+      1.5
+     ]
+    },
+    "down": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      2,
+      1.5
+     ]
+    }
+   }
+  },
+  {
+   "name": "Bar",
+   "from": [
+    4,
+    9,
+    1.5
+   ],
+   "to": [
+    12,
+    11,
+    3
+   ],
+   "faces": {
+    "north": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      8,
+      2
+     ]
+    },
+    "east": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      1.5,
+      2
+     ]
+    },
+    "south": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      8,
+      2
+     ]
+    },
+    "west": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      1.5,
+      2
+     ]
+    },
+    "up": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      8,
+      1.5
+     ]
+    },
+    "down": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      8,
+      1.5
+     ]
+    }
+   }
+  },
+  {
+   "name": "Mound",
+   "from": [
+    3,
+    0,
+    3.5
+   ],
+   "to": [
+    13,
+    1.5,
+    14.5
+   ],
+   "faces": {
+    "north": {
+     "texture": "#soil",
+     "uv": [
+      0,
+      0,
+      10,
+      1.5
+     ]
+    },
+    "east": {
+     "texture": "#soil",
+     "uv": [
+      0,
+      0,
+      11.0,
+      1.5
+     ]
+    },
+    "south": {
+     "texture": "#soil",
+     "uv": [
+      0,
+      0,
+      10,
+      1.5
+     ]
+    },
+    "west": {
+     "texture": "#soil",
+     "uv": [
+      0,
+      0,
+      11.0,
+      1.5
+     ]
+    },
+    "up": {
+     "texture": "#soil",
+     "uv": [
+      0,
+      0,
+      10,
+      11.0
+     ]
+    },
+    "down": {
+     "texture": "#soil",
+     "uv": [
+      0,
+      0,
+      10,
+      11.0
+     ]
+    }
+   }
+  }
+ ]
+}

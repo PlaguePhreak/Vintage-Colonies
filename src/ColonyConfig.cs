@@ -305,6 +305,29 @@ public class ColonyConfig
     /// <summary>How many of lime, logs or borax the tanner asks couriers for.</summary>
     public int TannerSupplyRequest = 10;
 
+    // Graveyard and Undertaker (ColonyManager.Graveyard.cs)
+    /// <summary>How far from the Graveyard, in blocks, the undertaker goes to collect the dead (change it on the Work area tab).</summary>
+    public int UndertakerRange = 64;
+    /// <summary>Graves a Graveyard holds at levels 1 to 5. Grave plot markers past this are not used.</summary>
+    public int[] GravesByLevel = { 8, 16, 24, 36, 50 };
+    /// <summary>How far from the Graveyard, in blocks, grave plot markers count.</summary>
+    public int GraveyardPlotRadius = 16;
+    /// <summary>How deep the undertaker digs a grave, in blocks.</summary>
+    public int GraveDepth = 2;
+    /// <summary>The Graveyard level from which graves get stone headstones instead of wooden markers.</summary>
+    public int GraveyardStoneLevel = 2;
+    /// <summary>The Graveyard level from which the dead are buried next to their family when there is room.</summary>
+    public int GraveyardFamilyLevel = 4;
+    /// <summary>Seconds the undertaker takes to lift a body, dig a grave or fill it.</summary>
+    public float UndertakerSecondsPerTask = 4f;
+    /// <summary>The undertaker's small funeral: how much of the grief over a death is left (a priest's funeral is FuneralGriefFactor).</summary>
+    public float UndertakerFuneralGriefFactor = 0.75f;
+    /// <summary>A body still unburied after this many days upsets the whole colony (only with a Graveyard), until this many days.</summary>
+    public double UnburiedAfterDays = 3;
+    public double UnburiedForgetDays = 20;
+    /// <summary>Settlers this close to a body, in blocks, are upset by it (only with a Graveyard).</summary>
+    public float SawBodyRadius = 6;
+
     // Beekeeper (ColonyManager.Beekeeping.cs)
     /// <summary>How far from the Apiary, in blocks, the beekeeper looks after hives (change it on the Work area tab).</summary>
     public int ApiaryRadius = 16;
@@ -493,6 +516,7 @@ public class ColonyConfig
         ["herdsman"] = 30,
         ["tannery"] = 30,
         ["apiary"] = 30,
+        ["graveyard"] = 30,
     };
     /// <summary>
     /// How many blocks each side of a hut's square grows for every hut level above 1, so a hut near the edge of the

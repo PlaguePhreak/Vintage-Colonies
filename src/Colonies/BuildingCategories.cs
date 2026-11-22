@@ -24,7 +24,7 @@ public static class BuildingCategories
             new("primitive", new[] { BuildingTypes.Potter, BuildingTypes.Craftsman, BuildingTypes.Tannery }),
             new("luxury", new[] { BuildingTypes.Tailor, BuildingTypes.Jeweller })),
         new("mining", new[] { BuildingTypes.Prospector, BuildingTypes.Miner, BuildingTypes.MineshaftEntrance, BuildingTypes.Quarry }),
-        new("education", new[] { BuildingTypes.Church, BuildingTypes.Archive }),
+        new("education", new[] { BuildingTypes.Church, BuildingTypes.Graveyard, BuildingTypes.Archive }),
         new("infrastructure", new[] { BuildingTypes.Warehouse, BuildingTypes.Explorer }),
         new("military", new[] { BuildingTypes.GuardTower, BuildingTypes.Barracks }),
         new("walls", System.Array.Empty<string>()),

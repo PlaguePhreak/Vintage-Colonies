@@ -57,6 +57,8 @@ public class CreateAColonyModSystem : ModSystem
         api.RegisterBlockEntityClass("ColonyHut", typeof(BlockEntityColonyHut));
         api.RegisterBlockClass("BlockFieldMarker", typeof(BlockFieldMarker));
         api.RegisterBlockClass("BlockPainting", typeof(BlockPainting));
+        api.RegisterBlockEntityClass("GraveMarker", typeof(BlockEntityGraveMarker));
+        api.RegisterItemClass("ItemShroudedBody", typeof(Items.ItemShroudedBody));
         api.RegisterItemClass("ItemBuildersWand", typeof(Items.ItemBuildersWand));
         api.RegisterItemClass("ItemGuardScepter", typeof(Items.ItemGuardScepter));
         api.RegisterItemClass("ItemRallyBanner", typeof(Items.ItemRallyBanner));
@@ -101,6 +103,7 @@ public class CreateAColonyModSystem : ModSystem
         AiTaskRegistry.Register<AiTaskSettlerHerdsman>("settlerherdsman");
         AiTaskRegistry.Register<AiTaskSettlerTanner>("settlertanner");
         AiTaskRegistry.Register<AiTaskSettlerBeekeeper>("settlerbeekeeper");
+        AiTaskRegistry.Register<AiTaskSettlerUndertaker>("settlerundertaker");
         AiTaskRegistry.Register<AiTaskSettlerCook>("settlercook");
         AiTaskRegistry.Register<AiTaskSettlerProspector>("settlerprospector");
         AiTaskRegistry.Register<AiTaskSettlerMiner>("settlerminer");

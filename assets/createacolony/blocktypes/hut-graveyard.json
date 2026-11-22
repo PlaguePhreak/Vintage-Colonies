@@ -1,0 +1,32 @@
+{
+	"code": "hut-graveyard",
+	"class": "BlockColonyHut",
+	"entityClass": "ColonyHut",
+	"attributes": {
+		"buildingType": "graveyard",
+		// The hut's own storage, where the undertaker puts the belongings of the dead; chests next to it add more.
+		"defaultType": "hut",
+		"inventoryClassName": "colonyhut",
+		"quantitySlots": { "hut": 25 },
+		"quantityColumns": { "hut": 5 },
+		"dialogTitleLangCode": { "hut": "createacolony:hut-storage" }
+	},
+	"creativeinventory": { "general": ["*"], "vintagecolonies": ["*"] },
+	"blockmaterial": "Wood",
+	"drawtype": "json",
+	// The seed of the Graveyard. Simple placeholder model: a headstone and a shovel. No building yet: Aaron designs those.
+	"shape": { "base": "createacolony:block/hut-graveyard" },
+	"textures": {
+		"sides": { "base": "game:block/wood/table/aged/sides" },
+		"planks": { "base": "game:block/wood/planks/aged1" },
+		"stone": { "base": "game:block/stone/rock/granite1" },
+		"log": { "base": "game:block/cloth/basic/brown" },
+		"metal": { "base": "game:block/metal/ingot/iron" }
+	},
+	"sideopaque": { "all": false },
+	"sidesolid": { "all": false },
+	"emitSideAo": { "all": false },
+	"lightAbsorption": 0,
+	"resistance": 2,
+	"sounds": { "place": "game:block/planks", "break": "game:block/planks", "hit": "game:block/planks" }
+}

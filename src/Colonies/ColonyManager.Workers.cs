@@ -46,6 +46,8 @@ public partial class ColonyManager
         [BuildingTypes.Herdsman] = new WorkerHutKind(Jobs.Herdsman, EnumTool.Knife, _ => false, IsEmptyBucket),
         // The beekeeper scrapes honey pots with a knife and keeps skeps and hive parts to set out (ColonyManager.Beekeeping.cs).
         [BuildingTypes.Apiary] = new WorkerHutKind(Jobs.Beekeeper, EnumTool.Knife, _ => false, IsHivePart),
+        // The undertaker digs graves with a shovel and keeps the bodies it carries (ColonyManager.Graveyard.cs).
+        [BuildingTypes.Graveyard] = new WorkerHutKind(Jobs.Undertaker, EnumTool.Shovel, _ => false, IsShroudedBody),
     };
 
     /// <summary>Huts a settler works from, whose chests are never warehouse storage.</summary>
@@ -77,7 +79,7 @@ public partial class ColonyManager
 
     /// <summary>How many settlers can work from this building at once.</summary>
     public static int WorkerSlots(Building hut) => IsGuardPost(hut.Type) ? GuardSlots(hut)
-        : hut.Type == BuildingTypes.Prospector ? ProspectorSlots : hut.Type == BuildingTypes.Church ? ChurchSlots(hut) : hut.Type == BuildingTypes.Archive ? ArchiveSlots(hut) : JobOf(hut.Type) == null ? 0 : 1;
+        : hut.Type == BuildingTypes.Prospector ? ProspectorSlots : hut.Type == BuildingTypes.Church ? ChurchSlots(hut) : hut.Type == BuildingTypes.Archive ? ArchiveSlots(hut) : hut.Type == BuildingTypes.Graveyard ? UndertakerSlots(hut) : JobOf(hut.Type) == null ? 0 : 1;
 
     /// <summary>A Prospector's Hut takes two prospectors, each finding ore or mining it (CitizenRecord.WorkRole).</summary>
     public const int ProspectorSlots = 2;
@@ -365,6 +367,7 @@ public partial class ColonyManager
         if (IsHerderHut(hut.Type)) lines.Add(HerderInfo(hut));
         if (hut.Type == BuildingTypes.Tannery) lines.Add(TannerInfo(hut));
         if (hut.Type == BuildingTypes.Apiary) lines.AddRange(ApiaryInfo(colony, hut));
+        if (hut.Type == BuildingTypes.Graveyard) lines.AddRange(GraveyardInfo(colony, hut));
         lines.Add("");
         lines.Add(Lang.Get("createacolony:hint-" + hut.Type + (hut.IsStation ? "-station" : ""), GatherRadius(hut)));
         return string.Join("<br>", lines);

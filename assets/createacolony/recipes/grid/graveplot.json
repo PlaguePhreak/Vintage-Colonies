@@ -1,0 +1,10 @@
+{
+	"ingredientPattern": "SPS",
+	"ingredients": {
+		"S": { "type": "item", "code": "game:stick" },
+		"P": { "type": "item", "code": "game:plank-*" }
+	},
+	"width": 3,
+	"height": 1,
+	"output": { "type": "block", "code": "createacolony:graveplot-north", "quantity": 2 }
+}

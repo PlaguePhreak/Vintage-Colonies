@@ -71,8 +71,15 @@ public class CitizenRecord
     [ProtoMember(26)] public double DiedTotalDays;
     /// <summary>What killed them: "entity:game:wolf-male", "player:Name" or "type:Hunger"; empty when not known.</summary>
     [ProtoMember(63)] public string DeathCause = "";
-    /// <summary>Whether a dead settler has been buried. Nothing sets it yet: burial and mourning are coming later.</summary>
+    /// <summary>Whether a priest has held a dead settler's funeral (ColonyManager.Church.cs). Being laid in a grave is Interred.</summary>
     [ProtoMember(27)] public bool Buried;
+    /// <summary>Laid in a grave at a Graveyard by an undertaker (ColonyManager.Graveyard.cs), at GravePos.</summary>
+    [ProtoMember(3300)] public bool Interred;
+    [ProtoMember(3301)] public BlockPos? GravePos;
+    /// <summary>The undertaker held the small funeral at the grave.</summary>
+    [ProtoMember(3302)] public bool SmallFuneral;
+    /// <summary>A dead settler's body still lies somewhere (or is being carried) for an undertaker to bury.</summary>
+    [ProtoMember(3303)] public bool HasBody;
     /// <summary>XP in each skill, by skill code (config/skills.json); the level follows from it. See ColonyManager.Skills.cs.</summary>
     [ProtoMember(28)] public Dictionary<string, int> SkillXp = new();
     /// <summary>Whether starting skills were rolled, so settlers from saves before skills get theirs once.</summary>
@@ -194,6 +201,8 @@ public class Building
     [ProtoMember(2700, IsRequired = true)] public bool KeepLastColony = true;
     /// <summary>An Apiary: empty skeps its beekeeper set out by wild hives, to catch their swarms and bring them home.</summary>
     [ProtoMember(2701)] public List<BlockPos> WildSkeps = new();
+    /// <summary>A Graveyard: graves its undertaker has dug and not yet filled, with the blocks that came out of them.</summary>
+    [ProtoMember(3300)] public List<OpenGrave> OpenGraves = new();
     [ProtoMember(1)] public int BuildingId;
     /// <summary>Building type, also the blueprint folder name: "builder", "townhall", "warehouse".</summary>
     [ProtoMember(2)] public string Type = "";
@@ -381,6 +390,14 @@ public class Building
 /// the staircase down to it, and the finished mines it still has to fill back in. A Miner's Hut keeps one
 /// for its miner, and every prospector on Mine ore keeps its own.
 /// </summary>
+/// <summary>A grave an undertaker dug at a grave plot: the plot's spot and the blocks taken out below it, top first.</summary>
+[ProtoContract]
+public class OpenGrave
+{
+    [ProtoMember(1)] public BlockPos Pos = new BlockPos(0);
+    [ProtoMember(2)] public List<string> Dug = new();
+}
+
 [ProtoContract]
 public class MineTrip
 {

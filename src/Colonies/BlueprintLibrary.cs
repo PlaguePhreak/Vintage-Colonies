@@ -941,6 +941,8 @@ public static class BuildingTypes
     public const string Tannery = "tannery";
     /// <summary>The Apiary: a beekeeper looks after the beehives near it (ColonyManager.Beekeeping.cs).</summary>
     public const string Apiary = "apiary";
+    /// <summary>The Graveyard: an undertaker brings the dead here and buries them at grave plots (ColonyManager.Graveyard.cs).</summary>
+    public const string Graveyard = "graveyard";
     public const string Barracks = "barracks";
     /// <summary>Put at a mine's entrance; several Miner's Huts can work the one mine through it.</summary>
     public const string MineshaftEntrance = "mineshaftentrance";
