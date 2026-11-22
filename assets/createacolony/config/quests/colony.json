@@ -260,8 +260,25 @@
           "requires": [
             "kingdom-q7"
           ],
-          "soon": true,
-          "objectives": []
+          "icon": "createacolony:hut-fisher",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "fisher",
+              "level": 1
+            },
+            {
+              "type": "job",
+              "code": "fisher",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 2
+            }
+          ]
         },
         {
           "code": "kingdom-q13",
@@ -757,8 +774,25 @@
           "requires": [
             "kingdom-q24"
           ],
-          "soon": true,
-          "objectives": []
+          "icon": "createacolony:hut-stonemason",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "stonemason",
+              "level": 1
+            },
+            {
+              "type": "job",
+              "code": "stonemason",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 2
+            }
+          ]
         },
         {
           "code": "kingdom-q26",
@@ -791,8 +825,57 @@
           "requires": [
             "kingdom-q26"
           ],
-          "soon": true,
-          "objectives": []
+          "icon": "createacolony:hut-composter",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "composter",
+              "level": 1
+            },
+            {
+              "type": "job",
+              "code": "composter",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 2
+            }
+          ]
+        },
+        {
+          "code": "kingdom-charcoal1",
+          "x": 27.88,
+          "y": -7.1,
+          "shape": "square",
+          "requires": [
+            "kingdom-q27"
+          ],
+          "icon": "createacolony:hut-charcoalburner",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "charcoalburner",
+              "level": 1
+            },
+            {
+              "type": "job",
+              "code": "charcoalburner",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 2
+            },
+            {
+              "code": "game:charcoal",
+              "count": 16
+            }
+          ]
         },
         {
           "code": "kingdom-q29",
@@ -857,8 +940,25 @@
           "requires": [
             "kingdom-h1"
           ],
-          "soon": true,
-          "objectives": []
+          "icon": "createacolony:hut-bakery",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "bakery",
+              "level": 1
+            },
+            {
+              "type": "job",
+              "code": "baker",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 2
+            }
+          ]
         },
         {
           "code": "kingdom-q40",
@@ -1213,10 +1313,27 @@
           "y": 7.41,
           "shape": "square",
           "requires": [
-            "kingdom-q46"
+            "kingdom-h2"
           ],
-          "soon": true,
-          "objectives": []
+          "icon": "createacolony:hut-fletcher",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "fletcher",
+              "level": 1
+            },
+            {
+              "type": "job",
+              "code": "fletcher",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 2
+            }
+          ]
         },
         {
           "code": "kingdom-q52",
