@@ -328,6 +328,10 @@ public static class ObjectiveTypes
     public const string Break = "break";
     /// <summary>The player placed Count blocks matching Code (any block when empty).</summary>
     public const string Place = "place";
+    /// <summary>The player used (right-clicked) Count blocks; Code is "held item@block", either side may be empty.</summary>
+    public const string Use = "use";
+    /// <summary>Count saplings the player planted have grown into trees.</summary>
+    public const string Grown = "grown";
     /// <summary>The player has stood beside Count different kinds of the colony's huts.</summary>
     public const string Tour = "tour";
     /// <summary>Count pieces of research are finished; with a Code, that piece of research is finished (Count 1).</summary>
@@ -352,6 +356,11 @@ public class QuestObjectiveDef
     public int Level;
     /// <summary>Lang key suffix for the line in the quest card; empty makes one from the type.</summary>
     public string Text = "";
+    /// <summary>
+    /// A narrower check, "key=value": for carried items an item attribute (material=copper on a lantern); for blocks
+    /// near the player "moist=75" (farmland at least that moist) or "kinds=2" (that many different kinds among them).
+    /// </summary>
+    public string Filter = "";
 }
 
 /// <summary>Items only, for now: Count of the item Code goes to the player who claims the quest.</summary>

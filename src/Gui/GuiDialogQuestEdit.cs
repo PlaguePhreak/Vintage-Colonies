@@ -21,7 +21,7 @@ public class GuiDialogQuestEdit : GuiDialog
     public static readonly string[] TaskTypes =
     {
         "", ObjectiveTypes.Obtain, ObjectiveTypes.Deliver, ObjectiveTypes.Stock, ObjectiveTypes.Holds, ObjectiveTypes.Meal, ObjectiveTypes.BlockNear,
-        ObjectiveTypes.EntityNear, ObjectiveTypes.Room, ObjectiveTypes.Mounted, ObjectiveTypes.Depth, ObjectiveTypes.Break, ObjectiveTypes.Place,
+        ObjectiveTypes.EntityNear, ObjectiveTypes.Room, ObjectiveTypes.Mounted, ObjectiveTypes.Depth, ObjectiveTypes.Break, ObjectiveTypes.Place, ObjectiveTypes.Use, ObjectiveTypes.Grown,
         ObjectiveTypes.Kill, ObjectiveTypes.Building, ObjectiveTypes.Buildings, ObjectiveTypes.Settlers, ObjectiveTypes.Job, ObjectiveTypes.Research,
         ObjectiveTypes.Happiness, ObjectiveTypes.AverageLevel, ObjectiveTypes.WorkHuts, ObjectiveTypes.TopSkill, ObjectiveTypes.Tour, ObjectiveTypes.Stat,
         ObjectiveTypes.Event, ObjectiveTypes.Age, ObjectiveTypes.Land, ObjectiveTypes.Couples, ObjectiveTypes.Children, ObjectiveTypes.Members,

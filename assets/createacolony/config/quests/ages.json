@@ -830,7 +830,13 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:crucible-*"
+              "code": "game:crucible-*-fired|game:crucible-*-smelted",
+              "text": "objective-text-firedcrucible"
+            },
+            {
+              "type": "obtain",
+              "code": "game:toolmold-*-fired-*|game:ingotmold-*-fired",
+              "text": "objective-text-firedmould"
             }
           ],
           "rewards": [
@@ -851,7 +857,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:wateringcan-*"
+              "code": "game:wateringcan-*-fired",
+              "text": "objective-text-firedcan"
             }
           ],
           "rewards": [
@@ -872,7 +879,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:jug-*"
+              "code": "game:jug-*-fired",
+              "text": "objective-text-firedjug"
             }
           ],
           "rewards": [
@@ -893,7 +901,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:claypot-*"
+              "code": "game:claypot-*-fired|game:claypot-*-cooked",
+              "text": "objective-text-firedpot"
             }
           ],
           "rewards": [
@@ -914,28 +923,8 @@
           "objectives": [
             {
               "type": "place",
-              "code": "game:storagevessel-*"
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:gear-rusty",
-              "count": 1
-            }
-          ]
-        },
-        {
-          "code": "clay-meal",
-          "x": 9.08,
-          "y": 3.17,
-          "shape": "square",
-          "requires": [
-            "clay-camp"
-          ],
-          "objectives": [
-            {
-              "type": "meal",
-              "code": "*"
+              "code": "storagevessel-*-fired",
+              "text": "objective-text-firedvessel"
             }
           ],
           "rewards": [
@@ -951,34 +940,12 @@
           "y": 3.17,
           "shape": "square",
           "requires": [
-            "clay-meal"
+            "clay-camp"
           ],
           "objectives": [
             {
               "type": "holds",
               "code": "game:grain-*|game:vegetable-*|game:fruit-*|game:redmeat-*|game:bushmeat-*|game:poultry-*|game:bread-*|game:flour-*"
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:gear-rusty",
-              "count": 1
-            }
-          ]
-        },
-        {
-          "code": "clay-seal",
-          "x": 12.71,
-          "y": 3.17,
-          "shape": "square",
-          "requires": [
-            "clay-store"
-          ],
-          "objectives": [
-            {
-              "type": "meal",
-              "level": 1,
-              "code": "*"
             }
           ],
           "rewards": [
@@ -1863,8 +1830,10 @@
           ],
           "objectives": [
             {
-              "type": "place",
-              "code": "game:lantern-*"
+              "type": "obtain",
+              "filter": "material=copper",
+              "code": "game:lantern-*",
+              "text": "objective-text-copperlantern"
             }
           ],
           "rewards": [
@@ -1880,33 +1849,12 @@
       "code": "bronze",
       "quests": [
         {
-          "code": "bronze-cass",
-          "x": 0.0,
-          "y": 0.0,
-          "shape": "square",
-          "requires": [
-            "copper-tin"
-          ],
-          "objectives": [
-            {
-              "type": "obtain",
-              "code": "game:ore-*cassiterite*|game:nugget-cassiterite"
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:gear-rusty",
-              "count": 1
-            }
-          ]
-        },
-        {
           "code": "bronze-tinnug",
           "x": 1.82,
           "y": 0.0,
           "shape": "square",
           "requires": [
-            "bronze-cass"
+            "copper-tin"
           ],
           "objectives": [
             {
@@ -2522,8 +2470,10 @@
           ],
           "objectives": [
             {
-              "type": "place",
-              "code": "game:lantern-*"
+              "type": "obtain",
+              "filter": "material=*bronze",
+              "code": "game:lantern-*",
+              "text": "objective-text-bronzelantern"
             }
           ],
           "rewards": [
@@ -2670,33 +2620,12 @@
       "code": "iron",
       "quests": [
         {
-          "code": "iron-ore",
-          "x": 0.0,
-          "y": 0.0,
-          "shape": "square",
-          "requires": [
-            "bronze-pickaxe"
-          ],
-          "objectives": [
-            {
-              "type": "obtain",
-              "code": "game:ore-*limonite*|game:nugget-limonite|game:ore-*hematite*|game:nugget-hematite|game:ore-*magnetite*|game:nugget-magnetite"
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:gear-rusty",
-              "count": 1
-            }
-          ]
-        },
-        {
           "code": "iron-crush",
           "x": 1.97,
           "y": 0.0,
           "shape": "square",
           "requires": [
-            "iron-ore"
+            "bronze-iron"
           ],
           "objectives": [
             {
@@ -3367,13 +3296,14 @@
           ],
           "objectives": [
             {
-              "type": "obtain",
-              "count": 8,
-              "code": "game:ingot-iron"
+              "type": "blocknear",
+              "code": "stonecoffinsection-*",
+              "text": "objective-text-coffin"
             },
             {
               "type": "blocknear",
-              "code": "stonecoffinsection-*|stonecoffin*"
+              "code": "stonecoffinlid-*",
+              "text": "objective-text-coffinlid"
             }
           ],
           "rewards": [

@@ -72,6 +72,7 @@ public partial class ColonyManager : ModSystem
         api.Event.OnEntityDeath += OnShotKill;
         api.Event.DidBreakBlock += OnQuestBreak;
         api.Event.DidPlaceBlock += OnQuestPlace;
+        api.Event.DidUseBlock += OnQuestUse;
         api.Event.RegisterGameTickListener(OnFarWorkTick, FarWorkTickMs);
         api.Event.RegisterGameTickListener(_ => SaveDirty(), DirtySaveMs, DirtySaveMs);
         StartRaids();

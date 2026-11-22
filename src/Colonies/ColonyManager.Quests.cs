@@ -38,6 +38,7 @@ public partial class ColonyManager
         killTags = null;
         breakTasks = null;
         placeTasks = null;
+        useTasks = null;
     }
 
 
@@ -218,7 +219,8 @@ public partial class ColonyManager
         if (o.Type == ObjectiveTypes.Kill) return QuestsOf(player.PlayerUID).Counters.GetValueOrDefault(o.Code);
         if (o.Type == ObjectiveTypes.Place) return PlaceProgress(player, o);
         if (o.Type == ObjectiveTypes.Tour) return colony == null ? 0 : TourProgress(player, colony);
-        if (o.Type == ObjectiveTypes.Break) return QuestsOf(player.PlayerUID).Counters.GetValueOrDefault("break:" + o.Code);
+        if (o.Type is ObjectiveTypes.Break or ObjectiveTypes.Use) return QuestsOf(player.PlayerUID).Counters.GetValueOrDefault(o.Type + ":" + o.Code);
+        if (o.Type == ObjectiveTypes.Grown) return GrownSaplings(player);
         if (o.Type is ObjectiveTypes.Research or ObjectiveTypes.Happiness or ObjectiveTypes.AverageLevel or ObjectiveTypes.WorkHuts or ObjectiveTypes.TopSkill)
             return colony == null ? 0 : ColonyNumber(colony, o);
         double now = sapi.World.Calendar.TotalDays;
@@ -226,7 +228,7 @@ public partial class ColonyManager
         {
             case ObjectiveTypes.Obtain:
             case ObjectiveTypes.Deliver:
-                return CountCarried(player, o.Code);
+                return CountCarried(player, o.Code, o.Filter);
             case ObjectiveTypes.Camp:
                 return HasStarterKit(player.PlayerUID) ? 1 : 0;
             case ObjectiveTypes.Colony:
@@ -286,10 +288,19 @@ public partial class ColonyManager
         }
     }
 
-    public static int CountCarried(IPlayer player, string pattern) =>
+    public static int CountCarried(IPlayer player, string pattern, string filter = "") =>
         pattern == QuestItems.AnyFood
             ? CarriedSlots(player).Where(s => s.Itemstack.Collectible.NutritionProps != null).Sum(s => s.Itemstack.StackSize)
-            : CarriedSlots(player).Where(s => QuestItems.Matches(pattern, s.Itemstack.Collectible.Code)).Sum(s => s.Itemstack.StackSize);
+            : CarriedSlots(player).Where(s => QuestItems.Matches(pattern, s.Itemstack.Collectible.Code) && AttributeFits(s.Itemstack, filter)).Sum(s => s.Itemstack.StackSize);
+
+    /// <summary>True when the stack's attribute named in a "key=value" filter matches the value (wildcards allowed); an empty filter fits everything.</summary>
+    static bool AttributeFits(ItemStack stack, string filter)
+    {
+        int eq = filter.IndexOf('=');
+        if (eq <= 0) return true;
+        string? value = stack.Attributes?.GetAsString(filter[..eq]);
+        return value != null && WildcardUtil.Match(filter[(eq + 1)..], value);
+    }
 
     /// <summary>Takes up to count matching items from what the player carries; returns how many were taken.</summary>
     static int TakeCarried(IPlayer player, string pattern, int count)
@@ -374,7 +385,7 @@ public partial class ColonyManager
                 counters.Remove(q.Code + "#" + i);
                 var o = q.Objectives[i];
                 if (o.Type == ObjectiveTypes.Kill) counters.Remove(o.Code);
-                else if (o.Type is ObjectiveTypes.Break or ObjectiveTypes.Place) counters.Remove(o.Type + ":" + o.Code);
+                else if (o.Type is ObjectiveTypes.Break or ObjectiveTypes.Place or ObjectiveTypes.Use) counters.Remove(o.Type + ":" + o.Code);
             }
             SavePlayerQuests(player.PlayerUID);
         }

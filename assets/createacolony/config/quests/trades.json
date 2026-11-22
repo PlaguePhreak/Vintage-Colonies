@@ -12,6 +12,9 @@
           "x": 0.0,
           "y": 0.0,
           "shape": "square",
+          "requires": [
+            "clay-camp"
+          ],
           "objectives": [
             {
               "type": "meal",
@@ -310,35 +313,17 @@
           ]
         },
         {
-          "code": "kitchen-fcrock",
-          "x": 0.0,
-          "y": 12.33,
-          "shape": "square",
-          "objectives": [
-            {
-              "type": "obtain",
-              "code": "game:crock-*"
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:gear-rusty",
-              "count": 1
-            }
-          ]
-        },
-        {
           "code": "kitchen-filled",
           "x": 1.82,
           "y": 12.33,
           "shape": "square",
           "requires": [
-            "kitchen-fcrock"
+            "clay-crock"
           ],
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:crock-*"
+              "code": "game:crock-*-fired|game:crock-*-meal"
             },
             {
               "type": "meal",
@@ -432,24 +417,6 @@
           ]
         },
         {
-          "code": "kitchen-vessels",
-          "x": 3.63,
-          "y": 14.83,
-          "shape": "square",
-          "objectives": [
-            {
-              "type": "place",
-              "code": "game:storagevessel-*"
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:gear-rusty",
-              "count": 1
-            }
-          ]
-        },
-        {
           "code": "kitchen-stock",
           "x": 5.99,
           "y": 13.17,
@@ -458,7 +425,7 @@
             "kitchen-sealed",
             "kitchen-shelf",
             "kitchen-cellar",
-            "kitchen-vessels"
+            "clay-cstore"
           ],
           "objectives": [
             {
@@ -833,34 +800,12 @@
           ]
         },
         {
-          "code": "kitchen-pilaf",
-          "x": 9.99,
-          "y": -2.5,
-          "shape": "square",
-          "requires": [
-            "kitchen-broth"
-          ],
-          "mod": "expandedfoods",
-          "objectives": [
-            {
-              "type": "meal",
-              "code": "*"
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:gear-rusty",
-              "count": 1
-            }
-          ]
-        },
-        {
           "code": "kitchen-gratin",
           "x": 11.81,
           "y": -2.5,
           "shape": "square",
           "requires": [
-            "kitchen-pilaf"
+            "kitchen-broth"
           ],
           "mod": "expandedfoods",
           "objectives": [
@@ -887,8 +832,14 @@
           "mod": "expandedfoods",
           "objectives": [
             {
+              "type": "holds",
+              "code": "game:saltwaterportion",
+              "text": "objective-text-saltwater"
+            },
+            {
               "type": "obtain",
-              "code": "game:salt"
+              "code": "game:salt",
+              "text": "objective-text-salt"
             }
           ],
           "rewards": [
@@ -2616,42 +2567,25 @@
           ]
         },
         {
-          "code": "farm-can",
-          "x": 6.75,
-          "y": -1.08,
-          "shape": "square",
-          "requires": [
-            "farm-plant"
-          ],
-          "objectives": [
-            {
-              "type": "obtain",
-              "code": "game:wateringcan-*"
-            }
-          ],
-          "rewards": [
-            {
-              "code": "game:gear-rusty",
-              "count": 1
-            }
-          ]
-        },
-        {
           "code": "farm-water",
           "x": 8.44,
           "y": -1.08,
           "shape": "square",
           "requires": [
-            "farm-can"
+            "farm-plant",
+            "clay-farm"
           ],
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:wateringcan-*"
+              "code": "game:wateringcan-*-fired",
+              "text": "objective-text-firedcan"
             },
             {
               "type": "blocknear",
-              "code": "farmland-*"
+              "filter": "moist=75",
+              "code": "farmland-*",
+              "text": "objective-text-moist"
             }
           ],
           "rewards": [
@@ -2891,12 +2825,9 @@
           ],
           "objectives": [
             {
-              "type": "blocknear",
-              "code": "farmland-*"
-            },
-            {
-              "type": "obtain",
-              "code": "game:bonemeal|game:potash|game:saltpeter|game:compost"
+              "type": "use",
+              "code": "game:bonemeal|game:potash|game:saltpeter|game:compost@game:farmland-*",
+              "text": "objective-text-fertilise"
             }
           ],
           "rewards": [
@@ -2917,8 +2848,10 @@
           "objectives": [
             {
               "type": "blocknear",
+              "filter": "kinds=2",
               "count": 12,
-              "code": "crop-*"
+              "code": "crop-*",
+              "text": "objective-text-rotate"
             }
           ],
           "rewards": [
@@ -3004,7 +2937,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:*cutting*|game:clipping-*"
+              "code": "game:fruitingbushcutting-*|game:clipping-*",
+              "text": "objective-text-bushcutting"
             }
           ],
           "rewards": [
@@ -3025,7 +2959,7 @@
           "objectives": [
             {
               "type": "place",
-              "code": "*berrybush*|fruitingbush-*"
+              "code": "fruitingbush-*|fruitingbushcutting-*"
             }
           ],
           "rewards": [
@@ -3970,12 +3904,9 @@
           ],
           "objectives": [
             {
-              "type": "blocknear",
-              "code": "sapling-*"
-            },
-            {
-              "type": "blocknear",
-              "code": "log-grown-*"
+              "type": "grown",
+              "code": "",
+              "text": "objective-text-grown"
             }
           ],
           "rewards": [
@@ -4226,7 +4157,13 @@
           "objectives": [
             {
               "type": "place",
-              "code": "game:woodenfence-*"
+              "code": "game:woodenfence-*",
+              "text": "objective-text-fence"
+            },
+            {
+              "type": "place",
+              "code": "game:woodenfencegate-*",
+              "text": "objective-text-gate"
             }
           ],
           "rewards": [
@@ -4247,7 +4184,13 @@
           "objectives": [
             {
               "type": "place",
-              "code": "game:plankstairs-*"
+              "code": "game:plankstairs-*",
+              "text": "objective-text-stairs"
+            },
+            {
+              "type": "place",
+              "code": "game:plankslab-*",
+              "text": "objective-text-slab"
             }
           ],
           "rewards": [
@@ -4566,7 +4509,7 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:*baskettrap*|game:trap-*|game:trapcrate-*"
+              "code": "game:*baskettrap*"
             }
           ],
           "rewards": [
@@ -5160,7 +5103,8 @@
           "objectives": [
             {
               "type": "entitynear",
-              "code": "*elk*"
+              "code": "deer-elk-baby-*|deer-albinoelk-baby-*",
+              "text": "objective-text-calf"
             }
           ],
           "rewards": [
@@ -5262,7 +5206,7 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:trapcrate-*|game:*cratetrap*"
+              "code": "game:trapcrate-*"
             }
           ],
           "rewards": [

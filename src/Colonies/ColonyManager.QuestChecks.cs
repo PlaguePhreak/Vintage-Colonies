@@ -61,7 +61,7 @@ public partial class ColonyManager
             case ObjectiveTypes.Meal:
                 return MealServings(player, o);
             case ObjectiveTypes.BlockNear:
-                return CountBlocksNear(entity.Pos.AsBlockPos, o.Code, Math.Max(1, o.Count));
+                return CountBlocksNear(entity.Pos.AsBlockPos, o.Code, Math.Max(1, o.Count), o.Filter);
             case ObjectiveTypes.EntityNear:
                 return sapi.World.GetEntitiesAround(entity.Pos.XYZ, NearEntitiesRange, NearEntitiesRange,
                     e => e.Alive && e is not EntityPlayer && QuestItems.Matches(o.Code, e.Code) && e.WatchedAttributes.GetInt("generation") >= o.Level).Length;
@@ -112,9 +112,13 @@ public partial class ColonyManager
         return (int)Math.Floor(best + 0.01);
     }
 
-    int CountBlocksNear(BlockPos centre, string pattern, int enough)
+    int CountBlocksNear(BlockPos centre, string pattern, int enough, string filter = "")
     {
         int found = 0;
+        int eq = filter.IndexOf('=');
+        string filterKey = eq > 0 ? filter[..eq] : "";
+        int filterValue = eq > 0 && int.TryParse(filter[(eq + 1)..], out int parsed) ? parsed : 0;
+        HashSet<string>? kinds = filterKey == "kinds" ? new HashSet<string>() : null;
         var accessor = sapi.World.BlockAccessor;
         var pos = new BlockPos(centre.dimension);
         for (int dy = -NearBlocksHeight; dy <= NearBlocksHeight; dy++)
@@ -126,10 +130,14 @@ public partial class ColonyManager
                     pos.Set(centre.X + dx, centre.Y + dy, centre.Z + dz);
                     var block = accessor.GetBlock(pos);
                     if (block.Id == 0 || !QuestItems.Matches(pattern, block.Code)) continue;
-                    if (++found >= enough) return found;
+                    if (filterKey == "moist" && (accessor.GetBlockEntity(pos) is not BlockEntityFarmland farmland || farmland.MoistureLevel * 100 < filterValue)) continue;
+                    kinds?.Add(block.Variant?["type"] ?? block.FirstCodePart(1) ?? "");
+                    if (++found >= enough && kinds == null) return found;
                 }
             }
         }
+        // "kinds=2": the blocks only count once that many different kinds stand among them.
+        if (kinds != null && kinds.Count < filterValue) return Math.Min(found, enough - 1);
         return found;
     }
 
@@ -169,6 +177,51 @@ public partial class ColonyManager
         if (counted) SavePlayerQuests(player.PlayerUID);
     }
 
+    List<string>? useTasks;
+
+    /// <summary>Counts a block the player used (right-clicked) towards every use task it fits. A task's code is "held item@block".</summary>
+    void OnQuestUse(IServerPlayer player, BlockSelection selection)
+    {
+        if (player == null || selection?.Position == null) return;
+        useTasks ??= Quests.All.SelectMany(q => q.Objectives).Where(o => o.Type == ObjectiveTypes.Use).Select(o => o.Code).Distinct().ToList();
+        if (useTasks.Count == 0) return;
+        var block = sapi.World.BlockAccessor.GetBlock(selection.Position);
+        if (block?.Code == null) return;
+        var held = player.InventoryManager.ActiveHotbarSlot?.Itemstack?.Collectible.Code;
+        bool counted = false;
+        foreach (string code in useTasks)
+        {
+            int at = code.IndexOf('@');
+            string tool = at < 0 ? "" : code[..at], target = at < 0 ? code : code[(at + 1)..];
+            if (tool.Length > 0 && (held == null || !QuestItems.Matches(tool, held))) continue;
+            if (target.Length > 0 && !QuestItems.Matches(target, block.Code)) continue;
+            var counters = QuestsOf(player.PlayerUID).Counters;
+            counters["use:" + code] = counters.GetValueOrDefault("use:" + code) + 1;
+            counted = true;
+        }
+        if (counted) SavePlayerQuests(player.PlayerUID);
+    }
+
+    const string SaplingKey = "sapling:";
+
+    /// <summary>How many saplings this player planted now stand as a tree: the spot holds a log where the sapling was.</summary>
+    int GrownSaplings(IServerPlayer player)
+    {
+        var counters = QuestsOf(player.PlayerUID).Counters;
+        int grown = counters.GetValueOrDefault("grown");
+        var accessor = sapi.World.BlockAccessor;
+        foreach (string key in counters.Keys.Where(k => k.StartsWith(SaplingKey)).ToList())
+        {
+            string[] xyz = key[SaplingKey.Length..].Split(',');
+            if (xyz.Length != 3 || !int.TryParse(xyz[0], out int x) || !int.TryParse(xyz[1], out int y) || !int.TryParse(xyz[2], out int z)) { counters.Remove(key); continue; }
+            var block = accessor.GetBlock(new BlockPos(x, y, z, player.Entity?.Pos.Dimension ?? 0));
+            if (block?.Code == null || !block.Code.Path.StartsWith("log-")) continue;
+            counters.Remove(key);
+            counters["grown"] = ++grown;
+        }
+        return grown;
+    }
+
     List<string>? breakTasks;
     List<string>? placeTasks;
 
@@ -177,10 +230,19 @@ public partial class ColonyManager
     {
         if (player == null || selection?.Position == null) return;
         placeTasks ??= Quests.All.SelectMany(q => q.Objectives).Where(o => o.Type == ObjectiveTypes.Place).Select(o => o.Code).Distinct().ToList();
-        if (placeTasks.Count == 0) return;
         var block = sapi.World.BlockAccessor.GetBlock(selection.Position);
         if (block?.Code == null) return;
         bool counted = false;
+        // Remember where saplings go, so a later task can see that one grew into a tree. At most 64 are kept.
+        if (block.Code.Path.StartsWith("sapling-"))
+        {
+            var planted = QuestsOf(player.PlayerUID).Counters;
+            if (planted.Keys.Count(k => k.StartsWith(SaplingKey)) < 64)
+            {
+                planted[SaplingKey + selection.Position.X + "," + selection.Position.Y + "," + selection.Position.Z] = 1;
+                counted = true;
+            }
+        }
         foreach (string code in placeTasks)
         {
             if (code.Length > 0 && !QuestItems.Matches(code, block.Code)) continue;
