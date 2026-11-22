@@ -12,6 +12,15 @@ domain (`assets/createacolony/`, block and item codes like `createacolony:townha
 (`ModConfig/createacolony.json`), the release zips (`createacolony_<version>.zip`) and all save data keys.
 Changing any of those would stop old worlds from loading their colonies, so leave them as they are.
 
+## Rusty gears are the colony's money (0.177.0)
+- **The mod's copper coin is gone.** Taxes, wages, the treasury and the Church's tithe and charity now use vanilla **rusty gears**. Tavern recruits already cost gears.
+- **Gears can't be made**, so you fill the treasury yourself: put gears in the Town Hall's chests or the warehouse. If it runs dry, settlers go unpaid and are unhappy, as before.
+- **Wages are halved**, because gears are rarer than the coins were: 2 for couriers and gatherers, 3 by default and for priests and minters, 4 for builders, guards, healers, smiths and researchers, 5 for the bailiff. A config that never changed its wages gets the new ones (config version 8).
+- **With the Coinage mod installed** (optional, never bundled) the colony uses Coinage coins instead. Any Coinage coin counts until you hold one and press **Use the coin in my hand** on the Bailiff tab's Taxes & wages page. **Use any Coinage coin** goes back. Which items count is set in `OtherCoins` (default `coinage:coin`, `coinage:coin-*`; Coinage doesn't list its item codes, so these are a guess).
+- **The Royal Mint needs Coinage.** Without it the Mint isn't in the Builder's Wand, its recipe is off, and placing one says so. A Mint already in a save stays as part of the treasury, and its minter is freed for other work.
+- **Old copper coins** are hidden, not deleted, so saves don't get unknown items. Once a minute the colony swaps any in the treasury or the Church for rusty gears, 1 for 1. You can swap ones in your inventory in the crafting grid.
+- Text says "rusty gears" or "coins" to match.
+- Not tested in game.
 ## Automatic quests, detailed cards and the quest editor (0.176.0)
 
 - **Every quest checks itself.** There is no "Mark as done" button any more. Quests look at what you carry,

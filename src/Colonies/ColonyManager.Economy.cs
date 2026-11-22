@@ -10,35 +10,64 @@ using ItemMatch = System.Func<Vintagestory.API.Common.ItemStack, bool>;
 namespace CreateAColony.Colonies;
 
 /// <summary>
-/// The colony's money. The Royal Mint strikes copper coins (AiTaskSettlerMinter, recipes/grid/coin.json); they go
-/// to the treasury: the Town Hall's chests, the Mint's storage and the warehouse. Once a month, on payday, the
-/// bailiff collects TaxPercent of every settler's purse into the treasury, then pays each settler the wage of
-/// their job (config Wages) from it. Settlers keep their coins in their purse; what they spend them on comes later.
-/// Taxes make settlers a little unhappy, more the higher they are, and so does a wage that was not paid.
-/// A colony can pick its own coin instead (Bailiff tab, "Use the coin in my hand"), such as one a player designed
-/// with the Coinage mod: then only that coin counts as money, the bailiff pays wages in it and the minter strikes
-/// copies of it from ingots of its metal.
+/// The colony's money (0.177.0): vanilla rusty gears, or the Coinage mod's coins when that mod is installed
+/// (ColonyMoney). The treasury is the Town Hall's chests, the Royal Mint's storage and the warehouse. Once a month,
+/// on payday, the bailiff collects TaxPercent of every settler's purse into the treasury, then pays each settler
+/// the wage of their job (config Wages) from it. Settlers keep their money in their purse; what they spend it on
+/// comes later. Taxes make settlers a little unhappy, more the higher they are, and so does a wage that was not paid.
+/// Gears cannot be made, so the players fill the treasury. With Coinage a colony can pick one coin design
+/// (Bailiff tab, "Use the coin in my hand"); the Royal Mint, only placeable with Coinage, strikes copies of it
+/// from ingots of its metal. The mod's old copper coin is hidden and swapped for gears 1 for 1 (TickMoney).
 /// </summary>
 public partial class ColonyManager
 {
-    const string MintCoinCode = "createacolony:coin-copper";
-    /// <summary>Each colony's own coin (Colony.Currency) as a stack, by colony id; null when it could not be loaded.</summary>
+    /// <summary>Each colony's picked Coinage coin (Colony.Currency) as a stack, by colony id; null when it could not be loaded.</summary>
     readonly Dictionary<string, ItemStack?> currencies = new();
-    ItemStack? mintCoin;
-    AssetLocation[]? otherCoins;
+    ItemStack? gearSample;
+    ItemStack? defaultCoinageCoin;
+    bool coinPatternsSet;
 
-    /// <summary>True for any coin: the Royal Mint's, or another mod's (config OtherCoins, Coinage's by default).</summary>
+    /// <summary>True when the Coinage mod is installed: the colony's money is then its coins, not rusty gears.</summary>
+    public bool CoinageLoaded
+    {
+        get
+        {
+            if (!coinPatternsSet)
+            {
+                coinPatternsSet = true;
+                if (Config.OtherCoins is { Length: > 0 } patterns) ColonyMoney.CoinagePatterns = patterns;
+            }
+            return ColonyMoney.CoinageLoaded(sapi);
+        }
+    }
+
+    /// <summary>True for any money: rusty gears, the old copper coin, or a Coinage coin.</summary>
     public bool IsCoin(ItemStack s)
     {
         var code = s.Collectible.Code;
         if (code.Domain == "createacolony") return FirstPart(code) == "coin";
-        otherCoins ??= Config.OtherCoins.Select(p => new AssetLocation(p)).ToArray();
-        return otherCoins.Any(p => WildcardUtil.Match(p, code));
+        if (code.ToString() == ColonyMoney.GearCode) return true;
+        _ = CoinageLoaded;
+        return ColonyMoney.IsCoinageCoin(s);
     }
 
-    /// <summary>The colony's coin: the one picked on the Bailiff tab, else the Royal Mint's copper coin.</summary>
+    /// <summary>True for a Coinage coin, the only kind a colony can pick on the Bailiff tab.</summary>
+    public bool IsCoinageCoin(ItemStack s)
+    {
+        _ = CoinageLoaded;
+        return ColonyMoney.IsCoinageCoin(s);
+    }
+
+    /// <summary>
+    /// The colony's money: rusty gears; with Coinage the coin picked on the Bailiff tab, else the first Coinage coin.
+    /// </summary>
     public ItemStack? CurrencySample(Colony colony)
     {
+        if (!CoinageLoaded)
+        {
+            if (gearSample == null && sapi.World.GetItem(new AssetLocation(ColonyMoney.GearCode)) is { } gear) gearSample = new ItemStack(gear);
+            return gearSample;
+        }
         if (colony.Currency is { Length: > 0 } bytes)
         {
             if (!currencies.TryGetValue(colony.ColonyId, out var stack))
@@ -47,7 +76,7 @@ public partial class ColonyManager
                 {
                     using var reader = new System.IO.BinaryReader(new System.IO.MemoryStream(bytes));
                     stack = new ItemStack(reader, sapi.World);
-                    if (stack.Collectible == null) stack = null;
+                    if (stack.Collectible == null || !ColonyMoney.IsCoinageCoin(stack)) stack = null;
                 }
                 catch (Exception)
                 {
@@ -55,26 +84,28 @@ public partial class ColonyManager
                 }
                 currencies[colony.ColonyId] = stack;
             }
-            // A coin from a mod that is gone: back to the Mint's coins.
             if (stack != null) return stack;
         }
-        if (mintCoin == null && sapi.World.GetItem(new AssetLocation(MintCoinCode)) is { } item) mintCoin = new ItemStack(item);
-        return mintCoin;
+        return defaultCoinageCoin ??= ColonyMoney.FirstCoinageCoin(sapi.World);
     }
 
-    /// <summary>True when the colony uses a coin of its own choosing rather than the Royal Mint's.</summary>
-    public bool HasOwnCoin(Colony colony) => CurrencySample(colony) is { } coin && coin.Collectible.Code.ToString() != MintCoinCode;
+    /// <summary>True when the colony's money is Coinage coins (the mod is installed), false for rusty gears.</summary>
+    public bool HasOwnCoin(Colony colony) => CoinageLoaded;
 
-    /// <summary>Matches the colony's money: its own coin, the same design (attributes) only, or the Mint's copper coins.</summary>
+    /// <summary>True when a colony with Coinage has picked one coin design on the Bailiff tab.</summary>
+    bool PickedCoin(Colony colony) => CoinageLoaded && colony.Currency is { Length: > 0 } && CurrencySample(colony) is { } s && !ReferenceEquals(s, defaultCoinageCoin);
+
+    /// <summary>Matches the colony's money: rusty gears; the picked Coinage coin (same design only); or any Coinage coin.</summary>
     public ItemMatch CurrencyMatch(Colony colony)
     {
         var sample = CurrencySample(colony);
         if (sample == null) return _ => false;
-        if (!HasOwnCoin(colony)) return s => s.Collectible == sample.Collectible;
+        if (!CoinageLoaded) return s => s.Collectible == sample.Collectible;
+        if (!PickedCoin(colony)) return s => ColonyMoney.IsCoinageCoin(s);
         return s => s.Collectible == sample.Collectible && sample.Equals(sapi.World, s, GlobalConstants.IgnoredStackAttributes);
     }
 
-    /// <summary>A stack of the colony's coins; null when there is no coin to make.</summary>
+    /// <summary>A stack of the colony's money; null when there is none to make.</summary>
     public ItemStack? NewCoins(Colony colony, int count)
     {
         if (CurrencySample(colony) is not { } sample) return null;
@@ -83,13 +114,10 @@ public partial class ColonyManager
         return stack;
     }
 
-    /// <summary>The coin's name, for the Bailiff tab.</summary>
+    /// <summary>The money's name, for the Bailiff tab.</summary>
     public string CurrencyName(Colony colony) => CurrencySample(colony)?.GetName() ?? "";
 
-    /// <summary>
-    /// Makes this coin the colony's money (null: back to the Royal Mint's copper coins). The Mint stops striking
-    /// its own coins while the colony has another.
-    /// </summary>
+    /// <summary>Makes this Coinage coin the colony's money (null: any Coinage coin).</summary>
     public void SetCurrency(Colony colony, ItemStack? coin)
     {
         if (coin != null)
@@ -100,17 +128,68 @@ public partial class ColonyManager
         }
         else colony.Currency = null;
         currencies.Remove(colony.ColonyId);
-        foreach (var mint in colony.Buildings.Where(b => b.Type == BuildingTypes.Mint))
-        {
-            var mintKeys = HutRecipeKinds(BuildingTypes.Mint).Where(k => IsCoin(k.Sample)).Select(k => k.Key).ToList();
-            if (coin != null) foreach (var key in mintKeys) mint.RecipeKeep.Remove(key);
-            else if (!mintKeys.Any(mint.RecipeKeep.ContainsKey)) KeepCoinsAtStart(mint);
-        }
         LogEvent(colony, "event-currency", CurrencyName(colony));
         MarkDirty(colony);
     }
 
-    /// <summary>True once the colony has a built Royal Mint: until then there are no taxes or wages.</summary>
+    /// <summary>When TickMoney last ran for each colony (ms).</summary>
+    readonly Dictionary<string, long> lastMoneyTick = new();
+    const long MoneyTickMs = 60_000;
+
+    /// <summary>
+    /// Part of the colony tick, once a minute: old copper coins in the treasury and the Church become rusty gears,
+    /// 1 for 1, and without Coinage the Royal Mint's minters stop (there is nothing to strike) and are free for other work.
+    /// </summary>
+    void TickMoney(Colony colony)
+    {
+        long ms = sapi.World.ElapsedMilliseconds;
+        if (lastMoneyTick.TryGetValue(colony.ColonyId, out long last) && ms - last < MoneyTickMs) return;
+        lastMoneyTick[colony.ColonyId] = ms;
+        SwapOldCoins(colony);
+        if (CoinageLoaded) return;
+        foreach (var mint in colony.Buildings.Where(b => b.Type == BuildingTypes.Mint).ToList())
+            foreach (var minter in WorkersAt(colony, mint).ToList())
+            {
+                UnassignWorker(colony, mint, minter);
+                LogEvent(colony, "event-minter-freed", minter.Name);
+            }
+    }
+
+    /// <summary>Swaps the old copper coins in the treasury and the Churches' storage for rusty gears, 1 for 1.</summary>
+    void SwapOldCoins(Colony colony)
+    {
+        if (sapi.World.GetItem(new AssetLocation(ColonyMoney.GearCode)) is not { } gear) return;
+        var chests = TreasuryContainers(colony)
+            .Concat(colony.Buildings.Where(b => b.Type == BuildingTypes.Church).SelectMany(b => HutStorage(colony, b)))
+            .Distinct().ToList();
+        int swapped = 0, extra = 0;
+        int max = Math.Max(1, gear.MaxStackSize);
+        foreach (var chest in chests)
+        {
+            foreach (var slot in chest.Inventory)
+            {
+                if (slot.Empty || slot.Itemstack.Collectible.Code.ToString() != ColonyMoney.OldCoinCode) continue;
+                int count = slot.Itemstack.StackSize;
+                slot.Itemstack = new ItemStack(gear, Math.Min(count, max));
+                extra += count - slot.Itemstack.StackSize;
+                swapped += count;
+                slot.MarkDirty();
+            }
+        }
+        // Gears stack smaller than the old coins did: the rest go in with the others.
+        while (extra > 0)
+        {
+            var rest = new ItemStack(gear, Math.Min(extra, max));
+            int want = rest.StackSize;
+            foreach (var chest in chests) if (rest.StackSize > 0) PutItems(chest, rest);
+            if (rest.StackSize > 0) PutInWarehouse(colony, rest);
+            if (rest.StackSize > 0) sapi.World.SpawnItemEntity(rest, colony.TownHallPos.ToVec3d().Add(0.5, 1.2, 0.5));
+            extra -= want;
+        }
+        if (swapped > 0) LogEvent(colony, "event-oldcoins-swapped", swapped.ToString());
+    }
+
+    /// <summary>True once the colony has a built Royal Mint.</summary>
     public bool HasMint(Colony colony) => colony.Buildings.Any(b => b.Type == BuildingTypes.Mint && b.Level >= 1 && !b.Removing);
 
     /// <summary>Where the colony's coins are kept: the Town Hall's chests, the Royal Mint's storage, then the warehouse.</summary>
@@ -141,7 +220,7 @@ public partial class ColonyManager
     {
         if (!EconomyOpen(colony)) return;
         if (c.Unpaid) standing("unpaid", Config.UnpaidMood);
-        if (colony.BailiffCollectsRent && colony.TaxPercent > 0 && (HasMint(colony) || HasOwnCoin(colony)) && BailiffOnDuty(colony) != null)
+        if (colony.BailiffCollectsRent && colony.TaxPercent > 0 && (HasMint(colony) || !HasOwnCoin(colony)) && BailiffOnDuty(colony) != null)
             standing("taxes", -(int)Math.Round(colony.TaxPercent * Config.TaxMoodPerPercent));
     }
 
@@ -150,7 +229,7 @@ public partial class ColonyManager
 
     /// <summary>
     /// Part of the bailiff's tick: on the first day of each month, taxes then wages. Nothing happens until the
-    /// colony has a Royal Mint or coins in its treasury, and the Town Hall is level EconomyTownHallLevel.
+    /// colony has money in its treasury (or a Royal Mint), and the Town Hall is level EconomyTownHallLevel.
     /// </summary>
     void Payday(Colony colony, CitizenRecord bailiff, double now)
     {
@@ -274,13 +353,6 @@ public partial class ColonyManager
 
     // ---- The Royal Mint -----------------------------------------------------------------------
 
-    /// <summary>A new Royal Mint keeps MintStartKeep coins on hand from the start, so the minter has work.</summary>
-    void KeepCoinsAtStart(Building hut)
-    {
-        if (Config.MintStartKeep <= 0) return;
-        foreach (var kind in HutRecipeKinds(BuildingTypes.Mint).Where(k => IsCoin(k.Sample))) hut.RecipeKeep[kind.Key] = Config.MintStartKeep;
-    }
-
     /// <summary>What the Royal Mint does not keep: everything but its hammer, coins, the colony's coin metal and what its recipes take.</summary>
     ItemMatch MintHutJunk(Colony colony, Building hut)
     {
@@ -320,5 +392,5 @@ public partial class ColonyManager
     }
 
     /// <summary>A line about the treasury, for the hut window.</summary>
-    public string MintInfo(Colony colony) => Lang.Get("createacolony:mint-treasury", TreasuryCoins(colony));
+    public string MintInfo(Colony colony) => ColonyMoney.Get(sapi, "createacolony:mint-treasury", TreasuryCoins(colony));
 }

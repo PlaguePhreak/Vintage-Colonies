@@ -7,7 +7,7 @@ public class ColonyConfig
 {
     public const string FileName = "createacolony.json";
     /// <summary>Bumped when a default changes in a way old config files should pick up; see ColonyManager.UpgradeConfig.</summary>
-    public const int CurrentConfigVersion = 7;
+    public const int CurrentConfigVersion = 8;
 
     /// <summary>Which defaults this file has been brought up to. Files from before 0.33.0 have none, so read as 0.</summary>
     public int ConfigVersion;
@@ -960,25 +960,35 @@ public class ColonyConfig
     public int BailiffMood = -3;
 
     // Economy (ColonyManager.Economy.cs)
-    /// <summary>The coins a settler is paid each in-game month, by job; jobs not listed get WageDefault. Settlers with no job get nothing.</summary>
-    public System.Collections.Generic.Dictionary<string, int> Wages = new()
+    /// <summary>The money (rusty gears, or Coinage coins) a settler is paid each in-game month, by job; jobs not listed get WageDefault. Settlers with no job get nothing.</summary>
+    public System.Collections.Generic.Dictionary<string, int> Wages = NewWages();
+    public int WageDefault = 3;
+
+    /// <summary>The wages since 0.177.0: half the old coin wages, since rusty gears are rarer than the coins were.</summary>
+    public static System.Collections.Generic.Dictionary<string, int> NewWages() => new()
     {
-        ["courier"] = 4,
-        ["gatherer"] = 4,
-        ["builder"] = 7,
-        ["guard"] = 7,
-        ["healer"] = 7,
-        ["blacksmith"] = 7,
-        ["armourer"] = 8,
-        ["weaponsmith"] = 8,
-        ["jeweller"] = 8,
-        ["minter"] = 6,
-        ["researcher"] = 7,
-        ["priest"] = 5,
-        ["bailiff"] = 10
+        ["courier"] = 2,
+        ["gatherer"] = 2,
+        ["builder"] = 4,
+        ["guard"] = 4,
+        ["healer"] = 4,
+        ["blacksmith"] = 4,
+        ["armourer"] = 4,
+        ["weaponsmith"] = 4,
+        ["jeweller"] = 4,
+        ["minter"] = 3,
+        ["researcher"] = 4,
+        ["priest"] = 3,
+        ["bailiff"] = 5
     };
-    public int WageDefault = 5;
-    /// <summary>Coins a new Royal Mint keeps in stock, set on its Crafting recipes tab.</summary>
+
+    /// <summary>The coin wages before 0.177.0, so a config that never changed them gets the new ones.</summary>
+    public static readonly System.Collections.Generic.Dictionary<string, int> OldWages = new()
+    {
+        ["courier"] = 4, ["gatherer"] = 4, ["builder"] = 7, ["guard"] = 7, ["healer"] = 7, ["blacksmith"] = 7, ["armourer"] = 8,
+        ["weaponsmith"] = 8, ["jeweller"] = 8, ["minter"] = 6, ["researcher"] = 7, ["priest"] = 5, ["bailiff"] = 10
+    };
+    /// <summary>Coins the Royal Mint's minter keeps struck (Coinage only).</summary>
     public int MintStartKeep = 100;
     /// <summary>Coins the minter strikes from one ingot when the colony uses its own coin (Coinage).</summary>
     public int MintCoinsPerIngot = 10;
@@ -1003,7 +1013,7 @@ public class ColonyConfig
     public int ArchiveNoiseRadius = 16;
     public float ArchiveNoisePenalty = 0.1f;
     public string[] ArchiveNoisyHuts = { "smelter", "blacksmith", "armourer", "weaponsmith", "sawmill", "quarry" };
-    /// <summary>Other mods' coins, as item codes with wildcards. Any of them can be picked as a colony's coin on the Bailiff tab.</summary>
+    /// <summary>The Coinage mod's coins, as item codes with wildcards. With Coinage installed these are the colony's money instead of rusty gears, and one can be picked on the Bailiff tab.</summary>
     public string[] OtherCoins = { "coinage:coin", "coinage:coin-*" };
     /// <summary>Mood points a settler loses per percent of tax while the bailiff collects taxes (10% is -2).</summary>
     public float TaxMoodPerPercent = 0.2f;

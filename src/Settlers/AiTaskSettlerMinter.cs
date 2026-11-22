@@ -10,10 +10,10 @@ using ItemMatch = System.Func<Vintagestory.API.Common.ItemStack, bool>;
 namespace CreateAColony.Settlers;
 
 /// <summary>
-/// A minter works from the Royal Mint. It strikes the colony's coins with a hammer from copper ingots, as set
-/// on the hut's Crafting recipes tab (recipes/grid/coin.json); the work itself is the base worker's recipe
-/// crafting. While the colony uses its own coin (Coinage) it strikes copies of that instead. The coins stay in the Mint, part of the colony's treasury, where the bailiff pays wages from
-/// (ColonyManager.Economy.cs).
+/// A minter works from the Royal Mint, which only exists with the Coinage mod (0.177.0). It strikes copies of the
+/// colony's Coinage coin with a hammer from ingots of its metal. The coins stay in the Mint, part of the colony's
+/// treasury, where the bailiff pays wages from (ColonyManager.Economy.cs). Without Coinage there is nothing to
+/// strike; the colony tick frees any minter for other work.
 /// </summary>
 public class AiTaskSettlerMinter : AiTaskSettlerWorker
 {
@@ -34,8 +34,8 @@ public class AiTaskSettlerMinter : AiTaskSettlerWorker
     protected override bool WorkBeforeRecipes(Colony colony, Building hut) => manager!.HasOwnCoin(colony);
 
     /// <summary>
-    /// With the colony's own coin: strike copies of it while the Mint holds fewer than MintStartKeep. Otherwise
-    /// all its work is on the Crafting recipes tab, and this only says why it is idle.
+    /// With Coinage: strike copies of the colony's coin while the Mint holds fewer than MintStartKeep. Without it
+    /// there is nothing to strike, and this only says why it is idle.
     /// </summary>
     protected override bool PlanWork(Colony colony, CitizenRecord citizen, Building hut, List<BlockEntityContainer> storage)
     {
@@ -58,7 +58,7 @@ public class AiTaskSettlerMinter : AiTaskSettlerWorker
             SetStatus("mint-striking");
             return GoWork(chest.Pos);
         }
-        SetStatus(hut.RecipeKeep.Count == 0 ? "mint-nothing-set" : m.WantedRecipes(colony, hut, citizen).Count == 0 ? "mint-stocked" : "mint-needs-copper");
+        SetStatus("mint-needs-coinage");
         return false;
     }
 

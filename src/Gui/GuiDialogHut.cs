@@ -1480,7 +1480,7 @@ public partial class GuiDialogHut : GuiDialog
         }
         y += 34;
         y = composer.Text(Lang.Get("createacolony:church-tithe-hint"), GuiKit.Muted(), 0, y, Width, 6);
-        y = composer.Row(Lang.Get("createacolony:church-tab-coins"), snapshot.ChurchCoins.ToString(), 0, y, Width);
+        y = composer.Row(ColonyMoney.Get(capi, "createacolony:church-tab-coins"), snapshot.ChurchCoins.ToString(), 0, y, Width);
 
         y = composer.Section(Lang.Get("createacolony:church-care-section"), y + 6, Width);
         y = composer.Row(Lang.Get("createacolony:church-orphans"), snapshot.Orphans.ToString(), 0, y, Width);
@@ -1497,8 +1497,8 @@ public partial class GuiDialogHut : GuiDialog
             return;
         }
         y = composer.Row(Lang.Get("createacolony:church-ledger-tithes"), days.Sum(d => d.Tithes).ToString(), 0, y, Width);
-        y = composer.Row(Lang.Get("createacolony:church-ledger-food"), Lang.Get("createacolony:church-ledger-coins-for", days.Sum(d => d.FoodCoins), days.Sum(d => d.Meals)), 0, y, Width);
-        y = composer.Row(Lang.Get("createacolony:church-ledger-bandages"), Lang.Get("createacolony:church-ledger-coins-for", days.Sum(d => d.BandageCoins), days.Sum(d => d.Bandages)), 0, y, Width);
+        y = composer.Row(Lang.Get("createacolony:church-ledger-food"), ColonyMoney.Get(capi, "createacolony:church-ledger-coins-for", days.Sum(d => d.FoodCoins), days.Sum(d => d.Meals)), 0, y, Width);
+        y = composer.Row(Lang.Get("createacolony:church-ledger-bandages"), ColonyMoney.Get(capi, "createacolony:church-ledger-coins-for", days.Sum(d => d.BandageCoins), days.Sum(d => d.Bandages)), 0, y, Width);
         y = composer.Row(Lang.Get("createacolony:church-ledger-care"), days.Sum(d => d.CareCoins).ToString(), 0, y, Width);
         y = composer.Row(Lang.Get("createacolony:church-ledger-attended"), days.Sum(d => d.Attended).ToString(), 0, y, Width);
         y = composer.Row(Lang.Get("createacolony:church-ledger-funerals"), days.Sum(d => d.Funerals).ToString(), 0, y, Width);

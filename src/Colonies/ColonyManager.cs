@@ -127,6 +127,13 @@ public partial class ColonyManager : ModSystem
             // 0.164.0: traders keep their land claims until they join (taking them all away broke the game's balance).
             config.RemoveAllTraderClaims = false;
         }
+        if (config.ConfigVersion < 8)
+        {
+            // 0.177.0: wages are paid in rusty gears, which are rarer than the old coins: half the old wages.
+            if (config.Wages != null && config.Wages.Count == ColonyConfig.OldWages.Count && ColonyConfig.OldWages.All(w => config.Wages.TryGetValue(w.Key, out int v) && v == w.Value))
+                config.Wages = ColonyConfig.NewWages();
+            if (config.WageDefault == 5) config.WageDefault = 3;
+        }
         config.ConfigVersion = ColonyConfig.CurrentConfigVersion;
     }
 
@@ -289,6 +296,7 @@ public partial class ColonyManager : ModSystem
             RefreshClaim(colony);
             TickWanderers(colony, now);
             TickBailiff(colony, now);
+            TickMoney(colony);
             TickTraders(colony);
             TickWaitingForRoom(colony);
             TickFamilies(colony, now);

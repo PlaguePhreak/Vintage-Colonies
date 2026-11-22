@@ -1,15 +1,13 @@
-// Striking colony coins: a copper ingot and a hammer make 10 copper coins. The Royal Mint's minter makes them
-// (its Crafting recipes tab), and players can strike them by hand too.
+// The old colony coins (before 0.177.0) can be swapped for rusty gears, 1 for 1. Colonies swap the ones in their
+// chests by themselves (ColonyManager.Economy.cs).
 [
 	{
-		"ingredientPattern": "HI",
+		"ingredientPattern": "C",
 		"ingredients": {
-			"H": { "type": "item", "code": "game:hammer-*", "isTool": true },
-			"I": { "type": "item", "code": "game:ingot-copper" }
+			"C": { "type": "item", "code": "createacolony:coin-copper" }
 		},
-		"width": 2,
+		"width": 1,
 		"height": 1,
-		"shapeless": true,
-		"output": { "type": "item", "code": "createacolony:coin-copper", "quantity": 10 }
+		"output": { "type": "item", "code": "game:gear-rusty", "quantity": 1 }
 	}
 ]
