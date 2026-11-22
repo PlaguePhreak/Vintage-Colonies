@@ -641,7 +641,7 @@
           "rewards": [
             {
               "code": "game:gear-rusty",
-              "count": 1
+              "count": 3
             }
           ]
         }
@@ -795,7 +795,7 @@
           "rewards": [
             {
               "code": "game:gear-rusty",
-              "count": 1
+              "count": 2
             }
           ]
         },
@@ -1018,7 +1018,7 @@
           "rewards": [
             {
               "code": "game:gear-rusty",
-              "count": 1
+              "count": 2
             }
           ]
         }
@@ -1177,7 +1177,7 @@
           "rewards": [
             {
               "code": "game:gear-rusty",
-              "count": 1
+              "count": 2
             }
           ]
         },
@@ -1189,11 +1189,26 @@
           "requires": [
             "copper-moulds"
           ],
-          "objectives": [],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:crucible-*-fired|game:crucible-*-smelted",
+              "text": "objective-line-copper-tools-0"
+            },
+            {
+              "type": "obtain",
+              "code": "game:toolmold-*-fired-*",
+              "text": "objective-line-copper-tools-1"
+            }
+          ],
           "rewards": [
             {
               "code": "game:gear-rusty",
-              "count": 1
+              "count": 3
+            },
+            {
+              "code": "game:nugget-nativecopper",
+              "count": 10
             }
           ]
         },
@@ -1434,7 +1449,7 @@
           "rewards": [
             {
               "code": "game:gear-rusty",
-              "count": 1
+              "count": 2
             }
           ]
         },
@@ -1469,11 +1484,36 @@
             "copper-forge",
             "copper-hammer"
           ],
-          "objectives": [],
+          "objectives": [
+            {
+              "type": "blocknear",
+              "code": "anvil-*",
+              "text": "objective-line-copper-smith-0"
+            },
+            {
+              "type": "blocknear",
+              "code": "forge",
+              "text": "objective-line-copper-smith-1"
+            },
+            {
+              "type": "obtain",
+              "code": "game:hammer-*",
+              "text": "objective-line-copper-smith-2"
+            },
+            {
+              "type": "obtain",
+              "code": "game:ingot-copper",
+              "text": "objective-line-copper-smith-3"
+            }
+          ],
           "rewards": [
             {
               "code": "game:gear-rusty",
-              "count": 1
+              "count": 4
+            },
+            {
+              "code": "game:ingot-copper",
+              "count": 2
             }
           ]
         },
@@ -1609,7 +1649,7 @@
           "rewards": [
             {
               "code": "game:gear-rusty",
-              "count": 1
+              "count": 10
             }
           ]
         },
@@ -2074,11 +2114,17 @@
             "bronze-bisbronze"
           ],
           "requiresAny": true,
-          "objectives": [],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:*-tinbronze|game:*-bismuthbronze|game:*-blackbronze",
+              "text": "objective-line-bronze-bronze-0"
+            }
+          ],
           "rewards": [
             {
               "code": "game:gear-rusty",
-              "count": 1
+              "count": 4
             }
           ]
         },
@@ -2090,10 +2136,25 @@
           "requires": [
             "bronze-bronze"
           ],
-          "objectives": [],
+          "objectives": [
+            {
+              "type": "obtain",
+              "code": "game:toolmold-*-fired-*",
+              "text": "objective-line-bronze-tools-0"
+            },
+            {
+              "type": "obtain",
+              "code": "game:ingot-*bronze",
+              "text": "objective-line-bronze-tools-1"
+            }
+          ],
           "rewards": [
             {
               "code": "game:gear-rusty",
+              "count": 3
+            },
+            {
+              "code": "game:ingot-tinbronze",
               "count": 1
             }
           ]
@@ -2382,7 +2443,7 @@
           "rewards": [
             {
               "code": "game:gear-rusty",
-              "count": 1
+              "count": 3
             }
           ]
         },
@@ -2395,11 +2456,36 @@
             "bronze-anvil",
             "bronze-hammer"
           ],
-          "objectives": [],
+          "objectives": [
+            {
+              "type": "blocknear",
+              "code": "anvil-*bronze",
+              "text": "objective-line-bronze-smith-0"
+            },
+            {
+              "type": "blocknear",
+              "code": "forge",
+              "text": "objective-line-bronze-smith-1"
+            },
+            {
+              "type": "obtain",
+              "code": "game:hammer-*",
+              "text": "objective-line-bronze-smith-2"
+            },
+            {
+              "type": "obtain",
+              "code": "game:ingot-*bronze",
+              "text": "objective-line-bronze-smith-3"
+            }
+          ],
           "rewards": [
             {
               "code": "game:gear-rusty",
-              "count": 1
+              "count": 4
+            },
+            {
+              "code": "game:ingot-tinbronze",
+              "count": 2
             }
           ]
         },
@@ -2668,7 +2754,7 @@
           "rewards": [
             {
               "code": "game:gear-rusty",
-              "count": 1
+              "count": 10
             }
           ]
         }
@@ -2778,7 +2864,7 @@
           "rewards": [
             {
               "code": "game:gear-rusty",
-              "count": 1
+              "count": 3
             }
           ]
         },
@@ -2840,7 +2926,7 @@
           "rewards": [
             {
               "code": "game:gear-rusty",
-              "count": 1
+              "count": 3
             }
           ]
         },
@@ -2852,11 +2938,36 @@
           "requires": [
             "iron-ianvil"
           ],
-          "objectives": [],
+          "objectives": [
+            {
+              "type": "blocknear",
+              "code": "anvil-*",
+              "text": "objective-line-iron-tools-0"
+            },
+            {
+              "type": "blocknear",
+              "code": "forge",
+              "text": "objective-line-iron-tools-1"
+            },
+            {
+              "type": "obtain",
+              "code": "game:hammer-*",
+              "text": "objective-line-iron-tools-2"
+            },
+            {
+              "type": "obtain",
+              "code": "game:ingot-iron",
+              "text": "objective-line-iron-tools-3"
+            }
+          ],
           "rewards": [
             {
               "code": "game:gear-rusty",
-              "count": 1
+              "count": 4
+            },
+            {
+              "code": "game:ingot-iron",
+              "count": 2
             }
           ]
         },
@@ -2868,11 +2979,37 @@
           "requires": [
             "iron-ianvil"
           ],
-          "objectives": [],
+          "objectives": [
+            {
+              "type": "blocknear",
+              "code": "anvil-*",
+              "text": "objective-line-iron-arms-0"
+            },
+            {
+              "type": "blocknear",
+              "code": "forge",
+              "text": "objective-line-iron-arms-1"
+            },
+            {
+              "type": "obtain",
+              "code": "game:hammer-*",
+              "text": "objective-line-iron-arms-2"
+            },
+            {
+              "type": "obtain",
+              "count": 2,
+              "code": "game:ingot-iron",
+              "text": "objective-line-iron-arms-3"
+            }
+          ],
           "rewards": [
             {
               "code": "game:gear-rusty",
-              "count": 1
+              "count": 4
+            },
+            {
+              "code": "game:ingot-iron",
+              "count": 2
             }
           ]
         },
@@ -3433,7 +3570,7 @@
           "rewards": [
             {
               "code": "game:gear-rusty",
-              "count": 1
+              "count": 5
             }
           ]
         },
@@ -3454,7 +3591,7 @@
           "rewards": [
             {
               "code": "game:gear-rusty",
-              "count": 1
+              "count": 5
             }
           ]
         },
@@ -3466,11 +3603,36 @@
           "requires": [
             "iron-sanvil"
           ],
-          "objectives": [],
+          "objectives": [
+            {
+              "type": "blocknear",
+              "code": "anvil-iron|anvil-steel|anvil-meteoriciron",
+              "text": "objective-line-iron-ssmith-0"
+            },
+            {
+              "type": "blocknear",
+              "code": "forge",
+              "text": "objective-line-iron-ssmith-1"
+            },
+            {
+              "type": "obtain",
+              "code": "game:hammer-*",
+              "text": "objective-line-iron-ssmith-2"
+            },
+            {
+              "type": "obtain",
+              "code": "game:ingot-steel",
+              "text": "objective-line-iron-ssmith-3"
+            }
+          ],
           "rewards": [
             {
               "code": "game:gear-rusty",
-              "count": 1
+              "count": 6
+            },
+            {
+              "code": "game:ingot-steel",
+              "count": 2
             }
           ]
         },
@@ -3607,7 +3769,7 @@
           "rewards": [
             {
               "code": "game:gear-rusty",
-              "count": 1
+              "count": 15
             }
           ]
         }
