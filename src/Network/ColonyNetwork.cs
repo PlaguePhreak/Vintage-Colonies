@@ -205,7 +205,7 @@ public partial class ColonyNetwork : ModSystem
             ColonyAction.RemoveHut => RemoveHut(player, colony, role, packet),
             ColonyAction.LinkMineHut or ColonyAction.UnlinkMineHut => LinkMineAction(colony, role, packet),
             ColonyAction.SetCollect or >= ColonyAction.RenameBuilding and <= ColonyAction.SetMinStock => HutAction(player, colony, role, packet),
-            ColonyAction.SetAutoHiring or ColonyAction.SetAutoHousing or ColonyAction.SetEnterMessages => AutoTownAction(colony, role, packet),
+            ColonyAction.SetAutoHiring or ColonyAction.SetAutoHousing or ColonyAction.SetEnterMessages or ColonyAction.SetWinterPrep => AutoTownAction(colony, role, packet),
             ColonyAction.SetHutAutoFlag => HutAutoFlag(colony, role, packet),
             ColonyAction.RankChange => role < ColonyRole.Owner ? "createacolony:denied-owner" : Manager.RankChange(colony, packet.Text),
             _ => null
@@ -237,6 +237,9 @@ public partial class ColonyNetwork : ModSystem
             case ColonyAction.SetAutoHousing:
                 colony.AutoHousing = on;
                 if (on) Manager.AutoHouse(colony);
+                break;
+            case ColonyAction.SetWinterPrep:
+                colony.WinterPrep = on;
                 break;
             case ColonyAction.SetEnterMessages:
             {
@@ -1013,6 +1016,19 @@ public partial class ColonyNetwork : ModSystem
             snapshot.Members.Add(new MemberView { PlayerUid = m.PlayerUid, Name = m.LastKnownName, Role = (int)m.Role, RankId = m.RankId, RankName = ColonyManager.RankName(colony, m) });
         }
         snapshot.AutoHiring = colony.AutoHiring;
+        var winter = Manager.Readiness(colony);
+        snapshot.WinterState = winter.State;
+        snapshot.WinterDays = winter.Days;
+        snapshot.WinterLength = winter.WinterDays;
+        snapshot.WinterColdest = winter.Coldest;
+        snapshot.WinterFood = winter.FoodMeals;
+        snapshot.WinterFoodNeeded = winter.FoodNeeded;
+        snapshot.WinterFirewood = winter.Firewood;
+        snapshot.WinterFirewoodNeeded = winter.FirewoodNeeded;
+        snapshot.WinterDressed = winter.Dressed;
+        snapshot.WinterPeople = winter.People;
+        snapshot.WinterPrep = colony.WinterPrep;
+        snapshot.WinterPrepping = Manager.WinterPrepping(colony);
         snapshot.AutoHousing = colony.AutoHousing;
         snapshot.EnterMessages = colony.EnterMessages;
         snapshot.TellOutsiders = colony.TellOutsiders;

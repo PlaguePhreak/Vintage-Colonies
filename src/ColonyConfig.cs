@@ -1714,6 +1714,20 @@ public class ColonyConfig
     public int MaxRanks = 6;
     /// <summary>How many lines the permission log keeps.</summary>
     public int PermissionLogSize = 50;
+
+    // ---- Winter (0.189.0) ----
+    /// <summary>The Town Hall's Winter tab and the winter warnings.</summary>
+    public bool WinterReadiness = true;
+    /// <summary>Warnings go out this many days before the first frost if something is short (one each).</summary>
+    public int[] WinterWarnDays = { 30, 10 };
+    /// <summary>Settlers get ready this many months before the first frost (bigger firewood stock, warm clothes first, cooks save long-keeping food).</summary>
+    public double WinterPrepMonths = 2;
+    /// <summary>Firewood a Cook's Hut or Bakery burns on a winter day, for the Firewood line.</summary>
+    public int WinterCookFirewoodPerDay = 4;
+    /// <summary>In autumn, while firewood is short, a forester keeps at least this much firewood (or twice what its tab says).</summary>
+    public int WinterForesterFirewoodKeep = 32;
+    /// <summary>In autumn the cook leaves food that keeps longer than this many days for the winter, unless food is low now.</summary>
+    public double WinterCookSavesAboveDays = 30;
 }
 
 /// <summary>One kind of item the Archive takes as a hand-in (ColonyConfig.ResearchHandIns).</summary>

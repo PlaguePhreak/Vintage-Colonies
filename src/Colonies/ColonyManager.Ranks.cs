@@ -58,7 +58,7 @@ public partial class ColonyManager
         ColonyAction.Rename or ColonyAction.SetAnyWoodOrStone or ColonyAction.SetColonyBanner or ColonyAction.ReplaceBanners or ColonyAction.SetBannerOnNew
             or ColonyAction.SetSelfDefence or ColonyAction.SetSupportAllies or ColonyAction.SetRaidMode or ColonyAction.SetRaidSize or ColonyAction.StartRaid
             or ColonyAction.SetBailiffRule or ColonyAction.SetTithe or ColonyAction.SetMarketRule or ColonyAction.StartResearch or ColonyAction.PauseResearch
-            or ColonyAction.SetAutoHiring or ColonyAction.SetAutoHousing or ColonyAction.SetEnterMessages => RankPerm.TownSettings,
+            or ColonyAction.SetAutoHiring or ColonyAction.SetAutoHousing or ColonyAction.SetEnterMessages or ColonyAction.SetWinterPrep => RankPerm.TownSettings,
         ColonyAction.WelcomeVisitor or ColonyAction.TurnAwayVisitor => RankPerm.Visitors,
         ColonyAction.GetGuardScepter or ColonyAction.ClearGuardPoints or ColonyAction.SetHostile or ColonyAction.SetGuardTask or ColonyAction.SetRetreat
             or ColonyAction.SetPatrolManual or ColonyAction.SetFollowTight or ColonyAction.SetGuardRanged => RankPerm.Guards,

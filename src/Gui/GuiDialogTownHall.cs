@@ -41,6 +41,7 @@ public class GuiDialogTownHall : GuiDialog
     const int QuestsTab = 9;
     const int MilitiaTab = 10;
     const int BailiffTab = 11;
+    const int WinterTab = 12;
     const int ReportRowsPerPage = 12;
     const double MapHeight = 380;
     const int MapMargin = 16;
@@ -50,7 +51,7 @@ public class GuiDialogTownHall : GuiDialog
     static readonly (int Id, string Lang)[] Tabs =
     {
         (ActionsTab, "tab-actions"), (QuestsTab, "tab-quests"), (MapTab, "tab-townmap"), (BannersTab, "tab-banners"), (InfoTab, "tab-information"), (CitizensTab, "tab-citizens"),
-        (BailiffTab, "tab-bailiff"), (MilitiaTab, "tab-militia"), (StatsTab, "tab-statistics"), (PermissionsTab, "tab-permissions"), (ProspectingTab, "tab-prospecting"), (SettingsTab, "tab-settings")
+        (BailiffTab, "tab-bailiff"), (MilitiaTab, "tab-militia"), (WinterTab, "tab-winter"), (StatsTab, "tab-statistics"), (PermissionsTab, "tab-permissions"), (ProspectingTab, "tab-prospecting"), (SettingsTab, "tab-settings")
     };
 
     readonly ColonyNetwork network;
@@ -140,6 +141,7 @@ public class GuiDialogTownHall : GuiDialog
             case InfoTab: ComposeInformation(composer); break;
             case CitizensTab: ComposeCitizens(composer); break;
             case MilitiaTab: ComposeMilitia(composer); break;
+            case WinterTab: ComposeWinter(composer); break;
             case BailiffTab: ComposeBailiff(composer); break;
             case StatsTab: ComposeStatistics(composer); break;
             case PermissionsTab: ComposePermissions(composer); break;
@@ -159,6 +161,7 @@ public class GuiDialogTownHall : GuiDialog
         SingleComposer.GetSwitch("bailifflend")?.SetValue(snapshot.BailiffLendsWorkers);
         SingleComposer.GetSwitch("bailiffwages")?.SetValue(snapshot.BailiffPaysWages);
         SingleComposer.GetSwitch("autohiring")?.SetValue(snapshot.AutoHiring);
+        SingleComposer.GetSwitch("winterprep")?.SetValue(snapshot.WinterPrep);
         SingleComposer.GetSwitch("autohousing")?.SetValue(snapshot.AutoHousing);
         SingleComposer.GetSwitch("entermessages")?.SetValue(snapshot.EnterMessages);
         SingleComposer.GetSwitch("telloutsiders")?.SetValue(snapshot.TellOutsiders);
@@ -1365,6 +1368,56 @@ public class GuiDialogTownHall : GuiDialog
         composer.AddStaticText(Lang.Get(label), GuiKit.Body(), ElementBounds.Fixed(40, y + 5, Width - 40, 25));
         y += 32;
         return composer.Text(Lang.Get(hint), GuiKit.Muted(), 40, y, Width - 40, 10);
+    }
+
+    /// <summary>
+    /// Winter (0.190.0): how far off the first frost is, and the colony's food, firewood and warm clothes against what
+    /// the winter will take, each with a plain verdict. Officers switch whether settlers get ready by themselves.
+    /// </summary>
+    void ComposeWinter(GuiComposer composer)
+    {
+        double y = 30;
+        string cold = snapshot.WinterColdest.ToString("0");
+        string head = snapshot.WinterState switch
+        {
+            ColonyManager.WinterState.Off => Lang.Get("createacolony:winter-off"),
+            ColonyManager.WinterState.None => Lang.Get("createacolony:winter-none"),
+            ColonyManager.WinterState.Early => Lang.Get("createacolony:winter-early", snapshot.WinterDays),
+            ColonyManager.WinterState.Now => Lang.Get("createacolony:winter-now", snapshot.WinterDays, cold),
+            _ => Lang.Get("createacolony:winter-coming", snapshot.WinterDays, snapshot.WinterLength, cold)
+        };
+        y = composer.Text(head, GuiKit.Body(), 0, y, Width, 10);
+        if (snapshot.WinterState is ColonyManager.WinterState.Coming or ColonyManager.WinterState.Now)
+        {
+            const double pad = 10;
+            var lines = new List<(string Text, bool Short)>
+            {
+                (Lang.Get("createacolony:winter-line-food", snapshot.WinterFood, snapshot.WinterFoodNeeded)
+                    + " " + Verdict(snapshot.WinterFood, snapshot.WinterFoodNeeded), snapshot.WinterFood < snapshot.WinterFoodNeeded),
+                (Lang.Get("createacolony:winter-line-firewood", snapshot.WinterFirewood, snapshot.WinterFirewoodNeeded)
+                    + " " + Verdict(snapshot.WinterFirewood, snapshot.WinterFirewoodNeeded), snapshot.WinterFirewood < snapshot.WinterFirewoodNeeded),
+                (Lang.Get("createacolony:winter-line-clothes", snapshot.WinterDressed, snapshot.WinterPeople, cold)
+                    + " " + (snapshot.WinterDressed >= snapshot.WinterPeople ? Lang.Get("createacolony:winter-enough")
+                        : Lang.Get("createacolony:winter-need-warmer", snapshot.WinterPeople - snapshot.WinterDressed)), snapshot.WinterDressed < snapshot.WinterPeople)
+            };
+            double inner = Width - 2 * pad;
+            double height = lines.Sum(l => GuiKit.TextHeight(capi, GuiKit.Body(), l.Text, inner) + 8) + 2 * pad - 8;
+            composer.AddInset(ElementBounds.Fixed(0, y, Width, height), 3, 0.8f);
+            double ly = y + pad;
+            foreach (var (text, isShort) in lines)
+            {
+                ly = composer.Text(text, GuiKit.Body().WithColor(isShort ? GuiKit.WarnColor : GuiKit.GoodColor), pad, ly, inner, 8);
+            }
+            y += height + 10;
+            y = composer.Text(Lang.Get("createacolony:winter-how"), GuiKit.Muted(), 0, y, Width, 10);
+            if (snapshot.WinterPrepping) y = composer.Text(Lang.Get("createacolony:winter-prepping"), GuiKit.Detail().WithColor(GuiKit.GoodColor), 0, y, Width, 10);
+        }
+        if (snapshot.WinterState == ColonyManager.WinterState.Off) return;
+        y = composer.Section(Lang.Get("createacolony:winter-settings"), y, Width);
+        TownSwitch(composer, "winterprep", "createacolony:winterprep", "createacolony:winterprep-hint", snapshot.WinterPrep,
+            on => SendText(ColonyAction.SetWinterPrep, on ? "1" : "0"), y);
+
+        static string Verdict(int have, int need) => have >= need ? Lang.Get("createacolony:winter-enough") : Lang.Get("createacolony:winter-short-by", need - have);
     }
 
     /// <summary>Raids (0.183.0): on, off or only when sent; their size; send one now; when the next may come.</summary>

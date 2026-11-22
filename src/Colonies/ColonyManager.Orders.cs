@@ -119,7 +119,7 @@ public partial class ColonyManager
     /// How many of a thing a hut's Crafting recipes tab makes: what it keeps, plus what other huts are waiting for.
     /// At a crafter hut, orders for something its crafter tab makes too are made there, not counted twice.
     /// </summary>
-    public int RecipeWant(Colony colony, Building hut, string key) => RecipeKeep(hut, key)
+    public int RecipeWant(Colony colony, Building hut, string key) => WinterRecipeKeep(hut, key, RecipeKeep(hut, key))
         + (CraftTabOf(hut.Type) != null && CraftKeys(hut).Contains(key) ? 0 : OrderedFor(colony, hut, key));
 
     /// <summary>

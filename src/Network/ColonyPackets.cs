@@ -774,6 +774,19 @@ public class ColonySnapshot
     [ProtoMember(3706)] public List<RankView> Ranks = new();
     [ProtoMember(3707)] public List<EventView> PermissionLog = new();
     [ProtoMember(3708)] public int MaxRanks;
+    /// <summary>Winter (0.190.0): the Winter tab. State is ColonyManager.WinterState; Days is days to the first frost, or of winter left.</summary>
+    [ProtoMember(4200)] public int WinterState;
+    [ProtoMember(4201)] public int WinterDays;
+    [ProtoMember(4202)] public int WinterLength;
+    [ProtoMember(4203)] public float WinterColdest;
+    [ProtoMember(4204)] public int WinterFood;
+    [ProtoMember(4205)] public int WinterFoodNeeded;
+    [ProtoMember(4206)] public int WinterFirewood;
+    [ProtoMember(4207)] public int WinterFirewoodNeeded;
+    [ProtoMember(4208)] public int WinterDressed;
+    [ProtoMember(4209)] public int WinterPeople;
+    [ProtoMember(4210)] public bool WinterPrep;
+    [ProtoMember(4211)] public bool WinterPrepping;
     [ProtoMember(61)] public bool SupportAllies;
     /// <summary>The Bailiff tab (110-119): the bailiff's name ("" for none) and whether they are on duty (BailiffState), the rules, the ledger and the estate report.</summary>
     [ProtoMember(110)] public string BailiffName = "";
@@ -1073,7 +1086,9 @@ public enum ColonyAction
     /// <summary>The owner's Ranks page: see ColonyManager.RankChange for Text.</summary>
     RankChange = 3703,
     /// <summary>Text "on|1", "outsiders|1", "enter|text" or "leave|text".</summary>
-    SetEnterMessages = 3704
+    SetEnterMessages = 3704,
+    /// <summary>Winter (0.190.0): settlers get ready in autumn by themselves, "1" or "0"; officers.</summary>
+    SetWinterPrep = 4200
 }
 
 /// <summary>One kind a Market sells, for its For sale tab.</summary>

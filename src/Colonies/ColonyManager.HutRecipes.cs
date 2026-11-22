@@ -100,13 +100,13 @@ public partial class ColonyManager
     /// <summary>The things a hut has too few of, most wanted first.</summary>
     public List<SawKind> WantedRecipes(Colony colony, Building hut, CitizenRecord? worker)
     {
-        if (hut.RecipeKeep.Count == 0 && !HasOrders(colony, hut)) return new List<SawKind>();
-        return ByPriority(hut, HutRecipeKinds(colony, hut.Type)
+        if (hut.RecipeKeep.Count == 0 && !HasOrders(colony, hut) && !PrepsForWinter(hut)) return new List<SawKind>();
+        return WinterOrder(hut, ByPriority(hut, HutRecipeKinds(colony, hut.Type)
             .Select(k => (Kind: k, Want: RecipeWant(colony, hut, k.Key)))
             .Where(k => k.Want > 0)
             .Select(k => (k.Kind, k.Kind.Key, Short: k.Want - RecipeStock(colony, hut, k.Kind, worker)))
             .Where(k => k.Short > 0))
-            .ToList();
+            .ToList());
     }
 
     /// <summary>True when the worker carries everything the recipe takes, and its tool if it needs one.</summary>
@@ -133,7 +133,7 @@ public partial class ColonyManager
     /// <summary>The things a hut keeps for recipes it is short of, so couriers leave them at the hut.</summary>
     ItemMatch HutRecipeInputs(Colony colony, Building hut)
     {
-        if (hut.RecipeKeep.Count == 0 && !HasOrders(colony, hut)) return _ => false;
+        if (hut.RecipeKeep.Count == 0 && !HasOrders(colony, hut) && !PrepsForWinter(hut)) return _ => false;
         var recipes = WantedRecipes(colony, hut, WorkerAt(colony, hut, JobOf(hut.Type) ?? "")).SelectMany(k => k.Recipes).ToList();
         // The tools of taught recipes stay too, since the worker fetches those from the hut storage.
         var parts = recipes.SelectMany(r => r.Inputs).Select(i => i.Part)

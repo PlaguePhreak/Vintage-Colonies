@@ -114,6 +114,11 @@ public partial class ColonyManager
         int maxSlotStack = pot.ItemAttributes?["maxContainerSlotStackSize"].AsInt(999) ?? 999;
 
         var larder = Larder(colony, hut, cook);
+        // Getting ready for winter: food that keeps is left for the winter while there is enough to eat now.
+        if (PrepsForWinter(hut) && sapi.World.GetEntityById(cook.EntityId) is EntityAgent cookEntity && !FoodLow(colony, cookEntity))
+        {
+            foreach (var code in larder.Where(a => SavedForWinter(a.Value.Sample)).Select(a => a.Key).ToList()) larder.Remove(code);
+        }
         foreach (var (recipe, shortBy) in wanted)
         {
             int servings = Math.Clamp(shortBy, 1, potBlock.MaxServingSize);
