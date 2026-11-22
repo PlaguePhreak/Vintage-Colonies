@@ -831,7 +831,7 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:brick-*"
+              "code": "game:burnedbrick-*"
             }
           ],
           "rewards": [
@@ -3322,7 +3322,7 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:refractorybrick-*|game:refractorybricks-*"
+              "code": "game:refractorybrick-fired-*"
             }
           ],
           "rewards": [
@@ -3346,7 +3346,7 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:irondoor*|game:door-iron*|game:*furnacedoor*"
+              "code": "game:metaldoor-*|game:irondoor*|game:*furnacedoor*"
             }
           ],
           "rewards": [
@@ -3538,7 +3538,7 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:axehead-steel|game:axe-steel"
+              "code": "game:axehead-steel|game:axe-*steel"
             }
           ],
           "rewards": [

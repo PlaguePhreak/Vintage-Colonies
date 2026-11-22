@@ -632,7 +632,7 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:pie-*"
+              "code": "game:pie-perfect|game:pie-partbaked"
             }
           ],
           "rewards": [
@@ -711,7 +711,7 @@
           "objectives": [
             {
               "type": "place",
-              "code": "boiler*"
+              "code": "verticalboiler-*|boiler*"
             }
           ],
           "rewards": [
@@ -2248,7 +2248,7 @@
             {
               "type": "obtain",
               "count": 8,
-              "code": "game:grain-cassava"
+              "code": "game:vegetable-cassava|game:rawcassava"
             }
           ],
           "rewards": [
@@ -3622,7 +3622,7 @@
           "objectives": [
             {
               "type": "blocknear",
-              "code": "skep-populated-*"
+              "code": "skep-*-populated-*"
             }
           ],
           "rewards": [
@@ -4394,7 +4394,7 @@
           "objectives": [
             {
               "type": "place",
-              "code": "game:bookshelf-*"
+              "code": "game:bookshelf|game:bookshelf-*"
             }
           ],
           "rewards": [
@@ -4569,7 +4569,7 @@
           "objectives": [
             {
               "type": "place",
-              "code": "game:crate-*"
+              "code": "game:crate|game:crate-*"
             }
           ],
           "rewards": [
@@ -4711,7 +4711,7 @@
           "objectives": [
             {
               "type": "place",
-              "code": "game:trough-*"
+              "code": "game:trough-*small*"
             }
           ],
           "rewards": [
@@ -4753,7 +4753,7 @@
           "objectives": [
             {
               "type": "place",
-              "code": "game:trough-*"
+              "code": "game:trough-*large*"
             }
           ],
           "rewards": [
@@ -4900,7 +4900,7 @@
           "objectives": [
             {
               "type": "place",
-              "code": "game:henbox-*"
+              "code": "game:henbox|game:henbox-*"
             }
           ],
           "rewards": [
@@ -5624,7 +5624,7 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:lime|game:borax|game:powderedborax"
+              "code": "game:lime|game:powder-borax"
             }
           ],
           "rewards": [
