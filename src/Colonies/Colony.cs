@@ -977,7 +977,7 @@ public class Colony
     /// <summary>The settler requests open in the quest book now (ColonyManager.Requests.cs).</summary>
     [ProtoMember(3760)] public List<OpenRequest> QuestRequests = new();
     [ProtoMember(3761)] public double LastRequestTotalDays;
-    /// <summary>Winter (0.189.0): settlers get ready in autumn by themselves (Town Hall Settings); the frost day the last warning was for, and which (1 = 30 days, 2 = 10 days).</summary>
+    /// <summary>Winter (0.190.0): settlers get ready in autumn by themselves (Town Hall Settings); the frost day the last warning was for, and which (1 = 30 days, 2 = 10 days).</summary>
     [ProtoMember(4200, IsRequired = true)] public bool WinterPrep = true;
     [ProtoMember(4201)] public int WinterWarnedFor;
     [ProtoMember(4202)] public int WinterWarnStage;

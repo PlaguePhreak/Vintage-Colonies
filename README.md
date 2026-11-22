@@ -12,6 +12,22 @@ domain (`assets/createacolony/`, block and item codes like `createacolony:townha
 (`ModConfig/createacolony.json`), the release zips (`createacolony_<version>.zip`) and all save data keys.
 Changing any of those would stop old worlds from loading their colonies, so leave them as they are.
 
+## Getting ready for winter (0.190.0)
+
+The colony now looks ahead to the winter where its Town Hall stands, using your world's own seasons.
+
+- **Winter tab on the Town Hall.** It says how many days are left until the first frost, how long the winter lasts and how cold it gets. From midsummer on it shows three lines, each with a plain verdict:
+  - Food: meals stored against what the winter needs (two meals a day for each settler).
+  - Firewood: firewood stored against what the Cook's Hut and Bakery burn.
+  - Warm clothes: how many settlers are dressed warm enough for the coldest days.
+- **Warnings.** If something is short, every member online gets one chat message 30 days before the frost and one 10 days before it. The same goes in the Town Hall's event log.
+- **Settlers get ready.** In the last two months before the frost: foresters keep more firewood if it is short, tailors make warm clothes first if clothes are short, and cooks leave grain and other food that keeps for the winter (unless food is low now). Turn this off with the switch at the bottom of the Winter tab.
+- **No winter.** Where it never freezes, the tab says so and nothing else changes.
+- Server config: `WinterReadiness`, `WinterWarnDays`, `WinterPrepMonths`, `WinterCookFirewoodPerDay`, `WinterForesterFirewoodKeep`, `WinterCookSavesAboveDays`.
+- Not in this release: home fires (next release). Farmers already bring in every ripe crop first, so nothing changed there.
+
+Not tested in game yet.
+
 ## More research (0.180.0)
 
 Research goes from 12 pieces to 32 (design: "More Research", approved by Aaron 2026-11-22). Nothing in the Builder's Wand is locked by research.

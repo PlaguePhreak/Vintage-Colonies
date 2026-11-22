@@ -1715,7 +1715,7 @@ public class ColonyConfig
     /// <summary>How many lines the permission log keeps.</summary>
     public int PermissionLogSize = 50;
 
-    // ---- Winter (0.189.0) ----
+    // ---- Winter (0.190.0) ----
     /// <summary>The Town Hall's Winter tab and the winter warnings.</summary>
     public bool WinterReadiness = true;
     /// <summary>Warnings go out this many days before the first frost if something is short (one each).</summary>
