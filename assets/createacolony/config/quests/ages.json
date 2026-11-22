@@ -1650,6 +1650,18 @@
             {
               "code": "game:gear-rusty",
               "count": 10
+            },
+            {
+              "code": "game:hammer-copper",
+              "count": 1
+            },
+            {
+              "code": "game:ingot-copper",
+              "count": 8
+            },
+            {
+              "code": "game:charcoal",
+              "count": 16
             }
           ]
         },
@@ -2755,6 +2767,18 @@
             {
               "code": "game:gear-rusty",
               "count": 10
+            },
+            {
+              "code": "game:hammer-tinbronze",
+              "count": 1
+            },
+            {
+              "code": "game:ingot-tinbronze",
+              "count": 8
+            },
+            {
+              "code": "game:charcoal",
+              "count": 16
             }
           ]
         }
@@ -3770,6 +3794,18 @@
             {
               "code": "game:gear-rusty",
               "count": 15
+            },
+            {
+              "code": "game:hammer-steel",
+              "count": 1
+            },
+            {
+              "code": "game:ingot-steel",
+              "count": 4
+            },
+            {
+              "code": "game:charcoal",
+              "count": 32
             }
           ]
         }
