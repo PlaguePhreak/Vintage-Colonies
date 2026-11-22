@@ -2247,9 +2247,246 @@
       "code": "research",
       "quests": [
         {
+          "code": "research-scribetraining",
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "research",
+              "code": "scribetraining",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ],
+          "x": 0.0,
+          "y": 3.0
+        },
+        {
+          "code": "research-organizedstorage",
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "research",
+              "code": "organizedstorage",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ],
+          "x": 0.0,
+          "y": 0.0
+        },
+        {
+          "code": "research-croprotation",
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "research",
+              "code": "croprotation",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ],
+          "x": 0.0,
+          "y": 1.5
+        },
+        {
+          "code": "research-basicfortifications",
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "research",
+              "code": "basicfortifications",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ],
+          "x": 0.0,
+          "y": 4.5
+        },
+        {
+          "code": "research-herbalremedies",
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "research",
+              "code": "herbalremedies",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ],
+          "x": 1.2,
+          "y": 3.0
+        },
+        {
+          "code": "research-fieldnotes",
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "research",
+              "code": "fieldnotes",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ],
+          "x": 0.0,
+          "y": 6.0
+        },
+        {
+          "code": "research-irrigation",
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "research",
+              "code": "irrigation",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ],
+          "x": 4.0,
+          "y": 1.5,
+          "requires": [
+            "research-croprotation"
+          ]
+        },
+        {
+          "code": "research-specializedcraftsmen",
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "research",
+              "code": "specializedcraftsmen",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ],
+          "x": 5.2,
+          "y": 1.5
+        },
+        {
+          "code": "research-guardtraining",
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "research",
+              "code": "guardtraining",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ],
+          "x": 4.0,
+          "y": 4.5,
+          "requires": [
+            "research-basicfortifications"
+          ]
+        },
+        {
+          "code": "research-cartographersguild",
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "research",
+              "code": "cartographersguild",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ],
+          "x": 4.0,
+          "y": 6.0,
+          "requires": [
+            "research-fieldnotes"
+          ]
+        },
+        {
+          "code": "research-biggervillage",
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "research",
+              "code": "biggervillage",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ],
+          "x": 4.0,
+          "y": 3.0
+        },
+        {
+          "code": "research-colonyexpansion",
+          "shape": "square",
+          "objectives": [
+            {
+              "type": "research",
+              "code": "colonyexpansion",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ],
+          "x": 4.0,
+          "y": 0.0
+        },
+        {
           "code": "research-burialrites",
-          "x": 16.0,
-          "y": 0.0,
+          "x": 5.2,
+          "y": 3.0,
           "shape": "square",
           "objectives": [
             {
@@ -2263,12 +2500,15 @@
               "code": "game:gear-rusty",
               "count": 1
             }
+          ],
+          "requires": [
+            "research-herbalremedies"
           ]
         },
         {
           "code": "research-archery",
-          "x": 23.0,
-          "y": 0.0,
+          "x": 5.2,
+          "y": 4.5,
           "shape": "square",
           "objectives": [
             {
@@ -2282,12 +2522,15 @@
               "code": "game:gear-rusty",
               "count": 1
             }
+          ],
+          "requires": [
+            "research-guardtraining"
           ]
         },
         {
           "code": "research-roadbuilding",
-          "x": 2.0,
-          "y": 3.5,
+          "x": 8.0,
+          "y": 0.0,
           "shape": "square",
           "objectives": [
             {
@@ -2301,12 +2544,15 @@
               "code": "game:gear-rusty",
               "count": 1
             }
+          ],
+          "requires": [
+            "research-organizedstorage"
           ]
         },
         {
           "code": "research-mastermasons",
-          "x": 4.2,
-          "y": 3.5,
+          "x": 9.2,
+          "y": 0.0,
           "shape": "square",
           "objectives": [
             {
@@ -2320,12 +2566,15 @@
               "code": "game:gear-rusty",
               "count": 1
             }
+          ],
+          "requires": [
+            "research-colonyexpansion"
           ]
         },
         {
           "code": "research-stonecutting",
-          "x": 6.4,
-          "y": 3.5,
+          "x": 10.4,
+          "y": 0.0,
           "shape": "square",
           "objectives": [
             {
@@ -2339,12 +2588,15 @@
               "code": "game:gear-rusty",
               "count": 1
             }
+          ],
+          "requires": [
+            "research-colonyexpansion"
           ]
         },
         {
           "code": "research-cropscience",
-          "x": 9.0,
-          "y": 3.5,
+          "x": 8.0,
+          "y": 1.5,
           "shape": "square",
           "objectives": [
             {
@@ -2358,12 +2610,15 @@
               "code": "game:gear-rusty",
               "count": 1
             }
+          ],
+          "requires": [
+            "research-irrigation"
           ]
         },
         {
           "code": "research-guildworkshops",
-          "x": 11.2,
-          "y": 3.5,
+          "x": 9.2,
+          "y": 1.5,
           "shape": "square",
           "objectives": [
             {
@@ -2377,12 +2632,15 @@
               "code": "game:gear-rusty",
               "count": 1
             }
+          ],
+          "requires": [
+            "research-specializedcraftsmen"
           ]
         },
         {
           "code": "research-efficientsmelting",
-          "x": 13.4,
-          "y": 3.5,
+          "x": 10.4,
+          "y": 1.5,
           "shape": "square",
           "objectives": [
             {
@@ -2396,12 +2654,15 @@
               "code": "game:gear-rusty",
               "count": 1
             }
+          ],
+          "requires": [
+            "research-specializedcraftsmen"
           ]
         },
         {
           "code": "research-medicine",
-          "x": 16.0,
-          "y": 3.5,
+          "x": 8.0,
+          "y": 3.0,
           "shape": "square",
           "objectives": [
             {
@@ -2415,12 +2676,15 @@
               "code": "game:gear-rusty",
               "count": 1
             }
+          ],
+          "requires": [
+            "research-herbalremedies"
           ]
         },
         {
           "code": "research-schooling",
-          "x": 18.2,
-          "y": 3.5,
+          "x": 9.2,
+          "y": 3.0,
           "shape": "square",
           "objectives": [
             {
@@ -2434,12 +2698,15 @@
               "code": "game:gear-rusty",
               "count": 1
             }
+          ],
+          "requires": [
+            "research-scribetraining"
           ]
         },
         {
           "code": "research-townlife",
-          "x": 20.4,
-          "y": 3.5,
+          "x": 10.4,
+          "y": 3.0,
           "shape": "square",
           "objectives": [
             {
@@ -2453,12 +2720,15 @@
               "code": "game:gear-rusty",
               "count": 1
             }
+          ],
+          "requires": [
+            "research-biggervillage"
           ]
         },
         {
           "code": "research-drillyards",
-          "x": 23.0,
-          "y": 3.5,
+          "x": 8.0,
+          "y": 4.5,
           "shape": "square",
           "objectives": [
             {
@@ -2472,12 +2742,15 @@
               "code": "game:gear-rusty",
               "count": 1
             }
+          ],
+          "requires": [
+            "research-guardtraining"
           ]
         },
         {
           "code": "research-stonewalls",
-          "x": 25.2,
-          "y": 3.5,
+          "x": 9.2,
+          "y": 4.5,
           "shape": "square",
           "objectives": [
             {
@@ -2491,12 +2764,15 @@
               "code": "game:gear-rusty",
               "count": 1
             }
+          ],
+          "requires": [
+            "research-basicfortifications"
           ]
         },
         {
           "code": "research-surveying",
-          "x": 30.0,
-          "y": 3.5,
+          "x": 8.0,
+          "y": 6.0,
           "shape": "square",
           "objectives": [
             {
@@ -2510,12 +2786,15 @@
               "code": "game:gear-rusty",
               "count": 1
             }
+          ],
+          "requires": [
+            "research-cartographersguild"
           ]
         },
         {
           "code": "research-expeditions",
-          "x": 32.2,
-          "y": 3.5,
+          "x": 9.2,
+          "y": 6.0,
           "shape": "square",
           "objectives": [
             {
@@ -2529,12 +2808,15 @@
               "code": "game:gear-rusty",
               "count": 1
             }
+          ],
+          "requires": [
+            "research-fieldnotes"
           ]
         },
         {
           "code": "research-grandlibrary",
-          "x": 16.0,
-          "y": 7.0,
+          "x": 12.0,
+          "y": 3.0,
           "shape": "hexagon",
           "requires": [
             "research-schooling"
@@ -2555,8 +2837,8 @@
         },
         {
           "code": "research-charterrealm",
-          "x": 2.0,
-          "y": 7.0,
+          "x": 12.0,
+          "y": 0.0,
           "shape": "hexagon",
           "requires": [
             "research-roadbuilding",
@@ -2578,8 +2860,8 @@
         },
         {
           "code": "research-mechanics",
-          "x": 9.0,
-          "y": 7.0,
+          "x": 12.0,
+          "y": 1.5,
           "shape": "hexagon",
           "requires": [
             "research-guildworkshops"
@@ -2600,8 +2882,8 @@
         },
         {
           "code": "research-standingarmy",
-          "x": 23.0,
-          "y": 7.0,
+          "x": 12.0,
+          "y": 4.5,
           "shape": "hexagon",
           "requires": [
             "research-drillyards",
@@ -2623,8 +2905,8 @@
         },
         {
           "code": "research-atlasworld",
-          "x": 30.0,
-          "y": 7.0,
+          "x": 12.0,
+          "y": 6.0,
           "shape": "hexagon",
           "requires": [
             "research-surveying",

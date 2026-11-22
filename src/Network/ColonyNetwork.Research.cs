@@ -29,7 +29,7 @@ public partial class ColonyNetwork
 
         foreach (var def in m.ResearchDefs())
         {
-            var view = new ResearchView { Code = def.Code, Branch = def.Branch, Tier = def.Tier, Cost = m.CostText(def), PointsNeeded = def.Points };
+            var view = new ResearchView { Needs = def.Needs.ToList(), Code = def.Code, Branch = def.Branch, Tier = def.Tier, Cost = m.CostText(def), PointsNeeded = def.Points };
             var progress = colony.Research.Find(p => p.Code == def.Code);
             if (m.Researched(colony, def.Code)) view.State = 4;
             else if (progress != null)

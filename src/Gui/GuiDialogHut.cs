@@ -98,6 +98,7 @@ public partial class GuiDialogHut : GuiDialog
         TeachUpdated(fresh);
         snapshot = fresh;
         Compose();
+        researchTree?.Refresh();
     }
 
     ColonyRole ViewerRole => (ColonyRole)snapshot.ViewerRole;
@@ -2037,6 +2038,7 @@ public partial class GuiDialogHut : GuiDialog
 
     public override void OnGuiClosed()
     {
+        researchTree?.TryClose();
         if (!Replaced) network.SendAction(new ColonyActionPacket { ColonyId = snapshot.ColonyId, Action = ColonyAction.CloseWindow });
         base.OnGuiClosed();
     }
