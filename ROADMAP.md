@@ -101,7 +101,7 @@ Things marked *(tested)* have been tried in game. Everything else is built but s
 - **Guards**: ranged guards and the Rally Banner came in 0.178.0; still no raids, no Combat Academy or archery range, and the Rally Banner does not show the colony's Heraldry design yet *(not tested yet)*
 - **Blueprints**: no in-game scan tool for your own buildings, and the wand's Education, Walls and Decoration tabs are still empty *(tested)*
 - **Death**: the Graveyard and Undertaker came in 0.179.0. Still to do: a memorial stone, laying the body out on a table first, family visiting graves, and the Graveyard's buildings (Aaron designs them) *(not tested yet)*
-- **Quests**: the new quest book is in (0.175.0-0.177.1). Still to do: real rewards, the Bronze Age, Iron and Steel, Mechanical Power, Kilns and Glass and Tutorial chapters, 31 Colony quests that wait for huts we do not have yet, and Tavern jobs and settler requests as quests
+- **Quests**: the new quest book is in (0.175.0-0.177.1). Still to do: real rewards, the Bronze Age, Iron and Steel, Mechanical Power and Kilns and Glass chapters (the Tutorial page was dropped), 31 Colony quests that wait for huts we do not have yet, and Tavern jobs and settler requests as quests
 - **Stash and Postbox**: drop-off points exist, but there is no postbox to order items to the player *(tested)*
 
 ## Not built yet
