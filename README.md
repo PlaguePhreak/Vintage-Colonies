@@ -46,6 +46,18 @@ Research goes from 12 pieces to 32 (design: "More Research", approved by Aaron 2
 | Standing Army | Defence | 4 | Drill Yards, Stone Walls | 3,000 points, 16 iron ingots, 2 tokens | Guards get 4 more health and hit 15% harder |
 | Atlas of the World | Exploration | 4 | Surveying, Expeditions | 3,000 points, 32 parchment, 2 tokens | Explorers go 50% further and walk 15% faster |
 
+## Economy step 1: the Market (0.182.0)
+Built from the economy design doc Aaron approved on 22 Nov 2026 (https://claude.ai/artifact/54wQA4dYCoNTKviikB23iN). This is step 1 of 4; the Tavern, homes and the Bailiff's dues come next.
+- **The economy starts at Town Hall level 2** (was 3): wages, taxes and spending all begin then. Old configs that still say 3 are moved to 2.
+- **60 starting gears**: when the economy starts, the colony's treasury is given 60 rusty gears (Coinage coins with that mod) once. Old saves already past level 2 get them too.
+- **Market**: a new hut (Fundamentals tab, recipe: 2 sticks and flax twine over 3 planks). Placeholder model only; Aaron designs the building. 1 Market Trader (skill Trading).
+- **Market Trader**: brings cooked meals (not plain bread) and clothes in good condition from the warehouse to the Market, up to 6 of each, never more than half of what the warehouse has. The rest of the time it minds the stall. Settlers only buy while a trader works there.
+- **Spending**: settlers keep 5 gears and spend the rest. A hungry settler who can pay prefers a Market meal (1 gear). A settler whose clothes are worn buys new ones (2 gears a piece) and leaves the old ones there for the Tailor. What they pay goes to the treasury. Buying gives "Bought something nice" (+2 for a day); wanting something they can't afford gives "Couldn't afford it" (-1 for half a day). The basics stay free: settlers with no gears eat and dress from the warehouse as before. Nothing is packed for lunch from the Market.
+- **For sale tab** on the Market: each kind with its price and how many are on the stall. Officers change the price with - and + and turn a kind on or off.
+- Config: `EconomyTownHallLevel` (2), `StartingGears`, `SavingsKeep`, `MarketPrices`, `MarketStockEach`, `MarketClothesBelow`.
+- Not in this step: Market levels selling jewellery, tools and furniture (step 3), the settler window showing savings, new quests.
+- Not tested in game.
+
 ## Graveyard and Undertaker (0.179.0)
 Built from the design doc Aaron approved on 22 Nov 2026 (https://claude.ai/artifact/UNBVULi6TXAb2FGjUmB3hp).
 - **Graveyard**: a new hut (Education tab, recipe: planks around a stone). Placeholder model only; Aaron designs the buildings. It takes 1 undertaker at levels 1-2, 2 at levels 3-4 and 3 at level 5.

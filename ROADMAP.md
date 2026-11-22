@@ -91,6 +91,7 @@ Things marked *(tested)* have been tried in game. Everything else is built but s
 - Ranged guards: each guard can be set to melee or ranged on the Colony militia tab, ranged guards shoot bows and slings and pick up their arrows after a fight, and armed settlers prefer spears and shields (0.178.0, not tested yet)
 - Rally Banner: link guard posts to it, raise it to call their guards to you, lower it to send them back (0.178.0, not tested yet)
 - Graveyard and Undertaker: grave plots, the undertaker brings the dead home, buries them under a named grave marker and holds a small funeral; belongings go to the Graveyard's storage (0.179.0, not tested yet)
+- Economy step 1: the Market and Market Trader, settlers spend spare gears on meals and clothes, the economy starts at Town Hall level 2 with 60 starting gears (0.182.0, not tested yet)
 
 ## Partly done
 
@@ -114,7 +115,7 @@ Things marked *(tested)* have been tried in game. Everything else is built but s
 5. **Buildings for the newer huts**: herder huts, Tannery, Butcher's Hut, Apiary, Boarding House and Graveyard still use placeholder models (Aaron designs every building)
 
 **Later**
-- **Economy**: settlers spend their coins (a market, the Tavern, buying furniture and clothes), coins of other metals, fines and market fees for the Bailiff. The Royal Mint, taxes and wages came in 0.136.0.
+- **Economy** (design doc https://claude.ai/artifact/54wQA4dYCoNTKviikB23iN, approved 22 Nov 2026): step 1, the Market, came in 0.182.0. Still to do: step 2 the Tavern Keeper and drinks (the Cook makes drinks for now, brewing is its own job later), step 3 home comfort, furniture, rent and better houses, step 4 market day traders, fines and the Bailiff's money report. The Royal Mint, taxes and wages came in 0.136.0.
 - More huts from MineColonies: Stonemason, Baker, Fisher, Plantation (reeds and cattails), Composter, Crusher and Sifter (quern and panning), Florist, Dyer, Fletcher and Mechanic (windmills and gears)
 - A Combat Academy and an archery range to train guards
 - **Stonemason carving**: a Stonemason adds chiseled detail to buildings by copying carvings you made yourself (builders place chiseled blocks from builds since 0.159.0)
