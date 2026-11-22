@@ -791,6 +791,18 @@
             {
               "code": "game:gear-rusty",
               "count": 10
+            },
+            {
+              "code": "game:knife-generic-copper",
+              "count": 1
+            },
+            {
+              "code": "game:salt",
+              "count": 16
+            },
+            {
+              "code": "game:honeycomb",
+              "count": 8
             }
           ]
         },
@@ -2172,8 +2184,8 @@
         },
         {
           "code": "farm-g0",
-          "x": 10.22,
-          "y": -2.25,
+          "x": 10.13,
+          "y": -2.94,
           "shape": "square",
           "requires": [
             "farm-ggrain"
@@ -2194,8 +2206,8 @@
         },
         {
           "code": "farm-g1",
-          "x": 10.54,
-          "y": -4.3,
+          "x": 11.31,
+          "y": -5.01,
           "shape": "square",
           "requires": [
             "farm-ggrain"
@@ -2216,8 +2228,8 @@
         },
         {
           "code": "farm-g2",
-          "x": 12.33,
-          "y": -5.32,
+          "x": 13.68,
+          "y": -5.01,
           "shape": "square",
           "requires": [
             "farm-ggrain"
@@ -2238,8 +2250,8 @@
         },
         {
           "code": "farm-g3",
-          "x": 14.25,
-          "y": -4.56,
+          "x": 14.86,
+          "y": -2.94,
           "shape": "square",
           "requires": [
             "farm-ggrain"
@@ -2260,8 +2272,8 @@
         },
         {
           "code": "farm-g4",
-          "x": 14.84,
-          "y": -2.57,
+          "x": 13.68,
+          "y": -0.88,
           "shape": "square",
           "requires": [
             "farm-ggrain"
@@ -2282,7 +2294,7 @@
         },
         {
           "code": "farm-g5",
-          "x": 13.68,
+          "x": 11.31,
           "y": -0.88,
           "shape": "square",
           "requires": [
@@ -2304,17 +2316,17 @@
         },
         {
           "code": "farm-g6",
-          "x": 11.62,
-          "y": -0.73,
+          "x": 12.5,
+          "y": 1.5,
           "shape": "square",
           "requires": [
-            "farm-ggrain"
+            "farm-gveg"
           ],
           "objectives": [
             {
               "type": "obtain",
               "count": 8,
-              "code": "game:vegetable-cassava|game:rawcassava",
+              "code": "game:vegetable-cassava|game:rawcassava-*",
               "text": "objective-line-farm-g6-0"
             }
           ],
@@ -2327,8 +2339,8 @@
         },
         {
           "code": "farm-v0",
-          "x": 11.62,
-          "y": 1.66,
+          "x": 10.82,
+          "y": 2.19,
           "shape": "square",
           "requires": [
             "farm-gveg"
@@ -2349,8 +2361,8 @@
         },
         {
           "code": "farm-v1",
-          "x": 13.68,
-          "y": 1.81,
+          "x": 14.17,
+          "y": 2.19,
           "shape": "square",
           "requires": [
             "farm-gveg"
@@ -2371,8 +2383,8 @@
         },
         {
           "code": "farm-v2",
-          "x": 14.84,
-          "y": 3.5,
+          "x": 14.86,
+          "y": 3.87,
           "shape": "square",
           "requires": [
             "farm-gveg"
@@ -2393,8 +2405,8 @@
         },
         {
           "code": "farm-v3",
-          "x": 14.25,
-          "y": 5.49,
+          "x": 14.17,
+          "y": 5.56,
           "shape": "square",
           "requires": [
             "farm-gveg"
@@ -2415,7 +2427,7 @@
         },
         {
           "code": "farm-v4",
-          "x": 12.33,
+          "x": 12.5,
           "y": 6.25,
           "shape": "square",
           "requires": [
@@ -2437,8 +2449,8 @@
         },
         {
           "code": "farm-v5",
-          "x": 10.54,
-          "y": 5.23,
+          "x": 10.82,
+          "y": 5.56,
           "shape": "square",
           "requires": [
             "farm-gveg"
@@ -2459,8 +2471,8 @@
         },
         {
           "code": "farm-v6",
-          "x": 10.22,
-          "y": 3.18,
+          "x": 10.13,
+          "y": 3.87,
           "shape": "square",
           "requires": [
             "farm-gveg"
@@ -3026,6 +3038,14 @@
             {
               "code": "game:gear-rusty",
               "count": 10
+            },
+            {
+              "code": "game:scythe-copper",
+              "count": 1
+            },
+            {
+              "code": "game:compost",
+              "count": 16
             }
           ]
         },
@@ -4563,6 +4583,18 @@
             {
               "code": "game:gear-rusty",
               "count": 10
+            },
+            {
+              "code": "game:saw-copper",
+              "count": 1
+            },
+            {
+              "code": "game:plank-oak",
+              "count": 32
+            },
+            {
+              "code": "game:metalnailsandstrips-copper",
+              "count": 8
             }
           ]
         },
@@ -5285,6 +5317,18 @@
             {
               "code": "game:gear-rusty",
               "count": 10
+            },
+            {
+              "code": "game:cleaver-copper",
+              "count": 1
+            },
+            {
+              "code": "game:drygrass",
+              "count": 64
+            },
+            {
+              "code": "game:rope",
+              "count": 4
             }
           ]
         },
@@ -5325,7 +5369,7 @@
           "objectives": [
             {
               "type": "entitynear",
-              "code": "*elk*",
+              "code": "deer-elk-adult-*|deer-albinoelk-adult-*|tameddeer-*",
               "text": "objective-line-herd-raise-0"
             }
           ],
@@ -5894,6 +5938,18 @@
             {
               "code": "game:gear-rusty",
               "count": 10
+            },
+            {
+              "code": "game:shears-copper",
+              "count": 1
+            },
+            {
+              "code": "game:leather-normal-plain",
+              "count": 4
+            },
+            {
+              "code": "game:flaxtwine",
+              "count": 16
             }
           ]
         },
