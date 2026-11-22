@@ -53,7 +53,7 @@ public class AiTaskSettlerRecover : SettlerTaskBase
     {
         var colony = Colony;
         var citizen = Citizen;
-        if (colony == null || citizen == null || citizen.IsDowned || Interrupted(citizen) || manager!.RestedEnough(entity)) return false;
+        if (colony == null || citizen == null || citizen.IsDowned || Interrupted(citizen) || (manager!.RestedEnough(entity) && !manager.IsSick(citizen))) return false;
 
         if (!lyingDown && (Arrived || PathFailed))
         {

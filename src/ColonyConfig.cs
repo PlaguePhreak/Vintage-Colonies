@@ -7,7 +7,7 @@ public class ColonyConfig
 {
     public const string FileName = "createacolony.json";
     /// <summary>Bumped when a default changes in a way old config files should pick up; see ColonyManager.UpgradeConfig.</summary>
-    public const int CurrentConfigVersion = 9;
+    public const int CurrentConfigVersion = 10;
 
     /// <summary>Which defaults this file has been brought up to. Files from before 0.33.0 have none, so read as 0.</summary>
     public int ConfigVersion;
@@ -644,7 +644,7 @@ public class ColonyConfig
     public int RaidSpawnDistanceMin = 48;
     public int RaidSpawnDistanceMax = 64;
     /// <summary>Raid factions in this update: outlaws (bandits), wolves, drifters (night only).</summary>
-    public string[] RaidFactions = { "outlaws", "wolves", "drifters" };
+    public string[] RaidFactions = { "outlaws", "wolves", "drifters", "restless" };
     /// <summary>Creatures each monster faction sends, as entity codes with * wildcards; one is picked at random for each raider.</summary>
     public string[] RaidWolves = { "game:wolf-*adult*" };
     public string[] RaidDrifters = { "game:drifter-normal", "game:drifter-deep" };
@@ -660,6 +660,16 @@ public class ColonyConfig
     public float BanditFireChance = 0.5f;
     /// <summary>Rusty gears a dead bandit may drop (0 up to this many).</summary>
     public int BanditMaxGears = 2;
+    // Monster races (0.187.0, design doc https://claude.ai/artifact/W5h1tzifqjBvYEoRfBR73s): the Restless (zombies), faction "restless".
+    /// <summary>The Restless: health, damage per bite, raid size times this, the hour they come back each night.</summary>
+    public float RestlessHealth = 12f;
+    public float RestlessDamage = 2f;
+    public float RestlessSizeFactor = 1.4f;
+    public float RestlessNightHour = 20f;
+    /// <summary>A bite makes a settler ill this often, for this many days (the Healer cures it sooner); a player loses this much saturation.</summary>
+    public float RestlessSickChance = 0.25f;
+    public float RestlessSickDays = 1f;
+    public float RestlessPlayerHunger = 60f;
 
     // Rally Banner (0.178.0)
     /// <summary>A raised Rally Banner calls its linked guards from up to this many blocks away; guards further off stay put.</summary>

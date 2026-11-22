@@ -109,6 +109,14 @@ Built from the raids design doc with Aaron's answers (22 Nov 2026, https://claud
 - **Quest.** First Raid Survival (Colony chapter) now works: beat off a raid. It unlocks after First Barracks.
 - More bandit groups (Hill Raiders, River Reavers, Rust Brigands, Storm Cultists, Deserters) come later.
 
+## The Restless: zombie raids (0.187.0)
+The first monster race, from the monster races design doc with Aaron's answers (22 Nov 2026, https://claude.ai/artifact/W5h1tzifqjBvYEoRfBR73s).
+- **Who.** The Restless are the dead who won't stay down: settler bodies with grey, rotting skin and torn clothes. They are slow and weak one by one, but they come in bigger groups than other raids, and they never run, steal or light fires. Like all raiders, they never break blocks.
+- **When.** Only at night. At sunrise the ones still standing walk off, and they come back the next night, until every one is killed. By day settlers go back to work.
+- **Bites.** A bite can make a settler ill for a day. An ill settler rests at home, and the Healer cures it. A bite makes a player hungry.
+- **Settings.** The Town Hall **Settings** tab has a Monster races line: officers can switch the Restless off for their colony (on by default). Server owners can remove "restless" from RaidFactions or change the Restless settings in the config.
+- Goblins, orcs (the Stormborn), the Ancient Dead and Nachzehrers come in later updates.
+
 ## Ranged guards and the Rally Banner (0.178.0)
 Built from the design doc Aaron approved on 22 Nov 2026 (https://claude.ai/artifact/X1rem76HRLvrBPbsY3UWZp).
 - **Each guard fights up close or at range.** On the Town Hall's **Colony militia** tab, officers click a guard's role (Guard: melee / Guard: ranged) to switch it. One tower can hold both kinds.

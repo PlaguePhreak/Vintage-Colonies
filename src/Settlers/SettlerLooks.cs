@@ -21,7 +21,12 @@ public class SettlerLooks : ModSystem
 {
     const string SettlerShape = "createacolony:shapes/entity/humanoid/settler-seraph.json";
     const string SettlerShapeBase = "createacolony:entity/humanoid/settler-seraph";
-    static readonly string[] SettlerTypes = { "createacolony:entities/settler.json", "createacolony:entities/settlerchild.json", "createacolony:entities/bandit.json" };
+    static readonly string[] SettlerTypes = { "createacolony:entities/settler.json", "createacolony:entities/settlerchild.json", "createacolony:entities/bandit.json", RestlessType };
+    /// <summary>The Restless (zombies, 0.187.0): the settler look with a rotting skin, pale eyes and grim faces.</summary>
+    const string RestlessType = "createacolony:entities/restless.json";
+    static readonly string[] RestlessSkins = { "createacolony:entity/humanoid/restless/skin1", "createacolony:entity/humanoid/restless/skin2", "createacolony:entity/humanoid/restless/skin3" };
+    static readonly HashSet<string> RestlessEyes = new() { "sand", "opal", "smokyquartz", "bitter-lemon", "citron" };
+    static readonly HashSet<string> RestlessFaces = new() { "angry", "upset", "tired", "very-sad" };
     /// <summary>Animation source: the settler model whose animations (balanced-idle, balanced-walk...) the settler files use.</summary>
     const string AnimationSource = "createacolony:shapes/entity/humanoid/settler-male.json";
     /// <summary>
@@ -92,6 +97,7 @@ public class SettlerLooks : ModSystem
                 if (attributes![key] is { } value) settlerAttributes[key] = GameDomain(value.DeepClone());
                 else settlerAttributes.Remove(key);
             }
+            if (path == RestlessType) RestlessLook(settlerAttributes["skinnableParts"] as JArray);
             type["attributes"] = settlerAttributes;
             SettlerAnimations.CopyPlayerAnimationConfigs(player, settlerClient);
             AddSkinBehavior(settlerClient["behaviors"] as JArray);
@@ -173,6 +179,37 @@ public class SettlerLooks : ModSystem
         if (shape["textures"] is JObject shapeTextures) shape["textures"] = TexturesWithDomain(shapeTextures);
         target.Data = Encoding.UTF8.GetBytes(shape.ToString(Newtonsoft.Json.Formatting.None));
         return true;
+    }
+
+    /// <summary>
+    /// The Restless get our own rotting skins in place of the player's skin colours, and only pale eyes and grim
+    /// faces (where those choices exist). Hair, beards and the rest stay random.
+    /// </summary>
+    static void RestlessLook(JArray? parts)
+    {
+        if (parts == null) return;
+        foreach (var part in parts.OfType<JObject>())
+        {
+            if (part["variants"] is not JArray variants) continue;
+            switch ((string?)part["code"])
+            {
+                case "baseskin":
+                    part["variants"] = new JArray(RestlessSkins.Select((t, i) => new JObject { ["code"] = "restless" + (i + 1), ["texture"] = t }));
+                    break;
+                case "eyecolor":
+                    Keep(variants, RestlessEyes);
+                    break;
+                case "facialexpression":
+                    Keep(variants, RestlessFaces);
+                    break;
+            }
+        }
+
+        static void Keep(JArray variants, HashSet<string> codes)
+        {
+            var drop = variants.Where(v => !codes.Contains((string?)v["code"] ?? "")).ToList();
+            if (drop.Count < variants.Count) foreach (var v in drop) v.Remove();
+        }
     }
 
     /// <summary>
