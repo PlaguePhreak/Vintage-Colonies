@@ -287,7 +287,9 @@ public partial class ColonyManager
     }
 
     public static int CountCarried(IPlayer player, string pattern) =>
-        CarriedSlots(player).Where(s => QuestItems.Matches(pattern, s.Itemstack.Collectible.Code)).Sum(s => s.Itemstack.StackSize);
+        pattern == QuestItems.AnyFood
+            ? CarriedSlots(player).Where(s => s.Itemstack.Collectible.NutritionProps != null).Sum(s => s.Itemstack.StackSize)
+            : CarriedSlots(player).Where(s => QuestItems.Matches(pattern, s.Itemstack.Collectible.Code)).Sum(s => s.Itemstack.StackSize);
 
     /// <summary>Takes up to count matching items from what the player carries; returns how many were taken.</summary>
     static int TakeCarried(IPlayer player, string pattern, int count)

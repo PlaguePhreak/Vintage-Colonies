@@ -391,8 +391,12 @@ public static class QuestItems
     }
 
     /// <summary>One item or block matching the pattern, for icons and rewards; null when the game has none.</summary>
+    /// <summary>A task code that means anything that can be eaten, whatever mod it comes from.</summary>
+    public const string AnyFood = "@food";
+
     public static ItemStack? Sample(IWorldAccessor world, string pattern)
     {
+        if (pattern == AnyFood) pattern = "game:fruit-*|game:bread-*|game:vegetable-*";
         foreach (string part in pattern.Split('|'))
         {
             if (part.Length == 0) continue;

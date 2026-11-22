@@ -34,7 +34,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:fruit-*|game:mushroom-*|game:cattailroot|game:vegetable-*|game:insect-*"
+              "code": "@food",
+              "text": "objective-text-anyfood"
             }
           ],
           "rewards": [
@@ -418,7 +419,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:torch-*"
+              "code": "game:torch-*",
+              "text": "objective-text-torch"
             }
           ],
           "rewards": [
@@ -439,7 +441,8 @@
           "objectives": [
             {
               "type": "place",
-              "code": "game:bed-*"
+              "code": "game:bed-hay-*",
+              "text": "objective-text-haybed"
             }
           ],
           "rewards": [
@@ -461,7 +464,8 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:vegetable-cookedcattailroot"
+              "code": "game:vegetable-cookedcattailroot|game:vegetable-cooked*root",
+              "text": "objective-text-roots"
             }
           ],
           "rewards": [
@@ -503,7 +507,7 @@
           "objectives": [
             {
               "type": "place",
-              "code": "game:chest-*"
+              "code": "game:stationarybasket-*"
             }
           ],
           "rewards": [
@@ -609,7 +613,8 @@
             {
               "type": "obtain",
               "count": 16,
-              "code": "game:soil-*"
+              "code": "game:soil-*",
+              "text": "objective-text-anysoil"
             }
           ],
           "rewards": [

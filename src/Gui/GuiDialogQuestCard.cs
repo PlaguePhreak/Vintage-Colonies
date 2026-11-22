@@ -47,6 +47,18 @@ public class GuiDialogQuestCard : GuiDialog
     /// <summary>True when a screen point lies on the card, so the book under it leaves the click alone.</summary>
     public bool Covers(int x, int y) => IsOpened() && SingleComposer?.Bounds.PointInside(x, y) == true;
 
+    /// <summary>A link in the quest text. Handbook links open behind the full-screen book, so the book and card close first.</summary>
+    void OnLink(LinkTextComponent link)
+    {
+        string href = link.Href ?? "";
+        if (href.StartsWith("handbook", StringComparison.OrdinalIgnoreCase))
+        {
+            TryClose();
+            book.TryClose();
+        }
+        link.HandleLink();
+    }
+
     void Compose()
     {
         var dialogBounds = ElementStdBounds.AutosizedMainDialog.WithAlignment(EnumDialogArea.RightMiddle).WithFixedAlignmentOffset(-40, 0);
@@ -67,64 +79,76 @@ public class GuiDialogQuestCard : GuiDialog
         composer.AddStaticText(scope, GuiKit.Muted().WithOrientation(EnumTextOrientation.Right), ElementBounds.Fixed(Width / 2, y + 2, Width / 2, 24));
         y += 28;
 
-        // Tasks on the left, Rewards on the right, side by side in two boxes.
-        const double gap = 8, pad = 8;
-        double leftWidth = Math.Floor(Width * 0.6), rightX = leftWidth + gap, rightWidth = Width - rightX;
-        double boxTop = y;
-        double innerLeft = leftWidth - 2 * pad, innerRight = rightWidth - 2 * pad;
+        // The story first. Quest text may use the game's text tags: <font color="#ffd966"> for coloured words,
+        // and <a href="handbook://craftinginfo-starterguide"> for a link into the handbook.
+        composer.AddInset(ElementBounds.Fixed(0, y, Width, 2), 1, 0.5f);
+        y += 10;
+        string desc = QuestLibrary.Desc(quest);
+        if (desc.Length > 0)
+        {
+            double descHeight = GuiKit.RichHeight(capi, GuiKit.Detail(), desc, Width);
+            composer.AddRichtext(desc, GuiKit.Detail(), ElementBounds.Fixed(0, y, Width, descHeight), OnLink, "desc");
+            y += descHeight + 8;
+        }
+        if (status == QuestStatus.Locked)
+        {
+            string why = book.WhyLocked(quest);
+            if (why.Length > 0) y = composer.Text(why, GuiKit.Muted(), 0, y, Width, 8);
+        }
+        else if (status == QuestStatus.Available && quest.Accept)
+        {
+            y = composer.Text(Lang.Get("createacolony:questbook-accept-hint"), GuiKit.Muted(), 0, y, Width, 8);
+        }
 
-        // Work out both columns first, so the boxes can be drawn behind them.
-        var lines = new List<(string Text, CairoFont Font)>();
+        // One row: a small item picture (or a dot), the text, and a number at the right.
+        const double iconSize = 26, textX = 38;
+        void Row(ItemStack? stack, string text, string right, CairoFont font)
+        {
+            double rightWidth = right.Length > 0 ? 70 : 0;
+            double textWidth = Width - textX - rightWidth;
+            double height = Math.Max(iconSize + 4, GuiKit.TextHeight(capi, font, text, textWidth) + 6);
+            if (stack != null)
+                composer.AddRichtext(new RichTextComponentBase[] { new ItemstackTextComponent(capi, stack, iconSize, 0, EnumFloat.Inline) }, ElementBounds.Fixed(2, y, iconSize + 6, iconSize + 4));
+            else
+                composer.AddStaticText("•", font, ElementBounds.Fixed(12, y + 4, 20, 24));
+            composer.AddStaticText(text, font, ElementBounds.Fixed(textX, y + 4, textWidth, height));
+            if (right.Length > 0)
+                composer.AddStaticText(right, GuiKit.Muted().WithOrientation(EnumTextOrientation.Right), ElementBounds.Fixed(Width - rightWidth, y + 5, rightWidth, 22));
+            y += height;
+        }
+        void Heading(string key)
+        {
+            composer.AddInset(ElementBounds.Fixed(0, y + 2, Width, 2), 1, 0.5f);
+            composer.AddStaticText(Lang.Get("createacolony:" + key).ToUpperInvariant(), GuiKit.Muted(), ElementBounds.Fixed(0, y + 12, Width, 22));
+            y += 36;
+        }
+
+        Heading("questbook-tasks");
+        if (quest.Objectives.Count == 0) y = composer.Text(Lang.Get("createacolony:questbook-no-tasks"), GuiKit.Muted(), 0, y, Width, 4);
         for (int i = 0; i < quest.Objectives.Count; i++)
         {
             var o = quest.Objectives[i];
             int progress = state != null && i < state.Progress.Count ? state.Progress[i] : 0;
             int needed = state != null && i < state.Needed.Count ? state.Needed[i] : Math.Max(1, o.Count);
             bool done = status == QuestStatus.Claimed || progress >= needed;
-            string line = (done ? "✓ " : "• ") + GuiDialogQuestBook.ObjectiveText(capi, o);
-            if (needed > 1 || o.Type is ObjectiveTypes.Obtain or ObjectiveTypes.Deliver or ObjectiveTypes.Stock) line += "  (" + Math.Min(progress, needed) + " / " + needed + ")";
-            lines.Add((line, done ? GuiKit.Detail().WithColor(GuiKit.GoodColor) : GuiKit.Detail()));
+            string count = done ? "✓" : needed > 1 || o.Type is ObjectiveTypes.Obtain or ObjectiveTypes.Deliver or ObjectiveTypes.Stock ? Math.Min(progress, needed) + " / " + needed : "";
+            ItemStack? picture = o.Type is ObjectiveTypes.Obtain or ObjectiveTypes.Deliver or ObjectiveTypes.Stock or ObjectiveTypes.Place or ObjectiveTypes.BlockNear or ObjectiveTypes.Holds && o.Code.Length > 0
+                ? QuestItems.Sample(capi.World, o.Code) : null;
+            Row(picture, GuiDialogQuestBook.ObjectiveText(capi, o), count, done ? GuiKit.Detail().WithColor(GuiKit.GoodColor) : GuiKit.Detail());
         }
-        if (lines.Count == 0) lines.Add((Lang.Get("createacolony:questbook-no-tasks"), GuiKit.Muted()));
+        y += 6;
 
-        var parts = new List<RichTextComponentBase>();
+        Heading("questbook-rewards");
+        bool anyReward = false;
         foreach (var reward in quest.Rewards)
         {
             var stack = QuestItems.Sample(capi.World, reward.Code);
             if (stack == null) continue;
-            stack = stack.Clone();
-            stack.StackSize = Math.Max(1, reward.Count);
-            parts.Add(new ItemstackTextComponent(capi, stack, 40, 4, EnumFloat.Inline));
+            anyReward = true;
+            Row(stack, Math.Max(1, reward.Count) + "× " + stack.GetName(), "", GuiKit.Detail());
         }
-        string noRewards = Lang.Get("createacolony:questbook-no-rewards");
-        int perRow = Math.Max(1, (int)(innerRight / 44));
-        double rewardsHeight = parts.Count > 0 ? Math.Ceiling(parts.Count / (double)perRow) * 46 : GuiKit.TextHeight(capi, GuiKit.Muted(), noRewards, innerRight) + 4;
-        double tasksHeight = lines.Sum(l => GuiKit.TextHeight(capi, l.Font, l.Text, innerLeft) + 4);
-        double boxHeight = 34 + Math.Max(tasksHeight, rewardsHeight) + pad;
-
-        composer.AddInset(ElementBounds.Fixed(0, boxTop, leftWidth, boxHeight), 3, 0.8f);
-        composer.AddInset(ElementBounds.Fixed(rightX, boxTop, rightWidth, boxHeight), 3, 0.8f);
-        composer.AddStaticText(Lang.Get("createacolony:questbook-tasks"), GuiKit.Heading().WithColor(new[] { 0.55, 0.7, 1.0, 1.0 }), ElementBounds.Fixed(pad, y + 6, innerLeft, 24));
-        composer.AddStaticText(Lang.Get("createacolony:questbook-rewards"), GuiKit.Heading().WithColor(new[] { 1.0, 0.75, 0.3, 1.0 }), ElementBounds.Fixed(rightX + pad, y + 6, innerRight, 24));
-        double left = y + 34;
-        foreach (var (text, font) in lines) left = composer.Text(text, font, pad, left, innerLeft, 4);
-        if (parts.Count > 0) composer.AddRichtext(parts.ToArray(), ElementBounds.Fixed(rightX + pad, y + 34, innerRight, rewardsHeight));
-        else composer.Text(noRewards, GuiKit.Muted(), rightX + pad, y + 34, innerRight, 4);
-        y = boxTop + boxHeight + 10;
-
-        // The story. Quest text may use the game's text tags, such as <font color="#ffd966">, for coloured words.
-        string desc = QuestLibrary.Desc(quest);
-        if (desc.Length > 0) y = composer.Rich(desc, GuiKit.Detail(), 0, y, Width, 10);
-
-        if (status == QuestStatus.Locked)
-        {
-            string why = book.WhyLocked(quest);
-            if (why.Length > 0) y = composer.Text(why, GuiKit.Muted(), 0, y, Width, 10);
-        }
-        else if (status == QuestStatus.Available && quest.Accept)
-        {
-            y = composer.Text(Lang.Get("createacolony:questbook-accept-hint"), GuiKit.Muted(), 0, y, Width, 10);
-        }
+        if (!anyReward) y = composer.Text(Lang.Get("createacolony:questbook-no-rewards"), GuiKit.Muted(), 0, y, Width, 4);
+        y += 12;
 
         // Buttons along the bottom, from the right.
         double bx = Width;
