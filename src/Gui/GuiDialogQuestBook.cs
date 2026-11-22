@@ -102,9 +102,35 @@ public class GuiDialogQuestBook : GuiDialog
     /// </summary>
     public bool Fogged(QuestDef q)
     {
-        if (StatusOf(q) != QuestStatus.Locked) return false;
-        var before = q.Requires.Select(r => library.Get(r)).Where(r => r != null && !r.Soon).ToList();
-        return before.Count > 0 && before.All(r => StatusOf(r!) == QuestStatus.Locked);
+        if (ShowLocked || StatusOf(q) != QuestStatus.Locked || q.Requires.Count == 0) return false;
+        return !q.Requires.Any(r => Opened(library.Get(r), 0));
+    }
+
+    /// <summary>A quest the player has reached. A quest that is still to come passes this on from the quests before it.</summary>
+    bool Opened(QuestDef? q, int depth)
+    {
+        if (q == null || depth > 40) return false;
+        if (!q.Soon) return StatusOf(q) != QuestStatus.Locked;
+        return q.Requires.Count == 0 || q.Requires.Any(r => Opened(library.Get(r), depth + 1));
+    }
+
+    const string ShowLockedSetting = "createacolonyShowLockedQuests";
+
+    /// <summary>The player's own choice, kept in their game settings: show the quests they have not reached yet. Off unless they turn it on.</summary>
+    bool ShowLocked
+    {
+        get => capi.Settings.Bool.Exists(ShowLockedSetting) && capi.Settings.Bool[ShowLockedSetting];
+        set => capi.Settings.Bool[ShowLockedSetting] = value;
+    }
+
+    GuiDialogQuestSettings? settingsDialog;
+
+    bool OpenSettings()
+    {
+        settingsDialog?.TryClose();
+        settingsDialog = new GuiDialogQuestSettings(capi, ShowLocked, on => { ShowLocked = on; Compose(); });
+        settingsDialog.TryOpen();
+        return true;
     }
 
     public QuestStateView? StateOf(QuestDef q) => states.GetValueOrDefault(q.Code);
@@ -206,11 +232,12 @@ public class GuiDialogQuestBook : GuiDialog
         double x = SidebarWidth + Gap, mapWidth = width - x;
         var (chapterDone, chapterTotal) = ChapterProgress(chapter);
         string scope = Lang.Get(chapter.PerColony ? "createacolony:questbook-scope-colony" : "createacolony:questbook-scope-player");
-        composer.AddStaticText(Lang.Get("createacolony:questbook-progress", chapterDone, chapterTotal) + "   ·   " + scope, GuiKit.Body(), ElementBounds.Fixed(x, top + 5, mapWidth - 200, 24));
+        composer.AddStaticText(Lang.Get("createacolony:questbook-progress", chapterDone, chapterTotal) + "   ·   " + scope, GuiKit.Body(), ElementBounds.Fixed(x, top + 5, mapWidth - 300, 24));
         int waiting = library.Groups.SelectMany(g => g.Chapters).Sum(Waiting);
+        composer.AddSmallButton(Lang.Get("createacolony:questbook-settings"), OpenSettings, ElementBounds.Fixed(width - 100, top, 100, 28));
         if (waiting > 0)
         {
-            composer.AddSmallButton(Lang.Get("createacolony:questbook-claim-all", waiting), ClaimAll, ElementBounds.Fixed(width - 180, top, 180, 28));
+            composer.AddSmallButton(Lang.Get("createacolony:questbook-claim-all", waiting), ClaimAll, ElementBounds.Fixed(width - 286, top, 180, 28));
         }
 
         // The chapter's map.

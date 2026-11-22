@@ -288,3 +288,28 @@ public class GuiDialogQuestName : GuiDialog
         SingleComposer.GetTextInput("name")?.SetValue(initial);
     }
 }
+
+/// <summary>The quest book's settings: the player's own choices, kept on their computer.</summary>
+public class GuiDialogQuestSettings : GuiDialog
+{
+    public override string? ToggleKeyCombinationCode => null;
+    public override double DrawOrder => 0.25;
+    public override bool PrefersUngrabbedMouse => true;
+
+    public GuiDialogQuestSettings(ICoreClientAPI capi, bool showLocked, Action<bool> onShowLocked) : base(capi)
+    {
+        var dialogBounds = ElementStdBounds.AutosizedMainDialog.WithAlignment(EnumDialogArea.CenterMiddle);
+        var bgBounds = ElementBounds.Fill.WithFixedPadding(GuiStyle.ElementToDialogPadding);
+        bgBounds.BothSizing = ElementSizing.FitToChildren;
+        SingleComposer = capi.Gui.CreateCompo("createacolony-questsettings", dialogBounds)
+            .AddShadedDialogBG(bgBounds)
+            .AddDialogTitleBar(Lang.Get("createacolony:questbook-settings-title"), () => TryClose())
+            .BeginChildElements(bgBounds)
+            .AddSwitch(on => onShowLocked(on), ElementBounds.Fixed(0, 32, 26, 26), "showlocked", 24)
+            .AddStaticText(Lang.Get("createacolony:questbook-show-locked"), GuiKit.Body(), ElementBounds.Fixed(36, 35, 330, 24))
+            .AddStaticText(Lang.Get("createacolony:questbook-show-locked-hint"), GuiKit.Muted(), ElementBounds.Fixed(0, 68, 366, 44))
+            .AddSmallButton(Lang.Get("createacolony:questbook-settings-close"), () => TryClose(), ElementBounds.Fixed(236, 118, 130, 28))
+            .EndChildElements().Compose();
+        SingleComposer.GetSwitch("showlocked")?.SetValue(showLocked);
+    }
+}

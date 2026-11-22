@@ -858,8 +858,20 @@
           "requires": [
             "kingdom-q40"
           ],
-          "soon": true,
-          "objectives": []
+          "icon": "createacolony:hut-apiary",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "apiary",
+              "level": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
         },
         {
           "code": "kingdom-q35",
