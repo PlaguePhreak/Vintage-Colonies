@@ -169,7 +169,7 @@ public partial class ColonyNetwork : ModSystem
             ColonyAction.CancelTeardown => CancelTeardown(colony, role, packet.BuildingId),
             ColonyAction.MovePriority => MovePriority(colony, role, packet),
             ColonyAction.SetAnyWoodOrStone => SetAnyWoodOrStone(colony, role, packet.Text == "1"),
-            ColonyAction.SetWorkRadius or ColonyAction.SetEscort or ColonyAction.SetCollectBerries => WorkAreaAction(colony, role, packet),
+            ColonyAction.SetWorkRadius or ColonyAction.SetEscort or ColonyAction.SetCollectBerries or ColonyAction.SetKeepLastColony => WorkAreaAction(colony, role, packet),
             ColonyAction.SetPotteryKeep => PotteryAction(colony, role, packet),
             ColonyAction.SetKitchenKeep => KitchenAction(colony, role, packet),
             ColonyAction.SetCraftKeep => CraftAction(colony, role, packet),
@@ -462,6 +462,10 @@ public partial class ColonyNetwork : ModSystem
                 break;
             case ColonyAction.SetEscort:
                 building.Escort = packet.Text == "1";
+                break;
+            case ColonyAction.SetKeepLastColony:
+                if (building.Type != BuildingTypes.Apiary) return "createacolony:bad-building";
+                building.KeepLastColony = packet.Text == "1";
                 break;
             default:
                 building.NoBerries = packet.Text != "1";
@@ -1143,6 +1147,7 @@ public partial class ColonyNetwork : ModSystem
             snapshot.RadiusChoices = Manager.Config.GatherRadiusChoices.Union(new[] { snapshot.WorkRadius }).OrderBy(r => r).ToList();
             snapshot.Escort = building.Escort;
             snapshot.CollectBerries = !building.NoBerries;
+            snapshot.KeepLastColony = building.KeepLastColony;
             snapshot.GuardName = Manager.GuardOf(colony, building)?.Name ?? "";
             snapshot.GuardCount = Manager.GuardCount(colony);
         }
@@ -1156,7 +1161,7 @@ public partial class ColonyNetwork : ModSystem
         if (building.Type is BuildingTypes.Forester or BuildingTypes.Farmer or BuildingTypes.Potter or BuildingTypes.Cook
             or BuildingTypes.Prospector or BuildingTypes.Miner or BuildingTypes.Quarry
             or BuildingTypes.Smelter or BuildingTypes.Blacksmith or BuildingTypes.Armourer or BuildingTypes.Weaponsmith or BuildingTypes.Sawmill or BuildingTypes.Craftsman or BuildingTypes.Tailor or BuildingTypes.Jeweller or BuildingTypes.Healer or BuildingTypes.Mint or BuildingTypes.Church
-            or BuildingTypes.Explorer or BuildingTypes.Gatherer or BuildingTypes.Hunter or BuildingTypes.Butcher or BuildingTypes.Tannery
+            or BuildingTypes.Explorer or BuildingTypes.Gatherer or BuildingTypes.Hunter or BuildingTypes.Butcher or BuildingTypes.Tannery or BuildingTypes.Apiary
             || ColonyManager.IsHerderHut(building.Type)) snapshot.Info = Manager.WorkerHutInfo(colony, building);
         if (building.Type == BuildingTypes.Tavern)
         {

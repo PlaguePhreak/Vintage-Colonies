@@ -557,6 +557,8 @@ public class HutSnapshot
     /// <summary>What slows research here: a missing table, shelf or light, noisy huts nearby.</summary>
     [ProtoMember(406)] public List<string> ResearchNotes = new();
     [ProtoMember(407)] public int ArchiveTier;
+    /// <summary>An Apiary: the Keep the last colony switch on its Work area tab.</summary>
+    [ProtoMember(2700)] public bool KeepLastColony;
 }
 
 /// <summary>One row of a hut's Requests tab.</summary>
@@ -988,7 +990,9 @@ public enum ColonyAction
     /// <summary>Requests tab give button (0.167.0): Text holds request ids, comma separated; each is filled from the player's inventory.</summary>
     FillRequests = 333,
     /// <summary>Upgrade tab (officers): raises a hut with no blueprint for its next level up one level, without a build.</summary>
-    ForceUpgrade = 2600
+    ForceUpgrade = 2600,
+    /// <summary>Work area tab of an Apiary (officers): Text "1" keeps the last colony, "0" lets the beekeeper harvest every full skep.</summary>
+    SetKeepLastColony = 2700
 }
 
 /// <summary>One Miner's Hut on a Mineshaft Entrance's Main tab.</summary>

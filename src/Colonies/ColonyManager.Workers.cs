@@ -44,6 +44,8 @@ public partial class ColonyManager
         [BuildingTypes.Shepherd] = new WorkerHutKind(Jobs.Shepherd, EnumTool.Knife, _ => false, IsEmptyBucket),
         [BuildingTypes.Goatherd] = new WorkerHutKind(Jobs.Goatherd, EnumTool.Knife, _ => false, IsEmptyBucket),
         [BuildingTypes.Herdsman] = new WorkerHutKind(Jobs.Herdsman, EnumTool.Knife, _ => false, IsEmptyBucket),
+        // The beekeeper scrapes honey pots with a knife and keeps skeps and hive parts to set out (ColonyManager.Beekeeping.cs).
+        [BuildingTypes.Apiary] = new WorkerHutKind(Jobs.Beekeeper, EnumTool.Knife, _ => false, IsHivePart),
     };
 
     /// <summary>Huts a settler works from, whose chests are never warehouse storage.</summary>
@@ -362,6 +364,7 @@ public partial class ColonyManager
         if (hut.Type == BuildingTypes.Butcher) lines.AddRange(ButcherInfo(colony, hut));
         if (IsHerderHut(hut.Type)) lines.Add(HerderInfo(hut));
         if (hut.Type == BuildingTypes.Tannery) lines.Add(TannerInfo(hut));
+        if (hut.Type == BuildingTypes.Apiary) lines.AddRange(ApiaryInfo(colony, hut));
         lines.Add("");
         lines.Add(Lang.Get("createacolony:hint-" + hut.Type + (hut.IsStation ? "-station" : ""), GatherRadius(hut)));
         return string.Join("<br>", lines);

@@ -206,6 +206,7 @@ public partial class GuiDialogHut : GuiDialog
         SingleComposer.GetSwitch("escort")?.SetValue(snapshot.Escort);
         SingleComposer.GetSwitch("mineprospected")?.SetValue(snapshot.MineProspected);
         SingleComposer.GetSwitch("berries")?.SetValue(snapshot.CollectBerries);
+        SingleComposer.GetSwitch("keeplast")?.SetValue(snapshot.KeepLastColony);
         SingleComposer.GetSwitch("retreat")?.SetValue(snapshot.Retreat);
         SingleComposer.GetSwitch("teachany")?.SetValue(teachAnyType);
         for (int i = 0; SingleComposer.GetSwitch("hostile-" + i) is { } toggle; i++) toggle.SetValue(hostileSwitchStates[i]);
@@ -1160,6 +1161,12 @@ public partial class GuiDialogHut : GuiDialog
             y = composer.Section(Lang.Get("createacolony:workarea-berries"), y, Width);
             y = AddSetting(composer, "berries", ColonyAction.SetCollectBerries, snapshot.CollectBerries, y);
             composer.Text(Lang.Get("createacolony:workarea-berries-hint"), GuiKit.Muted(), 0, y, Width);
+        }
+        if (snapshot.Building.Type == BuildingTypes.Apiary)
+        {
+            y = composer.Section(Lang.Get("createacolony:workarea-keeplast"), y, Width);
+            y = AddSetting(composer, "keeplast", ColonyAction.SetKeepLastColony, snapshot.KeepLastColony, y);
+            composer.Text(Lang.Get("createacolony:workarea-keeplast-hint"), GuiKit.Muted(), 0, y, Width);
         }
     }
 

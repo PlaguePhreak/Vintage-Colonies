@@ -50,6 +50,20 @@ All the old quests are gone and the quest book starts again with nine new chapte
 - A quest can now open when any one of the quests before it is done (`requiresAny`), and quest positions can be fractions.
 - No rewards yet. Bronze Age, Iron and Steel, Mechanical Power, Kilns and Glass and the Tutorial are not written yet.
 - New quest file fields: `mod` (mod id the quest needs), `soon`, `requiresAny`, and the task type `manual`.
+## Apiary and the Beekeeper (0.174.0)
+
+Design doc approved by Aaron: https://claude.ai/artifact/NfTmFYbfZM5s8dAQyhPTcA. This is the first update; Langstroth hives come in a second one.
+
+- **Apiary** (Agriculture tab, Animals; 1 empty skep + 5 planks). A placeholder block with a skep on a stand, no building yet. Give a settler the **Beekeeper** job (new **Beekeeping** skill, with the yield perk). The beekeeper needs a knife.
+- It looks after the hives in its **Work area** (16 blocks by default, `ApiaryRadius`), nearest first: 2 hives per Apiary level, 10 at most (`ApiaryHivesPerLevel`, `ApiaryMaxHives`). A hut with nothing built counts as level 1; use the Upgrade tab's Force upgrade to raise it.
+- **Level 1**: harvests full skeps the game's way. The bees are lost, the empty skep is set back in its place for the next swarm, and the honeycomb goes to the hut for the couriers. Skeps are taken off quietly, so no angry bees.
+- **Keep the last colony** (Work area tab, on by default): the beekeeper never harvests the last skep with bees.
+- **Level 2** (`ApiarySwarmLevel`): sets out an empty skep near each skep with bees, inside the range the game's swarms look in (8 blocks out, 7 down, 4 up), so new colonies move in. It takes empty skeps from the hut, or asks couriers for them (`BeekeeperSkepRequest`).
+- **Level 3** (`ApiaryWildLevel`): walks out to wild beehives the Gatherer marked on the map (up to `ApiaryWildRange`, 96 blocks), sets an empty skep on the ground near each one, and carries it home once bees moved in. Wild hives too high up a tree are skipped for a while.
+- **From Golden Combs** (optional, never bundled; its files have no licence, so we only use its blocks in the world): from level 2 (`ApiaryCeramicLevel`) the beekeeper scrapes full honey pots on ceramic hives with its knife and puts them back (2 to 5 honeycomb, read from that mod's own settings), puts honey pots from the hut on brood pots that have none, and moves bees into an empty brood pot: a skep with bees from the hut storage, or a spare skep from the Work area (one skep always stays, for swarms). Its block entities are reached by name and reflection, so if that mod changes, the beekeeper just skips those hives.
+- The window shows hives looked after, skeps with bees, empty skeps, skeps by wild hives, ceramic hives, full hives and totals.
+- Quests: Apiary and A beekeeper in The Colony, Animals and leather chapter.
+- Bees in skeps still need flowers around them, the game's way. VS Roofing may stop From Golden Combs hives finding flowers (that mod's page says so).
 
 ## Combined release, Boarding House and the new quest book (0.173.0)
 
@@ -127,6 +141,7 @@ planks of any wood.
 | Goatherd's Hut | 2 wooden buckets + 7 planks |
 | Herdsman's Hut | 2 fat + 7 planks |
 | Tannery | 2 raw hides (any) + 7 planks |
+| Apiary | 1 empty skep over 5 planks (top middle, planks around and below) |
 | Supply Camp | 3 firewood over 2 sticks (unchanged) |
 | Colony Ledger | 4 paper (any), 2 leather, 2 charcoal: paper, leather, paper / charcoal, paper, charcoal / paper, leather, paper |
 | Drop-off | stick over a plank (unchanged) |

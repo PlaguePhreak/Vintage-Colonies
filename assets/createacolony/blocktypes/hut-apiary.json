@@ -1,0 +1,45 @@
+{
+	"code": "hut-apiary",
+	"class": "BlockColonyHut",
+	"entityClass": "ColonyHut",
+	"attributes": {
+		"buildingType": "apiary",
+		// The hut's own storage; chests next to it add more.
+		"defaultType": "hut",
+		"inventoryClassName": "colonyhut",
+		"quantitySlots": { "hut": 25 },
+		"quantityColumns": { "hut": 5 },
+		"dialogTitleLangCode": { "hut": "createacolony:hut-storage" }
+	},
+	"creativeinventory": { "general": ["*"], "vintagecolonies": ["*"] },
+	"blockmaterial": "Wood",
+	"drawtype": "json",
+	// The seed of the Apiary. Simple placeholder model: a skep on a small stand. No building yet: Aaron designs those.
+	"shape": { "base": "createacolony:block/hut-apiary" },
+	"textures": {
+	 "sides": {
+	  "base": "game:block/wood/table/aged/sides"
+	 },
+	 "planks": {
+	  "base": "game:block/wood/planks/aged1"
+	 },
+	 "log": {
+	  "base": "game:block/wood/debarked/aged"
+	 },
+	 "straw": {
+	  "base": "game:block/hay/normal-top"
+	 },
+	 "rope": {
+	  "base": "game:block/cloth/reedrope"
+	 },
+	 "dark": {
+	  "base": "game:block/coal/charcoal"
+	 }
+	},
+	"sideopaque": { "all": false },
+	"sidesolid": { "all": false },
+	"emitSideAo": { "all": false },
+	"lightAbsorption": 0,
+	"resistance": 2,
+	"sounds": { "place": "game:block/planks", "break": "game:block/planks", "hit": "game:block/planks" }
+}

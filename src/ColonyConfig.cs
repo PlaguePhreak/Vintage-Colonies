@@ -305,6 +305,26 @@ public class ColonyConfig
     /// <summary>How many of lime, logs or borax the tanner asks couriers for.</summary>
     public int TannerSupplyRequest = 10;
 
+    // Beekeeper (ColonyManager.Beekeeping.cs)
+    /// <summary>How far from the Apiary, in blocks, the beekeeper looks after hives (change it on the Work area tab).</summary>
+    public int ApiaryRadius = 16;
+    /// <summary>How many hives the beekeeper looks after for each Apiary level, and the most it ever looks after.</summary>
+    public int ApiaryHivesPerLevel = 2;
+    public int ApiaryMaxHives = 10;
+    /// <summary>The Apiary level the beekeeper starts setting out empty skeps for swarms, works ceramic hives (From Golden Combs), and brings in wild hives.</summary>
+    public int ApiarySwarmLevel = 2;
+    public int ApiaryCeramicLevel = 2;
+    public int ApiaryWildLevel = 3;
+    /// <summary>How far from the Apiary, in blocks, the beekeeper walks out to wild hives the gatherer marked.</summary>
+    public int ApiaryWildRange = 96;
+    /// <summary>Seconds the beekeeper takes for one job at a hive.</summary>
+    public float BeekeeperSecondsPerTask = 3f;
+    /// <summary>How many empty skeps the beekeeper asks couriers for when it has none to set out.</summary>
+    public int BeekeeperSkepRequest = 2;
+    /// <summary>Honeycomb from one honey pot when the From Golden Combs settings cannot be read.</summary>
+    public int ApiaryPotMinYield = 2;
+    public int ApiaryPotMaxYield = 5;
+
     // Gatherer
     /// <summary>How far from the Gatherer's Hut, in blocks, the gatherer forages (change it on the Work area tab).</summary>
     public int GathererRadius = 48;
@@ -472,6 +492,7 @@ public class ColonyConfig
         ["goatherd"] = 30,
         ["herdsman"] = 30,
         ["tannery"] = 30,
+        ["apiary"] = 30,
     };
     /// <summary>
     /// How many blocks each side of a hut's square grows for every hut level above 1, so a hut near the edge of the
