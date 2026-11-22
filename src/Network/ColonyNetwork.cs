@@ -194,7 +194,7 @@ public partial class ColonyNetwork : ModSystem
             ColonyAction.SetPermadeath => SetPermadeath(colony, role, packet.Text == "1"),
             ColonyAction.SetSelfDefence or ColonyAction.SetSupportAllies => SetMilitia(colony, role, packet),
             ColonyAction.SetGuardRanged => SetGuardRanged(colony, role, packet),
-            ColonyAction.SetRaidMode or ColonyAction.SetRaidSize or ColonyAction.StartRaid => RaidAction(colony, role, packet),
+            ColonyAction.SetRaidMode or ColonyAction.SetRaidSize or ColonyAction.StartRaid or ColonyAction.SetRaidRace => RaidAction(colony, role, packet),
             ColonyAction.SetBailiffRule => SetBailiffRule(player, colony, role, packet.Text),
             ColonyAction.SetTithe => SetTithe(colony, role, packet.Text),
             ColonyAction.SetMarketRule => role < ColonyRole.Officer ? "createacolony:denied-officer" : Manager.SetMarketRule(colony, packet.Text),
@@ -362,6 +362,14 @@ public partial class ColonyNetwork : ModSystem
             case ColonyAction.SetRaidSize:
                 colony.RaidSize = System.Math.Clamp(value, 0, 2);
                 break;
+            case ColonyAction.SetRaidRace:
+            {
+                var parts = (packet.Text ?? "").Split(':');
+                if (parts.Length != 2 || System.Array.IndexOf(ColonyManager.RaidRaces, parts[0]) < 0) return null;
+                colony.RaidRacesOff.Remove(parts[0]);
+                if (parts[1] == "0") colony.RaidRacesOff.Add(parts[0]);
+                break;
+            }
             default:
                 if (!Manager.Config.Raids) return "createacolony:raid-disabled";
                 if (Manager.StartRaid(colony, null) is { } error) return error;
@@ -917,6 +925,8 @@ public partial class ColonyNetwork : ModSystem
             RaidsTotal = colony.RaidsTotal,
             RaidsAllowed = Manager.Config.Raids,
             RaidMinSettlers = Manager.Config.RaidMinSettlers,
+            RaidRaces = ColonyManager.RaidRaces.Where(r => Manager.Config.RaidFactions.Contains(r)).ToList(),
+            RaidRacesOff = colony.RaidRacesOff.ToList(),
             SupportAllies = Manager.SupportAllies(colony),
             FreeBeds = Manager.FreeBeds(colony),
             WandererDays = config.Wanderers ? Manager.WandererEveryDays(colony) : 0,

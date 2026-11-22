@@ -46,6 +46,7 @@ public class CreateAColonyModSystem : ModSystem
     {
         api.RegisterEntity("EntitySettler", typeof(EntitySettler));
         api.RegisterEntity("EntityBandit", typeof(EntityBandit));
+        api.RegisterEntity("EntityRestless", typeof(EntityRestless));
         api.RegisterEntityBehaviorClass("colonycitizen", typeof(EntityBehaviorColonyCitizen));
         api.RegisterBlockClass("BlockTownHall", typeof(BlockTownHall));
         api.RegisterBlockEntityClass("TownHall", typeof(BlockEntityTownHall));
@@ -70,6 +71,7 @@ public class CreateAColonyModSystem : ModSystem
         AiTaskRegistry.Register<AiTaskSettlerFlee>("settlerflee");
         AiTaskRegistry.Register<AiTaskBanditRaid>("banditraid");
         AiTaskRegistry.Register<AiTaskRaidMarch>("raidmarch");
+        AiTaskRegistry.Register<AiTaskRestlessRaid>("restlessraid");
         AiTaskRegistry.Register<AiTaskSettlerDefend>("settlerdefend");
         AiTaskRegistry.Register<AiTaskSettlerShelter>("settlershelter");
         AiTaskRegistry.Register<AiTaskSettlerSleep>("settlersleep");
