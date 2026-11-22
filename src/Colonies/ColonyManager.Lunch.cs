@@ -145,7 +145,8 @@ public partial class ColonyManager
     /// </summary>
     public int PackLunch(Colony colony, CitizenRecord citizen, EntityAgent eater, BlockEntityContainer container)
     {
-        if (!Config.CarryFood || !IsFoodStore(container)) return 0;
+        // Nothing is packed from the Market: its meals are bought one at a time.
+        if (!Config.CarryFood || !IsFoodStore(container) || IsMarketStore(colony, container)) return 0;
         var items = LunchItems(citizen);
         // A serving of a crock or pot meal goes along in the settler's bowl (ColonyManager.Crocks.cs).
         bool bowlFilled = FillBowl(colony, citizen, container, items);

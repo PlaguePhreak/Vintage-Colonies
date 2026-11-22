@@ -531,6 +531,13 @@ public class HutSnapshot
     [ProtoMember(2601)] public int ForceUpgradeTo;
     /// <summary>The highest level any hut can have (BlueprintLibrary.MaxLevels).</summary>
     [ProtoMember(2602)] public int TopLevel;
+    /// <summary>A Market's For sale tab (ColonyManager.Market.cs): one row per kind it can sell.</summary>
+    [ProtoMember(3500)] public bool IsMarket;
+    [ProtoMember(3501)] public List<MarketRowView> MarketRows = new();
+    /// <summary>Gears a settler keeps (config SavingsKeep), and whether the economy has started.</summary>
+    [ProtoMember(3502)] public int SavingsKeep;
+    [ProtoMember(3503)] public bool EconomyStarted;
+    [ProtoMember(3504)] public int EconomyLevel;
     [ProtoMember(310)] public string HostName = "";
     /// <summary>Orphans the church looks after and settlers sleeping in its beds.</summary>
     [ProtoMember(311)] public int Orphans;
@@ -1007,7 +1014,20 @@ public enum ColonyAction
     /// <summary>Upgrade tab (officers): raises a hut with no blueprint for its next level up one level, without a build.</summary>
     ForceUpgrade = 2600,
     /// <summary>Work area tab of an Apiary (officers): Text "1" keeps the last colony, "0" lets the beekeeper harvest every full skep.</summary>
-    SetKeepLastColony = 2700
+    SetKeepLastColony = 2700,
+    /// <summary>A Market's For sale tab (officers): Text "kind|on", "kind|off" or "kind|price" (ColonyManager.SetMarketRule).</summary>
+    SetMarketRule = 3500
+}
+
+/// <summary>One kind a Market sells, for its For sale tab.</summary>
+[ProtoContract]
+public class MarketRowView
+{
+    [ProtoMember(1)] public string Kind = "";
+    [ProtoMember(2)] public int Price;
+    [ProtoMember(3)] public int Stock;
+    [ProtoMember(4)] public bool On;
+    [ProtoMember(5)] public int Sold;
 }
 
 /// <summary>One Miner's Hut on a Mineshaft Entrance's Main tab.</summary>

@@ -943,6 +943,8 @@ public static class BuildingTypes
     public const string Apiary = "apiary";
     /// <summary>The Graveyard: an undertaker brings the dead here and buries them at grave plots (ColonyManager.Graveyard.cs).</summary>
     public const string Graveyard = "graveyard";
+    /// <summary>The Market: a Market Trader keeps a stall of goods from the warehouse that settlers buy with their gears (ColonyManager.Market.cs).</summary>
+    public const string Market = "market";
     public const string Barracks = "barracks";
     /// <summary>Put at a mine's entrance; several Miner's Huts can work the one mine through it.</summary>
     public const string MineshaftEntrance = "mineshaftentrance";

@@ -1,0 +1,33 @@
+{
+	"code": "hut-market",
+	"class": "BlockColonyHut",
+	"entityClass": "ColonyHut",
+	"attributes": {
+		"buildingType": "market",
+		// The Market's stall: the goods for sale the Market Trader brings from the warehouse. Chests next to it add more.
+		"defaultType": "hut",
+		"inventoryClassName": "colonyhut",
+		"quantitySlots": { "hut": 25 },
+		"quantityColumns": { "hut": 5 },
+		"dialogTitleLangCode": { "hut": "createacolony:hut-storage" }
+	},
+	"creativeinventory": { "general": ["*"], "vintagecolonies": ["*"] },
+	"blockmaterial": "Wood",
+	"drawtype": "json",
+	// The seed of the Market. Simple placeholder model: a stall with an awning. No building yet: Aaron designs it.
+	"shape": { "base": "createacolony:block/hut-market" },
+	"textures": {
+		"sides": { "base": "game:block/wood/table/aged/sides" },
+		"planks": { "base": "game:block/wood/planks/aged1" },
+		"log": { "base": "game:block/wood/debarked/oak" },
+		"cloth": { "base": "game:block/cloth/basic/red" },
+		"stripe": { "base": "game:block/cloth/basic/white" },
+		"bread": { "base": "game:block/cloth/basic/brown" }
+	},
+	"sideopaque": { "all": false },
+	"sidesolid": { "all": false },
+	"emitSideAo": { "all": false },
+	"lightAbsorption": 0,
+	"resistance": 2,
+	"sounds": { "place": "game:block/planks", "break": "game:block/planks", "hit": "game:block/planks" }
+}

@@ -191,6 +191,7 @@ public partial class ColonyNetwork : ModSystem
             ColonyAction.SetGuardRanged => SetGuardRanged(colony, role, packet),
             ColonyAction.SetBailiffRule => SetBailiffRule(player, colony, role, packet.Text),
             ColonyAction.SetTithe => SetTithe(colony, role, packet.Text),
+            ColonyAction.SetMarketRule => role < ColonyRole.Officer ? "createacolony:denied-officer" : Manager.SetMarketRule(colony, packet.Text),
             ColonyAction.StartResearch or ColonyAction.PauseResearch => ResearchAction(colony, role, packet),
             ColonyAction.HandInResearch => HandInAction(player, colony, role, packet),
             ColonyAction.FillRequests => FillRequests(player, colony, role, packet),
@@ -1176,7 +1177,7 @@ public partial class ColonyNetwork : ModSystem
         if (building.Type is BuildingTypes.Forester or BuildingTypes.Farmer or BuildingTypes.Potter or BuildingTypes.Cook
             or BuildingTypes.Prospector or BuildingTypes.Miner or BuildingTypes.Quarry
             or BuildingTypes.Smelter or BuildingTypes.Blacksmith or BuildingTypes.Armourer or BuildingTypes.Weaponsmith or BuildingTypes.Sawmill or BuildingTypes.Craftsman or BuildingTypes.Tailor or BuildingTypes.Jeweller or BuildingTypes.Healer or BuildingTypes.Mint or BuildingTypes.Church
-            or BuildingTypes.Explorer or BuildingTypes.Gatherer or BuildingTypes.Hunter or BuildingTypes.Butcher or BuildingTypes.Tannery or BuildingTypes.Apiary or BuildingTypes.Graveyard
+            or BuildingTypes.Explorer or BuildingTypes.Gatherer or BuildingTypes.Hunter or BuildingTypes.Butcher or BuildingTypes.Tannery or BuildingTypes.Apiary or BuildingTypes.Graveyard or BuildingTypes.Market
             || ColonyManager.IsHerderHut(building.Type)) snapshot.Info = Manager.WorkerHutInfo(colony, building);
         if (building.Type == BuildingTypes.Tavern)
         {
@@ -1274,6 +1275,7 @@ public partial class ColonyNetwork : ModSystem
         }
         snapshot.ForceUpgradeTo = Manager.ForceUpgradeLevel(building);
         snapshot.TopLevel = BuildingTypes.TopLevel(building.Type);
+        if (building.Type == BuildingTypes.Market) AddMarket(snapshot, colony, building);
         AddRequests(snapshot, colony, building, viewerUid);
         if (building.Type == BuildingTypes.CourierStation) AddCouriers(snapshot, colony);
         if (ColonyManager.CraftTabOf(building.Type) is { } craftTab) AddCraftRows(snapshot, colony, building, craftTab);

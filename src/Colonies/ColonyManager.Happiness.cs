@@ -52,7 +52,10 @@ public partial class ColonyManager
         ["sawbody"] = (-3, 6),
         ["unburied"] = (-3, 6),
         ["unburiedfamily"] = (-8, 6),
-        ["smallfuneral"] = (2, 24)
+        ["smallfuneral"] = (2, 24),
+        // Spending (ColonyManager.Market.cs): bought something at the Market, or wanted to and could not afford it.
+        ["bought"] = (2, 24),
+        ["cantafford"] = (-1, 12)
     };
 
     /// <summary>Mood bands from the top: the lowest happiness each starts at, and the word for it.</summary>

@@ -163,6 +163,10 @@ public partial class ColonyManager
         bool cold = Config.SettlersChangeClothes && IsCold(c);
         bool rags = Config.SettlersChangeClothes && worn.Any(s => s != null && IsRagged(s));
         bool wantsJewellery = Config.SettlersWearJewellery && JewelleryWorn(c) < Config.JewelleryMoodMax;
+        // Settlers with spare gears buy new clothes at the Market when theirs are worn (ColonyManager.Market.cs).
+        bool wantsNew = Config.SettlersChangeClothes && WantsNewClothes(worn);
+        if ((cold || rags || wantsNew) && MarketClothesChest(colony, c, worn, cold) is { } market) return market;
+        if (wantsNew && MarketOpen(colony) && MarketSells(colony, "clothing") && !CanBuy(colony, c, "clothing")) CantAfford(c);
         if (!cold && !rags && !wantsJewellery) return null;
         return WarehouseContainers(colony).FirstOrDefault(chest => chest.Inventory.Any(s => !s.Empty && BetterPiece(worn, s.Itemstack, cold, wantsJewellery) >= 0));
     }
@@ -187,6 +191,7 @@ public partial class ColonyManager
     /// </summary>
     public bool ChangeClothesAt(Colony colony, CitizenRecord c, BlockEntityContainer chest)
     {
+        if (IsMarketStore(colony, chest)) return BuyClothesAt(colony, c, chest);
         var worn = WornClothes(c);
         bool cold = Config.SettlersChangeClothes && IsCold(c);
         bool changed = false;

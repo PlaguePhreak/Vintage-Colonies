@@ -69,6 +69,7 @@ public partial class ColonyManager
         BuildingTypes.Jeweller => Jobs.Jeweller,
         BuildingTypes.Healer => Jobs.Healer,
         BuildingTypes.Mint => Jobs.Minter,
+        BuildingTypes.Market => Jobs.MarketTrader,
         BuildingTypes.Archive => Jobs.Researcher,
         BuildingTypes.Tannery => Jobs.Tanner,
         BuildingTypes.Church => Jobs.Priest,
@@ -173,6 +174,7 @@ public partial class ColonyManager
         if (hut.Type == BuildingTypes.Jeweller) return JewellerHutJunk(colony, hut);
         if (hut.Type == BuildingTypes.Healer) return HealerHutJunk(colony, hut);
         if (hut.Type == BuildingTypes.Mint) return MintHutJunk(colony, hut);
+        if (hut.Type == BuildingTypes.Market) return MarketHutJunk(colony);
         if (hut.Type == BuildingTypes.Archive) return ArchiveJunk(colony, hut);
         if (hut.Type == BuildingTypes.Tannery) return TannerHutJunk(colony, hut);
         if (IsHerderHut(hut.Type)) return HerderHutJunk(colony, hut);
@@ -368,6 +370,7 @@ public partial class ColonyManager
         if (hut.Type == BuildingTypes.Tannery) lines.Add(TannerInfo(hut));
         if (hut.Type == BuildingTypes.Apiary) lines.AddRange(ApiaryInfo(colony, hut));
         if (hut.Type == BuildingTypes.Graveyard) lines.AddRange(GraveyardInfo(colony, hut));
+        if (hut.Type == BuildingTypes.Market) lines.AddRange(MarketInfo(colony, hut));
         lines.Add("");
         lines.Add(Lang.Get("createacolony:hint-" + hut.Type + (hut.IsStation ? "-station" : ""), GatherRadius(hut)));
         return string.Join("<br>", lines);

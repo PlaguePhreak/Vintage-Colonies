@@ -880,6 +880,13 @@ public class Colony
     [ProtoMember(119, IsRequired = true)] public int LastPayMonth = -1;
     /// <summary>The colony's own coin, picked on the Bailiff tab (a Coinage coin a player designed), as stack bytes; null for the Royal Mint's copper coins.</summary>
     [ProtoMember(120)] public byte[]? Currency;
+    // 3500-3519: spending (ColonyManager.Market.cs).
+    /// <summary>Gears still to be given to the treasury when the economy starts (config StartingGears); -1 until it starts.</summary>
+    [ProtoMember(3500, IsRequired = true)] public int StartingGearsLeft = -1;
+    /// <summary>The Market's prices by kind ("meal", "clothing"), set on its For sale tab; kinds not here use config MarketPrices.</summary>
+    [ProtoMember(3501)] public Dictionary<string, int> MarketPrices = new();
+    /// <summary>Kinds the Market does not sell, turned off on its For sale tab.</summary>
+    [ProtoMember(3502)] public List<string> MarketOff = new();
     // 300-319: the church (ColonyManager.Church.cs).
     /// <summary>The share of every wage settlers give the church, in percent (0, 5 or 10).</summary>
     [ProtoMember(300, IsRequired = true)] public int TithePercent = 10;

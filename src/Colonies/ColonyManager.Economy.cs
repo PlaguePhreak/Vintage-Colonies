@@ -146,6 +146,7 @@ public partial class ColonyManager
         if (lastMoneyTick.TryGetValue(colony.ColonyId, out long last) && ms - last < MoneyTickMs) return;
         lastMoneyTick[colony.ColonyId] = ms;
         SwapOldCoins(colony);
+        GiveStartingGears(colony);
         if (CoinageLoaded) return;
         foreach (var mint in colony.Buildings.Where(b => b.Type == BuildingTypes.Mint).ToList())
             foreach (var minter in WorkersAt(colony, mint).ToList())

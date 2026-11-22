@@ -7,7 +7,7 @@ public class ColonyConfig
 {
     public const string FileName = "createacolony.json";
     /// <summary>Bumped when a default changes in a way old config files should pick up; see ColonyManager.UpgradeConfig.</summary>
-    public const int CurrentConfigVersion = 8;
+    public const int CurrentConfigVersion = 9;
 
     /// <summary>Which defaults this file has been brought up to. Files from before 0.33.0 have none, so read as 0.</summary>
     public int ConfigVersion;
@@ -503,6 +503,7 @@ public class ColonyConfig
         ["jeweller"] = 30,
         ["healer"] = 30,
         ["mint"] = 30,
+        ["market"] = 30,
         ["archive"] = 30,
         ["barracks"] = 40,
         ["explorer"] = 30,
@@ -1063,8 +1064,24 @@ public class ColonyConfig
     public int MintStartKeep = 100;
     /// <summary>Coins the minter strikes from one ingot when the colony uses its own coin (Coinage).</summary>
     public int MintCoinsPerIngot = 10;
-    /// <summary>No taxes or wages, and no moods about them, until the Town Hall is this level.</summary>
-    public int EconomyTownHallLevel = 3;
+    /// <summary>No taxes, wages or spending, and no moods about them, until the Town Hall is this level (2 since 0.181.0).</summary>
+    public int EconomyTownHallLevel = 2;
+
+    // Spending (ColonyManager.Market.cs)
+    /// <summary>Rusty gears (or Coinage coins) put in the treasury once, when the economy starts, so the colony can pay its first wages.</summary>
+    public int StartingGears = 60;
+    /// <summary>Gears a settler always keeps in its purse; it only spends what is above this.</summary>
+    public int SavingsKeep = 5;
+    /// <summary>What the Market charges for one of each kind it sells; changed per colony on the Market's For sale tab.</summary>
+    public System.Collections.Generic.Dictionary<string, int> MarketPrices = new()
+    {
+        ["meal"] = 1,
+        ["clothing"] = 2
+    };
+    /// <summary>How many of each kind the Market Trader keeps on the stall, fetched from the warehouse.</summary>
+    public int MarketStockEach = 6;
+    /// <summary>A settler with spare gears buys new clothes when a piece it wears is below this condition (0 to 1).</summary>
+    public float MarketClothesBelow = 0.5f;
 
     // Research (ColonyManager.Research.cs; the nodes are in config/research.json)
     /// <summary>The Town Hall level needed to place an Archive.</summary>

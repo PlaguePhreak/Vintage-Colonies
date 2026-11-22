@@ -135,6 +135,11 @@ public partial class ColonyManager : ModSystem
                 config.Wages = ColonyConfig.NewWages();
             if (config.WageDefault == 5) config.WageDefault = 3;
         }
+        if (config.ConfigVersion < 9)
+        {
+            // 0.181.0: the economy starts at Town Hall level 2 (Aaron).
+            if (config.EconomyTownHallLevel == 3) config.EconomyTownHallLevel = 2;
+        }
         config.ConfigVersion = ColonyConfig.CurrentConfigVersion;
     }
 

@@ -73,16 +73,45 @@ public partial class ColonyManager
         FoodChoice? best = null;
         float bestValue = 0;
         bool allowRaw = EatsRaw(citizen);
+        // Meals at the Market cost gears (ColonyManager.Market.cs): only for settlers who can pay, who like them better.
+        var market = colony.Buildings.Any(b => b.Type == BuildingTypes.Market) ? MarketChests(colony) : null;
+        bool canBuy = market != null && CanBuy(colony, citizen, "meal");
+        bool wantedMeal = false;
         foreach (var container in FindBlockEntities<BlockEntityContainer>(colony))
         {
             if (skip != null && skip(container.Pos)) continue;
-            var choice = FindFoodIn(container, citizen, eater, allowRaw);
+            bool atMarket = market != null && market.Contains(container.Pos);
+            var choice = atMarket ? MarketMealIn(container, citizen, eater) : FindFoodIn(container, citizen, eater, allowRaw);
             if (choice == null) continue;
+            if (atMarket && !canBuy)
+            {
+                wantedMeal = true;
+                continue;
+            }
             float dist = (float)Math.Sqrt(container.Pos.DistanceSqTo(eater.Pos.X, eater.Pos.Y, eater.Pos.Z));
-            float value = choice.Score / (1 + dist / FoodDistanceHalving);
+            float value = choice.Score * (atMarket ? MarketMealPull : 1) / (1 + dist / FoodDistanceHalving);
             if (value <= bestValue) continue;
             best = choice;
             bestValue = value;
+        }
+        if (wantedMeal && MarketOpen(colony) && MarketSells(colony, "meal") && HasMood(citizen) && Earners(colony).Contains(citizen)) CantAfford(citizen);
+        return best;
+    }
+
+    /// <summary>A settler who can pay weighs a Market meal this much better than free food the same distance away.</summary>
+    const float MarketMealPull = 2f;
+
+    /// <summary>The best meal for sale in a Market chest, or null; only what the Market sells as a meal.</summary>
+    FoodChoice? MarketMealIn(BlockEntityContainer container, CitizenRecord citizen, EntityAgent eater)
+    {
+        FoodChoice? best = null;
+        foreach (var slot in container.Inventory)
+        {
+            if (slot.Empty || MarketKind(slot.Itemstack) != "meal") continue;
+            var choice = EvaluateFood(container, slot, eater);
+            if (choice == null) continue;
+            choice.Score = VarietyScore(choice.Props, citizen) * SpoilPull(slot);
+            if (best == null || choice.Score > best.Score) best = choice;
         }
         return best;
     }
@@ -282,7 +311,9 @@ public partial class ColonyManager
     public string? EatFood(Colony colony, CitizenRecord citizen, EntityAgent eater, BlockEntityContainer container, out ItemStack? eaten)
     {
         eaten = null;
-        var choice = FindFoodIn(container, citizen, eater, EatsRaw(citizen));
+        bool atMarket = IsMarketStore(colony, container);
+        if (atMarket && !CanBuy(colony, citizen, "meal")) return null;
+        var choice = atMarket ? MarketMealIn(container, citizen, eater) : FindFoodIn(container, citizen, eater, EatsRaw(citizen));
         if (choice == null) return null;
 
         var slot = choice.Slot;
@@ -291,6 +322,7 @@ public partial class ColonyManager
         bool cooked = choice.Placed != null || IsCookedFood(slot.Itemstack);
         if (!(choice.Placed != null ? TakePlacedServing(container, choice.Placed) : TakeServing(container, slot))) return null;
         eaten = copy;
+        if (atMarket) PayAtMarket(colony, citizen, "meal", container);
 
         citizen.Saturation = Math.Min(Config.SaturationMax, citizen.Saturation + choice.Satiety);
         AddNutrition(citizen, choice.Props);
