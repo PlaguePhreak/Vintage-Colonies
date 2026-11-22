@@ -35,7 +35,7 @@ public class ItemGuardScepter : Item
             Tell(serverPlayer, "createacolony:scepter-no-tower");
             return;
         }
-        if (!colony.CanManage(player.PlayerUID))
+        if (ColonyManager.RoleFor(colony, player.PlayerUID, RankPerm.Guards) < ColonyRole.Officer)
         {
             Tell(serverPlayer, "createacolony:denied-officer");
             return;

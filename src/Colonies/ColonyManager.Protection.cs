@@ -29,7 +29,7 @@ public partial class ColonyManager
             if (!admin && colony.RoleOf(player.PlayerUID) < ColonyRole.Owner) return "createacolony:break-townhall-owner";
             return sneaking ? null : "createacolony:break-townhall-sneak";
         }
-        if (!admin && colony.RoleOf(player.PlayerUID) < ColonyRole.Officer) return "createacolony:break-hut-officer";
+        if (!admin && RoleFor(colony, player.PlayerUID, RankPerm.Build) < ColonyRole.Officer) return "createacolony:break-hut-officer";
         bool somethingToLose = building!.Level > 0 || building.HasWorkOrder;
         return somethingToLose && !sneaking ? "createacolony:break-hut-sneak" : null;
     }

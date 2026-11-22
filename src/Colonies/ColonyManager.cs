@@ -78,6 +78,7 @@ public partial class ColonyManager : ModSystem
         StartRaids();
         StartDoors();
         StartFires();
+        StartEnterMessages();
         StartCropWatch();
         // The list of things with their own marker icon, made once on the main thread before settlers look around.
         api.Event.ServerRunPhase(EnumServerRunPhase.RunGame, () => Map.MarkerSubjects.All(api));
@@ -304,6 +305,7 @@ public partial class ColonyManager : ModSystem
             RefreshClaim(colony);
             TickWanderers(colony, now);
             TickBailiff(colony, now);
+            TickAutoTown(colony, now);
             TickMoney(colony);
             TickTraders(colony);
             TickWaitingForRoom(colony);

@@ -18,6 +18,27 @@ public class ColonyMember
     [ProtoMember(1)] public string PlayerUid = "";
     [ProtoMember(2)] public string LastKnownName = "";
     [ProtoMember(3)] public ColonyRole Role = ColonyRole.Member;
+    /// <summary>A custom rank the owner made (ColonyRank.Id), on top of the Member role; 0 for none.</summary>
+    [ProtoMember(3710)] public int RankId;
+}
+
+/// <summary>A rank the owner made on the Permissions tab: a Member who may also do the ticked things (ColonyManager.Ranks.cs).</summary>
+[ProtoContract]
+public class ColonyRank
+{
+    [ProtoMember(1)] public int Id;
+    [ProtoMember(2)] public string Name = "";
+    /// <summary>The ticked permissions (RankPerm flags).</summary>
+    [ProtoMember(3)] public int Perms;
+}
+
+/// <summary>One line of the permission log: who did a guarded thing, what and when.</summary>
+[ProtoContract]
+public class PermissionLogEntry
+{
+    [ProtoMember(1)] public string Player = "";
+    [ProtoMember(2)] public string What = "";
+    [ProtoMember(3)] public double TotalHours;
 }
 
 /// <summary>
@@ -203,6 +224,17 @@ public class Building
     [ProtoMember(2701)] public List<BlockPos> WildSkeps = new();
     /// <summary>A Graveyard: graves its undertaker has dug and not yet filled, with the blocks that came out of them.</summary>
     [ProtoMember(3300)] public List<OpenGrave> OpenGraves = new();
+    /// <summary>A Charcoal Burner's Hut: its charcoal pits, burning or waiting for wood (ColonyManager.Charcoal.cs).</summary>
+    [ProtoMember(3700)] public List<CharcoalPit> CharcoalPits = new();
+    /// <summary>Auto hiring (ColonyManager.AutoTown.cs): false when this hut's places are filled by hand only.</summary>
+    [ProtoMember(3701, IsRequired = true)] public bool TakesAutoHires = true;
+    /// <summary>Auto housing: false when this home's beds are given out by hand only.</summary>
+    [ProtoMember(3702, IsRequired = true)] public bool TakesAutoResidents = true;
+    /// <summary>A Composter's Hut: its compost heap, how much rot and dry grass is on it (ColonyManager.Composting.cs).</summary>
+    [ProtoMember(3703)] public int CompostRot;
+    [ProtoMember(3704)] public int CompostGrass;
+    /// <summary>The in-game day the compost heap is ready to turn soil into compost.</summary>
+    [ProtoMember(3705)] public double CompostReadyDay;
     [ProtoMember(1)] public int BuildingId;
     /// <summary>Building type, also the blueprint folder name: "builder", "townhall", "warehouse".</summary>
     [ProtoMember(2)] public string Type = "";
@@ -390,6 +422,23 @@ public class Building
 /// the staircase down to it, and the finished mines it still has to fill back in. A Miner's Hut keeps one
 /// for its miner, and every prospector on Mine ore keeps its own.
 /// </summary>
+/// <summary>
+/// One charcoal pit of a Charcoal Burner's Hut: the ground block at its top (Pos), whether it burns, and the blocks
+/// dug out of it, top first, so they go back once the charcoal is taken out.
+/// </summary>
+[ProtoContract]
+public class CharcoalPit
+{
+    [ProtoMember(1)] public BlockPos Pos = new BlockPos(0);
+    /// <summary>0 waiting for wood, 1 burning.</summary>
+    [ProtoMember(2)] public int Stage;
+    [ProtoMember(3)] public List<string> Dug = new();
+    /// <summary>The block put over the pit to seal it (the top block that was dug out).</summary>
+    [ProtoMember(4)] public string Cover = "";
+    /// <summary>In-game hours when it was lit.</summary>
+    [ProtoMember(5)] public double LitHours;
+}
+
 /// <summary>A grave an undertaker dug at a grave plot: the plot's spot and the blocks taken out below it, top first.</summary>
 [ProtoContract]
 public class OpenGrave
@@ -892,6 +941,22 @@ public class Colony
     [ProtoMember(120)] public byte[]? Currency;
     // 3500-3519: spending (ColonyManager.Market.cs).
     /// <summary>Gears still to be given to the treasury when the economy starts (config StartingGears); -1 until it starts.</summary>
+    // Town Hall features (0.185.0, ColonyManager.AutoTown.cs and ColonyManager.Ranks.cs)
+    /// <summary>Jobless settlers take open places in huts by themselves each morning.</summary>
+    [ProtoMember(3711)] public bool AutoHiring;
+    /// <summary>Settlers with no home move into homes with free beds by themselves.</summary>
+    [ProtoMember(3712)] public bool AutoHousing;
+    [ProtoMember(3713, IsRequired = true)] public int LastAutoHireDay = -1;
+    [ProtoMember(3714)] public List<ColonyRank> Ranks = new();
+    [ProtoMember(3715, IsRequired = true)] public int NextRankId = 1;
+    [ProtoMember(3716)] public List<PermissionLogEntry> PermissionLog = new();
+    /// <summary>A short note on screen when a player walks into or out of the colony's land.</summary>
+    [ProtoMember(3717, IsRequired = true)] public bool EnterMessages = true;
+    /// <summary>The owner's own welcome and goodbye text; empty for the usual "You enter ..." / "You leave ...".</summary>
+    [ProtoMember(3718)] public string EnterText = "";
+    [ProtoMember(3719)] public string LeaveText = "";
+    /// <summary>Members get a chat line when a player who is not a member walks in.</summary>
+    [ProtoMember(3720)] public bool TellOutsiders;
     [ProtoMember(3500, IsRequired = true)] public int StartingGearsLeft = -1;
     /// <summary>The Market's prices by kind ("meal", "clothing"), set on its For sale tab; kinds not here use config MarketPrices.</summary>
     [ProtoMember(3501)] public Dictionary<string, int> MarketPrices = new();

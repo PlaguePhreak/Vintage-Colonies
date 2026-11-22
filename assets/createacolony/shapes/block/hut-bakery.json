@@ -1,0 +1,496 @@
+{
+ "textureWidth": 16,
+ "textureHeight": 16,
+ "textures": {
+  "sides": "sides",
+  "planks": "planks",
+  "a": "a",
+  "b": "b",
+  "c": "c"
+ },
+ "elements": [
+  {
+   "name": "Crate",
+   "from": [
+    1,
+    0,
+    1
+   ],
+   "to": [
+    15,
+    8,
+    15
+   ],
+   "faces": {
+    "north": {
+     "texture": "#sides",
+     "uv": [
+      0,
+      0,
+      14,
+      8
+     ]
+    },
+    "east": {
+     "texture": "#sides",
+     "uv": [
+      0,
+      0,
+      14,
+      8
+     ]
+    },
+    "south": {
+     "texture": "#sides",
+     "uv": [
+      0,
+      0,
+      14,
+      8
+     ]
+    },
+    "west": {
+     "texture": "#sides",
+     "uv": [
+      0,
+      0,
+      14,
+      8
+     ]
+    },
+    "up": {
+     "texture": "#sides",
+     "uv": [
+      0,
+      0,
+      14,
+      14
+     ]
+    },
+    "down": {
+     "texture": "#sides",
+     "uv": [
+      0,
+      0,
+      14,
+      14
+     ]
+    }
+   }
+  },
+  {
+   "name": "Lid",
+   "from": [
+    0,
+    8,
+    0
+   ],
+   "to": [
+    16,
+    9,
+    16
+   ],
+   "faces": {
+    "north": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      16,
+      1
+     ]
+    },
+    "east": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      16,
+      1
+     ]
+    },
+    "south": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      16,
+      1
+     ]
+    },
+    "west": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      16,
+      1
+     ]
+    },
+    "up": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      16,
+      16
+     ]
+    },
+    "down": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      16,
+      16
+     ]
+    }
+   }
+  },
+  {
+   "name": "Loaf",
+   "from": [
+    2.5,
+    9,
+    3
+   ],
+   "to": [
+    8.5,
+    11.5,
+    7
+   ],
+   "faces": {
+    "north": {
+     "texture": "#a",
+     "uv": [
+      0,
+      0,
+      6.0,
+      2.5
+     ]
+    },
+    "east": {
+     "texture": "#a",
+     "uv": [
+      0,
+      0,
+      4,
+      2.5
+     ]
+    },
+    "south": {
+     "texture": "#a",
+     "uv": [
+      0,
+      0,
+      6.0,
+      2.5
+     ]
+    },
+    "west": {
+     "texture": "#a",
+     "uv": [
+      0,
+      0,
+      4,
+      2.5
+     ]
+    },
+    "up": {
+     "texture": "#a",
+     "uv": [
+      0,
+      0,
+      6.0,
+      4
+     ]
+    },
+    "down": {
+     "texture": "#a",
+     "uv": [
+      0,
+      0,
+      6.0,
+      4
+     ]
+    }
+   }
+  },
+  {
+   "name": "LoafTop",
+   "from": [
+    3.5,
+    11.5,
+    3.75
+   ],
+   "to": [
+    7.5,
+    12.2,
+    6.25
+   ],
+   "faces": {
+    "north": {
+     "texture": "#a",
+     "uv": [
+      0,
+      0,
+      4.0,
+      0.7
+     ]
+    },
+    "east": {
+     "texture": "#a",
+     "uv": [
+      0,
+      0,
+      2.5,
+      0.7
+     ]
+    },
+    "south": {
+     "texture": "#a",
+     "uv": [
+      0,
+      0,
+      4.0,
+      0.7
+     ]
+    },
+    "west": {
+     "texture": "#a",
+     "uv": [
+      0,
+      0,
+      2.5,
+      0.7
+     ]
+    },
+    "up": {
+     "texture": "#a",
+     "uv": [
+      0,
+      0,
+      4.0,
+      2.5
+     ]
+    },
+    "down": {
+     "texture": "#a",
+     "uv": [
+      0,
+      0,
+      4.0,
+      2.5
+     ]
+    }
+   }
+  },
+  {
+   "name": "Sack",
+   "from": [
+    9.5,
+    9,
+    8.5
+   ],
+   "to": [
+    14,
+    15,
+    13
+   ],
+   "faces": {
+    "north": {
+     "texture": "#b",
+     "uv": [
+      0,
+      0,
+      4.5,
+      6
+     ]
+    },
+    "east": {
+     "texture": "#b",
+     "uv": [
+      0,
+      0,
+      4.5,
+      6
+     ]
+    },
+    "south": {
+     "texture": "#b",
+     "uv": [
+      0,
+      0,
+      4.5,
+      6
+     ]
+    },
+    "west": {
+     "texture": "#b",
+     "uv": [
+      0,
+      0,
+      4.5,
+      6
+     ]
+    },
+    "up": {
+     "texture": "#b",
+     "uv": [
+      0,
+      0,
+      4.5,
+      4.5
+     ]
+    },
+    "down": {
+     "texture": "#b",
+     "uv": [
+      0,
+      0,
+      4.5,
+      4.5
+     ]
+    }
+   }
+  },
+  {
+   "name": "SackTie",
+   "from": [
+    10.5,
+    15,
+    9.5
+   ],
+   "to": [
+    13,
+    16,
+    12
+   ],
+   "faces": {
+    "north": {
+     "texture": "#b",
+     "uv": [
+      0,
+      0,
+      2.5,
+      1
+     ]
+    },
+    "east": {
+     "texture": "#b",
+     "uv": [
+      0,
+      0,
+      2.5,
+      1
+     ]
+    },
+    "south": {
+     "texture": "#b",
+     "uv": [
+      0,
+      0,
+      2.5,
+      1
+     ]
+    },
+    "west": {
+     "texture": "#b",
+     "uv": [
+      0,
+      0,
+      2.5,
+      1
+     ]
+    },
+    "up": {
+     "texture": "#b",
+     "uv": [
+      0,
+      0,
+      2.5,
+      2.5
+     ]
+    },
+    "down": {
+     "texture": "#b",
+     "uv": [
+      0,
+      0,
+      2.5,
+      2.5
+     ]
+    }
+   }
+  },
+  {
+   "name": "Board",
+   "from": [
+    2,
+    9,
+    9
+   ],
+   "to": [
+    8,
+    9.5,
+    14
+   ],
+   "faces": {
+    "north": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      6,
+      0.5
+     ]
+    },
+    "east": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      5,
+      0.5
+     ]
+    },
+    "south": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      6,
+      0.5
+     ]
+    },
+    "west": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      5,
+      0.5
+     ]
+    },
+    "up": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      6,
+      5
+     ]
+    },
+    "down": {
+     "texture": "#planks",
+     "uv": [
+      0,
+      0,
+      6,
+      5
+     ]
+    }
+   }
+  }
+ ]
+}

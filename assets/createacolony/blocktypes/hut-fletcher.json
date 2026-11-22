@@ -1,0 +1,66 @@
+{
+	"code": "hut-fletcher",
+	"class": "BlockColonyHut",
+	"entityClass": "ColonyHut",
+	"attributes": {
+		"buildingType": "fletcher",
+		"defaultType": "hut",
+		"inventoryClassName": "colonyhut",
+		"quantitySlots": {
+			"hut": 25
+		},
+		"quantityColumns": {
+			"hut": 5
+		},
+		"dialogTitleLangCode": {
+			"hut": "createacolony:hut-storage"
+		}
+	},
+	"creativeinventory": {
+		"general": [
+			"*"
+		],
+		"vintagecolonies": [
+			"*"
+		]
+	},
+	"blockmaterial": "Wood",
+	"drawtype": "json",
+	// The seed of the Fletcher's Hut. Its storage holds sticks, flint, feathers and arrowheads. Simple placeholder model; Aaron designs the buildings.
+	"shape": {
+		"base": "createacolony:block/hut-fletcher"
+	},
+	"textures": {
+		"sides": {
+			"base": "game:block/wood/table/aged/sides"
+		},
+		"planks": {
+			"base": "game:block/wood/planks/aged1"
+		},
+		"a": {
+			"base": "game:block/cloth/linen/white"
+		},
+		"b": {
+			"base": "game:block/cloth/linen/normal"
+		},
+		"c": {
+			"base": "game:block/stone/rock/granite1"
+		}
+	},
+	"sideopaque": {
+		"all": false
+	},
+	"sidesolid": {
+		"all": false
+	},
+	"emitSideAo": {
+		"all": false
+	},
+	"lightAbsorption": 0,
+	"resistance": 2,
+	"sounds": {
+		"place": "game:block/planks",
+		"break": "game:block/planks",
+		"hit": "game:block/planks"
+	}
+}

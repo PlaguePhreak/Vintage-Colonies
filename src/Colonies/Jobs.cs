@@ -53,17 +53,30 @@ public static class Jobs
     /// <summary>Works at the Church: holds services and funerals, keeps the records. One of them can be the Bishop (WorkRole, see ChurchRoles).</summary>
     public const string Priest = "priest";
 
+    /// <summary>Makes charcoal in charcoal pits by the Charcoal Burner's Hut.</summary>
+    public const string CharcoalBurner = "charcoalburner";
+    /// <summary>Cuts stone at the Stonemason's Hut.</summary>
+    public const string Stonemason = "stonemason";
+    /// <summary>Grinds flour, mixes dough and bakes bread at the Bakery.</summary>
+    public const string Baker = "baker";
+    /// <summary>Catches fish from the Fisher's Hut.</summary>
+    public const string Fisher = "fisher";
+    /// <summary>Makes arrows and bows at the Fletcher's Hut.</summary>
+    public const string Fletcher = "fletcher";
+    /// <summary>Makes fertilizer and compost at the Composter's Hut.</summary>
+    public const string Composter = "composter";
+
     /// <summary>All assignable jobs; an empty code means unemployed.</summary>
-    public static readonly string[] All = { "", Builder, Courier, Forester, Farmer, Guard, Potter, Cook, Prospector, Miner, Quarrier, Smelter, Blacksmith, Armourer, Weaponsmith, Sawyer, Craftsman, Tailor, Jeweller, Healer, Explorer, Gatherer, Hunter, Butcher, ChickenHerder, Swineherd, Shepherd, Goatherd, Herdsman, Tanner, Beekeeper, Undertaker, MarketTrader, TavernKeeper, Minter, Researcher, Priest, Bailiff };
+    public static readonly string[] All = { "", Builder, Courier, Forester, Farmer, Guard, Potter, Cook, Prospector, Miner, Quarrier, Smelter, Blacksmith, Armourer, Weaponsmith, Sawyer, Craftsman, Tailor, Jeweller, Healer, Explorer, Gatherer, Hunter, Butcher, ChickenHerder, Swineherd, Shepherd, Goatherd, Herdsman, Tanner, Beekeeper, Undertaker, MarketTrader, TavernKeeper, Minter, Researcher, CharcoalBurner, Stonemason, Baker, Fisher, Fletcher, Composter, Priest, Bailiff };
 
     /// <summary>The job whose skill a settler's work trains and uses: a prospector on Mine ore works as a miner.</summary>
     public static string? WorkJob(CitizenRecord c) => c.JobCode == Prospector && c.WorkRole == ProspectorRoles.Mine ? Miner : c.JobCode;
 
     /// <summary>Jobs that make things at a crafting hut, which Specialized Craftsmen speeds up (ColonyManager.Research.cs).</summary>
-    public static bool IsCrafter(string? code) => code is Potter or Cook or Smelter or Blacksmith or Armourer or Weaponsmith or Sawyer or Craftsman or Tailor or Jeweller or Minter;
+    public static bool IsCrafter(string? code) => code is Potter or Cook or Smelter or Blacksmith or Armourer or Weaponsmith or Sawyer or Craftsman or Tailor or Jeweller or CharcoalBurner or Stonemason or Baker or Fletcher or Minter;
 
     public static bool IsValid(string code) => System.Array.IndexOf(All, code) >= 0;
 
     /// <summary>Jobs that keep their own tools, weapons and supplies in their inventory, so couriers leave it alone.</summary>
-    public static bool CarriesOwnLoad(string? code) => code is Builder or Forester or Farmer or Guard or Potter or Cook or Prospector or Miner or Quarrier or Smelter or Blacksmith or Armourer or Weaponsmith or Sawyer or Craftsman or Tailor or Jeweller or Healer or Explorer or Gatherer or Hunter or Butcher or Minter or Priest or Researcher or ChickenHerder or Swineherd or Shepherd or Goatherd or Herdsman or Tanner or Beekeeper or Undertaker or MarketTrader or TavernKeeper;
+    public static bool CarriesOwnLoad(string? code) => code is Builder or Forester or Farmer or Guard or Potter or Cook or Prospector or Miner or Quarrier or Smelter or Blacksmith or Armourer or Weaponsmith or Sawyer or Craftsman or Tailor or Jeweller or Healer or Explorer or Gatherer or Hunter or Butcher or Minter or Priest or Researcher or ChickenHerder or Swineherd or Shepherd or Goatherd or Herdsman or Tanner or Beekeeper or Undertaker or MarketTrader or TavernKeeper or CharcoalBurner or Stonemason or Baker or Fisher or Fletcher or Composter;
 }

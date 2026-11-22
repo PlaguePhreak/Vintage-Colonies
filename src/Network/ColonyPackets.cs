@@ -50,7 +50,7 @@ public class CitizenView
     /// <summary>Colony militia tab: the weapon the settler would fight with, empty for none.</summary>
     [ProtoMember(30)] public string Weapon = "";
     /// <summary>Colony militia tab: a guard set to fight with a bow or sling.</summary>
-    [ProtoMember(31)] public bool GuardRanged;
+    [ProtoMember(32)] public bool GuardRanged;
 }
 
 /// <summary>One person in a family list: who, how they are related, and what they do.</summary>
@@ -575,6 +575,9 @@ public class HutSnapshot
     [ProtoMember(412)] public bool FieldTripsOpen;
     /// <summary>An Apiary: the Keep the last colony switch on its Work area tab.</summary>
     [ProtoMember(2700)] public bool KeepLastColony;
+    /// <summary>The hut's Take auto hires and Take auto residents switches (0.185.0).</summary>
+    [ProtoMember(3700)] public bool TakesAutoHires;
+    [ProtoMember(3701)] public bool TakesAutoResidents;
 }
 
 /// <summary>One row of a hut's Requests tab.</summary>
@@ -674,6 +677,18 @@ public class MemberView
     [ProtoMember(1)] public string PlayerUid = "";
     [ProtoMember(2)] public string Name = "";
     [ProtoMember(3)] public int Role;
+    /// <summary>0.185.0: their custom rank (0 for none) and its name or the role's.</summary>
+    [ProtoMember(3710)] public int RankId;
+    [ProtoMember(3711)] public string RankName = "";
+}
+
+/// <summary>A custom rank on the Permissions tab.</summary>
+[ProtoContract]
+public class RankView
+{
+    [ProtoMember(1)] public int Id;
+    [ProtoMember(2)] public string Name = "";
+    [ProtoMember(3)] public int Perms;
 }
 
 /// <summary>Everything the Town Hall window shows. Sent when the window opens and after every change.</summary>
@@ -746,6 +761,16 @@ public class ColonySnapshot
     [ProtoMember(3205)] public int RaidsTotal;
     [ProtoMember(3206)] public bool RaidsAllowed;
     [ProtoMember(3207)] public int RaidMinSettlers;
+    /// <summary>0.185.0 Town Hall features: the Settings tab switches, the Ranks page and the permission log (newest first).</summary>
+    [ProtoMember(3700)] public bool AutoHiring;
+    [ProtoMember(3701)] public bool AutoHousing;
+    [ProtoMember(3702)] public bool EnterMessages;
+    [ProtoMember(3703)] public bool TellOutsiders;
+    [ProtoMember(3704)] public string EnterText = "";
+    [ProtoMember(3705)] public string LeaveText = "";
+    [ProtoMember(3706)] public List<RankView> Ranks = new();
+    [ProtoMember(3707)] public List<EventView> PermissionLog = new();
+    [ProtoMember(3708)] public int MaxRanks;
     [ProtoMember(61)] public bool SupportAllies;
     /// <summary>The Bailiff tab (110-119): the bailiff's name ("" for none) and whether they are on duty (BailiffState), the rules, the ledger and the estate report.</summary>
     [ProtoMember(110)] public string BailiffName = "";
@@ -1031,7 +1056,16 @@ public enum ColonyAction
     /// <summary>Work area tab of an Apiary (officers): Text "1" keeps the last colony, "0" lets the beekeeper harvest every full skep.</summary>
     SetKeepLastColony = 2700,
     /// <summary>A Market's For sale tab (officers): Text "kind|on", "kind|off" or "kind|price" (ColonyManager.SetMarketRule).</summary>
-    SetMarketRule = 3500
+    SetMarketRule = 3500,
+    /// <summary>0.185.0 Town Hall features (officers; owner for ranks). Text "1"/"0" for the switches.</summary>
+    SetAutoHiring = 3700,
+    SetAutoHousing = 3701,
+    /// <summary>BuildingId, Text "hire|1" (Take auto hires) or "home|1" (Take auto residents).</summary>
+    SetHutAutoFlag = 3702,
+    /// <summary>The owner's Ranks page: see ColonyManager.RankChange for Text.</summary>
+    RankChange = 3703,
+    /// <summary>Text "on|1", "outsiders|1", "enter|text" or "leave|text".</summary>
+    SetEnterMessages = 3704
 }
 
 /// <summary>One kind a Market sells, for its For sale tab.</summary>

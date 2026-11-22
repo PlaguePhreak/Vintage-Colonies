@@ -1,0 +1,66 @@
+{
+	"code": "hut-bakery",
+	"class": "BlockColonyHut",
+	"entityClass": "ColonyHut",
+	"attributes": {
+		"buildingType": "bakery",
+		"defaultType": "hut",
+		"inventoryClassName": "colonyhut",
+		"quantitySlots": {
+			"hut": 25
+		},
+		"quantityColumns": {
+			"hut": 5
+		},
+		"dialogTitleLangCode": {
+			"hut": "createacolony:hut-storage"
+		}
+	},
+	"creativeinventory": {
+		"general": [
+			"*"
+		],
+		"vintagecolonies": [
+			"*"
+		]
+	},
+	"blockmaterial": "Wood",
+	"drawtype": "json",
+	// The seed of the Bakery. Its storage holds grain, flour, dough and firewood. Simple placeholder model; Aaron designs the buildings.
+	"shape": {
+		"base": "createacolony:block/hut-bakery"
+	},
+	"textures": {
+		"sides": {
+			"base": "game:block/wood/table/aged/sides"
+		},
+		"planks": {
+			"base": "game:block/wood/planks/aged1"
+		},
+		"a": {
+			"base": "game:block/hay/aged-top"
+		},
+		"b": {
+			"base": "game:block/cloth/linen/white"
+		},
+		"c": {
+			"base": "game:block/metal/ingot/iron"
+		}
+	},
+	"sideopaque": {
+		"all": false
+	},
+	"sidesolid": {
+		"all": false
+	},
+	"emitSideAo": {
+		"all": false
+	},
+	"lightAbsorption": 0,
+	"resistance": 2,
+	"sounds": {
+		"place": "game:block/planks",
+		"break": "game:block/planks",
+		"hit": "game:block/planks"
+	}
+}

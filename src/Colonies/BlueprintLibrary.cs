@@ -945,6 +945,18 @@ public static class BuildingTypes
     public const string Graveyard = "graveyard";
     /// <summary>The Market: a Market Trader keeps a stall of goods from the warehouse that settlers buy with their gears (ColonyManager.Market.cs).</summary>
     public const string Market = "market";
+    /// <summary>The Charcoal Burner's Hut: its burner makes charcoal in the game's charcoal pits by the hut (ColonyManager.Charcoal.cs).</summary>
+    public const string CharcoalBurner = "charcoalburner";
+    /// <summary>The Stonemason's Hut: cuts stone into the bricks, slabs and other stone pieces builders ask for (ColonyManager.SupplyHuts.cs).</summary>
+    public const string Stonemason = "stonemason";
+    /// <summary>The Bakery: its baker grinds flour, mixes dough and bakes bread (ColonyManager.Baking.cs).</summary>
+    public const string Bakery = "bakery";
+    /// <summary>The Fisher's Hut: its fisher catches fish in water near the hut with a fishing pole (ColonyManager.Fishing.cs).</summary>
+    public const string Fisher = "fisher";
+    /// <summary>The Fletcher's Hut: makes arrows and bows for the guards (ColonyManager.SupplyHuts.cs).</summary>
+    public const string Fletcher = "fletcher";
+    /// <summary>The Composter's Hut: turns the colony's rot and bones into fertilizer and compost soil (ColonyManager.Composting.cs).</summary>
+    public const string Composter = "composter";
     public const string Barracks = "barracks";
     /// <summary>Put at a mine's entrance; several Miner's Huts can work the one mine through it.</summary>
     public const string MineshaftEntrance = "mineshaftentrance";
