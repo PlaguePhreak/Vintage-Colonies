@@ -45,6 +45,9 @@ public partial class ColonyManager
         ["monsterkill"] = (-8, 96),
         ["monsterslain"] = (3, 24),
         ["treated"] = (4, 24),
+        // Research (ColonyManager.Research.cs): a failed experiment, a lucky find.
+        ["researchfail"] = (-2, 24),
+        ["researchlucky"] = (4, 24),
         // The Graveyard (ColonyManager.Graveyard.cs): a body seen, bodies left unburied, the undertaker's small funeral.
         ["sawbody"] = (-3, 6),
         ["unburied"] = (-3, 6),

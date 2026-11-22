@@ -53,7 +53,7 @@ public static class SettlerSeats
     }
 
     /// <summary>The nearest free seat within range of a spot, or null.</summary>
-    public static BlockPos? FindSeat(EntityAgent entity, BlockPos around, int range)
+    public static BlockPos? FindSeat(EntityAgent entity, BlockPos around, int range, System.Func<BlockPos, bool>? also = null)
     {
         var ba = entity.World.BlockAccessor;
         BlockPos? best = null;
@@ -67,6 +67,7 @@ public static class SettlerSeats
             var block = ba.GetBlock(pos);
             if (block.Id == 0 || !IsSeat(block) || SeatHeight(ba, pos, block) < 0) continue;
             if (!Free(ba, pos.UpCopy()) || !Free(ba, pos.UpCopy(2)) || TakenByOther(entity, pos)) continue;
+            if (also != null && !also(pos)) continue;
             double dist = pos.DistanceSqTo(entity.Pos.X, entity.Pos.Y, entity.Pos.Z);
             if (dist < bestDist)
             {

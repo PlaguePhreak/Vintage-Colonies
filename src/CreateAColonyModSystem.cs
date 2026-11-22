@@ -63,6 +63,7 @@ public class CreateAColonyModSystem : ModSystem
         api.RegisterItemClass("ItemGuardScepter", typeof(Items.ItemGuardScepter));
         api.RegisterItemClass("ItemRallyBanner", typeof(Items.ItemRallyBanner));
         api.RegisterItemClass("ItemColonyLedger", typeof(Items.ItemColonyLedger));
+        api.RegisterItemClass("ItemFieldNotes", typeof(Items.ItemFieldNotes));
         api.RegisterItemClass("ItemCarcass", typeof(Items.ItemCarcass));
 
         AiTaskRegistry.Register<AiTaskSettlerFlee>("settlerflee");

@@ -122,8 +122,11 @@ public partial class ColonyManager
     /// <summary>Researchers an Archive takes: two per tier (two before it is built, so they can be hired).</summary>
     public static int ArchiveSlots(Building archive) => ResearchersPerTier * Math.Clamp(archive.Level, 1, ArchiveMaxTier);
 
-    /// <summary>How many research nodes an Archive runs at once: one per tier.</summary>
-    public int ResearchSlots(Building archive) => ArchiveTier(archive);
+    /// <summary>How many research nodes an Archive runs at once: one per tier, plus Grand Library's.</summary>
+    public int ResearchSlots(Building archive) => ArchiveTier(archive) + (int)ResearchAdd(ColonyOfBuilding(archive), "researchSlots");
+
+    /// <summary>The Archive tier tier 3 and higher research needs (tier - 1, at most the top tier); 0 when none is needed.</summary>
+    public int ArchiveTierFor(ResearchDef def) => Config.ResearchTierGate && def.Tier >= 3 ? Math.Min(ArchiveMaxTier, def.Tier - 1) : 0;
 
     IEnumerable<Building> Archives(Colony colony) => colony.Buildings.Where(b => b.Type == BuildingTypes.Archive && !b.Removing);
 
@@ -185,6 +188,9 @@ public partial class ColonyManager
             string name = Lang.Get("createacolony:building-" + def.Building);
             list.Add(def.BuildingLevel > 0 ? Lang.Get("createacolony:research-needs-building-level", name, def.BuildingLevel) : Lang.Get("createacolony:research-needs-building", name));
         }
+        int tierNeeded = ArchiveTierFor(def);
+        if (tierNeeded > 0 && !Archives(colony).Any(a => ArchiveTier(a) >= tierNeeded))
+            list.Add(Lang.Get("createacolony:research-needs-archive-tier", tierNeeded));
         if (def.Tokens > colony.KnowledgeTokens && !colony.Research.Any(p => p.Code == def.Code))
             list.Add(Lang.Get("createacolony:research-needs-tokens", def.Tokens));
         return list;
@@ -198,6 +204,7 @@ public partial class ColonyManager
         if (Researched(colony, code)) return "createacolony:research-already-done";
         if (ArchiveTier(archive) < 1) return "createacolony:research-build-first";
         if (Running(colony, archive).Count >= ResearchSlots(archive)) return "createacolony:research-no-slot";
+        if (ArchiveTier(archive) < ArchiveTierFor(def)) return "createacolony:research-archive-tier-low";
         var progress = colony.Research.Find(p => p.Code == code);
         if (progress != null && RunsSomewhere(colony, progress))
             return progress.ArchiveId == archive.BuildingId ? null : "createacolony:research-elsewhere-error";
@@ -281,6 +288,7 @@ public partial class ColonyManager
             while (left > 0 && TakeItems(storage, match, left) is { } taken) left -= taken.StackSize;
         }
         progress.Paid = true;
+        UseStoredPoints(colony, archive);
         MarkDirty(colony);
         return true;
     }
@@ -325,7 +333,7 @@ public partial class ColonyManager
     {
         var wanted = Running(colony, archive).Where(p => !p.Paid).Select(p => ResearchDef(p.Code)).Where(d => d != null)
             .SelectMany(d => d!.Cost).Select(CostMatch).ToList();
-        return s => !wanted.Any(m => m(s)) && !(s.Collectible.Code.Path.StartsWith("paper") || s.Collectible.Code.Path.StartsWith("book"));
+        return s => !wanted.Any(m => m(s)) && !(s.Collectible.Code.Path.StartsWith("paper") || s.Collectible.Code.Path.StartsWith("book")) && HandInValue(s) == null;
     }
 
     // ---- The work -------------------------------------------------------------------------------
@@ -345,7 +353,7 @@ public partial class ColonyManager
         }
         // Pay what can be paid; the unpaid ones wait for their items.
         if (pay) foreach (var p in running) PayResearch(colony, archive, p, out _);
-        var ready = running.Where(p => p.Paid).ToList();
+        var ready = running.Where(p => p.Paid && colony.Research.Contains(p)).ToList();
         if (ready.Count == 0)
         {
             if (pay) PayResearch(colony, archive, running[0], out status);
@@ -368,14 +376,22 @@ public partial class ColonyManager
     {
         var progress = ResearchFor(colony, archive, researcher, out _);
         if (progress == null || ResearchDef(progress.Code) is not { } def) return;
-        progress.Points += Math.Max(0f, Config.ResearchPointsPerWork) * ArchiveSpeed(colony, archive);
+        double gain = Math.Max(0f, Config.ResearchPointsPerWork) * ArchiveSpeed(colony, archive);
+        progress.Points = Math.Max(0, progress.Points + ExperimentOutcome(colony, archive, researcher, progress, gain));
         if (progress.Points >= def.Points) FinishResearch(colony, progress, def);
+        UseStoredPoints(colony, archive);
         MarkDirty(colony);
+    }
+
+    /// <summary>Finishes a node that has its points; used when hand-ins or stored points fill it up.</summary>
+    void FinishIfDone(Colony colony, ResearchProgress progress)
+    {
+        if (ResearchDef(progress.Code) is { } def && progress.Points >= def.Points) FinishResearch(colony, progress, def);
     }
 
     void FinishResearch(Colony colony, ResearchProgress progress, ResearchDef def)
     {
-        colony.Research.Remove(progress);
+        if (!colony.Research.Remove(progress)) return; // already finished
         if (!colony.ResearchDone.Contains(def.Code)) colony.ResearchDone.Add(def.Code);
         colony.KnowledgeTokens += def.GivesTokens;
         LogEvent(colony, "event-research-done", "@research-" + def.Code);

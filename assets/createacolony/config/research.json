@@ -11,6 +11,11 @@
 	//   wateringCan    x how far a can's water goes   crafterSpeed x crafting jobs' work speed
 	//   guardDamage    x guards' damage          explorerWalk x explorers' walking speed
 	//   popPerTownHall + settlers per Town Hall level   claimGrow + blocks the Town Hall's claim grows each way
+	//   healerSpeed  x the Healer's work speed     walkSpeed    x every settler's walking speed
+	//   builderSpeed x builders' work speed        quarrySpeed  x quarriers' and miners' work speed
+	//   fuelSaving   + share of fuel smelters and smiths save   skillXp x skill XP settlers get
+	//   researchSlots + research each Archive runs at once      fieldNotes x points from field notes
+	// Tier 3 and 4 research also needs an Archive at tier (tier - 1) or more (ResearchTierGate).
 	// Names and descriptions are in lang/en.json: "research-<code>" and "research-<code>-desc".
 	"research": [
 		{ "code": "scribetraining", "branch": "population", "tier": 1, "points": 200,
@@ -36,6 +41,48 @@
 		{ "code": "biggervillage", "branch": "population", "tier": 2, "points": 800, "settlers": 15,
 			"cost": [ { "code": "game:linen-*", "quantity": 16, "name": "createacolony:research-item-linen" } ], "effects": { "popPerTownHall": 2 } },
 		{ "code": "colonyexpansion", "branch": "settlement", "tier": 2, "points": 800, "townHall": 3, "tokens": 1,
-			"effects": { "claimGrow": 16 } }
+			"effects": { "claimGrow": 16 } },
+
+		// 0.180.0: two more tier 2 pieces, tier 3 and the tier 4 great works (More Research design, 2026-11-22).
+		{ "code": "burialrites", "branch": "population", "tier": 2, "points": 600, "needs": ["herbalremedies"], "building": "church",
+			"cost": [ { "code": "game:paper-parchment", "quantity": 8 }, { "code": "game:plank-*", "quantity": 16, "name": "createacolony:research-item-planks" } ], "effects": { "healerSpeed": 1.15 } },
+		{ "code": "archery", "branch": "defence", "tier": 2, "points": 600, "needs": ["guardtraining"],
+			"cost": [ { "code": "game:arrow-*", "quantity": 16, "name": "createacolony:research-item-arrows" } ], "effects": { "guardDamage": 1.1 } },
+		{ "code": "roadbuilding", "branch": "settlement", "tier": 3, "points": 1000, "townHall": 3, "needs": ["organizedstorage"],
+			"cost": [ { "code": "game:gravel-*", "quantity": 64, "name": "createacolony:research-item-gravel" } ], "effects": { "walkSpeed": 1.1 } },
+		{ "code": "mastermasons", "branch": "settlement", "tier": 3, "points": 1200, "townHall": 3, "needs": ["colonyexpansion"],
+			"cost": [ { "code": "game:stonebrick-*", "quantity": 32, "name": "createacolony:research-item-stonebricks" } ], "effects": { "builderSpeed": 1.2 } },
+		{ "code": "stonecutting", "branch": "settlement", "tier": 3, "points": 1200, "townHall": 3, "needs": ["colonyexpansion"],
+			"cost": [ { "code": "game:rock-*", "quantity": 32, "name": "createacolony:research-item-stone" } ], "effects": { "quarrySpeed": 1.2 } },
+		{ "code": "cropscience", "branch": "production", "tier": 3, "points": 1200, "townHall": 3, "needs": ["irrigation"],
+			"cost": [ { "code": "game:bonemeal", "quantity": 16 } ], "effects": { "farmYield": 0.1 } },
+		{ "code": "guildworkshops", "branch": "production", "tier": 3, "points": 1200, "townHall": 3, "needs": ["specializedcraftsmen"],
+			"cost": [ { "code": "game:ingot-tinbronze", "quantity": 8 } ], "effects": { "crafterSpeed": 1.15 } },
+		{ "code": "efficientsmelting", "branch": "production", "tier": 3, "points": 1200, "townHall": 3, "needs": ["specializedcraftsmen"],
+			"cost": [ { "code": "game:refractorybrick-fired-*", "quantity": 16, "name": "createacolony:research-item-firebricks" } ], "effects": { "fuelSaving": 0.2 } },
+		{ "code": "medicine", "branch": "population", "tier": 3, "points": 1200, "townHall": 3, "needs": ["herbalremedies"],
+			"cost": [ { "code": "game:poultice-*", "quantity": 16, "name": "createacolony:research-item-poultices" } ], "effects": { "restHeal": 1.5 } },
+		{ "code": "schooling", "branch": "population", "tier": 3, "points": 1200, "townHall": 3, "needs": ["scribetraining"],
+			"cost": [ { "code": "game:paper-parchment", "quantity": 16 }, { "code": "game:book-*", "quantity": 4, "name": "createacolony:research-item-books" } ], "effects": { "skillXp": 1.2 } },
+		{ "code": "townlife", "branch": "population", "tier": 3, "points": 1500, "townHall": 3, "settlers": 25, "needs": ["biggervillage"],
+			"cost": [ { "code": "game:linen-*", "quantity": 32, "name": "createacolony:research-item-linen" } ], "effects": { "popPerTownHall": 2 } },
+		{ "code": "drillyards", "branch": "defence", "tier": 3, "points": 1200, "townHall": 3, "needs": ["guardtraining"],
+			"cost": [ { "code": "game:spear-*-*bronze", "quantity": 8, "name": "createacolony:research-item-bronzespears" } ], "effects": { "guardDamage": 1.15 } },
+		{ "code": "stonewalls", "branch": "defence", "tier": 3, "points": 1200, "townHall": 3, "needs": ["basicfortifications"],
+			"cost": [ { "code": "game:rock-*", "quantity": 64, "name": "createacolony:research-item-stone" } ], "effects": { "guardHealth": 4 } },
+		{ "code": "surveying", "branch": "exploration", "tier": 3, "points": 1000, "townHall": 3, "needs": ["cartographersguild"],
+			"cost": [ { "code": "game:paper-parchment", "quantity": 16 } ], "effects": { "explorerRange": 1.25 } },
+		{ "code": "expeditions", "branch": "exploration", "tier": 3, "points": 1200, "townHall": 3, "needs": ["fieldnotes"], "givesTokens": 1,
+			"cost": [ { "code": "game:paper-parchment", "quantity": 8 } ], "effects": { "fieldNotes": 1.5 } },
+		{ "code": "grandlibrary", "branch": "population", "tier": 4, "points": 3000, "townHall": 5, "tokens": 2, "needs": ["schooling"],
+			"cost": [ { "code": "game:book-*", "quantity": 32, "name": "createacolony:research-item-books" } ], "effects": { "researchSpeed": 1.25, "researchSlots": 1 } },
+		{ "code": "charterrealm", "branch": "settlement", "tier": 4, "points": 3000, "townHall": 5, "tokens": 2, "needs": ["roadbuilding", "mastermasons"],
+			"cost": [ { "code": "game:ingot-gold", "quantity": 8 } ], "effects": { "claimGrow": 32, "popPerTownHall": 2 } },
+		{ "code": "mechanics", "branch": "production", "tier": 4, "points": 3000, "townHall": 5, "tokens": 2, "needs": ["guildworkshops"],
+			"cost": [ { "code": "game:ingot-iron", "quantity": 16 } ], "effects": { "crafterSpeed": 1.15 } },
+		{ "code": "standingarmy", "branch": "defence", "tier": 4, "points": 3000, "townHall": 5, "tokens": 2, "needs": ["drillyards", "stonewalls"],
+			"cost": [ { "code": "game:ingot-iron", "quantity": 16 } ], "effects": { "guardHealth": 4, "guardDamage": 1.15 } },
+		{ "code": "atlasworld", "branch": "exploration", "tier": 4, "points": 3000, "townHall": 5, "tokens": 2, "needs": ["surveying", "expeditions"],
+			"cost": [ { "code": "game:paper-parchment", "quantity": 32 } ], "effects": { "explorerRange": 1.5, "explorerWalk": 1.15 } }
 	]
 }

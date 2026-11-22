@@ -776,6 +776,25 @@ public class ResearchProgress
     [ProtoMember(5, IsRequired = true)] public bool Running = true;
 }
 
+/// <summary>A field trip: an explorer goes to a landmark marker, studies it and brings home Field notes (0.180.0).</summary>
+[ProtoContract]
+public class FieldTrip
+{
+    [ProtoMember(1)] public int TripId;
+    /// <summary>The marker's kind: landmark-ruins, landmark-translocator, landmark-mountain or story-any.</summary>
+    [ProtoMember(2)] public string Kind = "";
+    [ProtoMember(3)] public double X;
+    [ProtoMember(4)] public double Y;
+    [ProtoMember(5)] public double Z;
+    [ProtoMember(6)] public string Title = "";
+    [ProtoMember(7)] public int Points;
+    [ProtoMember(8)] public int Tokens;
+    /// <summary>The explorer on the trip, 0 while nobody has taken it.</summary>
+    [ProtoMember(9)] public int CitizenId;
+    /// <summary>Pieces of study done at the spot.</summary>
+    [ProtoMember(10)] public int Works;
+}
+
 [ProtoContract]
 public class Colony
 {
@@ -882,6 +901,16 @@ public class Colony
     [ProtoMember(401)] public List<ResearchProgress> Research = new();
     /// <summary>Knowledge Tokens: a second research currency for high-tier nodes.</summary>
     [ProtoMember(402)] public int KnowledgeTokens;
+    /// <summary>Research Points from hand-ins waiting for the next research that runs (0.180.0).</summary>
+    [ProtoMember(403)] public double StoredResearchPoints;
+    /// <summary>The in-game day of the last hand-in, and the points hand-ins gave that day (capped by HandInPointsPerDay).</summary>
+    [ProtoMember(404)] public int HandInDay;
+    [ProtoMember(405)] public int HandInPointsToday;
+    /// <summary>Field trips the Archive offers explorers (ColonyManager.FieldTrips.cs).</summary>
+    [ProtoMember(406)] public List<FieldTrip> FieldTrips = new();
+    /// <summary>Spots already studied on a field trip, as "x,z" rounded to the marker, so each counts once.</summary>
+    [ProtoMember(407)] public List<string> FieldTripsDone = new();
+    [ProtoMember(408, IsRequired = true)] public int NextFieldTripId = 1;
     /// <summary>Houses of traders who joined the colony, for a builder to take down (ColonyManager.Traders.cs).</summary>
     [ProtoMember(240)] public List<TeardownOrder> Teardowns = new();
     [ProtoMember(241, IsRequired = true)] public int NextTeardownId = 1;
