@@ -49,6 +49,9 @@ public partial class ColonyManager
         public readonly Dictionary<long, List<ItemStack>> Loot = new();
         public bool StoleLogged;
         public bool FireLogged;
+        /// <summary>Undead raids (ColonyManager.Undead): gone for the day, back at AttackAtHours; warned of it again.</summary>
+        public bool Resting;
+        public bool WarnedAgain;
     }
 
     readonly Dictionary<string, ActiveRaid> raids = new();
@@ -73,7 +76,7 @@ public partial class ColonyManager
     }
 
     /// <summary>Settlers who aren't guards stay home while a raid is on its way or under way.</summary>
-    public bool HidesFromRaid(Colony colony, CitizenRecord citizen) => citizen.JobCode != Jobs.Guard && RaidOn(colony) is { Fleeing: false };
+    public bool HidesFromRaid(Colony colony, CitizenRecord citizen) => citizen.JobCode != Jobs.Guard && RaidOn(colony) is { Fleeing: false, Resting: false };
 
     int GrownSettlers(Colony colony) => colony.Citizens.Count(c => c.Alive && !c.IsChild && !c.Visitor);
 
@@ -128,6 +131,8 @@ public partial class ColonyManager
             "outlaws" => !night,
             "drifters" => night && RaiderTypes(Config.RaidDrifters).Count > 0,
             "wolves" => RaiderTypes(Config.RaidWolves).Count > 0,
+            // Monster races (ColonyManager.Undead.cs): the Restless come by night (not in its last hour), unless the colony switched them off.
+            RestlessFaction => (sapi.World.Calendar.HourOfDay is >= 20 or < 4) && RaceOn(colony, RestlessFaction) && RestlessTypes().Count > 0,
             _ => false
         }).ToList();
         if (faction != null) choices = choices.Contains(faction) ? new List<string> { faction } : new List<string>();
@@ -139,6 +144,7 @@ public partial class ColonyManager
 
         var raid = new ActiveRaid { ColonyId = colony.ColonyId, Faction = choices[sapi.World.Rand.Next(choices.Count)] };
         raid.Size = RaidSizeFor(colony);
+        if (IsUndeadFaction(raid.Faction)) raid.Size = UndeadSize(raid.Size);
         var sides = RaidSides.OrderBy(_ => sapi.World.Rand.Next()).ToList();
         Vec3d? gather = null;
         foreach (var side in sides)
@@ -212,6 +218,7 @@ public partial class ColonyManager
 
     void UpdateRaid(Colony colony, ActiveRaid raid)
     {
+        if (UpdateUndeadRaid(colony, raid)) return;
         double hours = sapi.World.Calendar.TotalHours;
         if (!raid.Attacking)
         {
@@ -244,7 +251,7 @@ public partial class ColonyManager
             raid.Fleeing = true;
             TellMembers(colony, "createacolony:raid-flee-outlaws");
         }
-        if (hours >= raid.AttackAtHours + Config.RaidGiveUpHours && !raid.Fleeing)
+        if (hours >= raid.AttackAtHours + Config.RaidGiveUpHours && !raid.Fleeing && !IsUndeadFaction(raid.Faction))
         {
             raid.Fleeing = true;
             TellMembers(colony, "createacolony:raid-giveup");
@@ -305,6 +312,7 @@ public partial class ColonyManager
         {
             "wolves" => RaiderTypes(Config.RaidWolves),
             "drifters" => RaiderTypes(Config.RaidDrifters),
+            RestlessFaction => RestlessTypes(),
             _ => new[] { "male", "female" }.Select(sex => sapi.World.GetEntityType(new AssetLocation(CreateAColonyModSystem.ModId, "bandit-" + sex))).OfType<EntityProperties>().ToList()
         };
         if (types.Count == 0) return;
@@ -324,6 +332,7 @@ public partial class ColonyManager
             raid.Raiders.Add(entity.EntityId);
             raid.Spawned++;
             if (entity is EntityBandit bandit) EquipBandit(bandit, archer: i < archers, torch: i >= archers && i < archers + torches);
+            else if (entity is EntityRestless zombie) EquipRestless(zombie);
             else if (entity is EntityAgent agent) AddRaidMarch(agent);
         }
         _ = around;
@@ -362,6 +371,7 @@ public partial class ColonyManager
             foreach (var stack in stolen) sapi.World.SpawnItemEntity(stack, at);
         }
         if (entity is EntityBandit bandit) DropBanditGear(bandit, at);
+        else if (entity is EntityRestless) DropRestlessLoot(at);
     }
 
     // ---- Bandits ------------------------------------------------------------------------------
@@ -563,6 +573,7 @@ public partial class ColonyManager
     {
         if (RaidOn(colony) is not { } raid) return "";
         string side = Lang.Get("createacolony:side-" + raid.Side);
+        if (raid.Resting) return Lang.Get("createacolony:raid-status-resting-" + raid.Faction, side, raid.Size);
         return raid.Attacking
             ? Lang.Get("createacolony:raid-status-attack-" + raid.Faction, side, raid.Raiders.Count)
             : Lang.Get("createacolony:raid-status-warning-" + raid.Faction, side, raid.Size);

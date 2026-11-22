@@ -43,6 +43,7 @@ public partial class ColonyManager
         // Safety, health (ColonyManager.Wellbeing.cs).
         ["attacked"] = (-6, 24),
         ["sawattack"] = (-3, 12),
+        ["sick"] = (-8, 24),
         ["monsterkill"] = (-8, 96),
         ["monsterslain"] = (3, 24),
         ["treated"] = (4, 24),

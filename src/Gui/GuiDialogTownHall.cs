@@ -1410,11 +1410,44 @@ public class GuiDialogTownHall : GuiDialog
             y = composer.Text(Lang.Get("createacolony:raids-mode") + " " + Lang.Get("createacolony:" + modes[Math.Clamp(snapshot.RaidMode, 0, 2)])
                 + ", " + Lang.Get("createacolony:raids-size") + " " + Lang.Get("createacolony:" + sizes[Math.Clamp(snapshot.RaidSize, 0, 2)]), GuiKit.Body(), 0, y, Width, 6);
         }
+        y = ComposeRaidRaces(composer, y);
         string next = snapshot.RaidMode != 0 ? ""
             : snapshot.DaysToNextRaid < 0 ? Lang.Get("createacolony:raids-too-small", snapshot.RaidMinSettlers)
             : Lang.Get("createacolony:raids-next", Math.Max(1, (int)Math.Ceiling(snapshot.DaysToNextRaid)));
         string record = Lang.Get("createacolony:raids-record", snapshot.RaidsWon, snapshot.RaidsTotal);
         composer.Text(next.Length > 0 ? next + " " + record : record, GuiKit.Muted(), 0, y, Width, 12);
+    }
+
+    /// <summary>Monster races (0.187.0): one On/Off button each, on by default (Aaron); a plain list for members.</summary>
+    double ComposeRaidRaces(GuiComposer composer, double y)
+    {
+        if (snapshot.RaidRaces.Count == 0) return y;
+        if (!Officer)
+        {
+            var on = snapshot.RaidRaces.Where(r => !snapshot.RaidRacesOff.Contains(r)).Select(r => Lang.Get("createacolony:race-" + r)).ToList();
+            return composer.Text(Lang.Get("createacolony:raids-races") + " " + (on.Count > 0 ? string.Join(", ", on) : Lang.Get("createacolony:raids-races-none")), GuiKit.Body(), 0, y, Width, 6);
+        }
+        double x = 0;
+        composer.AddStaticText(Lang.Get("createacolony:raids-races"), GuiKit.Body(), ElementBounds.Fixed(0, y + 5, 130, 25));
+        x = 130;
+        foreach (string race in snapshot.RaidRaces)
+        {
+            bool off = snapshot.RaidRacesOff.Contains(race);
+            string label = Lang.Get("createacolony:race-" + race) + ": " + Lang.Get(off ? "createacolony:raids-race-off" : "createacolony:raids-race-on");
+            string send = race + (off ? ":1" : ":0");
+            composer.AddSmallButton(label, () =>
+            {
+                network.SendAction(new ColonyActionPacket { ColonyId = ColonyId, Action = ColonyAction.SetRaidRace, Text = send });
+                return true;
+            }, ElementBounds.Fixed(x, y, 200, 28));
+            x += 210;
+            if (x + 200 > Width)
+            {
+                x = 130;
+                y += 34;
+            }
+        }
+        return y + (x > 130 ? 36 : 2);
     }
 
     // ---- Sending --------------------------------------------------------------------------

@@ -181,6 +181,8 @@ public class CitizenRecord
     [ProtoMember(302)] public double LearnBoostUntilTotalDays;
     /// <summary>A guard that fights with a bow or sling (Colony militia tab), as long as it has one and something to shoot.</summary>
     [ProtoMember(3100)] public bool GuardRanged;
+    /// <summary>Ill from a bite of the Restless (0.187.0) until this time (total days); 0 when well. ColonyManager.IsSick.</summary>
+    [ProtoMember(3800)] public double SickUntilTotalDays;
 
     public bool IsDowned => DownedUntilTotalDays > 0;
     public bool IsChild => GrowsUpTotalDays > 0;
@@ -915,6 +917,8 @@ public class Colony
     /// <summary>Raids fought off, and raids in all; later raids grow a little.</summary>
     [ProtoMember(3204)] public int RaidsWon;
     [ProtoMember(3205)] public int RaidsTotal;
+    /// <summary>Monster races (0.187.0) switched off on the Town Hall Settings tab, by faction code; all are on by default (Aaron).</summary>
+    [ProtoMember(3206)] public List<string> RaidRacesOff = new();
     /// <summary>Mines whose Miner's Hut or Mineshaft Entrance was removed. Their blocks stay; the next Miner's Hut or entrance near one takes it on.</summary>
     [ProtoMember(90)] public List<Building> DerelictMines = new();
     /// <summary>Where the gatherer picked up ore bits: likely a deposit below, for the prospectors to check.</summary>

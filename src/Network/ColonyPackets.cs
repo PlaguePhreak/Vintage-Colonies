@@ -761,6 +761,9 @@ public class ColonySnapshot
     [ProtoMember(3205)] public int RaidsTotal;
     [ProtoMember(3206)] public bool RaidsAllowed;
     [ProtoMember(3207)] public int RaidMinSettlers;
+    /// <summary>Monster races (0.187.0): those the server allows, and those this colony switched off.</summary>
+    [ProtoMember(3208)] public List<string> RaidRaces = new();
+    [ProtoMember(3209)] public List<string> RaidRacesOff = new();
     /// <summary>0.185.0 Town Hall features: the Settings tab switches, the Ranks page and the permission log (newest first).</summary>
     [ProtoMember(3700)] public bool AutoHiring;
     [ProtoMember(3701)] public bool AutoHousing;
@@ -1020,6 +1023,8 @@ public enum ColonyAction
     SetRaidSize = 3201,
     /// <summary>Town Hall Settings (officers): sends a raid now.</summary>
     StartRaid = 3202,
+    /// <summary>Town Hall Settings (officers): Text "race:1" lets a monster race raid, "race:0" switches it off.</summary>
+    SetRaidRace = 3203,
     /// <summary>Remove hut: the hut's workers lose their job, a builder takes the building down and the hut block comes back.</summary>
     RemoveHut = 150,
     /// <summary>Stops taking a trader's old house down; BuildingId is the TeardownOrder id.</summary>

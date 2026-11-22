@@ -245,7 +245,7 @@ public partial class ColonyManager
     public bool NeedsRest(CitizenRecord c, EntityAgent settler)
     {
         if (!Config.RecoverAtHome || c.IsDowned || c.Visitor || c.JobCode == Jobs.Guard) return false;
-        return HealthShare(settler) < Config.RecoverBelowHealth;
+        return HealthShare(settler) < Config.RecoverBelowHealth || IsSick(c);
     }
 
     /// <summary>True once a resting settler is well enough to get up.</summary>
@@ -318,6 +318,7 @@ public partial class ColonyManager
         if (best == null || TakeFromPack(colony, healer, s => s.Collectible.Code.Equals(best.Collectible.Code), 1) is not { } item) return false;
         ApplyHealing(body, item, Config.HealerHealBonus);
         Recovering[patient.CitizenId] = (r.Bed, true);
+        patient.SickUntilTotalDays = 0; // the Healer cures a bite of the Restless (0.187.0)
         AddStat(hut, "treated");
         AddThought(patient, "treated");
         LogEvent(colony, "event-treated", healer.Name, patient.Name, item.GetName());

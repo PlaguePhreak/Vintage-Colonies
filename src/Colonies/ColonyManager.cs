@@ -143,6 +143,12 @@ public partial class ColonyManager : ModSystem
             // 0.181.0: the economy starts at Town Hall level 2 (Aaron).
             if (config.EconomyTownHallLevel == 3) config.EconomyTownHallLevel = 2;
         }
+        if (config.ConfigVersion < 10)
+        {
+            // 0.187.0: the Restless (zombies) join the raids, on by default (Aaron).
+            var factions = config.RaidFactions ?? Array.Empty<string>();
+            if (!factions.Contains("restless")) config.RaidFactions = factions.Append("restless").ToArray();
+        }
         config.ConfigVersion = ColonyConfig.CurrentConfigVersion;
     }
 
