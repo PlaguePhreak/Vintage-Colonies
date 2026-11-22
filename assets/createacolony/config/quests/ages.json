@@ -16,7 +16,8 @@
             {
               "type": "obtain",
               "count": 3,
-              "code": "game:flint"
+              "code": "game:flint|game:stone-chert|game:stone-obsidian|game:stone-granite|game:stone-andesite|game:stone-basalt|game:stone-peridotite",
+              "text": "objective-text-knapstones"
             }
           ],
           "rewards": [
