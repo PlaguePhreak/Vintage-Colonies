@@ -657,7 +657,7 @@ public class GuiDialogTownHall : GuiDialog
     }
 
     /// <summary>What killed a settler, in words: "Wolf (male)", a player's name, or "Starved".</summary>
-    static string DeathCauseName(string cause)
+    public static string DeathCauseName(string cause)
     {
         int colon = cause.IndexOf(':');
         if (colon < 0) return Lang.Get("createacolony:citizens-died-unknown");

@@ -12,6 +12,18 @@ domain (`assets/createacolony/`, block and item codes like `createacolony:townha
 (`ModConfig/createacolony.json`), the release zips (`createacolony_<version>.zip`) and all save data keys.
 Changing any of those would stop old worlds from loading their colonies, so leave them as they are.
 
+## Graveyard and Undertaker (0.179.0)
+Built from the design doc Aaron approved on 22 Nov 2026 (https://claude.ai/artifact/UNBVULi6TXAb2FGjUmB3hp).
+- **Graveyard**: a new hut (Education tab, recipe: planks around a stone). Placeholder model only; Aaron designs the buildings. It takes 1 undertaker at levels 1-2, 2 at levels 3-4 and 3 at level 5.
+- **Grave plots**: a new block (2 sticks and a plank make 2). Put them on the ground up to 16 blocks from the Graveyard; the stake is the head of the grave. A Graveyard holds 8, 16, 24, 36 and 50 graves by level, so plots past that wait for an upgrade.
+- **Undertaker**: a new job (skill Undertaking, also trains Strength; needs a shovel). It walks out to the bodies of the colony's dead, up to the range set on the Work area tab (64 blocks to start), wraps each in a shroud and carries it home. The belongings go into the Graveyard's storage, and couriers take them to the warehouse. It digs a grave at a free plot (2 blocks of soil, gravel or sand), lays the body in, fills it back and puts up a grave marker: wood at level 1, a stone headstone from level 2. Look at a marker to read who lies there, their job, when they died and what killed them. From level 4 the dead are buried next to their family when there is room. A shrouded body left in the Graveyard's storage is buried too.
+- **Small funeral**: after a burial the undertaker says a few words. Grief over the death fades by a quarter (a priest's funeral halves it). With a Church, the priest now waits for the burial and holds the full funeral at the grave.
+- **While the colony has a Graveyard**: a settler who dies always leaves a body, even with empty pockets; taking their things leaves the body for the undertaker; settlers who walk past a body are upset for a few hours; and a body left unburied for 3 days upsets everyone, family most. Without a Graveyard nothing changes.
+- The dead settler's map marker goes once they are buried, and the settler list shows them as buried. The Colony quest "Graveyard Remembrance" is now a real quest (Graveyard level 1 and an undertaker).
+- Config: `UndertakerRange`, `GravesByLevel`, `GraveyardPlotRadius`, `GraveDepth`, `GraveyardStoneLevel`, `GraveyardFamilyLevel`, `UndertakerSecondsPerTask`, `UndertakerFuneralGriefFactor`, `UnburiedAfterDays`, `UnburiedForgetDays`, `SawBodyRadius`.
+- Not in this update: bringing settlers back to life (Aaron: leave it out), laying a body out on a table first, a memorial stone at level 5, grieving family visiting graves, and the undertaker carrying home a knocked-out settler's things.
+- Not tested in game.
+
 ## Ranged guards and the Rally Banner (0.178.0)
 Built from the design doc Aaron approved on 22 Nov 2026 (https://claude.ai/artifact/X1rem76HRLvrBPbsY3UWZp).
 - **Each guard fights up close or at range.** On the Town Hall's **Colony militia** tab, officers click a guard's role (Guard: melee / Guard: ranged) to switch it. One tower can hold both kinds.

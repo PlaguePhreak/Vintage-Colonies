@@ -49,6 +49,7 @@ public partial class ColonyManager
             BuildingTypes.Butcher => Config.ButcherRadius,
             BuildingTypes.ChickenCoop or BuildingTypes.Piggery or BuildingTypes.Shepherd or BuildingTypes.Goatherd or BuildingTypes.Herdsman => Config.HerdRadius,
             BuildingTypes.Apiary => Config.ApiaryRadius,
+            BuildingTypes.Graveyard => Config.UndertakerRange,
             _ => Config.FarmerOrchardRadius
         };
     }

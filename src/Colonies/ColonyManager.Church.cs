@@ -314,8 +314,12 @@ public partial class ColonyManager
         double now = sapi.World.Calendar.TotalDays;
         return colony.Citizens
             .Where(c => !c.Alive && !c.Buried && !c.Visitor && c.DiedTotalDays > 0 && now - c.DiedTotalDays <= Config.FuneralWithinDays && !funeralsUnderway.Contains(c.CitizenId))
+            .Where(c => !WaitsForUndertaker(colony, c))
             .OrderBy(c => c.DiedTotalDays).FirstOrDefault();
     }
+
+    /// <summary>With a Graveyard, the priest waits until the undertaker has laid the body in its grave (ColonyManager.Graveyard.cs).</summary>
+    bool WaitsForUndertaker(Colony colony, CitizenRecord dead) => dead.HasBody && !dead.Interred && HasGraveyard(colony);
 
     /// <summary>Settlers who died lately and have not had their funeral, for the Church window.</summary>
     public int FuneralsWaiting(Colony colony)
@@ -330,9 +334,10 @@ public partial class ColonyManager
         else funeralsUnderway.Remove(dead.CitizenId);
     }
 
-    /// <summary>Where the funeral is held: at the settler's grave marker, else at the Church.</summary>
+    /// <summary>Where the funeral is held: at the settler's grave in the Graveyard, at the map marker where they fell, else at the Church.</summary>
     public BlockPos FuneralSpot(Colony colony, CitizenRecord dead, Building church)
     {
+        if (dead.Interred && dead.GravePos != null) return dead.GravePos.Copy();
         var grave = colony.Markers.Find(m => m.Kind == "grave" && m.CitizenId == dead.CitizenId);
         return grave != null ? new BlockPos((int)Math.Floor(grave.X), (int)Math.Floor(grave.Y), (int)Math.Floor(grave.Z)) : church.HutPos.Copy();
     }

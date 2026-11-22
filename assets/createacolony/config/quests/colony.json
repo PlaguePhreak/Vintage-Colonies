@@ -1747,10 +1747,27 @@
           "y": 9.91,
           "shape": "square",
           "requires": [
-            "kingdom-q75"
+            "kingdom-h3"
           ],
-          "soon": true,
-          "objectives": []
+          "icon": "createacolony:hut-graveyard",
+          "objectives": [
+            {
+              "type": "building",
+              "code": "graveyard",
+              "level": 1
+            },
+            {
+              "type": "job",
+              "code": "undertaker",
+              "count": 1
+            }
+          ],
+          "rewards": [
+            {
+              "code": "game:gear-rusty",
+              "count": 1
+            }
+          ]
         },
         {
           "code": "kingdom-q83",
