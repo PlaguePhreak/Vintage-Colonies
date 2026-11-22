@@ -20,7 +20,9 @@ namespace CreateAColony.Colonies;
 ///   once bees moved in, carries the skep home;
 /// - with the From Golden Combs mod (optional, never bundled) and from config ApiaryCeramicLevel it scrapes full
 ///   honey pots on ceramic hives with its knife, puts honey pots on brood pots that have none, and moves a spare
-///   skep colony into an empty brood pot. Its blocks are only reached by name and reflection, so a change in that
+///   skep colony into an empty brood pot. From config ApiaryLangstrothLevel it also works Langstroth hives
+///   (ColonyManager.Langstroth.cs): it takes out full frames, scrapes them at the Frame Rack, repairs and relines
+///   frames, puts lined frames back and fills empty brood boxes with bees. Its blocks are only reached by name and reflection, so a change in that
 ///   mod makes the beekeeper skip those hives instead of failing.
 /// Honeycomb and wax go to the hut, where couriers pick them up.
 /// </summary>
@@ -39,6 +41,14 @@ public partial class ColonyManager
         public bool Full;
         /// <summary>A ceramic brood pot without a honey pot on top.</summary>
         public bool NoTop;
+        /// <summary>A From Golden Combs Langstroth hive (the bottom of its stack), or a brood box on its own.</summary>
+        public bool Langstroth;
+        /// <summary>A brood box set down on its own, not in a hive.</summary>
+        public bool LoneBrood;
+        /// <summary>A Langstroth hive or brood box whose brood box has no bees yet.</summary>
+        public bool EmptyBrood;
+        /// <summary>Frames in a Langstroth hive: full ones, lined ones worn down to the repair point, empty (unlined) ones, and free frame spots in its supers.</summary>
+        public int FullFrames, WornFrames, EmptyFrames, Room;
     }
 
     /// <summary>What a beekeeper found around its Apiary, worked out at most every few seconds.</summary>
@@ -46,6 +56,10 @@ public partial class ColonyManager
     {
         public List<ApiaryHive> Hives = new();
         public long Until;
+        /// <summary>The From Golden Combs Frame Rack nearest the hut, or null.</summary>
+        public BlockPos? Rack;
+        /// <summary>Brood boxes set down on their own, which the beekeeper can fill with bees.</summary>
+        public List<ApiaryHive> Broods = new();
         public IEnumerable<ApiaryHive> Colonies => Hives.Where(h => h.Colony);
     }
 
@@ -64,6 +78,7 @@ public partial class ColonyManager
     public bool ApiaryCatchesSwarms(Building hut) => ApiaryLevel(hut) >= Config.ApiarySwarmLevel;
     public bool ApiaryWorksCeramic(Building hut) => GoldenCombs && ApiaryLevel(hut) >= Config.ApiaryCeramicLevel;
     public bool ApiaryBringsWild(Building hut) => ApiaryLevel(hut) >= Config.ApiaryWildLevel;
+    public bool ApiaryWorksLangstroth(Building hut) => GoldenCombs && ApiaryLevel(hut) >= Config.ApiaryLangstrothLevel;
 
     // ---- Skeps (the game's own) ----
 
@@ -82,7 +97,7 @@ public partial class ColonyManager
         if (IsSkepStack(s)) return true;
         if (s.Collectible.Code.Domain != GoldenCombsModId) return false;
         string first = s.Collectible.FirstCodePart();
-        return first is "hivetop" or "ceramicbroodpot";
+        return first is "hivetop" or "ceramicbroodpot" or "beeframe" or "frameliner" or "waxedflaxtwine";
     }
 
     /// <summary>True when the skep at the spot is full of honey. Read from the saved hive, so it works with From Golden Combs too.</summary>
@@ -143,6 +158,7 @@ public partial class ColonyManager
                 var type = asm.GetTypes().FirstOrDefault(t => t.Name == "FGCServerConfig");
                 var current = type?.GetProperty("Current", BindingFlags.Static | BindingFlags.Public)?.GetValue(null);
                 if (current?.GetType().GetProperty(name)?.GetValue(current) is int value) return value;
+                if (current?.GetType().GetField(name)?.GetValue(current) is int field) return field;
             }
         }
         catch (Exception)
@@ -172,14 +188,34 @@ public partial class ColonyManager
                 var pos = new BlockPos(x, y, z);
                 found.Add(new ApiaryHive { Pos = pos, Skep = true, Colony = !skep.IsEmpty() });
             }
-            else if (ceramic && block.Code?.Domain == GoldenCombsModId && block.FirstCodePart() == "ceramicbroodpot")
+            else if (ceramic && block.Code?.Domain == GoldenCombsModId)
             {
-                found.Add(new ApiaryHive { Pos = new BlockPos(x, y, z) });
+                switch (block.FirstCodePart())
+                {
+                    case "ceramicbroodpot":
+                        found.Add(new ApiaryHive { Pos = new BlockPos(x, y, z) });
+                        break;
+                    case "langstrothstack":
+                        // One hive for each stack: the bottom one holds the hive.
+                        if (ba.GetBlock(new BlockPos(x, y - 1, z)).FirstCodePart() != "langstrothstack") found.Add(new ApiaryHive { Pos = new BlockPos(x, y, z), Langstroth = true });
+                        break;
+                    case "langstrothbrood":
+                        scan.Broods.Add(new ApiaryHive { Pos = new BlockPos(x, y, z), Langstroth = true, LoneBrood = true, EmptyBrood = block.Variant["populated"] == "empty" });
+                        break;
+                    case "framerack":
+                        var rack = new BlockPos(x, y, z);
+                        if (scan.Rack == null || rack.DistanceSqTo(c.X, c.Y, c.Z) < scan.Rack.DistanceSqTo(c.X, c.Y, c.Z)) scan.Rack = rack;
+                        break;
+                }
             }
         }, true);
-        found = found.Where(h => h.Skep || IsBroodPot(ba.GetBlockEntity(h.Pos))).ToList();
+        found = found.Where(h => !h.Langstroth || LangstrothStacks(h.Pos).Count > 0).ToList();
+        foreach (var hive in found.Where(h => h.Langstroth)) ReadLangstroth(hive);
+        scan.Broods = scan.Broods.Where(b => b.EmptyBrood).OrderBy(h => h.Pos.DistanceSqTo(c.X, c.Y, c.Z)).ToList();
+        found = found.Where(h => h.Skep || h.Langstroth || IsBroodPot(ba.GetBlockEntity(h.Pos))).ToList();
         foreach (var hive in found)
         {
+            if (hive.Langstroth) continue;
             if (hive.Skep)
             {
                 if (hive.Colony) hive.Full = SkepFull(hive.Pos);
@@ -247,7 +283,7 @@ public partial class ColonyManager
         bool any = false;
         ba.WalkBlocks(pos.AddCopy(-r, -r, -r), pos.AddCopy(r, r, r), (block, _, _, _) =>
         {
-            if (block is BlockSkep or BlockBeehive || block.Code?.Domain == GoldenCombsModId && block.FirstCodePart() == "ceramicbroodpot") any = true;
+            if (block is BlockSkep or BlockBeehive || block.Code?.Domain == GoldenCombsModId && block.FirstCodePart() is "ceramicbroodpot" or "langstrothstack" or "langstrothbrood" or "langstrothbase") any = true;
         }, true);
         return any;
     }
@@ -463,20 +499,34 @@ public partial class ColonyManager
     {
         var scan = ScanApiary(hut);
         int skeps = scan.Hives.Count(h => h.Skep && h.Colony), empty = scan.Hives.Count(h => h.Skep && !h.Colony);
-        int pots = scan.Hives.Count(h => !h.Skep), potBees = scan.Hives.Count(h => !h.Skep && h.Colony);
+        int pots = scan.Hives.Count(h => !h.Skep && !h.Langstroth), potBees = scan.Hives.Count(h => !h.Skep && !h.Langstroth && h.Colony);
+        var langs = scan.Hives.Where(h => h.Langstroth).ToList();
         int full = scan.Hives.Count(h => h.Full);
         var lines = new List<string>
         {
             Lang.Get("createacolony:apiary-hives", scan.Hives.Count + hut.WildSkeps.Count, ApiaryHiveLimit(hut)),
             Lang.Get("createacolony:apiary-kinds", skeps, empty, hut.WildSkeps.Count) + (GoldenCombs ? " " + Lang.Get("createacolony:apiary-ceramic", pots, potBees) : ""),
             Lang.Get("createacolony:apiary-full", full),
+        };
+        if (GoldenCombs && (langs.Count > 0 || scan.Rack != null))
+        {
+            lines.Add(Lang.Get("createacolony:apiary-langstroth", langs.Count, langs.Count(h => h.Colony), langs.Sum(h => h.FullFrames), langs.Sum(h => h.WornFrames), langs.Sum(h => h.EmptyFrames), langs.Sum(h => h.Room)));
+            lines.Add(Lang.Get(scan.Rack != null ? "createacolony:apiary-rack" : "createacolony:apiary-no-rack"));
+        }
+        lines.AddRange(new[]
+        {
             Lang.Get("createacolony:apiary-done", hut.StatTotals.GetValueOrDefault("honeycomb"), hut.StatTotals.GetValueOrDefault("skeps") + hut.StatTotals.GetValueOrDefault("honeypots"),
                 hut.StatTotals.GetValueOrDefault("swarms"), hut.StatTotals.GetValueOrDefault("wild")),
-        };
+        });
+        if (hut.StatTotals.GetValueOrDefault("frames") + hut.StatTotals.GetValueOrDefault("repaired") + hut.StatTotals.GetValueOrDefault("brood") > 0)
+        {
+            lines.Add(Lang.Get("createacolony:apiary-frames-done", hut.StatTotals.GetValueOrDefault("frames"), hut.StatTotals.GetValueOrDefault("repaired"), hut.StatTotals.GetValueOrDefault("relined"), hut.StatTotals.GetValueOrDefault("brood")));
+        }
         var can = new List<string> { Lang.Get("createacolony:apiary-can-harvest") };
         if (ApiaryCatchesSwarms(hut)) can.Add(Lang.Get("createacolony:apiary-can-swarms"));
         if (ApiaryWorksCeramic(hut)) can.Add(Lang.Get("createacolony:apiary-can-ceramic"));
         if (ApiaryBringsWild(hut)) can.Add(Lang.Get("createacolony:apiary-can-wild"));
+        if (ApiaryWorksLangstroth(hut)) can.Add(Lang.Get("createacolony:apiary-can-langstroth"));
         lines.Add(Lang.Get("createacolony:apiary-level", ApiaryLevel(hut), string.Join(", ", can)));
         if (hut.KeepLastColony && scan.Colonies.Count() == 1 && scan.Hives.Any(h => h.Skep && h.Full)) lines.Add(Lang.Get("createacolony:apiary-keeping-last"));
         return lines;

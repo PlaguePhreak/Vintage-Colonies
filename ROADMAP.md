@@ -43,7 +43,7 @@ Things marked *(tested)* have been tried in game. Everything else is built but s
 - Paintings: 17 original framed paintings in four sizes, a blank canvas from 8 boards and 4 linen painted with buckets of dye in the grid, hung by builders from blueprints (0.105.0-0.105.1, not tested yet)
 - Herders and the Tannery: Chicken Coop, Piggery, Shepherd's Hut, Goatherd's Hut and a Herdsman's Hut for any farm animal feed troughs, collect eggs and milk and cull spare animals; a Tannery makes leather in barrels; jobless settlers keep hens at home (0.171.0, placeholder models, no buildings yet, not tested yet)
 - Butcher's Hut: hunters bring kills home whole and a butcher cuts them up for more meat, fat and bones, with optional Butchering mod support (0.170.0, placeholder model, no building yet, not tested yet)
-- Apiary and Beekeeper: harvests full skeps, sets out empty skeps for swarms, brings in wild hives the gatherer marked, and works From Golden Combs ceramic hives when that mod is installed (0.174.0, placeholder model, no building yet, not tested yet)
+- Apiary and Beekeeper: harvests full skeps, sets out empty skeps for swarms, brings in wild hives the gatherer marked, and works From Golden Combs ceramic hives when that mod is installed (0.174.0, placeholder model, no building yet, not tested yet); Langstroth hives, frames, Frame Rack, twine repair and brood boxes from Apiary level 4 (0.186.0, not tested yet)
 - Smelter alloys and the bloomery: the smelter mixes alloys such as bronze and makes iron blooms, which the blacksmith works into ingots (0.169.0, not tested yet)
 - Research: the Archive, Researchers, Research Points, Knowledge Tokens and the first 12 pieces of research (0.166.0, not tested yet)
 - More research: 32 pieces in all with tier 3 and tier 4, handing in books, relics, field notes and temporal gears at the Archive, Explorer field trips, failed experiments and researchers sitting at a table (0.180.0, not tested yet)
@@ -114,7 +114,7 @@ Things marked *(tested)* have been tried in game. Everything else is built but s
 **Next, in this order**
 1. **Armourer's and Weaponsmith's buildings**: the jobs came in 0.114.0, the buildings are still to design
 2. **Butcher's Hut, the rest**: the building, smoking racks, and offal and sinew from the mod. Original plan: a butcher takes the animals the Hunter (0.99.0) and herders bring home and cuts them up for meat, hides, fat and bones, then stores the meat with the food from 0.100.0. Works with the **Butchering** mod by CaptainOats when it is installed: the butcher hangs carcasses on its hooks, uses its tables, catches blood in buckets and smokes meat on its racks for more food per animal. Without the mod, the butcher uses a knife like the game does. The mod lists no licence, so we will never copy or bundle its files. It stays an optional extra that players download themselves.
-3. **Langstroth hives for the Beekeeper**: frames, the Frame Rack and waxed twine from From Golden Combs (the Apiary came in 0.174.0)
+3. ~~**Langstroth hives for the Beekeeper**~~: built in 0.186.0 (frames, the Frame Rack, waxed twine, frame liners and brood boxes)
 4. **Buildings for the newer huts**: herder huts, Tannery, Butcher's Hut, Apiary, Boarding House, Graveyard, Charcoal Burner, Stonemason, Bakery, Fisher, Fletcher and Composter still use placeholder models (Aaron designs every building)
 
 **Later**

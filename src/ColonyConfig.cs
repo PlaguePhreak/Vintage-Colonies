@@ -347,6 +347,16 @@ public class ColonyConfig
     /// <summary>Honeycomb from one honey pot when the From Golden Combs settings cannot be read.</summary>
     public int ApiaryPotMinYield = 2;
     public int ApiaryPotMaxYield = 5;
+    /// <summary>The Apiary level the beekeeper starts working Langstroth hives (From Golden Combs): frames, the Frame Rack and brood boxes.</summary>
+    public int ApiaryLangstrothLevel = 4;
+    /// <summary>A lined frame with this many uses left or fewer is repaired with waxed flax twine.</summary>
+    public int ApiaryFrameRepairAt = 8;
+    /// <summary>Honeycomb from one frame, and a new frame's uses, when the From Golden Combs settings cannot be read.</summary>
+    public int ApiaryFrameMinYield = 2;
+    public int ApiaryFrameMaxYield = 4;
+    public int ApiaryFrameUses = 32;
+    /// <summary>How many lined frames, waxed flax twine and frame liners the beekeeper asks couriers for at a time.</summary>
+    public int BeekeeperFrameRequest = 4;
 
     // Gatherer
     /// <summary>How far from the Gatherer's Hut, in blocks, the gatherer forages (change it on the Work area tab).</summary>
