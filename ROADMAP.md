@@ -91,12 +91,14 @@ Things marked *(tested)* have been tried in game. Everything else is built but s
 - Ranged guards: each guard can be set to melee or ranged on the Colony militia tab, ranged guards shoot bows and slings and pick up their arrows after a fight, and armed settlers prefer spears and shields (0.178.0, not tested yet)
 - Rally Banner: link guard posts to it, raise it to call their guards to you, lower it to send them back (0.178.0, not tested yet)
 - Raids: from 8 grown settlers, every in-game week to month; outlaws (steal, start grass fires), wolf packs or drifters march on the Town Hall; warning in chat and on the Town Hall; On / Off / Only when I say and size on the Settings tab (0.183.0, not tested yet)
+- The Restless (zombie raids): night only, back each night until all are killed, bites make settlers ill (Healer cures), switch per colony on the Settings tab (0.187.0, not tested yet)
 - Graveyard and Undertaker: grave plots, the undertaker brings the dead home, buries them under a named grave marker and holds a small funeral; belongings go to the Graveyard's storage (0.179.0, not tested yet)
 - Economy step 1: the Market and Market Trader, settlers spend spare gears on meals and clothes, the economy starts at Town Hall level 2 with 60 starting gears (0.182.0, not tested yet)
 - Economy step 2: Tavern Keeper, the Cook brews drinks in barrels, evenings at the Tavern with drinks for 1 gear, hangovers (0.184.0, not tested yet)
 - Charcoal Burner's Hut: the charcoal burner digs charcoal pits, fills them with firewood, lights them and digs out the charcoal for the Smelter and Blacksmith (0.185.0, not tested yet)
 - Five new huts: Stonemason (stone bricks and other stone pieces), Bakery (grinds flour, mixes dough, bakes bread), Fisher (the game's own fish, bait and fished-out spots), Fletcher (arrows and bows, also for the guard towers) and Composter (compost soil and bone meal for the farms). They use placeholder models until Aaron designs their buildings (0.185.0, not tested yet)
 - Town Hall: auto hiring and auto housing switches, custom ranks with tick boxes and a permission log, and enter and leave messages with your own text (0.185.0, not tested yet)
+- Settler requests: a Requests chapter in the quest book where settlers post small jobs (deliver, craft, hunt, build, welcome); up to 3 open, a new one every 2 days picked from what the colony is short of, 2 to 6 rusty gears each, gone after 5 days, and the settler who asked is happier when it is done (0.188.0, not tested yet)
 
 ## Partly done
 
@@ -119,6 +121,7 @@ Things marked *(tested)* have been tried in game. Everything else is built but s
 
 **Later**
 - **More bandit groups for raids**: Hill Raiders, River Reavers, Rust Brigands, Storm Cultists and Deserters, each with their own look and way of fighting (written up 22 Nov 2026)
+- **More monster races for raids**: goblins (old-world metal hoarders), orcs (the Stormborn), the Ancient Dead (skeletons, new model) and Nachzehrers (new model, rise from untended graves). Design doc approved 22 Nov 2026: https://claude.ai/artifact/W5h1tzifqjBvYEoRfBR73s
 - **Economy** (design doc https://claude.ai/artifact/54wQA4dYCoNTKviikB23iN, approved 22 Nov 2026): step 1, the Market, came in 0.182.0; step 2, the Tavern Keeper and drinks, in 0.184.0 (a Brewer job comes later). Still to do: step 3 home comfort, furniture, rent and better houses, step 4 market day traders, fines and the Bailiff's money report. The Royal Mint, taxes and wages came in 0.136.0.
 - More huts from MineColonies: Plantation (reeds and cattails), Crusher and Sifter (quern and panning), Florist, Dyer and Mechanic (windmills and gears). Stonemason, Baker, Fisher, Composter and Fletcher came in 0.185.0
 - A Combat Academy and an archery range to train guards
