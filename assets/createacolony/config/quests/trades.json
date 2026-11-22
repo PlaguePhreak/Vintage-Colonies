@@ -46,6 +46,10 @@
             {
               "code": "game:gear-rusty",
               "count": 1
+            },
+            {
+              "code": "game:egg-chicken-raw",
+              "count": 4
             }
           ]
         },
@@ -67,6 +71,10 @@
             {
               "code": "game:gear-rusty",
               "count": 1
+            },
+            {
+              "code": "game:vegetable-carrot",
+              "count": 4
             }
           ]
         },
@@ -88,6 +96,10 @@
             {
               "code": "game:gear-rusty",
               "count": 1
+            },
+            {
+              "code": "game:grain-spelt",
+              "count": 8
             }
           ]
         },
@@ -109,6 +121,10 @@
             {
               "code": "game:gear-rusty",
               "count": 1
+            },
+            {
+              "code": "game:redmeat-cured",
+              "count": 2
             }
           ]
         },
@@ -155,7 +171,7 @@
           "rewards": [
             {
               "code": "game:gear-rusty",
-              "count": 1
+              "count": 3
             }
           ]
         },
@@ -267,6 +283,10 @@
             {
               "code": "game:gear-rusty",
               "count": 1
+            },
+            {
+              "code": "game:cheese-cheddar-4slice",
+              "count": 1
             }
           ]
         },
@@ -357,6 +377,10 @@
             {
               "code": "game:gear-rusty",
               "count": 1
+            },
+            {
+              "code": "game:fat",
+              "count": 2
             }
           ]
         },
@@ -378,6 +402,10 @@
             {
               "code": "game:gear-rusty",
               "count": 1
+            },
+            {
+              "code": "game:honeycomb",
+              "count": 2
             }
           ]
         },
@@ -461,6 +489,10 @@
             {
               "code": "game:gear-rusty",
               "count": 1
+            },
+            {
+              "code": "game:salt",
+              "count": 4
             }
           ]
         },
@@ -484,6 +516,10 @@
             {
               "code": "game:gear-rusty",
               "count": 1
+            },
+            {
+              "code": "game:salt",
+              "count": 4
             }
           ]
         },
@@ -528,6 +564,10 @@
             {
               "code": "game:gear-rusty",
               "count": 1
+            },
+            {
+              "code": "game:pickledvegetable-carrot",
+              "count": 2
             }
           ]
         },
@@ -546,6 +586,10 @@
             {
               "code": "game:gear-rusty",
               "count": 1
+            },
+            {
+              "code": "game:flour-spelt",
+              "count": 4
             }
           ]
         },
@@ -567,6 +611,10 @@
             {
               "code": "game:gear-rusty",
               "count": 1
+            },
+            {
+              "code": "game:flour-spelt",
+              "count": 4
             }
           ]
         },
@@ -589,6 +637,10 @@
             {
               "code": "game:gear-rusty",
               "count": 1
+            },
+            {
+              "code": "game:bread-spelt-perfect",
+              "count": 2
             }
           ]
         },
@@ -610,7 +662,7 @@
           "rewards": [
             {
               "code": "game:gear-rusty",
-              "count": 1
+              "count": 2
             }
           ]
         },
@@ -650,7 +702,7 @@
           "rewards": [
             {
               "code": "game:gear-rusty",
-              "count": 1
+              "count": 2
             }
           ]
         },
@@ -673,7 +725,7 @@
           "rewards": [
             {
               "code": "game:gear-rusty",
-              "count": 1
+              "count": 2
             }
           ]
         },
@@ -716,7 +768,7 @@
           "rewards": [
             {
               "code": "game:gear-rusty",
-              "count": 1
+              "count": 3
             }
           ]
         },
@@ -2060,7 +2112,7 @@
           "rewards": [
             {
               "code": "game:gear-rusty",
-              "count": 1
+              "count": 2
             }
           ]
         },
@@ -2473,6 +2525,10 @@
             {
               "code": "game:gear-rusty",
               "count": 1
+            },
+            {
+              "code": "game:compost",
+              "count": 2
             }
           ]
         },
@@ -2854,6 +2910,10 @@
             {
               "code": "game:gear-rusty",
               "count": 1
+            },
+            {
+              "code": "game:bonemeal",
+              "count": 4
             }
           ]
         },
@@ -3184,7 +3244,7 @@
           "rewards": [
             {
               "code": "game:gear-rusty",
-              "count": 1
+              "count": 3
             }
           ]
         },
@@ -3656,6 +3716,10 @@
             {
               "code": "game:gear-rusty",
               "count": 1
+            },
+            {
+              "code": "game:honeycomb",
+              "count": 2
             }
           ]
         },
@@ -3677,6 +3741,10 @@
             {
               "code": "game:gear-rusty",
               "count": 1
+            },
+            {
+              "code": "game:beeswax",
+              "count": 2
             }
           ]
         },
@@ -4011,6 +4079,10 @@
             {
               "code": "game:gear-rusty",
               "count": 1
+            },
+            {
+              "code": "game:firewood",
+              "count": 8
             }
           ]
         },
@@ -4032,6 +4104,10 @@
             {
               "code": "game:gear-rusty",
               "count": 1
+            },
+            {
+              "code": "game:resin",
+              "count": 2
             }
           ]
         },
@@ -4072,6 +4148,10 @@
             {
               "code": "game:gear-rusty",
               "count": 1
+            },
+            {
+              "code": "game:plank-oak",
+              "count": 8
             }
           ]
         },
@@ -4113,7 +4193,7 @@
           "rewards": [
             {
               "code": "game:gear-rusty",
-              "count": 1
+              "count": 2
             }
           ]
         },
@@ -4664,7 +4744,7 @@
           "rewards": [
             {
               "code": "game:gear-rusty",
-              "count": 1
+              "count": 2
             }
           ]
         },
@@ -4948,6 +5028,10 @@
             {
               "code": "game:gear-rusty",
               "count": 1
+            },
+            {
+              "code": "game:egg-chicken-raw",
+              "count": 4
             }
           ]
         },
@@ -4991,6 +5075,10 @@
             {
               "code": "game:gear-rusty",
               "count": 1
+            },
+            {
+              "code": "game:feather",
+              "count": 8
             }
           ]
         },
@@ -5013,7 +5101,7 @@
           "rewards": [
             {
               "code": "game:gear-rusty",
-              "count": 1
+              "count": 2
             }
           ]
         },
@@ -5036,7 +5124,7 @@
           "rewards": [
             {
               "code": "game:gear-rusty",
-              "count": 1
+              "count": 3
             }
           ]
         },
@@ -5108,6 +5196,10 @@
             {
               "code": "game:gear-rusty",
               "count": 1
+            },
+            {
+              "code": "game:fat",
+              "count": 2
             }
           ]
         },
@@ -5602,6 +5694,10 @@
             {
               "code": "game:gear-rusty",
               "count": 2
+            },
+            {
+              "code": "game:leather-normal-plain",
+              "count": 1
             }
           ]
         },
@@ -5622,7 +5718,7 @@
           "rewards": [
             {
               "code": "game:gear-rusty",
-              "count": 1
+              "count": 2
             }
           ]
         },
@@ -5816,6 +5912,10 @@
             {
               "code": "game:gear-rusty",
               "count": 1
+            },
+            {
+              "code": "game:flaxtwine",
+              "count": 4
             }
           ]
         },
@@ -5900,6 +6000,10 @@
             {
               "code": "game:gear-rusty",
               "count": 1
+            },
+            {
+              "code": "game:cloth-plain",
+              "count": 2
             }
           ]
         },

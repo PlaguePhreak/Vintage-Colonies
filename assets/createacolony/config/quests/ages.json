@@ -148,7 +148,7 @@
           "rewards": [
             {
               "code": "game:gear-rusty",
-              "count": 1
+              "count": 2
             }
           ]
         },
@@ -299,6 +299,10 @@
             {
               "code": "game:gear-rusty",
               "count": 1
+            },
+            {
+              "code": "game:flint",
+              "count": 2
             }
           ]
         },
@@ -342,6 +346,10 @@
             {
               "code": "game:gear-rusty",
               "count": 1
+            },
+            {
+              "code": "game:drygrass",
+              "count": 8
             }
           ]
         },
@@ -407,6 +415,10 @@
             {
               "code": "game:gear-rusty",
               "count": 1
+            },
+            {
+              "code": "game:firewood",
+              "count": 4
             }
           ]
         },
@@ -450,7 +462,7 @@
           "rewards": [
             {
               "code": "game:gear-rusty",
-              "count": 1
+              "count": 2
             }
           ]
         },
@@ -492,6 +504,10 @@
           "rewards": [
             {
               "code": "game:gear-rusty",
+              "count": 1
+            },
+            {
+              "code": "game:stationarybasket-east",
               "count": 1
             }
           ]
@@ -666,6 +682,10 @@
             {
               "code": "game:gear-rusty",
               "count": 1
+            },
+            {
+              "code": "game:clay-blue",
+              "count": 8
             }
           ]
         },
@@ -796,6 +816,10 @@
             {
               "code": "game:gear-rusty",
               "count": 2
+            },
+            {
+              "code": "game:firewood",
+              "count": 8
             }
           ]
         },
@@ -845,6 +869,10 @@
             {
               "code": "game:gear-rusty",
               "count": 1
+            },
+            {
+              "code": "game:nugget-nativecopper",
+              "count": 5
             }
           ]
         },
@@ -1153,6 +1181,10 @@
             {
               "code": "game:gear-rusty",
               "count": 1
+            },
+            {
+              "code": "game:charcoal",
+              "count": 8
             }
           ]
         },
@@ -1428,6 +1460,10 @@
           "rewards": [
             {
               "code": "game:gear-rusty",
+              "count": 1
+            },
+            {
+              "code": "game:ingot-copper",
               "count": 1
             }
           ]
@@ -1874,6 +1910,10 @@
             {
               "code": "game:gear-rusty",
               "count": 1
+            },
+            {
+              "code": "game:metalplate-copper",
+              "count": 1
             }
           ]
         },
@@ -1917,7 +1957,7 @@
           "rewards": [
             {
               "code": "game:gear-rusty",
-              "count": 1
+              "count": 2
             }
           ]
         }
@@ -1967,7 +2007,7 @@
           "rewards": [
             {
               "code": "game:gear-rusty",
-              "count": 1
+              "count": 2
             }
           ]
         },
@@ -2028,7 +2068,7 @@
           "rewards": [
             {
               "code": "game:gear-rusty",
-              "count": 1
+              "count": 3
             }
           ]
         },
@@ -2089,7 +2129,7 @@
           "rewards": [
             {
               "code": "game:gear-rusty",
-              "count": 1
+              "count": 2
             }
           ]
         },
@@ -2433,6 +2473,10 @@
           "rewards": [
             {
               "code": "game:gear-rusty",
+              "count": 1
+            },
+            {
+              "code": "game:ingot-tinbronze",
               "count": 1
             }
           ]
@@ -2866,6 +2910,10 @@
             {
               "code": "game:gear-rusty",
               "count": 1
+            },
+            {
+              "code": "game:charcoal",
+              "count": 16
             }
           ]
         },
@@ -2909,6 +2957,10 @@
           "rewards": [
             {
               "code": "game:gear-rusty",
+              "count": 1
+            },
+            {
+              "code": "game:ingot-iron",
               "count": 1
             }
           ]
@@ -3573,7 +3625,7 @@
           "rewards": [
             {
               "code": "game:gear-rusty",
-              "count": 1
+              "count": 3
             }
           ]
         },
