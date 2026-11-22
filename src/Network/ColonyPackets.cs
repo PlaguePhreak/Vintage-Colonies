@@ -50,7 +50,7 @@ public class CitizenView
     /// <summary>Colony militia tab: the weapon the settler would fight with, empty for none.</summary>
     [ProtoMember(30)] public string Weapon = "";
     /// <summary>Colony militia tab: a guard set to fight with a bow or sling.</summary>
-    [ProtoMember(31)] public bool GuardRanged;
+    [ProtoMember(32)] public bool GuardRanged;
 }
 
 /// <summary>One person in a family list: who, how they are related, and what they do.</summary>

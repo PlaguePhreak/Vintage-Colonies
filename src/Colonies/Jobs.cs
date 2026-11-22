@@ -46,6 +46,8 @@ public static class Jobs
     public const string Minter = "minter";
     /// <summary>Keeps the Market's stall stocked from the warehouse and sells to settlers (ColonyManager.Market.cs).</summary>
     public const string MarketTrader = "markettrader";
+    /// <summary>Keeps the Tavern stocked with drinks and serves them in the evening (ColonyManager.Tavern.cs).</summary>
+    public const string TavernKeeper = "tavernkeeper";
     /// <summary>Studies at the Archive and makes Research Points (ColonyManager.Research.cs).</summary>
     public const string Researcher = "researcher";
     /// <summary>Works at the Church: holds services and funerals, keeps the records. One of them can be the Bishop (WorkRole, see ChurchRoles).</summary>
@@ -65,7 +67,7 @@ public static class Jobs
     public const string Composter = "composter";
 
     /// <summary>All assignable jobs; an empty code means unemployed.</summary>
-    public static readonly string[] All = { "", Builder, Courier, Forester, Farmer, Guard, Potter, Cook, Prospector, Miner, Quarrier, Smelter, Blacksmith, Armourer, Weaponsmith, Sawyer, Craftsman, Tailor, Jeweller, Healer, Explorer, Gatherer, Hunter, Butcher, ChickenHerder, Swineherd, Shepherd, Goatherd, Herdsman, Tanner, Beekeeper, Undertaker, MarketTrader, Minter, Researcher, CharcoalBurner, Stonemason, Baker, Fisher, Fletcher, Composter, Priest, Bailiff };
+    public static readonly string[] All = { "", Builder, Courier, Forester, Farmer, Guard, Potter, Cook, Prospector, Miner, Quarrier, Smelter, Blacksmith, Armourer, Weaponsmith, Sawyer, Craftsman, Tailor, Jeweller, Healer, Explorer, Gatherer, Hunter, Butcher, ChickenHerder, Swineherd, Shepherd, Goatherd, Herdsman, Tanner, Beekeeper, Undertaker, MarketTrader, TavernKeeper, Minter, Researcher, CharcoalBurner, Stonemason, Baker, Fisher, Fletcher, Composter, Priest, Bailiff };
 
     /// <summary>The job whose skill a settler's work trains and uses: a prospector on Mine ore works as a miner.</summary>
     public static string? WorkJob(CitizenRecord c) => c.JobCode == Prospector && c.WorkRole == ProspectorRoles.Mine ? Miner : c.JobCode;
@@ -76,5 +78,5 @@ public static class Jobs
     public static bool IsValid(string code) => System.Array.IndexOf(All, code) >= 0;
 
     /// <summary>Jobs that keep their own tools, weapons and supplies in their inventory, so couriers leave it alone.</summary>
-    public static bool CarriesOwnLoad(string? code) => code is Builder or Forester or Farmer or Guard or Potter or Cook or Prospector or Miner or Quarrier or Smelter or Blacksmith or Armourer or Weaponsmith or Sawyer or Craftsman or Tailor or Jeweller or Healer or Explorer or Gatherer or Hunter or Butcher or Minter or Priest or Researcher or ChickenHerder or Swineherd or Shepherd or Goatherd or Herdsman or Tanner or Beekeeper or Undertaker or MarketTrader or CharcoalBurner or Stonemason or Baker or Fisher or Fletcher or Composter;
+    public static bool CarriesOwnLoad(string? code) => code is Builder or Forester or Farmer or Guard or Potter or Cook or Prospector or Miner or Quarrier or Smelter or Blacksmith or Armourer or Weaponsmith or Sawyer or Craftsman or Tailor or Jeweller or Healer or Explorer or Gatherer or Hunter or Butcher or Minter or Priest or Researcher or ChickenHerder or Swineherd or Shepherd or Goatherd or Herdsman or Tanner or Beekeeper or Undertaker or MarketTrader or TavernKeeper or CharcoalBurner or Stonemason or Baker or Fisher or Fletcher or Composter;
 }

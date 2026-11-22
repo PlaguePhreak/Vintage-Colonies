@@ -1123,6 +1123,33 @@ public class ColonyConfig
     /// <summary>A settler with spare gears buys new clothes when a piece it wears is below this condition (0 to 1).</summary>
     public float MarketClothesBelow = 0.5f;
 
+    // The Tavern (ColonyManager.Tavern.cs, economy step 2)
+    /// <summary>Liquids that count as drinks at the Tavern, by code with wildcards.</summary>
+    public string[] TavernDrinks = { "game:ciderportion-*", "game:spiritportion-*", "*:meadportion*", "*:wineportion*", "*:aleportion*", "*:beerportion*" };
+    /// <summary>What one drink costs, and how many litres it is.</summary>
+    public int DrinkPrice = 1;
+    public float DrinkLitres = 0.25f;
+    /// <summary>Most drinks one settler has in an evening, the chance of another after each, and how many give a hangover.</summary>
+    public int DrinksMax = 3;
+    public double AnotherDrinkChance = 0.35;
+    public int HangoverDrinks = 3;
+    /// <summary>A settler with a hangover works this much slower (time multiplied).</summary>
+    public float HangoverWorkTime = 1.1f;
+    /// <summary>The Tavern is open from this hour until bedtime (SleepStartHour).</summary>
+    public float TavernOpenHour = 18f;
+    /// <summary>The chance a settler goes to the Tavern on an evening.</summary>
+    public double TavernVisitChance = 0.6;
+    /// <summary>How long a settler stays at the Tavern, in real seconds, at least and at most.</summary>
+    public float TavernStayMinSeconds = 40f;
+    public float TavernStayMaxSeconds = 100f;
+    /// <summary>Litres of drink the Tavern Keeper keeps at the Tavern.</summary>
+    public float TavernStockLitres = 10f;
+    /// <summary>Barrels, jugs and buckets this many blocks from the Tavern count as its stock; barrels this near the Cook's Hut are the Cook's brewing barrels.</summary>
+    public int TavernDrinkRadius = 8;
+    public int CookBrewRadius = 8;
+    /// <summary>Whether the Cook brews drinks in barrels near the Cook's Hut.</summary>
+    public bool CookBrews = true;
+
     // Research (ColonyManager.Research.cs; the nodes are in config/research.json)
     /// <summary>The Town Hall level needed to place an Archive.</summary>
     public int ArchiveTownHallLevel = 2;

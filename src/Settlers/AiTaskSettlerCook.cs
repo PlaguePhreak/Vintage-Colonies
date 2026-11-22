@@ -22,7 +22,7 @@ namespace CreateAColony.Settlers;
 /// </summary>
 public class AiTaskSettlerCook : AiTaskSettlerWorker
 {
-    enum Work { Load, LoadMeal, Fuel, Empty, Shelve, OvenLoad, OvenFuel, OvenEmpty, Wash }
+    enum Work { Load, LoadMeal, Fuel, Empty, Shelve, OvenLoad, OvenFuel, OvenEmpty, Wash, Brew }
 
     Work work;
     ColonyManager.KitchenKind? kind;
@@ -48,7 +48,12 @@ public class AiTaskSettlerCook : AiTaskSettlerWorker
     /// </summary>
     protected override bool AlsoKeeps(ItemStack stack) =>
         ColonyManager.IsFirewood(stack) || ColonyManager.IsCleanPot(stack) || meal?.Uses(stack) == true || bake?.Uses(stack) == true
-        || manager!.IsEmptyCrock(stack) || manager.IsRottenMeal(stack);
+        || manager!.IsEmptyCrock(stack) || manager.IsRottenMeal(stack)
+        // Juice or honey and what goes with it, for the brewing barrels (ColonyManager.Brewing.cs).
+        || brewing && (manager.HoldsBrewLiquid(stack) || manager.IsBrewSolid(stack));
+
+    /// <summary>Whether the cook is brewing now, so it keeps what it fetched for the barrels.</summary>
+    bool brewing;
 
     protected override string WorkAnimation(ItemSlot? hand) => "interactstatic";
 
@@ -184,6 +189,7 @@ public class AiTaskSettlerCook : AiTaskSettlerWorker
 
         if (CoolFood(colony, citizen, hut)) return true;
         if (PlanWash(colony, citizen, hut, storage)) return true;
+        if (PlanBrew(colony, citizen, hut)) return true;
         SetStatus(wantedFood.Count > 0 ? "needs-raw-food" : "kitchen-stocked");
         return false;
     }
@@ -387,6 +393,61 @@ public class AiTaskSettlerCook : AiTaskSettlerWorker
         return GoWork(pit.Pos);
     }
 
+    /// <summary>
+    /// Brewing for the Tavern (ColonyManager.Brewing.cs), when the kitchen has nothing else to do: juice or honey it
+    /// carries goes into a brew barrel, a solid the brew takes goes into its barrel, else it fetches them.
+    /// </summary>
+    bool PlanBrew(Colony colony, CitizenRecord citizen, Building hut)
+    {
+        var m = manager!;
+        brewing = false;
+        if (!m.CookBrews(colony)) return false;
+        var barrels = m.BrewBarrels(hut).Where(b => !IsUnreachable(b.Pos)).ToList();
+        if (barrels.Count == 0) return false;
+        var pack = m.PackItems(citizen);
+        brewing = true;
+
+        // Carrying juice or honey: into a barrel with it.
+        foreach (var jug in pack.Where(m.HoldsBrewLiquid))
+        {
+            if (m.BarrelForLiquid(barrels, ColonyManager.ContentOf(jug)!) is { } barrel)
+            {
+                work = Work.Brew;
+                SetStatus("brewing");
+                workRange = 2.5f;
+                return GoWork(barrel.Pos);
+            }
+        }
+        // A brew that needs its solid.
+        if (m.BarrelWantingSolid(barrels) is { } wants)
+        {
+            if (pack.Any(s => wants.Solid.SatisfiesAsIngredient(s, false)))
+            {
+                work = Work.Brew;
+                SetStatus("brewing");
+                workRange = 2.5f;
+                return GoWork(wants.Barrel.Pos);
+            }
+            if (!m.PackFull(citizen) && m.BrewSupplyChest(colony, hut, s => wants.Solid.SatisfiesAsIngredient(s, false), IsUnreachable) is { } solidChest)
+            {
+                SetStatus("brew-fetching");
+                return FetchSupplies(solidChest.Pos, s => wants.Solid.SatisfiesAsIngredient(s, false), System.Math.Max(1, wants.Solid.Quantity));
+            }
+        }
+        // Juice or honey for a barrel that has room.
+        if (!m.PackFull(citizen) && barrels.Any(b => b.CurrentRecipe == null && (b.Inventory[1].Empty || ColonyManager.BarrelLitres(b) < b.CapacityLitres - 0.5f)))
+        {
+            ItemMatch fits = s => m.HoldsBrewLiquid(s) && m.BarrelForLiquid(barrels, ColonyManager.ContentOf(s)!) != null;
+            if (m.BrewSupplyChest(colony, hut, fits, IsUnreachable) is { } chest)
+            {
+                SetStatus("brew-fetching");
+                return FetchSupplies(chest.Pos, fits, 4);
+            }
+        }
+        brewing = false;
+        return false;
+    }
+
     protected override void DoWork(Colony colony, CitizenRecord citizen, Building hut)
     {
         var m = manager!;
@@ -420,6 +481,11 @@ public class AiTaskSettlerCook : AiTaskSettlerWorker
         if (work == Work.Wash)
         {
             m.WashCarried(colony, citizen, entity.Pos.XYZ);
+            return;
+        }
+        if (work == Work.Brew)
+        {
+            if (entity.World.BlockAccessor.GetBlockEntity(target) is BlockEntityBarrel barrel && !m.TendBrew(colony, citizen, hut, barrel)) MarkUnreachable(target);
             return;
         }
         if (entity.World.BlockAccessor.GetBlockEntity(target) is not BlockEntityFirepit pit) return;

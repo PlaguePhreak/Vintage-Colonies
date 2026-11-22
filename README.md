@@ -46,6 +46,17 @@ Research goes from 12 pieces to 32 (design: "More Research", approved by Aaron 2
 | Standing Army | Defence | 4 | Drill Yards, Stone Walls | 3,000 points, 16 iron ingots, 2 tokens | Guards get 4 more health and hit 15% harder |
 | Atlas of the World | Exploration | 4 | Surveying, Expeditions | 3,000 points, 32 parchment, 2 tokens | Explorers go 50% further and walk 15% faster |
 
+## Economy step 2: the Tavern (0.184.0)
+Step 2 of the economy design doc (https://claude.ai/artifact/54wQA4dYCoNTKviikB23iN).
+- **Tavern Keeper**: a new job at the Tavern (1 keeper, skill Hospitality). It keeps about 10 litres of drink at the Tavern: jugs of drink from the warehouse first, else it fills empty jugs and buckets at a Cook's finished barrel. With no empty jugs it says so on the hut.
+- **The Cook brews**: while the colony has a Tavern, the Cook uses the game's own barrel recipes that make a drink (cider, mead and the like). It pours juice or honey from jugs and buckets in its hut or the warehouse into empty barrels within 8 blocks of the Cook's Hut, adds what else the recipe takes, and seals the barrel. Pressing fruit into juice stays your job. A Brewer job comes later.
+- **Evenings at the Tavern**: from 6 pm to bedtime, grown settlers with spare gears may go (6 in 10 evenings), sit down and buy a drink (1 gear, "Had a drink" +3), and maybe one or two more. Settlers with no gears can still go and chat (+1). Guards, the Bailiff and the keeper do not go. The gears go to the treasury.
+- **Hangovers**: 3 drinks in an evening gives a hangover the next morning (-2 mood, work 10% slower).
+- The Tavern's Main tab shows the drink in stock and the price.
+- Config: `TavernDrinks`, `DrinkPrice`, `DrinkLitres`, `DrinksMax`, `AnotherDrinkChance`, `HangoverDrinks`, `HangoverWorkTime`, `TavernOpenHour`, `TavernVisitChance`, `TavernStayMinSeconds`, `TavernStayMaxSeconds`, `TavernStockLitres`, `TavernDrinkRadius`, `CookBrewRadius`, `CookBrews`.
+- Not in this step: drunk fights and fines (step 4), a Brewer job, new quests.
+- Not tested in game.
+
 ## Economy step 1: the Market (0.182.0)
 Built from the economy design doc Aaron approved on 22 Nov 2026 (https://claude.ai/artifact/54wQA4dYCoNTKviikB23iN). This is step 1 of 4; the Tavern, homes and the Bailiff's dues come next.
 - **The economy starts at Town Hall level 2** (was 3): wages, taxes and spending all begin then. Old configs that still say 3 are moved to 2.

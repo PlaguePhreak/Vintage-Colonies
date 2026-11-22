@@ -93,6 +93,7 @@ Things marked *(tested)* have been tried in game. Everything else is built but s
 - Raids: from 8 grown settlers, every in-game week to month; outlaws (steal, start grass fires), wolf packs or drifters march on the Town Hall; warning in chat and on the Town Hall; On / Off / Only when I say and size on the Settings tab (0.183.0, not tested yet)
 - Graveyard and Undertaker: grave plots, the undertaker brings the dead home, buries them under a named grave marker and holds a small funeral; belongings go to the Graveyard's storage (0.179.0, not tested yet)
 - Economy step 1: the Market and Market Trader, settlers spend spare gears on meals and clothes, the economy starts at Town Hall level 2 with 60 starting gears (0.182.0, not tested yet)
+- Economy step 2: Tavern Keeper, the Cook brews drinks in barrels, evenings at the Tavern with drinks for 1 gear, hangovers (0.184.0, not tested yet)
 
 ## Partly done
 
@@ -116,7 +117,7 @@ Things marked *(tested)* have been tried in game. Everything else is built but s
 
 **Later**
 - **More bandit groups for raids**: Hill Raiders, River Reavers, Rust Brigands, Storm Cultists and Deserters, each with their own look and way of fighting (written up 22 Nov 2026)
-- **Economy** (design doc https://claude.ai/artifact/54wQA4dYCoNTKviikB23iN, approved 22 Nov 2026): step 1, the Market, came in 0.182.0. Still to do: step 2 the Tavern Keeper and drinks (the Cook makes drinks for now, brewing is its own job later), step 3 home comfort, furniture, rent and better houses, step 4 market day traders, fines and the Bailiff's money report. The Royal Mint, taxes and wages came in 0.136.0.
+- **Economy** (design doc https://claude.ai/artifact/54wQA4dYCoNTKviikB23iN, approved 22 Nov 2026): step 1, the Market, came in 0.182.0; step 2, the Tavern Keeper and drinks, in 0.184.0 (a Brewer job comes later). Still to do: step 3 home comfort, furniture, rent and better houses, step 4 market day traders, fines and the Bailiff's money report. The Royal Mint, taxes and wages came in 0.136.0.
 - More huts from MineColonies: Stonemason, Baker, Fisher, Plantation (reeds and cattails), Composter, Crusher and Sifter (quern and panning), Florist, Dyer, Fletcher and Mechanic (windmills and gears)
 - A Combat Academy and an archery range to train guards
 - **Stonemason carving**: a Stonemason adds chiseled detail to buildings by copying carvings you made yourself (builders place chiseled blocks from builds since 0.159.0)

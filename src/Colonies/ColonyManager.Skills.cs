@@ -223,6 +223,7 @@ public partial class ColonyManager
         if (c.JobCode == Jobs.Builder) speed *= ResearchMult(colony, "builderSpeed"); // Master Masons
         if (c.JobCode is Jobs.Quarrier or Jobs.Miner) speed *= ResearchMult(colony, "quarrySpeed"); // Stonecutting
         if (c.JobCode == Jobs.Healer) speed *= ResearchMult(colony, "healerSpeed"); // Burial Rites
+        if (HasHangover(c)) speed /= Math.Max(1f, Config.HangoverWorkTime); // too much at the Tavern last night
         return ClampEffect(1f / speed);
     }
 
