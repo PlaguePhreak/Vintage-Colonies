@@ -109,7 +109,7 @@ All the old quests are gone and the quest book starts again with nine new chapte
 - **Coming later.** Colony quests for buildings the mod does not have yet (Fisher, Bakery, School, Library, raids and so on) show locked with "Coming later". They never hold back the quests after them.
 - **Mod quests.** Quests for Expanded Foods, From Golden Combs and Food Shelves only show when that mod is installed.
 - A quest can now open when any one of the quests before it is done (`requiresAny`), and quest positions can be fractions.
-- No rewards yet. Bronze Age, Iron and Steel, Mechanical Power, Kilns and Glass and the Tutorial are not written yet.
+- No rewards yet. Bronze Age, Iron and Steel, Mechanical Power and Kilns and Glass are not written yet.
 - New quest file fields: `mod` (mod id the quest needs), `soon`, `requiresAny`, and the task type `manual`.
 ## Apiary and the Beekeeper (0.174.0)
 
@@ -1090,6 +1090,7 @@ Smithing skill grows with both jobs.
   the first remaining type (Medium).
 
 ### Survival Handbook pages (0.59.0)
+- Removed in 0.180.1 at Aaron's request: the mod no longer adds guide pages to the handbook.
 - Seven guide pages in the game's Survival Handbook (Guides), titled "Vintage Colonies: 1 - Getting Started" to
   "7 - Tips and Commands": getting started, settlers, building with the wand, the huts, storage and couriers,
   guards, and tips. Files `config/handbook/vintagecolonies-*.json`, text `handbook-vc-*` in the lang file.

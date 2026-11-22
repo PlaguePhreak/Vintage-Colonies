@@ -3046,7 +3046,7 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:fruittreecutting-*"
+              "code": "game:fruittree-cutting|fruittreecutting-*"
             }
           ],
           "rewards": [
@@ -4942,7 +4942,7 @@
           "objectives": [
             {
               "type": "entitynear",
-              "code": "chicken-baby*"
+              "code": "chicken-baby*|chicken-chick*|chicken-*poult"
             }
           ],
           "rewards": [
@@ -5229,7 +5229,7 @@
           "objectives": [
             {
               "type": "entitynear",
-              "code": "*elk*tame*"
+              "code": "tameddeer-*|*elk*tame*"
             }
           ],
           "rewards": [
@@ -5247,7 +5247,7 @@
           "objectives": [
             {
               "type": "entitynear",
-              "code": "*elk*tame*"
+              "code": "tameddeer-*|*elk*tame*"
             }
           ],
           "rewards": [
