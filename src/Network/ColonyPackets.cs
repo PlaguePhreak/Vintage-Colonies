@@ -344,6 +344,8 @@ public class ResearchView
     [ProtoMember(8)] public int PointsNeeded;
     /// <summary>Running at another Archive of the colony.</summary>
     [ProtoMember(9)] public bool Elsewhere;
+    /// <summary>The research that must be done first, for the lines of the research tree.</summary>
+    [ProtoMember(10)] public List<string> Needs = new();
 }
 
 /// <summary>Everything a hut window shows.</summary>

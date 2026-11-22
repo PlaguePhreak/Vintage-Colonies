@@ -99,6 +99,7 @@ Things marked *(tested)* have been tried in game. Everything else is built but s
 - Five new huts: Stonemason (stone bricks and other stone pieces), Bakery (grinds flour, mixes dough, bakes bread), Fisher (the game's own fish, bait and fished-out spots), Fletcher (arrows and bows, also for the guard towers) and Composter (compost soil and bone meal for the farms). They use placeholder models until Aaron designs their buildings (0.185.0, not tested yet)
 - Town Hall: auto hiring and auto housing switches, custom ranks with tick boxes and a permission log, and enter and leave messages with your own text (0.185.0, not tested yet)
 - Settler requests: a Requests chapter in the quest book where settlers post small jobs (deliver, craft, hunt, build, welcome); up to 3 open, a new one every 2 days picked from what the colony is short of, 2 to 6 rusty gears each, gone after 5 days, and the settler who asked is happier when it is done (0.188.0, not tested yet)
+- Research tree: a Research tree button on the Archive opens the research as a full-screen map like the quest book (tiers left to right, a row per branch, lines between them), with Start, Pause and Resume; the quest book's Research chapter uses the same layout and now has a quest for all 32 pieces (0.189.0, not tested yet)
 
 ## Partly done
 

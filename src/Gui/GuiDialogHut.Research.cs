@@ -16,10 +16,22 @@ public partial class GuiDialogHut
     static readonly string[] ResearchBranches = { "settlement", "production", "population", "defence", "exploration" };
     string researchBranch = "settlement";
 
+    GuiDialogResearchTree? researchTree;
+
+    bool OpenResearchTree()
+    {
+        researchTree?.TryClose();
+        researchTree = new GuiDialogResearchTree(capi, () => snapshot, () => Officer, (action, code) => SendText(action, BuildingId, code));
+        researchTree.TryOpen();
+        return true;
+    }
+
     void ComposeResearch(GuiComposer composer)
     {
         double y = 30;
         int id = BuildingId;
+        composer.AddSmallButton(Lang.Get("createacolony:researchtree-open"), OpenResearchTree, ElementBounds.Fixed(0, y, 200, 28));
+        y += 36;
         y = composer.Row(Lang.Get("createacolony:research-tier"), snapshot.ArchiveTier.ToString(), 0, y, Width);
         y = composer.Row(Lang.Get("createacolony:research-slots"), Lang.Get("createacolony:research-slots-value", snapshot.ResearchRunning, snapshot.ResearchSlots), 0, y, Width);
         y = composer.Row(Lang.Get("createacolony:research-speed"), snapshot.ResearchSpeed + "%", 0, y, Width);
