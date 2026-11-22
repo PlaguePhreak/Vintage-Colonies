@@ -567,14 +567,50 @@ public class GuiDialogQuestBook : GuiDialog
         return first.Replace("*", " ").Replace("-", " ").Trim();
     }
 
-    /// <summary>A readable name for an item code or wildcard, from the first matching item.</summary>
+    static readonly Dictionary<string, string> itemNames = new();
+
+    /// <summary>
+    /// A readable name for an item code or wildcard. A pattern that fits several things (boards of any wood,
+    /// a knife of any metal) is named by the words all of them share, as "any boards", so the card does not
+    /// name one variant when every variant counts.
+    /// </summary>
     static string ItemName(ICoreClientAPI capi, string code)
     {
-        var stack = QuestItems.Sample(capi.World, code);
-        if (stack != null) return stack.GetName();
-        // Fall back to the code's last part, with the wildcards taken out.
-        string tail = code.Contains(':') ? code[(code.IndexOf(':') + 1)..] : code;
-        return tail.Replace("*", "").Replace("-", " ").Trim();
+        if (itemNames.TryGetValue(code, out var cached)) return cached;
+        var names = new List<string>();
+        foreach (string part in code.Split('|'))
+        {
+            if (part.Length == 0) continue;
+            var loc = new AssetLocation(part.Contains(':') ? part : "game:" + part);
+            if (!part.Contains('*'))
+            {
+                if (capi.World.GetItem(loc) is { } item) names.Add(new ItemStack(item).GetName());
+                else if (capi.World.GetBlock(loc) is { } block) names.Add(new ItemStack(block).GetName());
+                continue;
+            }
+            foreach (var item in capi.World.SearchItems(loc).Take(80)) names.Add(new ItemStack(item).GetName());
+            foreach (var block in capi.World.SearchBlocks(loc).Take(80)) names.Add(new ItemStack(block).GetName());
+        }
+        names = names.Where(n => !string.IsNullOrWhiteSpace(n)).Distinct().ToList();
+        string result;
+        if (names.Count == 0)
+        {
+            // Fall back to the code's last part, with the wildcards taken out.
+            string tail = code.Contains(':') ? code[(code.IndexOf(':') + 1)..] : code;
+            result = tail.Replace("*", "").Replace("-", " ").Trim();
+        }
+        else if (names.Count == 1) result = names[0];
+        else
+        {
+            static string[] Words(string n) => n.Split(new[] { ' ', '(', ')', ',' }, StringSplitOptions.RemoveEmptyEntries);
+            var shared = new HashSet<string>(Words(names[0]).Select(w => w.ToLowerInvariant()));
+            foreach (string n in names.Skip(1)) shared.IntersectWith(Words(n).Select(w => w.ToLowerInvariant()));
+            var common = Words(names[0]).Where(w => shared.Contains(w.ToLowerInvariant())).Select(w => w.ToLowerInvariant()).Distinct().ToList();
+            result = common.Count > 0
+                ? Lang.Get("createacolony:questbook-any", string.Join(" ", common))
+                : Lang.Get("createacolony:questbook-or-similar", names[0]);
+        }
+        return itemNames[code] = result;
     }
 
     Dictionary<string, ItemStack?> IconsFor(List<QuestDef> quests)
