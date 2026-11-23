@@ -76,6 +76,7 @@ public partial class ColonyManager : ModSystem
         api.Event.RegisterGameTickListener(OnFarWorkTick, FarWorkTickMs);
         api.Event.RegisterGameTickListener(_ => SaveDirty(), DirtySaveMs, DirtySaveMs);
         StartRaids();
+        StartTestSafety();
         StartDoors();
         StartFires();
         StartEnterMessages();

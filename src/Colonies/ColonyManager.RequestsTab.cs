@@ -99,4 +99,31 @@ public partial class ColonyManager
             .Select(b => (B: b, Box: BuildingBox(b))).FirstOrDefault(z => InBox(pos, z.Box.Min, z.Box.Max)).B;
         return inside != null ? BuildingName(inside) : Lang.Get("createacolony:place-somewhere");
     }
+
+    /// <summary>
+    /// Creative mode (0.197.0): puts up to want of what the request asks for into the chests from nothing, as the
+    /// Requests tab's give buttons do with carried items in survival. Returns how many went in.
+    /// </summary>
+    public int CreativeFill(Colony colony, DeliveryRequest request, List<BlockEntityContainer> dest, int want)
+    {
+        var match = Matcher(request.ItemCode);
+        var sample = RequestSample(request.ItemCode, WarehouseContainers(colony).ToList(), match);
+        if (sample == null || !match(sample)) return 0;
+        int given = 0;
+        int max = System.Math.Max(1, sample.Collectible.MaxStackSize);
+        while (given < want)
+        {
+            var part = sample.Clone();
+            part.StackSize = System.Math.Min(max, want - given);
+            int before = part.StackSize;
+            foreach (var chest in dest)
+            {
+                if (part.StackSize <= 0) break;
+                PutItems(chest, part);
+            }
+            given += before - part.StackSize;
+            if (part.StackSize > 0) break; // the chests are full
+        }
+        return given;
+    }
 }

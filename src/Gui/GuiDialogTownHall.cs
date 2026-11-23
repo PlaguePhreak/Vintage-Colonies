@@ -165,6 +165,8 @@ public class GuiDialogTownHall : GuiDialog
         SingleComposer.GetSwitch("autohousing")?.SetValue(snapshot.AutoHousing);
         SingleComposer.GetSwitch("entermessages")?.SetValue(snapshot.EnterMessages);
         SingleComposer.GetSwitch("telloutsiders")?.SetValue(snapshot.TellOutsiders);
+        SingleComposer.GetSwitch("settlersunhurt")?.SetValue(snapshot.SettlersUnhurt);
+        SingleComposer.GetSwitch("noenemies")?.SetValue(snapshot.NoEnemies);
         SingleComposer.GetTextInput("text-enter")?.SetValue(pendingEnter);
         SingleComposer.GetTextInput("text-leave")?.SetValue(pendingLeave);
         SingleComposer.GetTextInput("rankname")?.SetValue(pendingRankName);
@@ -1340,6 +1342,10 @@ public class GuiDialogTownHall : GuiDialog
             on => SendText(ColonyAction.SetEnterMessages, "on|" + (on ? "1" : "0")), y);
         y = TownSwitch(composer, "telloutsiders", "createacolony:telloutsiders", "createacolony:telloutsiders-hint", snapshot.TellOutsiders,
             on => SendText(ColonyAction.SetEnterMessages, "outsiders|" + (on ? "1" : "0")), y);
+        y = TownSwitch(composer, "settlersunhurt", "createacolony:settlersunhurt", "createacolony:settlersunhurt-hint", snapshot.SettlersUnhurt,
+            on => SendText(ColonyAction.SetTestSafety, "unhurt|" + (on ? "1" : "0")), y);
+        y = TownSwitch(composer, "noenemies", "createacolony:noenemies", "createacolony:noenemies-hint", snapshot.NoEnemies,
+            on => SendText(ColonyAction.SetTestSafety, "enemies|" + (on ? "1" : "0")), y);
 
         y = composer.Section(Lang.Get("createacolony:enter-texts"), y, Width);
         if (!Officer)
