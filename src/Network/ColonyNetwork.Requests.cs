@@ -44,11 +44,14 @@ public partial class ColonyNetwork
                 Color = row.Color,
                 For = forText,
                 RequestId = r.RequestId,
-                PlayerHas = viewer == null ? 0 : CarriedCount(viewer, r.ItemCode),
+                // In creative mode the player can give everything a request needs (0.197.0).
+                PlayerHas = viewer == null ? 0 : Creative(viewer) && row.Sample != null ? NeededFor(r) : CarriedCount(viewer, r.ItemCode),
                 Needed = NeededFor(r)
             });
         }
     }
+
+    static bool Creative(IPlayer player) => player.WorldData?.CurrentGameMode == EnumGameMode.Creative;
 
     /// <summary>How many a player gives for a request: what the hut still needs, without the spare.</summary>
     static int NeededFor(DeliveryRequest r) => Math.Max(1, r.Remaining - r.Extra);
@@ -73,7 +76,9 @@ public partial class ColonyNetwork
                 ? new List<BlockEntityContainer> { chest }
                 : Manager.HutStorage(colony, hut).Cast<BlockEntityContainer>().ToList();
             if (dest.Count == 0) continue;
-            int moved = Give(player, dest, request.ItemCode, Math.Min(NeededFor(request), 999));
+            int want = Math.Min(NeededFor(request), 999);
+            // Creative mode (0.197.0): the request is filled from nothing.
+            int moved = Creative(player) ? Manager.CreativeFill(colony, request, dest, want) : Give(player, dest, request.ItemCode, want);
             if (moved <= 0) continue;
             Manager.RecordDelivery(colony, request, moved);
             given += moved;
