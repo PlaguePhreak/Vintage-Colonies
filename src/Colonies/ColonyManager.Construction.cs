@@ -513,7 +513,7 @@ public partial class ColonyManager
             blockId = joined.Id;
         }
         // Furniture and banner poles go down from their item, which gives them their wood and puts down their other parts.
-        if (fromItem != null) ba.SetBlock(blockId, pos, fromItem);
+        if (fromItem != null) ba.SetBlock(blockId, pos, WithLanternParts(fromItem));
         else ba.SetBlock(blockId, pos);
         ba.TriggerNeighbourBlockUpdate(pos);
         if (block.Sounds?.Place != null) sapi.World.PlaySoundAt(block.Sounds.Place, pos, 0);
