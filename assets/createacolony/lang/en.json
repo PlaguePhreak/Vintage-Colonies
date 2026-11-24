@@ -860,6 +860,7 @@
 	"event-died": "{0} died",
 	"event-downed": "{0} was knocked out",
 	"event-recovered": "{0} recovered and is back at the Town Hall",
+	"event-lost-home": "{0} got lost far from home and was brought back to bed",
 	"event-fire": "Fire near {0}! Settlers are putting it out.",
 	"event-fire-nocan": "A fire is burning and nobody has a watering can. Make one from clay and fire it in a kiln.",
 	"event-fled": "{0} was attacked by {1} and ran for safety",

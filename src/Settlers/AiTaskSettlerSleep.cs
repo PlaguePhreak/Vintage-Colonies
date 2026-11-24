@@ -51,6 +51,12 @@ public class AiTaskSettlerSleep : SettlerTaskBase
         if (!lyingDown && (Arrived || PathFailed))
         {
             StopWalking();
+            // No way home at bedtime: brought home to bed and reset, so a lost settler is back by morning (0.198.0).
+            if (bedPos != null && !Arrived && !NearBed(bedPos) && entity is EntitySettler lost && Citizen is { } who
+                && entity.Pos.XYZ.DistanceTo(bedPos.ToVec3d()) > manager!.Config.LostOffLimitsRadius)
+            {
+                manager.BringHome(Colony!, who, lost, stopTasks: false);
+            }
             if (bedPos != null && (Arrived || NearBed(bedPos)))
             {
                 // Lie along the bed as a player does (on its own half of a furniture double bed).

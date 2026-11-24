@@ -48,6 +48,12 @@ public class ColonyConfig
     // Respawn
     /// <summary>A settler not seen for this long while the Town Hall area is loaded is treated as lost and respawned.</summary>
     public double RespawnMissingAfterDays = 0.5;
+    /// <summary>Game days a settler may stay "unreachable" before being brought home to bed (0.198.0).</summary>
+    public double LostRescueDays = 1.0;
+    /// <summary>Blocks around where a settler got lost that they keep away from afterwards.</summary>
+    public double LostOffLimitsRadius = 24;
+    /// <summary>Game days a brought-home settler keeps away from where they got lost.</summary>
+    public double LostOffLimitsDays = 3;
 
     // Construction
     /// <summary>When false, builders conjure blocks without materials. Handy for creative testing.</summary>

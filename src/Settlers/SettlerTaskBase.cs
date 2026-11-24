@@ -106,6 +106,16 @@ public abstract class SettlerTaskBase : AiTaskBase
         finalRange = range;
         refreshGoal = refresh;
         arrived = false;
+        // Back where this settler got lost before (0.198.0): no walk there, it counts as no path.
+        if (manager != null && Citizen is { } lost && manager.IsOffLimits(lost, target))
+        {
+            failed = true;
+            onLeg = false;
+            attempts = MaxPathAttempts;
+            legDone = false;
+            pathTraverser.Stop();
+            return;
+        }
         legTry = 0;
         EndLadder();
         triedLadders.Clear();

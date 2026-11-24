@@ -331,6 +331,7 @@ public partial class ColonyManager : ModSystem
             TickRequests(colony, now);
             EnsureMinStock(colony);
             TickUpkeep(colony);
+            TickLostSettlers(colony, now);
 
             foreach (var citizen in colony.Citizens.ToList())
             {
