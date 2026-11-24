@@ -746,6 +746,7 @@ public partial class ColonyManager
     /// </summary>
     BlockPos? SpotBeside(Colony colony, Building hut, int half)
     {
+        var excluded = badShaftSpots.GetValueOrDefault(hut.BuildingId);
         var ba = sapi.World.BlockAccessor;
         // The hut at its highest level, so what is dug stays clear of it when it is upgraded.
         var hutBox = Footprint(hut);
@@ -757,6 +758,7 @@ public partial class ColonyManager
         }.OrderByDescending(c => (double)(c.X - colony.TownHallPos.X) * (c.X - colony.TownHallPos.X) + (double)(c.Z - colony.TownHallPos.Z) * (c.Z - colony.TownHallPos.Z));
         foreach (var (cx, cz) in sides)
         {
+            if (excluded != null && excluded.Contains((cx, cz))) continue;
             bool ok = true;
             var pos = new BlockPos(0);
             for (int x = cx - half; x <= cx + half && ok; x++)
@@ -774,6 +776,42 @@ public partial class ColonyManager
             return new BlockPos(cx, ba.GetTerrainMapheightAt(pos) + 1, cz);
         }
         return null;
+    }
+
+    // ---- A shaft that stays blocked (0.198.0) ----------------------------------------------
+    // Aaron's miner said "mine shaft blocked" for 19 game days and never dug. The block in the way is now kept for the
+    // status and the /colony report, and a shaft spot the miner chose himself is moved to another side of the hut
+    // once it has been blocked for a while. A spot from the blueprint's Mine waypoint stays where it is.
+
+    /// <summary>What blocks each Miner's Hut's shaft (by building id): where, which block, and since when (game hours).</summary>
+    public readonly Dictionary<int, (BlockPos Pos, string Block, double SinceHours)> ShaftBlockedAt = new();
+    /// <summary>Shaft spots (x, z) given up per Miner's Hut, so the next one is on another side.</summary>
+    readonly Dictionary<int, HashSet<(int X, int Z)>> badShaftSpots = new();
+
+    void ShaftBlocked(Colony colony, Building hut, BlockPos centre, BlockPos dig, bool marked)
+    {
+        double hours = sapi.World.Calendar.TotalHours;
+        string code = sapi.World.BlockAccessor.GetBlock(dig).Code?.ToString() ?? "?";
+        if (!ShaftBlockedAt.TryGetValue(hut.BuildingId, out var was) || !was.Pos.Equals(dig))
+        {
+            ShaftBlockedAt[hut.BuildingId] = (dig.Copy(), code, hours);
+            return;
+        }
+        if (marked || hours - was.SinceHours < Config.MinerShaftMoveHours) return;
+        if (!badShaftSpots.TryGetValue(hut.BuildingId, out var bad)) badShaftSpots[hut.BuildingId] = bad = new();
+        bad.Add((centre.X, centre.Z));
+        var old = hut.ShaftPos;
+        hut.ShaftPos = SpotBeside(colony, hut, 1);
+        if (hut.ShaftPos == null)
+        {
+            // No other side will do: keep the old spot and wait for the way to be cleared.
+            hut.ShaftPos = old;
+            ShaftBlockedAt[hut.BuildingId] = (dig.Copy(), code, hours);
+            return;
+        }
+        ShaftBlockedAt.Remove(hut.BuildingId);
+        Mod.Logger.Notification("[createacolony] Miner's shaft at {0} was blocked by {1} at {2}; moved to {3}", old, code, dig, hut.ShaftPos);
+        MarkDirty(colony);
     }
 
     /// <summary>
@@ -838,12 +876,14 @@ public partial class ColonyManager
                     if (spot.Tunnel < 0)
                     {
                         status = "mine-shaft-blocked";
+                        ShaftBlocked(colony, hut, centre, dig, marked);
                         return null;
                     }
                     stoppedTunnel = spot.Tunnel;
                     break;
                 }
                 status = spot.Tunnel >= 0 ? "mine-shaft-tunnel" : "mine-shaft";
+                ShaftBlockedAt.Remove(hut.BuildingId);
                 return new MineJob(MineWork.Dig, dig, spot.Stand.Copy(), IsOre(ba.GetBlock(dig)));
             }
         }

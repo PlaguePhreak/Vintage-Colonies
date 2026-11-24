@@ -229,6 +229,7 @@ public class ColonyReportSystem : ModSystem
                 sb.AppendLine($"- {b.Type} level {b.Level} at {b.HutPos.ToLocalPosition(api)} (id {b.BuildingId})");
                 if (b.HasWorkOrder || b.Removing) sb.AppendLine("    Build: " + manager.BuildStatus.GetValueOrDefault(b.BuildingId, "queued"));
                 if (manager.StuckStep.TryGetValue(b.BuildingId, out var stuckAt)) sb.AppendLine($"    Build stuck at {stuckAt.ToLocalPosition(api)}: {api.World.BlockAccessor.GetBlock(stuckAt).Code}");
+                if (manager.ShaftBlockedAt.TryGetValue(b.BuildingId, out var shaft)) sb.AppendLine($"    Shaft blocked at {shaft.Pos.ToLocalPosition(api)} by {shaft.Block}");
                 DumpFields(sb, b, "    ");
             }
         });
