@@ -68,6 +68,12 @@ public partial class ColonyManager
         return WorkerSlots(hut) - WorkersAt(colony, hut).Count - away;
     }
 
+    /// <summary>
+    /// True when a hut can have workers now: built, or (0.198.0, Config.WorkAtUnbuiltHuts) just its hut block placed,
+    /// so workers start before the builder gets to it. A hut being taken down never.
+    /// </summary>
+    public bool Staffable(Building hut) => !hut.Removing && (hut.Level >= 1 || Config.WorkAtUnbuiltHuts);
+
     /// <summary>The colony's bailiff, or null.</summary>
     public CitizenRecord? BailiffOf(Colony colony) =>
         colony.Citizens.Find(c => c.Alive && !c.Visitor && !c.IsChild && c.JobCode == Jobs.Bailiff);
@@ -153,7 +159,10 @@ public partial class ColonyManager
     {
         var free = Jobless(colony).ToList();
         if (free.Count == 0) return;
-        var huts = colony.Buildings.Where(b => b.Level >= 1 && !b.Removing && JobOf(b.Type) != null).OrderBy(b => b.BuildingId).ToList();
+        // Every hut that takes workers, built or not (0.198.0, Aaron: work from the hut block). Guard posts come last,
+        // so a free place at any other hut is filled first; built huts before unbuilt ones.
+        var huts = colony.Buildings.Where(b => Staffable(b) && JobOf(b.Type) != null)
+            .OrderBy(b => IsGuardPost(b.Type)).ThenBy(b => b.Level < 1).ThenBy(b => b.BuildingId).ToList();
         foreach (var job in huts.Select(b => JobOf(b.Type)!).Distinct().ToList())
         {
             if (free.Count == 0) break;
@@ -210,7 +219,7 @@ public partial class ColonyManager
     void Lend(Colony colony, CitizenRecord bailiff, CitizenRecord c, Building home, string status, double now)
     {
         var target = colony.Buildings
-            .Where(b => b.Level >= 1 && !b.Removing && JobOf(b.Type) is { } job && job != c.JobCode && !KeepsPost(job)
+            .Where(b => Staffable(b) && JobOf(b.Type) is { } job && job != c.JobCode && !KeepsPost(job)
                 && IncapableOfJob(c, job) == null && FreePlaces(colony, b) > 0)
             .OrderByDescending(b => JobScore(c, JobOf(b.Type)!)).ThenBy(b => b.BuildingId).FirstOrDefault();
         c.HomeJob = c.JobCode;
