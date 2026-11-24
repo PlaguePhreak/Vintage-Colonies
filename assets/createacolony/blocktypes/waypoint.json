@@ -1,14 +1,17 @@
 {
 	"code": "waypoint",
-	"variantgroups": [ { "code": "type", "states": ["mine", "quarry"] } ],
+	"variantgroups": [ { "code": "type", "states": ["mine", "quarry", "front"] } ],
 	"creativeinventory": { "general": ["*"], "vintagecolonies": ["*"] },
 	"blockmaterial": "Wood",
 	"drawtype": "cube",
 	// Put in a Miner's Hut or Quarry blueprint to mark where the mine shaft or the quarry pit goes. Builders
 	// leave it out (the spot is cleared), and the miner or quarrier digs there. Placeholder cube look.
+	// "front" (0.199.0, "Front of build"): put it on the ground just outside the front door of any build. It tells
+	// the mod which side is the front, so the Mayor and the wand turn the building's front the right way.
 	"texturesByType": {
 		"*-mine": { "all": { "base": "game:block/wood/debarked/aged" }, "up": { "base": "game:block/cloth/linen/black" } },
-		"*-quarry": { "all": { "base": "game:block/wood/debarked/aged" }, "up": { "base": "game:block/cloth/linen/red" } }
+		"*-quarry": { "all": { "base": "game:block/wood/debarked/aged" }, "up": { "base": "game:block/cloth/linen/red" } },
+		"*-front": { "all": { "base": "game:block/wood/debarked/aged" }, "up": { "base": "game:block/cloth/linen/white" } }
 	},
 	"resistance": 1,
 	"sounds": { "place": "game:block/planks", "break": "game:block/planks", "hit": "game:block/planks" }

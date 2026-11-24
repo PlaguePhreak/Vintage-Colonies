@@ -20,7 +20,9 @@ public partial class ColonyManager
 
     void TickAutoTown(Colony colony, double now)
     {
-        if (colony.AutoHiring)
+        // While a Mayor is on duty, hiring and housing run whatever the switches say (ColonyManager.Mayor.cs).
+        bool mayor = MayorOnDuty(colony) != null;
+        if (colony.AutoHiring || mayor)
         {
             int day = (int)now;
             double hour = (now - day) * 24;
@@ -31,7 +33,7 @@ public partial class ColonyManager
                 MarkDirty(colony);
             }
         }
-        if (colony.AutoHousing)
+        if (colony.AutoHousing || mayor)
         {
             double hours = now * sapi.World.Calendar.HoursPerDay;
             if (!lastAutoHousing.TryGetValue(colony.ColonyId, out double last) || hours - last >= Config.AutoHousingEveryHours)
@@ -51,7 +53,7 @@ public partial class ColonyManager
         var free = Jobless(colony).ToList();
         if (free.Count == 0) return 0;
         var huts = colony.Buildings
-            .Where(b => b.Level >= 1 && !b.Removing && b.TakesAutoHires && !b.IsStation && JobOf(b.Type) is { } job && job != Jobs.Priest && job != Jobs.Bailiff)
+            .Where(b => b.Level >= 1 && !b.Removing && b.TakesAutoHires && !b.IsStation && JobOf(b.Type) is { } job && job != Jobs.Priest && job != Jobs.Bailiff && job != Jobs.Mayor)
             .OrderByDescending(b => IsFoodHut(b.Type))
             .ThenBy(b => WorkersAt(colony, b).Count > 0)
             .ThenBy(b => b.BuildingId)

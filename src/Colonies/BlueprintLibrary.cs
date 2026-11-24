@@ -307,7 +307,8 @@ public class BlueprintLibrary
             if (blocks.TryGetValue(at, out var withData) && KeepsDetails(withData)) saved[at] = new SavedBlockEntity { Data = data, Source = schematic };
         }
 
-        int? front = rotation == 0 ? EntranceSide(schematic, blocks) : null;
+        // The front: the side a "Front of build" marker is on (0.199.0), else the first door's side.
+        int? front = rotation == 0 ? MarkedFront(schematic, blocks) ?? EntranceSide(schematic, blocks) : null;
 
         // The lowest and highest block of each column, and the lowest built one (not natural ground). Empty space
         // below the hut's floor is dug out when it is a cellar (blocks under and over it), or when part of the
@@ -818,6 +819,25 @@ public class BlueprintLibrary
             var (x, _, z) = at;
             if (facing.Axis == EnumAxis.X) return x <= schematic.SizeX - 1 - x ? BlockFacing.WEST.HorizontalAngleIndex : BlockFacing.EAST.HorizontalAngleIndex;
             return z <= schematic.SizeZ - 1 - z ? BlockFacing.NORTH.HorizontalAngleIndex : BlockFacing.SOUTH.HorizontalAngleIndex;
+        }
+        return null;
+    }
+
+    /// <summary>
+    /// The side of the build a "Front of build" marker (waypoint-front) is nearest to, as BlockFacing's
+    /// HorizontalAngleIndex; null when the build has none.
+    /// </summary>
+    static int? MarkedFront(BlockSchematic schematic, Dictionary<(int, int, int), Block> blocks)
+    {
+        foreach (var ((x, _, z), block) in blocks)
+        {
+            if (!IsWaypoint(block) || block.Variant["type"] != "front") continue;
+            int west = x, east = schematic.SizeX - 1 - x, north = z, south = schematic.SizeZ - 1 - z;
+            int least = Math.Min(Math.Min(west, east), Math.Min(north, south));
+            if (least == south) return BlockFacing.SOUTH.HorizontalAngleIndex;
+            if (least == north) return BlockFacing.NORTH.HorizontalAngleIndex;
+            if (least == east) return BlockFacing.EAST.HorizontalAngleIndex;
+            return BlockFacing.WEST.HorizontalAngleIndex;
         }
         return null;
     }

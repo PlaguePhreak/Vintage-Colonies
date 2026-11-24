@@ -207,6 +207,7 @@ public partial class ColonyNetwork : ModSystem
             ColonyAction.SetCollect or >= ColonyAction.RenameBuilding and <= ColonyAction.SetMinStock => HutAction(player, colony, role, packet),
             ColonyAction.SetAutoHiring or ColonyAction.SetAutoHousing or ColonyAction.SetEnterMessages or ColonyAction.SetWinterPrep => AutoTownAction(colony, role, packet),
             ColonyAction.SetTestSafety => role < ColonyRole.Officer ? "createacolony:denied-officer" : Manager.SetTestSafety(colony, packet.Text),
+            ColonyAction.MayorAction => MayorAction(player, colony, role, packet.Text),
             ColonyAction.SetHutAutoFlag => HutAutoFlag(colony, role, packet),
             ColonyAction.RankChange => role < ColonyRole.Owner ? "createacolony:denied-owner" : Manager.RankChange(colony, packet.Text),
             _ => null
@@ -469,6 +470,7 @@ public partial class ColonyNetwork : ModSystem
         if (citizen.IsChild && job.Length > 0) return "createacolony:child-no-job";
         if (job.Length > 0 && Manager.IncapableOfJob(citizen, job) != null) return "createacolony:job-incapable";
         if (job == Jobs.Bailiff && Manager.BailiffOf(colony) is { } other && other != citizen) return "createacolony:bailiff-taken";
+        if (job == Jobs.Mayor && Manager.MayorOf(colony) is { } mayor && mayor != citizen) return "createacolony:mayor-taken";
         if (citizen.JobCode != (job.Length == 0 ? null : job)) citizen.WorkplacePos = null;
         citizen.JobCode = job.Length == 0 ? null : job;
         ColonyManager.EndLoan(citizen);
@@ -950,6 +952,7 @@ public partial class ColonyNetwork : ModSystem
             Quests = sapi!.World.PlayerByUid(viewerUid) is IServerPlayer viewer ? QuestStates(viewer, colony) : new()
         };
 
+        FillMayor(snapshot, colony);
         var bailiff = Manager.BailiffOf(colony);
         snapshot.BailiffName = bailiff?.Name ?? "";
         snapshot.BailiffState = bailiff == null ? BailiffState.None : bailiff.IsDowned ? BailiffState.Downed

@@ -313,6 +313,7 @@ public partial class ColonyManager : ModSystem
             TickWanderers(colony, now);
             TickBailiff(colony, now);
             TickAutoTown(colony, now);
+            TickMayor(colony, now);
             TickMoney(colony);
             TickTraders(colony);
             TickWaitingForRoom(colony);

@@ -941,14 +941,18 @@ public class ColonyConfig
         ["mint"] = new[] { "coin" },
         // 0.185.0: anything made of stone alone (config HutRecipeInputParts), and arrows and bows.
         ["stonemason"] = new[] { "*" },
-        ["fletcher"] = new[] { "arrow", "bow" }
+        ["fletcher"] = new[] { "arrow", "bow" },
+        // Hut blocks, for the Mayor's requests (0.199.0).
+        ["sawmill"] = new[] { "hut" }
     };
     /// <summary>The mods whose things a hut may make, by hut type; "game" alone where a hut is not listed.</summary>
     public System.Collections.Generic.Dictionary<string, string[]> HutRecipeDomains = new()
     {
         ["tailor"] = new[] { "game", "tailorsdelight" },
         ["jeweller"] = new[] { "game", "canjewelry", "canjewelryadornments" },
-        ["mint"] = new[] { "createacolony" }
+        ["mint"] = new[] { "createacolony" },
+        // The Sawmill makes hut blocks for the Mayor (0.199.0).
+        ["sawmill"] = new[] { "createacolony" }
     };
     /// <summary>
     /// Recipes only a player class can make that a hut's worker may make too, by hut type: the Tailor counts as
@@ -1111,7 +1115,8 @@ public class ColonyConfig
         ["minter"] = 3,
         ["researcher"] = 4,
         ["priest"] = 3,
-        ["bailiff"] = 5
+        ["bailiff"] = 5,
+        ["mayor"] = 5
     };
 
     /// <summary>The coin wages before 0.177.0, so a config that never changed them gets the new ones.</summary>
@@ -1714,6 +1719,63 @@ public class ColonyConfig
     public int MaxRanks = 6;
     /// <summary>How many lines the permission log keeps.</summary>
     public int PermissionLogSize = 50;
+
+    // ---- The Mayor (0.199.0, see Colonies/ColonyManager.Mayor.cs) ----
+    /// <summary>How often (in-game hours) the Mayor looks at what the colony needs. They also look at dawn.</summary>
+    public double MayorEveryHours = 3;
+    /// <summary>A delivery request nobody has filled for this many in-game hours counts as something the colony is short of.</summary>
+    public double MayorShortHours = 12;
+    /// <summary>The Mayor builds another food hut while there are more than this many settlers for each one (Farmer, Hunter, Fisher).</summary>
+    public int MayorSettlersPerFoodHut = 5;
+    /// <summary>A second Builder's Hut once the colony has this many settlers.</summary>
+    public int MayorSecondBuilderAt = 8;
+    /// <summary>How many huts of one type the Mayor builds to meet a need.</summary>
+    public int MayorMaxPerType = 2;
+    /// <summary>The Mayor starts a new building only while there are at most this many work orders for each builder.</summary>
+    public int MayorOrdersPerBuilder = 1;
+    /// <summary>Gap kept between buildings, and clear ground kept in front of a building's front.</summary>
+    public int MayorGap = 2;
+    public int MayorFrontClear = 3;
+    /// <summary>Most the ground may go up or down under a building the Mayor places.</summary>
+    public int MayorMaxSlope = 3;
+    /// <summary>How far from the Town Hall the Mayor looks for a spot, in blocks, beyond the colony's border.</summary>
+    public int MayorSearchRadius = 48;
+    /// <summary>The Mayor upgrades huts only up to the Town Hall's level.</summary>
+    public bool MayorHutsUpToTownHall = true;
+    /// <summary>
+    /// The Mayor's default build order, as stages: each stage starts at a number of settlers ("6:hunter" is built
+    /// from 6 settlers on). Changed in game on the Town Hall's Mayor tab.
+    /// </summary>
+    public string[] MayorBuildOrder =
+    {
+        "0:builder", "0:residence", "0:gatherer", "0:forester", "0:farmer", "0:cook", "0:craftsman", "0:potter", "0:courierstation",
+        "6:hunter", "6:guardtower", "6:charcoalburner", "6:sawmill", "6:healer",
+        "10:prospector", "10:miner", "10:smelter", "10:blacksmith", "10:market", "10:tavern", "10:chickencoop", "10:piggery", "10:shepherd", "10:butcher", "10:tannery",
+        "15:church", "15:graveyard", "15:school", "15:archive", "15:barracks", "15:bakery", "15:fisher", "15:quarry", "15:stonemason", "15:tailor", "15:explorer", "15:composter", "15:fletcher", "15:apiary"
+    };
+    /// <summary>
+    /// What each hut type makes or gathers, as item code patterns, for when the colony is short of something and
+    /// no hut can make it yet. Huts' own crafting tabs and recipes count too (ColonyManager.Orders.cs).
+    /// </summary>
+    public System.Collections.Generic.Dictionary<string, string[]> MayorMakers = new()
+    {
+        ["forester"] = new[] { "game:log-*", "game:firewood", "game:stick", "game:debarkedlog-*" },
+        ["gatherer"] = new[] { "game:clay-*", "game:drygrass", "game:cattailtops", "game:cattailroot", "game:flint", "game:peatbrick", "game:papyrustops", "game:stone-*", "game:berry-*", "game:mushroom-*" },
+        ["sawmill"] = new[] { "game:plank-*", "game:supportbeam-*" },
+        ["quarry"] = new[] { "game:rock-*", "game:stone-*", "game:cobblestone-*", "game:stonebricks-*" },
+        ["miner"] = new[] { "game:ore-*", "game:nugget-*" },
+        ["smelter"] = new[] { "game:ingot-*", "game:metalbit-*" },
+        ["blacksmith"] = new[] { "game:*-copper", "game:*-tinbronze", "game:*-iron", "game:nailsandstrips-*" },
+        ["potter"] = new[] { "game:bowl-*", "game:crock-*", "game:storagevessel-*", "game:claypot-*", "game:crucible-*", "game:toolmold-*", "game:ingotmold-*" },
+        ["charcoalburner"] = new[] { "game:charcoal" },
+        ["craftsman"] = new[] { "game:*head-flint", "game:*head-granite", "game:*-flint", "game:knife-*", "game:axe-*", "game:shovel-*", "game:hoe-*" },
+        ["farmer"] = new[] { "game:grain-*", "game:vegetable-*", "game:seeds-*", "game:flaxfibers", "game:flaxtwine" },
+        ["hunter"] = new[] { "game:redmeat-raw", "game:bushmeat-raw", "game:poultry-raw", "game:hide-*", "game:fat" },
+        ["cook"] = new[] { "game:bread-*", "game:redmeat-cooked", "game:bushmeat-cooked", "game:poultry-cooked" },
+        ["tannery"] = new[] { "game:leather-*" },
+        ["tailor"] = new[] { "game:clothes-*" },
+        ["fisher"] = new[] { "game:fish-*" }
+    };
 
     // ---- Winter (0.190.0) ----
     /// <summary>The Town Hall's Winter tab and the winter warnings.</summary>

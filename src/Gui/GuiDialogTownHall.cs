@@ -42,6 +42,8 @@ public class GuiDialogTownHall : GuiDialog
     const int MilitiaTab = 10;
     const int BailiffTab = 11;
     const int WinterTab = 12;
+    const int MayorTab = 13;
+    const int MayorRowsPerPage = 9;
     const int ReportRowsPerPage = 12;
     const double MapHeight = 380;
     const int MapMargin = 16;
@@ -51,7 +53,7 @@ public class GuiDialogTownHall : GuiDialog
     static readonly (int Id, string Lang)[] Tabs =
     {
         (ActionsTab, "tab-actions"), (QuestsTab, "tab-quests"), (MapTab, "tab-townmap"), (BannersTab, "tab-banners"), (InfoTab, "tab-information"), (CitizensTab, "tab-citizens"),
-        (BailiffTab, "tab-bailiff"), (MilitiaTab, "tab-militia"), (WinterTab, "tab-winter"), (StatsTab, "tab-statistics"), (PermissionsTab, "tab-permissions"), (ProspectingTab, "tab-prospecting"), (SettingsTab, "tab-settings")
+        (BailiffTab, "tab-bailiff"), (MayorTab, "tab-mayor"), (MilitiaTab, "tab-militia"), (WinterTab, "tab-winter"), (StatsTab, "tab-statistics"), (PermissionsTab, "tab-permissions"), (ProspectingTab, "tab-prospecting"), (SettingsTab, "tab-settings")
     };
 
     readonly ColonyNetwork network;
@@ -108,7 +110,7 @@ public class GuiDialogTownHall : GuiDialog
             return;
         }
         // Timed progress refreshes would close an open dropdown or take the focus from the name box.
-        if (fresh.Periodic && (renaming || currentTab is CitizensTab or PermissionsTab or BailiffTab or SettingsTab)) return;
+        if (fresh.Periodic && (renaming || currentTab is CitizensTab or PermissionsTab or BailiffTab or MayorTab or SettingsTab)) return;
         Compose();
     }
 
@@ -143,6 +145,7 @@ public class GuiDialogTownHall : GuiDialog
             case MilitiaTab: ComposeMilitia(composer); break;
             case WinterTab: ComposeWinter(composer); break;
             case BailiffTab: ComposeBailiff(composer); break;
+            case MayorTab: ComposeMayor(composer); break;
             case StatsTab: ComposeStatistics(composer); break;
             case PermissionsTab: ComposePermissions(composer); break;
             case SettingsTab: ComposeSettings(composer); break;
@@ -167,6 +170,8 @@ public class GuiDialogTownHall : GuiDialog
         SingleComposer.GetSwitch("telloutsiders")?.SetValue(snapshot.TellOutsiders);
         SingleComposer.GetSwitch("settlersunhurt")?.SetValue(snapshot.SettlersUnhurt);
         SingleComposer.GetSwitch("noenemies")?.SetValue(snapshot.NoEnemies);
+        SingleComposer.GetSwitch("mayorfree")?.SetValue(snapshot.MayorFreeHuts);
+        for (int i = 0; i < snapshot.MayorOrder.Count; i++) SingleComposer.GetSwitch("mayororder" + i)?.SetValue(!snapshot.MayorSkip.Contains(snapshot.MayorOrder[i]));
         SingleComposer.GetTextInput("text-enter")?.SetValue(pendingEnter);
         SingleComposer.GetTextInput("text-leave")?.SetValue(pendingLeave);
         SingleComposer.GetTextInput("rankname")?.SetValue(pendingRankName);
@@ -1223,6 +1228,97 @@ public class GuiDialogTownHall : GuiDialog
         return composer.Text(Lang.Get("createacolony:" + hint, hintArgs), GuiKit.Muted(), 0, y, Width, 8);
     }
 
+    // ---- Mayor tab (0.199.0) ------------------------------------------------------------------
+
+    /// <summary>The Mayor: who it is, the mode, what they want to do next (with Approve, Other spot, Skip this one), and the build order.</summary>
+    void ComposeMayor(GuiComposer composer)
+    {
+        double y = 30;
+        if (snapshot.MayorName.Length == 0)
+        {
+            y = composer.Text(Lang.Get("createacolony:mayor-none"), GuiKit.Body().WithColor(GuiKit.WarnColor), 0, y, Width, 6);
+        }
+        else
+        {
+            string state = Lang.Get("createacolony:bailiff-state-" + snapshot.MayorState);
+            var font = snapshot.MayorState == BailiffState.OnDuty ? GuiKit.Body().WithColor(GuiKit.GoodColor) : GuiKit.Body().WithColor(GuiKit.WarnColor);
+            y = composer.Text(Lang.Get("createacolony:mayor-who", snapshot.MayorName, state), font, 0, y, Width, 6);
+        }
+        y = composer.Text(Lang.Get("createacolony:mayor-about"), GuiKit.Muted(), 0, y, Width, 8);
+
+        string[] modes = { "0", "1", "2" };
+        string[] modeNames = modes.Select(m => Lang.Get("createacolony:mayor-mode-" + m)).ToArray();
+        int mode = Math.Clamp(snapshot.MayorMode, 0, 2);
+        composer.AddStaticText(Lang.Get("createacolony:mayor-mode"), GuiKit.Body(), ElementBounds.Fixed(0, y + 5, 120, 25));
+        if (Officer)
+        {
+            composer.AddDropDown(modes, modeNames, mode, (code, on) => SendText(ColonyAction.MayorAction, "mode|" + code), ElementBounds.Fixed(120, y, 220, 28), "mayormode");
+        }
+        else
+        {
+            composer.AddStaticText(modeNames[mode], GuiKit.Body(), ElementBounds.Fixed(120, y + 5, 220, 25));
+        }
+        y += 36;
+
+        y = composer.Section(Lang.Get("createacolony:mayor-next"), y, Width);
+        if (snapshot.MayorPlan.Length > 0)
+        {
+            y = composer.Text(Lang.Get("createacolony:mayor-wants", snapshot.MayorPlan), GuiKit.Body(), 0, y, Width, 2);
+            if (snapshot.MayorPlanReason.Length > 0) y = composer.Text(snapshot.MayorPlanReason, GuiKit.Detail(), 0, y, Width, 2);
+            if (snapshot.MayorPlanNew) y = composer.Text(snapshot.MayorPlanWhere, GuiKit.Detail(), 0, y, Width, 6);
+            if (snapshot.MayorPlanApproved)
+            {
+                y = composer.Text(snapshot.MayorIdle.Length > 0 ? snapshot.MayorIdle : Lang.Get("createacolony:mayor-approved"), GuiKit.Body().WithColor(GuiKit.WarnColor), 0, y, Width, 6);
+            }
+            else if (Officer)
+            {
+                composer.AddSmallButton(Lang.Get("createacolony:mayor-approve"), () => SendText(ColonyAction.MayorAction, "approve"), ElementBounds.Fixed(0, y, 120, 28));
+                if (snapshot.MayorPlanNew)
+                {
+                    composer.AddSmallButton(Lang.Get("createacolony:mayor-other"), () => SendText(ColonyAction.MayorAction, "other"), ElementBounds.Fixed(130, y, 120, 28));
+                }
+                composer.AddSmallButton(Lang.Get("createacolony:mayor-skip"), () => SendText(ColonyAction.MayorAction, "skip"), ElementBounds.Fixed(260, y, 140, 28));
+                composer.AddSmallButton(Lang.Get("createacolony:mayor-show"), () => SendText(ColonyAction.MayorAction, "show"), ElementBounds.Fixed(410, y, 70, 28));
+                composer.AddSmallButton(Lang.Get("createacolony:mayor-hide"), () => SendText(ColonyAction.MayorAction, "hide"), ElementBounds.Fixed(490, y, 70, 28));
+                y += 36;
+            }
+        }
+        else
+        {
+            y = composer.Text(snapshot.MayorIdle.Length > 0 ? snapshot.MayorIdle : Lang.Get("createacolony:mayor-nothing"), GuiKit.Body(), 0, y, Width, 6);
+            if (Officer && snapshot.MayorName.Length > 0)
+            {
+                composer.AddSmallButton(Lang.Get("createacolony:mayor-look"), () => SendText(ColonyAction.MayorAction, "look"), ElementBounds.Fixed(0, y, 160, 28));
+                y += 36;
+            }
+        }
+
+        y = composer.Section(Lang.Get("createacolony:mayor-order"), y, Width);
+        y = composer.Text(Lang.Get("createacolony:mayor-order-hint"), GuiKit.Muted(), 0, y, Width, 6);
+        int count = snapshot.MayorOrder.Count;
+        int pages = Math.Max(1, (count + MayorRowsPerPage - 1) / MayorRowsPerPage);
+        page = Math.Clamp(page, 0, pages - 1);
+        for (int i = page * MayorRowsPerPage; i < Math.Min(count, (page + 1) * MayorRowsPerPage); i++)
+        {
+            string type = snapshot.MayorOrder[i];
+            int from = i < snapshot.MayorOrderFrom.Count ? snapshot.MayorOrderFrom[i] : 0;
+            string label = (i + 1) + ". " + Lang.Get("createacolony:building-" + type)
+                + (from > 0 ? "  " + Lang.Get("createacolony:mayor-from", from) : "");
+            bool on = !snapshot.MayorSkip.Contains(type);
+            if (Officer)
+            {
+                composer.AddSwitch(_ => SendText(ColonyAction.MayorAction, "toggle|" + type), ElementBounds.Fixed(0, y, 26, 26), "mayororder" + i);
+                composer.AddSmallButton("^", () => SendText(ColonyAction.MayorAction, "up|" + type), ElementBounds.Fixed(Width - 70, y, 30, 26));
+                composer.AddSmallButton("v", () => SendText(ColonyAction.MayorAction, "down|" + type), ElementBounds.Fixed(Width - 35, y, 30, 26));
+            }
+            composer.AddStaticText(label, on ? GuiKit.Body() : GuiKit.Muted(), ElementBounds.Fixed(36, y + 4, Width - 120, 24));
+            y += 30;
+        }
+        composer.Pager(page, pages, y + 6, Width, p => { page = p; Compose(); });
+        y += pages > 1 ? 46 : 8;
+        if (Officer) composer.AddSmallButton(Lang.Get("createacolony:mayor-reset"), () => SendText(ColonyAction.MayorAction, "reset"), ElementBounds.Fixed(0, y, 200, 28));
+    }
+
     void SendBailiffRule(string text) =>
         network.SendAction(new ColonyActionPacket { ColonyId = ColonyId, Action = ColonyAction.SetBailiffRule, Text = text });
 
@@ -1346,6 +1442,8 @@ public class GuiDialogTownHall : GuiDialog
             on => SendText(ColonyAction.SetTestSafety, "unhurt|" + (on ? "1" : "0")), y);
         y = TownSwitch(composer, "noenemies", "createacolony:noenemies", "createacolony:noenemies-hint", snapshot.NoEnemies,
             on => SendText(ColonyAction.SetTestSafety, "enemies|" + (on ? "1" : "0")), y);
+        y = TownSwitch(composer, "mayorfree", "createacolony:mayorfree", "createacolony:mayorfree-hint", snapshot.MayorFreeHuts,
+            on => SendText(ColonyAction.MayorAction, "free|" + (on ? "1" : "0")), y);
 
         y = composer.Section(Lang.Get("createacolony:enter-texts"), y, Width);
         if (!Officer)
