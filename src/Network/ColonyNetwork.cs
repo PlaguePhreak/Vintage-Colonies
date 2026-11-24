@@ -206,6 +206,7 @@ public partial class ColonyNetwork : ModSystem
             ColonyAction.LinkMineHut or ColonyAction.UnlinkMineHut => LinkMineAction(colony, role, packet),
             ColonyAction.SetCollect or >= ColonyAction.RenameBuilding and <= ColonyAction.SetMinStock => HutAction(player, colony, role, packet),
             ColonyAction.SetAutoHiring or ColonyAction.SetAutoHousing or ColonyAction.SetEnterMessages or ColonyAction.SetWinterPrep => AutoTownAction(colony, role, packet),
+            ColonyAction.SetTestSafety => role < ColonyRole.Officer ? "createacolony:denied-officer" : Manager.SetTestSafety(colony, packet.Text),
             ColonyAction.SetHutAutoFlag => HutAutoFlag(colony, role, packet),
             ColonyAction.RankChange => role < ColonyRole.Owner ? "createacolony:denied-owner" : Manager.RankChange(colony, packet.Text),
             _ => null
@@ -1032,6 +1033,8 @@ public partial class ColonyNetwork : ModSystem
         snapshot.AutoHousing = colony.AutoHousing;
         snapshot.EnterMessages = colony.EnterMessages;
         snapshot.TellOutsiders = colony.TellOutsiders;
+        snapshot.SettlersUnhurt = colony.SettlersUnhurt;
+        snapshot.NoEnemies = colony.NoEnemies;
         snapshot.EnterText = colony.EnterText;
         snapshot.LeaveText = colony.LeaveText;
         snapshot.MaxRanks = Manager.Config.MaxRanks;
@@ -1109,7 +1112,7 @@ public partial class ColonyNetwork : ModSystem
             Style = BlueprintStyles.Normalize(b.Style),
             Variant = Manager.Blueprints.Variants(Manager.Blueprints.StyleFor(b), b.Type).Count > 1 ? Manager.Blueprints.VariantFor(Manager.Blueprints.StyleFor(b), b.Type, b.Variant) : "",
             Name = ColonyManager.BuildingName(b),
-            Status = b.HasWorkOrder || b.Removing ? Manager.BuildStatus.GetValueOrDefault(b.BuildingId, "queued") : "",
+            Status = b.HasWorkOrder || b.Removing ? (Manager.IsBuildStuck(b) && !b.Removing ? "stuck" : Manager.BuildStatus.GetValueOrDefault(b.BuildingId, "queued")) : "",
             Removing = b.Removing,
             Repairing = b.Repairing
         };

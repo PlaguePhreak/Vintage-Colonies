@@ -9,7 +9,7 @@ namespace CreateAColony.Settlers;
 /// <summary>
 /// A colony settler. It is built like a player: the player's seraph model with a look from the player
 /// character creator ("extraskinnable"), the player's clothing and armor slots ("seraphinventory", see
-/// ColonyManager.Gear.cs), and hand slots from the "villagerinventory" behavior. SettlerLooks fills in
+/// ColonyManager.Gear.cs), and hand slots from the "settlerhands" behavior (the game's villager inventory). SettlerLooks fills in
 /// the player's model, textures and skin parts when the game loads.
 /// </summary>
 public class EntitySettler : EntityHumanoid
@@ -116,6 +116,8 @@ public class EntitySettler : EntityHumanoid
     {
         if (Api.Side == EnumAppSide.Server && Alive && damageSource.Type != EnumDamageType.Heal)
         {
+            // Test setting (0.196.0): the colony's settlers can't be hurt.
+            if (Api.ModLoader.GetModSystem<Colonies.ColonyManager>().SettlerUnhurt(this)) return false;
             damage = Api.ModLoader.GetModSystem<Colonies.ColonyManager>().OnSettlerHurt(this, damageSource, damage);
         }
         return base.ReceiveDamage(damageSource, damage);

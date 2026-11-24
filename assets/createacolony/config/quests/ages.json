@@ -185,7 +185,7 @@
           "objectives": [
             {
               "type": "obtain",
-              "code": "game:redmeat-cooked|game:bushmeat-cooked|game:poultry-cooked",
+              "code": "game:redmeat-cooked|game:bushmeat-cooked|game:poultry-cooked|*:*meat*charred*|*:*charred*meat*",
               "text": "objective-line-stone-catch-0"
             }
           ],

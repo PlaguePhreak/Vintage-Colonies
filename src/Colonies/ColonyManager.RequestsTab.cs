@@ -84,7 +84,22 @@ public partial class ColonyManager
             one.StackSize = 1;
             return one;
         }
-        return QuestItems.Sample(sapi.World, SplitTypes(code).Code);
+        return WithLanternParts(QuestItems.Sample(sapi.World, SplitTypes(code).Code));
+    }
+
+    /// <summary>
+    /// A lantern made from its code alone has no metal, lining or glass, and the game draws it with a missing texture
+    /// (seen in Aaron's play-test log after creative Give all, 0.198.0). Gives it the game's defaults.
+    /// </summary>
+    public static ItemStack? WithLanternParts(ItemStack? stack)
+    {
+        if (stack?.Block is BlockLantern && !stack.Attributes.HasAttribute("material"))
+        {
+            stack.Attributes.SetString("material", "copper");
+            stack.Attributes.SetString("lining", "plain");
+            stack.Attributes.SetString("glass", "quartz");
+        }
+        return stack;
     }
 
     /// <summary>A short name for where a container or spot is: the warehouse, a drop-off chest, or the building it is in.</summary>
@@ -98,5 +113,32 @@ public partial class ColonyManager
         var inside = colony.Buildings.Where(b => !b.IsStation && b.Level > 0)
             .Select(b => (B: b, Box: BuildingBox(b))).FirstOrDefault(z => InBox(pos, z.Box.Min, z.Box.Max)).B;
         return inside != null ? BuildingName(inside) : Lang.Get("createacolony:place-somewhere");
+    }
+
+    /// <summary>
+    /// Creative mode (0.197.0): puts up to want of what the request asks for into the chests from nothing, as the
+    /// Requests tab's give buttons do with carried items in survival. Returns how many went in.
+    /// </summary>
+    public int CreativeFill(Colony colony, DeliveryRequest request, List<BlockEntityContainer> dest, int want)
+    {
+        var match = Matcher(request.ItemCode);
+        var sample = RequestSample(request.ItemCode, WarehouseContainers(colony).ToList(), match);
+        if (sample == null || !match(sample)) return 0;
+        int given = 0;
+        int max = System.Math.Max(1, sample.Collectible.MaxStackSize);
+        while (given < want)
+        {
+            var part = sample.Clone();
+            part.StackSize = System.Math.Min(max, want - given);
+            int before = part.StackSize;
+            foreach (var chest in dest)
+            {
+                if (part.StackSize <= 0) break;
+                PutItems(chest, part);
+            }
+            given += before - part.StackSize;
+            if (part.StackSize > 0) break; // the chests are full
+        }
+        return given;
     }
 }

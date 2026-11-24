@@ -32,7 +32,7 @@ public class BlockPainting : Block
         }
         dsc.AppendLine(Lang.Get("createacolony:painting-size-" + Size));
         if (Religious) dsc.AppendLine(Lang.Get("createacolony:painting-religious"));
-        string dyes = string.Join(", ", Dyes.Select(colour => PaintingRecipes.DyeName(world, colour)));
+        string dyes = string.Join(", ", PaintingRecipes.RealDyes(Dyes).Select(colour => PaintingRecipes.DyeName(world, colour)));
         dsc.AppendLine(Lang.Get("createacolony:painting-dyes", dyes));
     }
 }

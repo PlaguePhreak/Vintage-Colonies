@@ -180,7 +180,7 @@ public partial class ColonyManager
         float damage = Math.Max(Config.GuardFistDamage, held?.Collectible.GetAttackPower(held) ?? 0);
         damage *= DamageFactor(colony, citizen);
         damage += TraitAdd(citizen, "damageAdd");
-        pest.ReceiveDamage(new DamageSource
+        this.SafeHit(pest, new DamageSource
         {
             Source = EnumDamageSource.Entity,
             SourceEntity = farmer,

@@ -775,6 +775,9 @@ public class ColonySnapshot
     [ProtoMember(3701)] public bool AutoHousing;
     [ProtoMember(3702)] public bool EnterMessages;
     [ProtoMember(3703)] public bool TellOutsiders;
+    /// <summary>Test settings (0.196.0).</summary>
+    [ProtoMember(4500)] public bool SettlersUnhurt;
+    [ProtoMember(4501)] public bool NoEnemies;
     [ProtoMember(3704)] public string EnterText = "";
     [ProtoMember(3705)] public string LeaveText = "";
     [ProtoMember(3706)] public List<RankView> Ranks = new();
@@ -1094,7 +1097,9 @@ public enum ColonyAction
     /// <summary>Text "on|1", "outsiders|1", "enter|text" or "leave|text".</summary>
     SetEnterMessages = 3704,
     /// <summary>Winter (0.190.0): settlers get ready in autumn by themselves, "1" or "0"; officers.</summary>
-    SetWinterPrep = 4200
+    SetWinterPrep = 4200,
+    /// <summary>Test settings (0.196.0), officers: Text "unhurt|1" or "enemies|1" (0 turns off).</summary>
+    SetTestSafety = 4500
 }
 
 /// <summary>One kind a Market sells, for its For sale tab.</summary>

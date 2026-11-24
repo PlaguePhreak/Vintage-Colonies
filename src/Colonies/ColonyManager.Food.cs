@@ -127,7 +127,10 @@ public partial class ColonyManager
         if (!IsFoodStore(container)) return null;
 
         // A bowl, pot or crock placed in the world keeps its servings on the block, not in its slots.
-        if (container is IBlockEntityMealContainer placed)
+        // A crock filled with food rather than a cooked meal (pickles, sauerkraut, a stack of cooked meat) has no
+        // servings: its food sits in its slots and is eaten one item at a time, as from a chest (0.198.0, Aaron's
+        // play test "dont eat from crocks").
+        if (container is IBlockEntityMealContainer placed && !(placed.QuantityServings <= 0 && container is BlockEntityCrock))
         {
             if (placed.QuantityServings <= 0) return null;
             var mealStack = container.Block.OnPickBlock(sapi.World, container.Pos);

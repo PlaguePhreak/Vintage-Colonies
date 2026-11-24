@@ -76,6 +76,7 @@ public partial class ColonyManager : ModSystem
         api.Event.RegisterGameTickListener(OnFarWorkTick, FarWorkTickMs);
         api.Event.RegisterGameTickListener(_ => SaveDirty(), DirtySaveMs, DirtySaveMs);
         StartRaids();
+        StartTestSafety();
         StartDoors();
         StartFires();
         StartEnterMessages();
@@ -330,6 +331,7 @@ public partial class ColonyManager : ModSystem
             TickRequests(colony, now);
             EnsureMinStock(colony);
             TickUpkeep(colony);
+            TickLostSettlers(colony, now);
 
             foreach (var citizen in colony.Citizens.ToList())
             {

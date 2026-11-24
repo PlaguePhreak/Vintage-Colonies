@@ -51,9 +51,11 @@ public partial class ColonyManager
         var free = Jobless(colony).ToList();
         if (free.Count == 0) return 0;
         var huts = colony.Buildings
-            .Where(b => b.Level >= 1 && !b.Removing && b.TakesAutoHires && !b.IsStation && JobOf(b.Type) is { } job && job != Jobs.Priest && job != Jobs.Bailiff)
-            .OrderByDescending(b => IsFoodHut(b.Type))
+            .Where(b => Staffable(b) && b.TakesAutoHires && !b.IsStation && JobOf(b.Type) is { } job && job != Jobs.Priest && job != Jobs.Bailiff)
+            .OrderBy(b => IsGuardPost(b.Type)) // other huts first, guards after (0.198.0)
+            .ThenByDescending(b => IsFoodHut(b.Type))
             .ThenBy(b => WorkersAt(colony, b).Count > 0)
+            .ThenBy(b => b.Level < 1)
             .ThenBy(b => b.BuildingId)
             .ToList();
         int given = 0;

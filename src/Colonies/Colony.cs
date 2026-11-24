@@ -974,6 +974,11 @@ public class Colony
     [ProtoMember(3711)] public bool AutoHiring;
     /// <summary>Settlers with no home move into homes with free beds by themselves.</summary>
     [ProtoMember(3712)] public bool AutoHousing;
+    // 4500-4509: test settings (0.196.0, ColonyManager.TestSafety.cs).
+    /// <summary>Settlers take no damage, so none can die.</summary>
+    [ProtoMember(4500)] public bool SettlersUnhurt;
+    /// <summary>No hostile creatures spawn anywhere, and no raids come.</summary>
+    [ProtoMember(4501)] public bool NoEnemies;
     [ProtoMember(3713, IsRequired = true)] public int LastAutoHireDay = -1;
     [ProtoMember(3714)] public List<ColonyRank> Ranks = new();
     [ProtoMember(3715, IsRequired = true)] public int NextRankId = 1;

@@ -190,7 +190,7 @@ public partial class ColonyManager
             }
 
             r.Firewood = CountItems(FindBlockEntities<BlockEntityContainer>(colony), IsFirewood);
-            int kitchens = colony.Buildings.Count(b => b.Level > 0 && b.Type is BuildingTypes.Cook or BuildingTypes.Bakery);
+            int kitchens = colony.Buildings.Count(b => Staffable(b) && b.Type is BuildingTypes.Cook or BuildingTypes.Bakery);
             r.FirewoodNeeded = days * (kitchens * Math.Max(0, Config.WinterCookFirewoodPerDay) + HomeFireWoodPerDay(colony));
 
             float limit = BodyTemperatureResistance();

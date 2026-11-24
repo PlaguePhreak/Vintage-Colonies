@@ -52,6 +52,7 @@ public class CreateAColonyModSystem : ModSystem
         api.RegisterBlockEntityClass("TownHall", typeof(BlockEntityTownHall));
         api.RegisterBlockClass("BlockSupplyCamp", typeof(BlockSupplyCamp));
         api.RegisterEntityBehaviorClass("settlerneeds", typeof(EntityBehaviorSettlerNeeds));
+        api.RegisterEntityBehaviorClass("settlerhands", typeof(EntityBehaviorSettlerHands));
         api.RegisterBlockClass("BlockWarehouse", typeof(BlockWarehouse));
         api.RegisterBlockClass("BlockDropOff", typeof(BlockDropOff));
         api.RegisterBlockClass("BlockColonyHut", typeof(BlockColonyHut));
