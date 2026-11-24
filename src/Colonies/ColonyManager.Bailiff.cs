@@ -49,7 +49,7 @@ public partial class ColonyManager
         StuckStatuses.Contains(status) || status.StartsWith("needs-") || status.Contains("-needs-") || status.EndsWith("-stocked");
 
     /// <summary>Jobs the bailiff never moves anyone out of: guards keep watch and healers wait for the hurt.</summary>
-    static bool KeepsPost(string? job) => job is null or Jobs.Bailiff or Jobs.Guard or Jobs.Healer or Jobs.Builder or Jobs.Courier or Jobs.Priest;
+    static bool KeepsPost(string? job) => job is null or Jobs.Bailiff or Jobs.Mayor or Jobs.Guard or Jobs.Healer or Jobs.Builder or Jobs.Courier or Jobs.Priest;
 
     /// <summary>A lent worker goes back to normal: they keep whatever job they have now.</summary>
     public static void EndLoan(CitizenRecord c)

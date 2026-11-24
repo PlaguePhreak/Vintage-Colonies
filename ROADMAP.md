@@ -143,7 +143,7 @@ Things marked *(tested)* have been tried in game. Everything else is built but s
 
 Colonies that run themselves, without a player in charge.
 
-- **The Mayor**: a settler role that does the player's job. The Mayor chooses where new buildings go, places them with the Builder's Wand, hands out jobs, hires wanderers and upgrades huts when the colony is ready.
+- **The Mayor** (first version in 0.199.0): a settler role that does the player's job. The Mayor picks the next building (what the colony is short of first, then a build order), finds a spot, puts the hut down, orders it built, hires for it and upgrades huts. Still to do: field markers, roads and walls, and colonies with no player at all.
 - **Growing on their own**: AI settlements that start from a Town Hall and grow into villages and towns over time.
 - **Living in the world**: settlements that appear in the world, so players can find them, visit them, trade with them or join them.
 - **Neighbours**: AI settlements that trade with, help or argue with the player's colony and each other.

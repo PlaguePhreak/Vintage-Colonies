@@ -42,6 +42,8 @@ public static class Jobs
     public const string Undertaker = "undertaker";
     /// <summary>One per colony, at the Town Hall: answers wanderers, hands out jobs, oversees the fields and collects rent (ColonyManager.Bailiff.cs).</summary>
     public const string Bailiff = "bailiff";
+    /// <summary>One per colony, at the Town Hall: plans and orders new buildings and upgrades (ColonyManager.Mayor.cs).</summary>
+    public const string Mayor = "mayor";
     /// <summary>Strikes coins at the Royal Mint.</summary>
     public const string Minter = "minter";
     /// <summary>Keeps the Market's stall stocked from the warehouse and sells to settlers (ColonyManager.Market.cs).</summary>
@@ -69,7 +71,7 @@ public static class Jobs
     public const string Teacher = "teacher";
 
     /// <summary>All assignable jobs; an empty code means unemployed.</summary>
-    public static readonly string[] All = { "", Builder, Courier, Forester, Farmer, Guard, Potter, Cook, Prospector, Miner, Quarrier, Smelter, Blacksmith, Armourer, Weaponsmith, Sawyer, Craftsman, Tailor, Jeweller, Healer, Explorer, Gatherer, Hunter, Butcher, ChickenHerder, Swineherd, Shepherd, Goatherd, Herdsman, Tanner, Beekeeper, Undertaker, MarketTrader, TavernKeeper, Minter, Researcher, CharcoalBurner, Stonemason, Baker, Fisher, Fletcher, Composter, Teacher, Priest, Bailiff };
+    public static readonly string[] All = { "", Builder, Courier, Forester, Farmer, Guard, Potter, Cook, Prospector, Miner, Quarrier, Smelter, Blacksmith, Armourer, Weaponsmith, Sawyer, Craftsman, Tailor, Jeweller, Healer, Explorer, Gatherer, Hunter, Butcher, ChickenHerder, Swineherd, Shepherd, Goatherd, Herdsman, Tanner, Beekeeper, Undertaker, MarketTrader, TavernKeeper, Minter, Researcher, CharcoalBurner, Stonemason, Baker, Fisher, Fletcher, Composter, Teacher, Priest, Bailiff, Mayor };
 
     /// <summary>The job whose skill a settler's work trains and uses: a prospector on Mine ore works as a miner.</summary>
     public static string? WorkJob(CitizenRecord c) => c.JobCode == Prospector && c.WorkRole == ProspectorRoles.Mine ? Miner : c.JobCode;

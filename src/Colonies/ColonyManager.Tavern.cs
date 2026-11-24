@@ -128,7 +128,7 @@ public partial class ColonyManager
     public Building? TavernFor(Colony colony, CitizenRecord c)
     {
         if (!c.Alive || c.Visitor || c.IsChild || c.WaitingForRoom || c.IsDowned) return null;
-        if (c.JobCode is Jobs.Guard or Jobs.Bailiff or Jobs.TavernKeeper) return null;
+        if (c.JobCode is Jobs.Guard or Jobs.Bailiff or Jobs.Mayor or Jobs.TavernKeeper) return null;
         var cal = sapi.World.Calendar;
         if (!TavernHours(cal.HourOfDay)) return null;
         int today = (int)cal.TotalDays;

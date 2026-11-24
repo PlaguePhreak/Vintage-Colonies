@@ -822,6 +822,24 @@ public class ColonySnapshot
     /// <summary>The Town Hall level taxes and wages start at, and whether the colony has reached it.</summary>
     [ProtoMember(127)] public int EconomyLevel;
     [ProtoMember(128)] public bool EconomyOpen;
+    /// <summary>The Mayor tab (4800-4819, 0.199.0): the mayor (BailiffState for their state), the mode, the plan, the build order.</summary>
+    [ProtoMember(4800)] public string MayorName = "";
+    [ProtoMember(4801)] public int MayorState;
+    [ProtoMember(4802)] public int MayorMode;
+    [ProtoMember(4803)] public bool MayorFreeHuts;
+    /// <summary>What the Mayor wants to build or upgrade ("" for nothing), why, and where.</summary>
+    [ProtoMember(4804)] public string MayorPlan = "";
+    [ProtoMember(4805)] public string MayorPlanReason = "";
+    [ProtoMember(4806)] public string MayorPlanWhere = "";
+    /// <summary>True when the plan was approved and waits for a hut block.</summary>
+    [ProtoMember(4807)] public bool MayorPlanApproved;
+    /// <summary>What the Mayor is waiting on, in words.</summary>
+    [ProtoMember(4808)] public string MayorIdle = "";
+    [ProtoMember(4809)] public List<string> MayorOrder = new();
+    [ProtoMember(4810)] public List<int> MayorOrderFrom = new();
+    [ProtoMember(4811)] public List<string> MayorSkip = new();
+    /// <summary>The plan is a new building (so it can be shown), not an upgrade.</summary>
+    [ProtoMember(4812)] public bool MayorPlanNew;
 }
 
 /// <summary>ColonySnapshot.BailiffState: none, on duty, knocked out, or too unhappy to work.</summary>
@@ -1099,7 +1117,9 @@ public enum ColonyAction
     /// <summary>Winter (0.190.0): settlers get ready in autumn by themselves, "1" or "0"; officers.</summary>
     SetWinterPrep = 4200,
     /// <summary>Test settings (0.196.0), officers: Text "unhurt|1" or "enemies|1" (0 turns off).</summary>
-    SetTestSafety = 4500
+    SetTestSafety = 4500,
+    /// <summary>The Mayor tab (0.199.0), officers: Text as ColonyManager.MayorAction, or "show" / "hide" for the plan's outline.</summary>
+    MayorAction = 4800
 }
 
 /// <summary>One kind a Market sells, for its For sale tab.</summary>

@@ -204,6 +204,40 @@ public class CitizenRecord
 /// officers create them with /colony request. A courier leases a request while carrying it so two
 /// couriers never fetch the same thing; a lease that runs out (courier died, got stuck) frees it again.
 /// </summary>
+/// <summary>Colony.MayorMode: what the Mayor does about buildings.</summary>
+public static class MayorModes
+{
+    public const int Off = 0;
+    /// <summary>The Mayor shows the plan and waits for Approve, Other spot or Skip this one.</summary>
+    public const int Ask = 1;
+    /// <summary>The Mayor builds without asking (Town Hall upgrades still ask).</summary>
+    public const int OnOwn = 2;
+}
+
+/// <summary>
+/// Something the Mayor wants to do (ColonyManager.Mayor.cs): put a new hut down at Pos, turned by Rotation, or, with
+/// BuildingId set, order the next level of that building. Reason is a lang key with ReasonArgs ("@" args are lang keys).
+/// </summary>
+[ProtoContract]
+public class MayorPlan
+{
+    [ProtoMember(1)] public string Type = "";
+    [ProtoMember(2)] public BlockPos Pos = new BlockPos(0);
+    [ProtoMember(3)] public int Rotation;
+    [ProtoMember(4)] public string Style = "";
+    [ProtoMember(5)] public string Variant = "";
+    /// <summary>The building to upgrade; 0 for a new building.</summary>
+    [ProtoMember(6)] public int BuildingId;
+    [ProtoMember(7)] public string Reason = "";
+    [ProtoMember(8)] public List<string> ReasonArgs = new();
+    /// <summary>A Courier's Station: a single block put in the Warehouse, with no building of its own.</summary>
+    [ProtoMember(9)] public bool Station;
+    /// <summary>The level the upgrade goes to.</summary>
+    [ProtoMember(10)] public int Level;
+    /// <summary>Approved (or the Mayor builds on their own): carried out as soon as there is a hut block.</summary>
+    [ProtoMember(11)] public bool Approved;
+}
+
 [ProtoContract]
 public class DeliveryRequest
 {
@@ -979,6 +1013,28 @@ public class Colony
     [ProtoMember(4500)] public bool SettlersUnhurt;
     /// <summary>No hostile creatures spawn anywhere, and no raids come.</summary>
     [ProtoMember(4501)] public bool NoEnemies;
+    // 4800-4819: the Mayor (0.199.0, ColonyManager.Mayor.cs).
+    /// <summary>What the Mayor does about buildings: MayorModes.Off, Ask (asks first) or OnOwn.</summary>
+    [ProtoMember(4800, IsRequired = true)] public int MayorMode = MayorModes.Ask;
+    /// <summary>The Mayor's build order, hut types first to last; empty means config MayorBuildOrder.</summary>
+    [ProtoMember(4801)] public List<string> MayorOrder = new();
+    /// <summary>Hut types unticked on the Mayor tab: the Mayor never builds them from the build order.</summary>
+    [ProtoMember(4802)] public List<string> MayorSkip = new();
+    /// <summary>Test switch: the Mayor puts huts down without a hut block from storage.</summary>
+    [ProtoMember(4803)] public bool MayorFreeHuts;
+    /// <summary>What the Mayor wants to do next and is waiting for a yes on (Ask first), or null.</summary>
+    [ProtoMember(4804)] public MayorPlan? MayorPlan;
+    /// <summary>When (total hours) the Mayor last looked at the colony.</summary>
+    [ProtoMember(4805)] public double MayorLastLookHours;
+    /// <summary>Since when (total hours) each delivery request has been short, by request id.</summary>
+    [ProtoMember(4806)] public Dictionary<int, double> MayorShortSince = new();
+    /// <summary>Spots turned down with Other spot or Skip, as "type|x|z", so the Mayor does not ask about them again.</summary>
+    [ProtoMember(4807)] public List<string> MayorRefused = new();
+    /// <summary>Hut types skipped with Skip this one, until the next day (type|day).</summary>
+    [ProtoMember(4808)] public List<string> MayorSkipToday = new();
+    /// <summary>Why the Mayor did nothing at the last look (a lang key and its args), shown on the Mayor tab.</summary>
+    [ProtoMember(4809)] public string MayorIdle = "";
+    [ProtoMember(4810)] public List<string> MayorIdleArgs = new();
     [ProtoMember(3713, IsRequired = true)] public int LastAutoHireDay = -1;
     [ProtoMember(3714)] public List<ColonyRank> Ranks = new();
     [ProtoMember(3715, IsRequired = true)] public int NextRankId = 1;

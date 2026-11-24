@@ -11,7 +11,7 @@ namespace CreateAColony.Settlers;
 /// The bailiff makes rounds of the estate: from the Town Hall out to a field or a hut where someone works, a
 /// look at how it goes, and back to the Town Hall, where wanderers come to ask to join. What a bailiff does
 /// for the colony (answering wanderers, giving out jobs, taxes and wages) happens in ColonyManager.Bailiff.cs, whether
-/// or not they are on a round.
+/// or not they are on a round. The Mayor (0.199.0) makes the same rounds; their planning is in ColonyManager.Mayor.cs.
 /// </summary>
 public class AiTaskSettlerBailiff : SettlerTaskBase
 {
@@ -35,7 +35,7 @@ public class AiTaskSettlerBailiff : SettlerTaskBase
     {
         if (manager == null || entity.World.ElapsedMilliseconds < nextTryMs) return false;
         nextTryMs = entity.World.ElapsedMilliseconds + RetryAfterMs;
-        if (Colony is not { } colony || Citizen is not { JobCode: Jobs.Bailiff, IsDowned: false } citizen || manager.IsBrokenDown(citizen)) return false;
+        if (Colony is not { } colony || Citizen is not { JobCode: Jobs.Bailiff or Jobs.Mayor, IsDowned: false } citizen || manager.IsBrokenDown(citizen)) return false;
         PickPlace(colony);
         return place != null;
     }
@@ -85,7 +85,7 @@ public class AiTaskSettlerBailiff : SettlerTaskBase
 
     public override bool ContinueExecute(float dt)
     {
-        if (place == null || Citizen is not { JobCode: Jobs.Bailiff }) return false;
+        if (place == null || Citizen is not { JobCode: Jobs.Bailiff or Jobs.Mayor }) return false;
         if (looking)
         {
             looked += dt;
