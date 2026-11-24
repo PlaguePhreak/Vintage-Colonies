@@ -227,6 +227,8 @@ public class ColonyReportSystem : ModSystem
             foreach (var b in colony.Buildings)
             {
                 sb.AppendLine($"- {b.Type} level {b.Level} at {b.HutPos.ToLocalPosition(api)} (id {b.BuildingId})");
+                if (b.HasWorkOrder || b.Removing) sb.AppendLine("    Build: " + manager.BuildStatus.GetValueOrDefault(b.BuildingId, "queued"));
+                if (manager.StuckStep.TryGetValue(b.BuildingId, out var stuckAt)) sb.AppendLine($"    Build stuck at {stuckAt.ToLocalPosition(api)}: {api.World.BlockAccessor.GetBlock(stuckAt).Code}");
                 DumpFields(sb, b, "    ");
             }
         });

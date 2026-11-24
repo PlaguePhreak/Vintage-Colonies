@@ -153,6 +153,7 @@
 	"buildstatus-no-builder-hut": "no Builder's Hut for the builder to work from",
 	"buildstatus-no-blueprint": "blueprint missing",
 	"buildstatus-unreachable": "builder can't reach the next block",
+	"buildstatus-stuck": "builder can't finish one block (the /colony report says where); building the others first",
 	"build-already": "That building is already being built.",
 	"build-no-blueprint": "There is no blueprint for the next level of that building.",
 	"build-finished": "{0} level {1} is finished!",

@@ -27,6 +27,56 @@ public partial class ColonyManager
     /// <summary>What each work order is waiting on, for the Town Hall window. Not saved: builders refresh it.</summary>
     public readonly Dictionary<int, string> BuildStatus = new();
 
+    // ---- Steps a builder keeps failing (0.198.0) --------------------------------------------
+    // Aaron's play test: the only builder stood at one block of the Cook's Hut for six game days. A block the builder
+    // tries and fails too often is set aside, the rest of the build goes on, and set-aside blocks get another go at the
+    // end. Kept in memory only: a restart simply gives every block a fresh try.
+
+    /// <summary>Failed tries per building and block.</summary>
+    readonly Dictionary<int, Dictionary<BlockPos, int>> stepFailures = new();
+    /// <summary>Blocks set aside per building, until everything else is done.</summary>
+    readonly Dictionary<int, HashSet<BlockPos>> skippedSteps = new();
+    /// <summary>Where a building's build is stuck after its set-aside blocks failed again, for the status and report.</summary>
+    public readonly Dictionary<int, BlockPos> StuckStep = new();
+    /// <summary>Buildings whose set-aside blocks are having their second go.</summary>
+    readonly HashSet<int> retryingSteps = new();
+
+    /// <summary>Counts a failed try at a block of a work order; enough of them set it aside for later.</summary>
+    public void StepFailed(Building building, BlockPos pos, int weight = 1)
+    {
+        if (!stepFailures.TryGetValue(building.BuildingId, out var tries)) stepFailures[building.BuildingId] = tries = new();
+        int n = tries.GetValueOrDefault(pos) + weight;
+        if (n < Config.BuilderStepTries)
+        {
+            tries[pos.Copy()] = n;
+            return;
+        }
+        tries.Remove(pos);
+        if (!skippedSteps.TryGetValue(building.BuildingId, out var skipped)) skippedSteps[building.BuildingId] = skipped = new();
+        skipped.Add(pos.Copy());
+        if (retryingSteps.Contains(building.BuildingId)) StuckStep[building.BuildingId] = pos.Copy();
+        Mod.Logger.Notification("[createacolony] Builder set aside block {0} of {1} {2} after failing at it; it gets another try at the end.", pos, building.Type, building.BuildingId);
+    }
+
+    /// <summary>A block was built: forget its failures.</summary>
+    public void StepDone(Building building, BlockPos pos)
+    {
+        if (stepFailures.TryGetValue(building.BuildingId, out var tries)) tries.Remove(pos);
+        if (StuckStep.TryGetValue(building.BuildingId, out var stuck) && stuck.Equals(pos)) StuckStep.Remove(building.BuildingId);
+    }
+
+    /// <summary>Forgets every set-aside block of a building, when its work order ends or starts over.</summary>
+    public void ForgetStepFailures(int buildingId)
+    {
+        stepFailures.Remove(buildingId);
+        skippedSteps.Remove(buildingId);
+        retryingSteps.Remove(buildingId);
+        StuckStep.Remove(buildingId);
+    }
+
+    /// <summary>True when a building's build failed at a block twice over, so builders try other work orders first.</summary>
+    public bool IsBuildStuck(Building building) => StuckStep.ContainsKey(building.BuildingId);
+
     // ---- Buildings ------------------------------------------------------------------------
 
     public Building? GetBuilding(Colony colony, BlockPos hutPos) => colony.Buildings.Find(b => b.HutPos.Equals(hutPos));
@@ -181,6 +231,7 @@ public partial class ColonyManager
         building.Cursor = 0;
         building.BuilderCitizenId = 0;
         BuildStatus.Remove(building.BuildingId);
+        ForgetStepFailures(building.BuildingId);
         MarkDirty(colony);
         return null;
     }
@@ -193,6 +244,7 @@ public partial class ColonyManager
         building.Cursor = 0;
         building.BuilderCitizenId = 0;
         BuildStatus.Remove(building.BuildingId);
+        ForgetStepFailures(building.BuildingId);
         CancelBuildRequests(colony, building);
         MarkDirty(colony);
     }
@@ -215,6 +267,7 @@ public partial class ColonyManager
             building.Cursor = 0;
             building.BuilderCitizenId = 0;
             BuildStatus.Remove(building.BuildingId);
+        ForgetStepFailures(building.BuildingId);
             CancelBuildRequests(colony, building);
             MarkDirty(colony);
             return;
@@ -224,6 +277,7 @@ public partial class ColonyManager
         building.Cursor = 0;
         building.BuilderCitizenId = 0;
         BuildStatus.Remove(building.BuildingId);
+        ForgetStepFailures(building.BuildingId);
         CancelBuildRequests(colony, building);
         MarkDirty(colony);
         RefreshClaim(colony);
@@ -294,9 +348,16 @@ public partial class ColonyManager
     public bool FindNextStep(Colony colony, Building building, Blueprint blueprint, out BuildStep step, out BlockPos pos)
     {
         // Gaps under the floor are filled first, from the ground up (ColonyManager.Foundations.cs).
+        var skipped = skippedSteps.GetValueOrDefault(building.BuildingId);
+        (BuildStep Step, BlockPos Pos)? setAside = null;
         foreach (var gap in FoundationGaps(colony, building, blueprint))
         {
             if (IsStepDone(colony, gap.Step, gap.Pos)) continue;
+            if (skipped != null && skipped.Contains(gap.Pos))
+            {
+                setAside ??= (gap.Step, gap.Pos);
+                continue;
+            }
             step = gap.Step;
             pos = gap.Pos;
             return true;
@@ -310,11 +371,26 @@ public partial class ColonyManager
             if (IsStepDone(colony, step, pos, building)) continue;
             // Upkeep only digs out ground that got in; everything else in the building stays as it is.
             if (building.Upkeep && !IsUpkeepStep(step, pos)) continue;
+            // A block the builder kept failing at waits until the rest is done.
+            if (skipped != null && skipped.Contains(pos))
+            {
+                setAside ??= (step, pos);
+                continue;
+            }
             if (building.Cursor != i)
             {
                 building.Cursor = i;
                 MarkDirty(colony);
             }
+            return true;
+        }
+        if (setAside is { } last)
+        {
+            // Only set-aside blocks are left: give them all another go. One that fails again shows as stuck.
+            retryingSteps.Add(building.BuildingId);
+            skipped!.Clear();
+            step = last.Step;
+            pos = last.Pos;
             return true;
         }
         step = default;

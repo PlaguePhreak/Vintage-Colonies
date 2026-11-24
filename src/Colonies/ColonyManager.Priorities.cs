@@ -44,7 +44,10 @@ public partial class ColonyManager
     public (Building? Building, TeardownOrder? Teardown) NextBuilderJob(Colony colony, CitizenRecord builder)
     {
         bool Busy(int citizenId) => citizenId != builder.CitizenId && colony.Citizens.Find(c => c.CitizenId == citizenId) is { Alive: true, JobCode: Jobs.Builder };
-        foreach (var (b, t) in BuilderQueue(colony))
+        // A build stuck at a block it failed twice over goes after the others, so one bad block cannot hold up the town.
+        var queue = BuilderQueue(colony);
+        queue = queue.Where(e => e.Building == null || !IsBuildStuck(e.Building)).Concat(queue.Where(e => e.Building != null && IsBuildStuck(e.Building))).ToList();
+        foreach (var (b, t) in queue)
         {
             if (Busy(b?.BuilderCitizenId ?? t!.BuilderCitizenId)) continue;
             foreach (var other in colony.Buildings.Where(o => o != b && o.BuilderCitizenId == builder.CitizenId)) other.BuilderCitizenId = 0;

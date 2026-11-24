@@ -64,6 +64,8 @@ public class ColonyConfig
     public bool AllowForceUpgrade = true;
     /// <summary>Seconds a builder takes per block placed or cleared.</summary>
     public float BuilderSecondsPerBlock = 0.75f;
+    /// <summary>Failed goes at one block before a builder sets it aside and builds the rest first (0.198.0). A block out of reach counts as two.</summary>
+    public int BuilderStepTries = 4;
     /// <summary>
     /// How far a builder can reach to place or clear a block when it cannot walk any closer, such as a roof
     /// block high above the ground or one over a wall.
