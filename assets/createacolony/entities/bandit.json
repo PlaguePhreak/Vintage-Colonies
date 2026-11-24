@@ -15,7 +15,7 @@
 		"shape": { "base": "createacolony:entity/humanoid/settler-{sex}" },
 		"textures": { "skin1": { "base": "game:entity/humanoid/villagerbody/skin/normal3" } },
 		"behaviors": [
-			{ "code": "villagerinventory" },
+			{ "code": "settlerhands" },
 			{ "code": "seraphinventory" },
 			{ "code": "nametag", "showtagonlywhentargeted": true },
 			{ "code": "repulseagents" },
@@ -31,7 +31,7 @@
 	},
 	"server": {
 		"behaviors": [
-			{ "code": "villagerinventory" },
+			{ "code": "settlerhands" },
 			{ "code": "seraphinventory" },
 			{ "code": "nametag", "showtagonlywhentargeted": true },
 			{ "code": "repulseagents" },

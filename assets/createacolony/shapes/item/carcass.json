@@ -2,8 +2,8 @@
  "textureWidth": 16,
  "textureHeight": 16,
  "textures": {
-  "hide": "hide",
-  "meat": "meat"
+  "hide": "game:block/cloth/fur/brown",
+  "meat": "game:block/cloth/linen/red"
  },
  "elements": [
   {

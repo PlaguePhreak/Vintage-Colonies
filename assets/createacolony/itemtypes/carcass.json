@@ -6,7 +6,7 @@
 	"maxstacksize": 1,
 	"shape": { "base": "createacolony:item/carcass" },
 	"textures": {
-		"hide": { "base": "game:block/wood/bark/oak" },
+		"hide": { "base": "game:block/cloth/fur/brown" },
 		"meat": { "base": "game:block/cloth/linen/red" }
 	},
 	"transitionableProps": [{

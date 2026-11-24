@@ -41,7 +41,7 @@
 			"base": "game:block/cloth/linen/white"
 		},
 		"b": {
-			"base": "game:block/cloth/linen/normal"
+			"base": "game:block/cloth/linen/plain"
 		},
 		"c": {
 			"base": "game:block/stone/rock/granite1"

@@ -1115,7 +1115,7 @@ public partial class ColonyNetwork : ModSystem
             Style = BlueprintStyles.Normalize(b.Style),
             Variant = Manager.Blueprints.Variants(Manager.Blueprints.StyleFor(b), b.Type).Count > 1 ? Manager.Blueprints.VariantFor(Manager.Blueprints.StyleFor(b), b.Type, b.Variant) : "",
             Name = ColonyManager.BuildingName(b),
-            Status = b.HasWorkOrder || b.Removing ? Manager.BuildStatus.GetValueOrDefault(b.BuildingId, "queued") : "",
+            Status = b.HasWorkOrder || b.Removing ? (Manager.IsBuildStuck(b) && !b.Removing ? "stuck" : Manager.BuildStatus.GetValueOrDefault(b.BuildingId, "queued")) : "",
             Removing = b.Removing,
             Repairing = b.Repairing
         };

@@ -2,8 +2,8 @@
  "textureWidth": 16,
  "textureHeight": 16,
  "textures": {
-  "linen": "linen",
-  "rope": "rope"
+  "linen": "game:block/cloth/linen/white",
+  "rope": "game:block/cloth/reedrope"
  },
  "elements": [
   {

@@ -48,6 +48,12 @@ public class ColonyConfig
     // Respawn
     /// <summary>A settler not seen for this long while the Town Hall area is loaded is treated as lost and respawned.</summary>
     public double RespawnMissingAfterDays = 0.5;
+    /// <summary>Game days a settler may stay "unreachable" before being brought home to bed (0.198.0).</summary>
+    public double LostRescueDays = 1.0;
+    /// <summary>Blocks around where a settler got lost that they keep away from afterwards.</summary>
+    public double LostOffLimitsRadius = 24;
+    /// <summary>Game days a brought-home settler keeps away from where they got lost.</summary>
+    public double LostOffLimitsDays = 3;
 
     // Construction
     /// <summary>When false, builders conjure blocks without materials. Handy for creative testing.</summary>
@@ -64,6 +70,12 @@ public class ColonyConfig
     public bool AllowForceUpgrade = true;
     /// <summary>Seconds a builder takes per block placed or cleared.</summary>
     public float BuilderSecondsPerBlock = 0.75f;
+    /// <summary>Failed goes at one block before a builder sets it aside and builds the rest first (0.198.0). A block out of reach counts as two.</summary>
+    public int BuilderStepTries = 4;
+    /// <summary>Game hours a miner's own shaft spot may stay blocked before it moves to another side of the hut (0.198.0).</summary>
+    public double MinerShaftMoveHours = 4;
+    /// <summary>Workers start at a hut as soon as its hut block is placed, before it is built (0.198.0). Homes still need building.</summary>
+    public bool WorkAtUnbuiltHuts = true;
     /// <summary>
     /// How far a builder can reach to place or clear a block when it cannot walk any closer, such as a roof
     /// block high above the ground or one over a wall.

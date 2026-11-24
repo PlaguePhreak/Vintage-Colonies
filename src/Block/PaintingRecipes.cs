@@ -24,20 +24,29 @@ public class PaintingRecipes : ModSystem
     static readonly Dictionary<string, string[]> Alternatives = new()
     {
         ["gray"] = new[] { "grey" },
-        ["blue"] = new[] { "woadblue" },
+        ["blue"] = new[] { "woad" },
     };
+    /// <summary>Colours the game has no dye for, made from a mix of other dyes (Aaron: orange and black for brown).</summary>
+    static readonly Dictionary<string, string[]> Mixes = new()
+    {
+        ["brown"] = new[] { "orange", "black" },
+    };
+
+    /// <summary>The dyes a painting really needs: mixed colours are swapped for their parts, each dye once.</summary>
+    public static string[] RealDyes(IEnumerable<string> colours) =>
+        colours.SelectMany(c => Mixes.TryGetValue(c, out var parts) ? parts : new[] { c }).Distinct().ToArray();
 
     // After the game's grid recipe loader (1), so items, blocks and recipes are all loaded.
     public override double ExecuteOrder() => 1.1;
 
     public override bool ShouldLoad(EnumAppSide forSide) => forSide == EnumAppSide.Server;
 
-    /// <summary>The game's liquid dye item for a colour (game:dyeportion-red), or null when there is none.</summary>
+    /// <summary>The game's liquid dye item for a colour (game:dye-red), or null when there is none.</summary>
     public static Item? DyeItem(IWorldAccessor world, string colour)
     {
         foreach (var name in new[] { colour }.Concat(Alternatives.GetValueOrDefault(colour) ?? System.Array.Empty<string>()))
         {
-            var item = world.GetItem(new AssetLocation("game", "dyeportion-" + name));
+            var item = world.GetItem(new AssetLocation("game", "dye-" + name));
             if (item != null) return item;
         }
         return null;
@@ -64,7 +73,7 @@ public class PaintingRecipes : ModSystem
         int made = 0;
         foreach (var painting in world.SearchBlocks(new AssetLocation("createacolony", "painting-*-north")).OfType<BlockPainting>())
         {
-            var dyes = painting.Dyes;
+            var dyes = RealDyes(painting.Dyes);
             if (dyes.Length == 0 || dyes.Length > DyeCells.Length) continue;
             var dyeItems = dyes.Select(colour => DyeItem(world, colour)).ToArray();
             if (dyeItems.Any(item => item == null))

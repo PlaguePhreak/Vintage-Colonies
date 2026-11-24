@@ -137,7 +137,7 @@ public partial class ColonyManager
         var weapon = hand?.Itemstack is { } held && IsWeapon(held) ? held : null;
         float damage = (weapon != null ? WeaponDamage(weapon) : Config.GuardFistDamage) * Config.HerderCullDamageMult;
         damage *= ClampEffect(1f + 0.03f * UsableLevel(colony, citizen, "husbandry") + 0.03f * UsableLevel(colony, citizen, Strength));
-        animal.ReceiveDamage(new DamageSource
+        this.SafeHit(animal, new DamageSource
         {
             Source = EnumDamageSource.Entity,
             SourceEntity = herder,

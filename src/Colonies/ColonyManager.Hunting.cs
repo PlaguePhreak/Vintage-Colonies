@@ -80,7 +80,7 @@ public partial class ColonyManager
         float damage = weapon != null ? WeaponDamage(weapon) : Config.GuardFistDamage;
         damage *= ClampEffect(1f + 0.03f * UsableLevel(colony, citizen, "hunting") + 0.03f * UsableLevel(colony, citizen, Strength));
         damage += TraitAdd(citizen, "damageAdd");
-        prey.ReceiveDamage(new DamageSource
+        this.SafeHit(prey, new DamageSource
         {
             Source = EnumDamageSource.Entity,
             SourceEntity = hunter,

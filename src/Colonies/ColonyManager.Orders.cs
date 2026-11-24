@@ -49,7 +49,7 @@ public partial class ColonyManager
 
     /// <summary>Huts that are built and have their worker, so they can make or gather something.</summary>
     IEnumerable<Building> WorkingHuts(Colony colony) => colony.Buildings
-        .Where(b => b.Level > 0 && !b.Removing && JobOf(b.Type) is { } job && !IsGuardPost(b.Type) && WorkerAt(colony, b, job) != null)
+        .Where(b => Staffable(b) && JobOf(b.Type) is { } job && !IsGuardPost(b.Type) && WorkerAt(colony, b, job) != null)
         .OrderBy(b => b.BuildingId);
 
     OrderBook Orders(Colony colony)

@@ -102,6 +102,24 @@ public class QuestLibrary
         return FromJson(api, api.Assets.GetManyInCategory("config", "quests/", CreateAColonyModSystem.ModId).Select(a => a.ToText()));
     }
 
+    /// <summary>
+    /// True when a task names a block, item or creature that nothing in this game matches, so it can never be done.
+    /// Only once the game's blocks, items and creatures are known; before that nothing counts as impossible.
+    /// </summary>
+    static bool Impossible(ICoreAPI api, QuestObjectiveDef o)
+    {
+        var world = api.World;
+        if (world == null || world.Items.Count == 0 || world.Blocks.Count == 0 || o.Code.Length == 0) return false;
+        static AssetLocation Loc(string part) => new(part.Contains(':') ? part : "game:" + part);
+        if (o.Type == ObjectiveTypes.EntityNear)
+            return world.EntityTypes.Count > 0 && !world.EntityTypes.Any(t => QuestItems.Matches(o.Code, t.Code));
+        if (o.Type is ObjectiveTypes.BlockNear or ObjectiveTypes.Holds or ObjectiveTypes.Place)
+            return !o.Code.Split('|').Any(part => part.Length > 0 && (world.SearchBlocks(Loc(part)).Length > 0 || world.SearchItems(Loc(part)).Length > 0));
+        if (o.Type is ObjectiveTypes.Obtain or ObjectiveTypes.Deliver or ObjectiveTypes.Stock)
+            return QuestItems.Sample(world, o.Code) == null;
+        return false;
+    }
+
     /// <summary>True when this book came from the server's edited files.</summary>
     public bool Edited;
 
@@ -138,6 +156,14 @@ public class QuestLibrary
                     if (quest.Code.Length == 0) continue;
                     if (quest.Mod.Length > 0 && !api.ModLoader.IsModEnabled(quest.Mod))
                     {
+                        hidden.Add(quest.Code);
+                        continue;
+                    }
+                    // A task nothing in this game can do (Aaron's play test: a boiler, a tame elk) hides the quest,
+                    // as a missing mod does, instead of ticking it off (0.198.0, Aaron: "hide impossible quests").
+                    if (quest.Objectives.FirstOrDefault(o => Impossible(api, o)) is { } impossible)
+                    {
+                        api.Logger.Notification("[createacolony] Quest {0} is hidden: its task {1} {2} matches nothing in this game", quest.Code, impossible.Type, impossible.Code);
                         hidden.Add(quest.Code);
                         continue;
                     }

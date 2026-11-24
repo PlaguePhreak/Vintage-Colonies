@@ -255,7 +255,7 @@ public partial class ColonyManager
     {
         long now = sapi.World.ElapsedMilliseconds;
         if (noShelfRestockUntil.TryGetValue(colony.ColonyId, out long until) && now < until) return null;
-        var shelves = colony.Buildings.Where(b => b.Type == BuildingTypes.Cook && b.Level >= 1).SelectMany(b => KitchenShelves(colony, b)).ToList();
+        var shelves = colony.Buildings.Where(b => b.Type == BuildingTypes.Cook && Staffable(b)).SelectMany(b => KitchenShelves(colony, b)).ToList();
         if (shelves.Count > 0)
         {
             var food = WarehouseContainers(colony)

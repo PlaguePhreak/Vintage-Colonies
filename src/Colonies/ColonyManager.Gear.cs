@@ -211,6 +211,7 @@ public partial class ColonyManager
         var offhand = ToolBarItems(citizen)[OffhandSlot];
         var left = offhand != null && IsShield(offhand) && ShieldIsUp(settler) ? offhand
             : (Config.CarryTorches ? TorchToHold(citizen, settler) : null) ?? offhand;
+        if (left?.Block is BlockLantern && !left.Attributes.HasAttribute("material")) left = WithLanternParts(left.Clone());
         if (settler.LeftHandItemSlot is { } leftHand && SetIfDifferent(leftHand, left))
         {
             settler.GetBehavior<EntityBehaviorVillagerInv>()?.storeInv();

@@ -84,7 +84,22 @@ public partial class ColonyManager
             one.StackSize = 1;
             return one;
         }
-        return QuestItems.Sample(sapi.World, SplitTypes(code).Code);
+        return WithLanternParts(QuestItems.Sample(sapi.World, SplitTypes(code).Code));
+    }
+
+    /// <summary>
+    /// A lantern made from its code alone has no metal, lining or glass, and the game draws it with a missing texture
+    /// (seen in Aaron's play-test log after creative Give all, 0.198.0). Gives it the game's defaults.
+    /// </summary>
+    public static ItemStack? WithLanternParts(ItemStack? stack)
+    {
+        if (stack?.Block is BlockLantern && !stack.Attributes.HasAttribute("material"))
+        {
+            stack.Attributes.SetString("material", "copper");
+            stack.Attributes.SetString("lining", "plain");
+            stack.Attributes.SetString("glass", "quartz");
+        }
+        return stack;
     }
 
     /// <summary>A short name for where a container or spot is: the warehouse, a drop-off chest, or the building it is in.</summary>

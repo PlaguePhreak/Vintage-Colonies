@@ -261,6 +261,13 @@ public class AiTaskSettlerBuilder : SettlerTaskBase
     {
         var o = Colony?.Buildings.Find(b => b.BuildingId == orderId);
         if (o != null) manager!.BuildStatus[o.BuildingId] = "unreachable";
+        if (o != null && teardownId == 0 && step == Step.Work && !o.Removing)
+        {
+            // A block it cannot get to counts double: set aside after two goes, the rest of the build carries on.
+            manager!.StepFailed(o, target, 2);
+            nextSearchMs = entity.World.ElapsedMilliseconds + IdleRetryMs;
+            return;
+        }
         if (teardownId != 0)
         {
             unreachable.Add(target.Copy());
@@ -335,8 +342,10 @@ public class AiTaskSettlerBuilder : SettlerTaskBase
                 }
                 workTime += dt;
                 if (workTime < manager!.Config.BuilderSecondsPerBlock * manager.WorkTimeFactor(colony, citizen)) return true;
+                int before = entity.World.BlockAccessor.GetBlock(target).Id;
                 Work(colony, citizen);
                 StopWorkAnimation();
+                CountTry(colony, before);
                 if (stepAsideTo != null)
                 {
                     clearOf = target.Copy();
@@ -613,6 +622,17 @@ public class AiTaskSettlerBuilder : SettlerTaskBase
         if (!clearing) return SettlerAnimations.PlayerAnimations.Contains("placeblock") ? "placeblock" : "interactstatic";
         var hand = Hand;
         return hand?.Itemstack?.Collectible.GetHeldTpHitAnimation(hand, entity) ?? "breakhand";
+    }
+
+    /// <summary>After working at a block of a work order: forgets its failures if it is done, else counts one.</summary>
+    void CountTry(Colony colony, int blockBefore)
+    {
+        if (teardownId != 0 || stepAsideTo != null) return;
+        var order = colony.Buildings.Find(b => b.BuildingId == orderId);
+        if (order == null || order.Removing || !order.HasWorkOrder) return;
+        // Done, or changed on the way there (a fire pit gets its firewood next, wattle its daub): no failure.
+        if (manager!.IsStepDone(colony, buildStep, target, order) || entity.World.BlockAccessor.GetBlock(target).Id != blockBefore) manager.StepDone(order, target);
+        else manager.StepFailed(order, target);
     }
 
     void StopWorkAnimation()
