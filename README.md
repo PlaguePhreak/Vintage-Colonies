@@ -12,6 +12,24 @@ domain (`assets/createacolony/`, block and item codes like `createacolony:townha
 (`ModConfig/createacolony.json`), the release zips (`createacolony_<version>.zip`) and all save data keys.
 Changing any of those would stop old worlds from loading their colonies, so leave them as they are.
 
+## The Mayor builds the settlement (0.199.0)
+
+- **The Mayor.** On the Town Hall's Citizens tab, give one settler the Mayor job. One per colony. They walk rounds like the bailiff.
+- **What they do.** Every few hours (and each morning) the Mayor looks at what the colony needs, finds a spot, puts the hut down and orders it built. Later they order upgrades.
+- **What comes first.** Food (more Farmers and Hunters while there are many settlers for each), then whatever a building being built is waiting for, then beds, then anything else the colony has been short of for half a day. For example: the builder waits on logs, so the Mayor builds a Forester's Hut. If a hut for it exists but has no worker, they hire one. If it can't keep up, they upgrade it or build a second one.
+- **Build order.** After that, the Mayor follows the build order on the Mayor tab. Untick a building to skip it, or move it up and down. Some only start at 6, 10 or 15 settlers.
+- **Upgrades.** Busy, full huts go up a level, up to the Town Hall's level. When every hut has caught up, the Mayor asks to upgrade the Town Hall (always asks).
+- **Ask me first (default).** The Mayor tab says what they want to build and why. Press Show to see the building's ghost where it would go, then Approve, Other spot or Skip this one. "Build on their own" skips the asking. "Off" stops it.
+- **Where.** Inside the border, near the Town Hall, on flat natural ground (no more than 3 up or down), never over anything you placed, 2 blocks from other buildings and 3 clear in front. The front faces the Town Hall. Foresters like trees, Fishers need water, Quarries and Miners like stone, Guard Towers go towards the edge.
+- **Hut blocks.** The Mayor takes them from the Town Hall's or the warehouse's storage. If there is none, they ask for one on the Requests tab, and a Sawmill can make it (new: hut blocks are on the Sawmill's Crafting recipes tab). For testing, turn on "Mayor gets hut blocks free" on Settings > Town.
+- **Courier's Station.** The Mayor puts it next to the Warehouse block.
+- **Your builds only.** The Mayor only builds types that have a blueprint in the colony's asset pack.
+- While a Mayor is on duty, auto hiring and auto housing run even if their switches are off. If there is no builder at all, the Mayor makes someone the builder.
+- **Front of build marker** (`createacolony:waypoint-front`, white top). Put it on the ground just outside the front door of a build before exporting. The Mayor and the Builder's Wand use it to turn the front the right way. Without it, the first door is used, as before.
+- Server config: `MayorEveryHours`, `MayorShortHours`, `MayorSettlersPerFoodHut`, `MayorSecondBuilderAt`, `MayorMaxPerType`, `MayorOrdersPerBuilder`, `MayorGap`, `MayorFrontClear`, `MayorMaxSlope`, `MayorSearchRadius`, `MayorHutsUpToTownHall`, `MayorBuildOrder`, `MayorMakers`.
+
+Not tested in game yet.
+
 ## Expanded Foods stations for the cook (0.194.0)
 
 Only when A Culinary Artillery (the library Expanded Foods uses) is installed. Without it nothing changes.
