@@ -76,8 +76,6 @@ public class ColonyConfig
     public double MinerShaftMoveHours = 4;
     /// <summary>Workers start at a hut as soon as its hut block is placed, before it is built (0.198.0). Homes still need building.</summary>
     public bool WorkAtUnbuiltHuts = true;
-    /// <summary>Blocks around an unbuilt hut's block where its worker looks for a work station (fire pit, forge...) you placed.</summary>
-    public int UnbuiltStationRadius = 8;
     /// <summary>
     /// How far a builder can reach to place or clear a block when it cannot walk any closer, such as a roof
     /// block high above the ground or one over a wall.

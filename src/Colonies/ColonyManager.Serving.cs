@@ -65,7 +65,7 @@ public partial class ColonyManager
         long now = sapi.World.ElapsedMilliseconds;
         if (tableSpots.TryGetValue(hut, out var known) && now - known.Ms < TableCacheMs) return known.Spots;
         var spots = new List<BlockPos>();
-        if (hut.Type == BuildingTypes.Cook && hut.Level > 0 && Config.CookServes)
+        if (hut.Type == BuildingTypes.Cook && Staffable(hut) && Config.CookServes)
         {
             var ba = sapi.World.BlockAccessor;
             var (min, max) = ZoneOf(hut);

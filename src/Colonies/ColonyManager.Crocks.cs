@@ -192,7 +192,7 @@ public partial class ColonyManager
         if (HomeOf(colony, citizen) is { } home) chests = chests.Concat(HomeChests(home));
         if (citizen.WorkplacePos != null && GetBuilding(colony, citizen.WorkplacePos) is { } hut) chests = chests.Concat(HutStorage(colony, hut));
         chests = chests.Concat(WarehouseContainers(colony));
-        foreach (var cookHut in colony.Buildings.Where(b => b.Type == BuildingTypes.Cook && b.Level > 0)) chests = chests.Concat(KitchenStores(colony, cookHut));
+        foreach (var cookHut in colony.Buildings.Where(b => b.Type == BuildingTypes.Cook && Staffable(b))) chests = chests.Concat(KitchenStores(colony, cookHut));
         return chests.Distinct();
     }
 
@@ -292,11 +292,11 @@ public partial class ColonyManager
         {
             book = new PotteryOrderBook { At = now };
             var stores = WarehouseContainers(colony)
-                .Concat(colony.Buildings.Where(b => b.Type == BuildingTypes.Cook && b.Level > 0).SelectMany(b => KitchenStores(colony, b)))
+                .Concat(colony.Buildings.Where(b => b.Type == BuildingTypes.Cook && Staffable(b)).SelectMany(b => KitchenStores(colony, b)))
                 .Distinct().SelectMany(c => c.Inventory).Where(s => !s.Empty).Select(s => s.Itemstack!).ToList();
             var cooks = colony.Citizens.Where(c => c.Alive && c.JobCode == Jobs.Cook).ToList();
             int emptyCrocks = stores.Count(IsEmptyCrock) + cooks.Sum(c => PackItems(c).Count(IsEmptyCrock));
-            int kitchens = colony.Buildings.Count(b => b.Type == BuildingTypes.Cook && b.Level > 0 && WorkerAt(colony, b, Jobs.Cook) != null);
+            int kitchens = colony.Buildings.Count(b => b.Type == BuildingTypes.Cook && Staffable(b) && WorkerAt(colony, b, Jobs.Cook) != null);
             book.Crocks = Math.Max(0, kitchens * Config.CookSpareCrocks - emptyCrocks);
             int emptyBowls = stores.Where(IsEmptyBowl).Sum(s => s.StackSize);
             book.Bowls = Config.CarryBowl ? Math.Max(0, colony.Citizens.Count(WantsBowl) - emptyBowls) : 0;

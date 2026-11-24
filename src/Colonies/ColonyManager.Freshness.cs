@@ -179,7 +179,7 @@ public partial class ColonyManager
         }
         else
         {
-            var kitchens = colony.Buildings.Where(b => b.Type == BuildingTypes.Cook && b.Level >= 1).ToList();
+            var kitchens = colony.Buildings.Where(b => b.Type == BuildingTypes.Cook && Staffable(b)).ToList();
             var warehouse = WarehouseContainers(colony).ToList();
             var all = warehouse.Concat(kitchens.SelectMany(k => KitchenStores(colony, k))).ToList();
             groups.Add((warehouse, all));
