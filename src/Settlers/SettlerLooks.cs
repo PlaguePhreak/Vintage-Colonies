@@ -221,7 +221,7 @@ public class SettlerLooks : ModSystem
     {
         if (behaviors == null) return;
         foreach (var old in behaviors.Where(b => (string?)b["code"] == "extraskinnable").ToList()) old.Remove();
-        int at = behaviors.ToList().FindIndex(b => (string?)b["code"] is "villagerinventory" or "seraphinventory");
+        int at = behaviors.ToList().FindIndex(b => (string?)b["code"] is "villagerinventory" or "settlerhands" or "seraphinventory");
         var entry = new JObject { ["code"] = "extraskinnable" };
         if (at < 0) behaviors.Add(entry);
         else behaviors.Insert(at, entry);

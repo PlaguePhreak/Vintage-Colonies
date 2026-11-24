@@ -9,7 +9,7 @@ namespace CreateAColony.Settlers;
 /// <summary>
 /// A colony settler. It is built like a player: the player's seraph model with a look from the player
 /// character creator ("extraskinnable"), the player's clothing and armor slots ("seraphinventory", see
-/// ColonyManager.Gear.cs), and hand slots from the "villagerinventory" behavior. SettlerLooks fills in
+/// ColonyManager.Gear.cs), and hand slots from the "settlerhands" behavior (the game's villager inventory). SettlerLooks fills in
 /// the player's model, textures and skin parts when the game loads.
 /// </summary>
 public class EntitySettler : EntityHumanoid
