@@ -137,7 +137,7 @@ public class AiTaskSettlerDefend : SettlerTaskBase
         float damage = weapon != null ? ColonyManager.WeaponDamage(weapon) : m.Config.GuardFistDamage;
         damage *= m.DamageFactor(colony, citizen); // Fighting and Strength skills
         damage += m.TraitAdd(citizen, "damageAdd"); // Veteran
-        target.ReceiveDamage(new DamageSource
+        manager!.SafeHit(target, new DamageSource
         {
             Source = EnumDamageSource.Entity,
             SourceEntity = entity,
