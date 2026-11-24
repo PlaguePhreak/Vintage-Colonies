@@ -19,8 +19,8 @@
 	"textures": {
 		"sides": { "base": "game:block/wood/table/aged/sides" },
 		"planks": { "base": "game:block/wood/planks/aged1" },
-		"paper": { "base": "game:block/cloth/linen/normal" },
-		"cover": { "base": "game:block/cloth/wool/red" },
+		"paper": { "base": "game:block/cloth/linen/plain" },
+		"cover": { "base": "game:block/cloth/wool/red1" },
 		"wax": { "base": "game:block/candle" }
 	},
 	"sideopaque": { "all": false },
