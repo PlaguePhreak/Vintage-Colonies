@@ -331,6 +331,7 @@ public partial class ColonyManager : ModSystem
             TickSchool(colony);
             TickRequests(colony, now);
             EnsureMinStock(colony);
+            TidyToolRequests(colony);
             TickUpkeep(colony);
             TickLostSettlers(colony, now);
 

@@ -430,9 +430,20 @@ public partial class ColonyManager
         {
             var match = Matcher(code);
             int have = CountItems(storage, match) + PackCount(builder, match);
-            int coming = colony.Requests.Where(r => r.RequestedBy == tag && r.ItemCode == code).Sum(r => r.Remaining);
+            var open = colony.Requests.Where(r => r.RequestedBy == tag && r.ItemCode == code).ToList();
+            int coming = open.Sum(r => r.Remaining);
             int shortfall = count - have - coming;
             if (shortfall > 0) AddRequest(colony, code, shortfall, storage[0].Pos, tag);
+            // Things a player put into the storage by hand count too (0.200.0): requests nobody is carrying for
+            // shrink by what is already there, so couriers don't bring it a second time.
+            int surplus = have + coming - open.Sum(r => System.Math.Min(r.Extra, r.Remaining)) - count;
+            foreach (var request in open.Where(r => r.LeasedByCitizenId == 0))
+            {
+                if (surplus <= 0) break;
+                int part = System.Math.Min(surplus, request.Remaining);
+                RecordDelivery(colony, request, part);
+                surplus -= part;
+            }
         }
         return true;
     }
@@ -490,7 +501,10 @@ public partial class ColonyManager
         var drops = DropsOf(old, pos); // some blocks expect a player when dropping: those drop nothing
         BreakQuietly(pos);
 
+        // Into the chests beside the hut first and the hut block last (0.200.0): dug-up soil filled the hut block's
+        // own slots within minutes, and then nothing could be given or delivered to the hut.
         var storage = HutStorage(colony, builderHut).ToList();
+        if (storage.Count > 1 && storage[0].Pos.Equals(builderHut.HutPos)) storage = storage.Skip(1).Append(storage[0]).ToList();
         foreach (var drop in drops)
         {
             foreach (var container in storage)

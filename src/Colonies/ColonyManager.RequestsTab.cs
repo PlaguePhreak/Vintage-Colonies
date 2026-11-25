@@ -48,6 +48,12 @@ public partial class ColonyManager
                 status = Lang.Get(PackCount(courier, match) > 0 ? "createacolony:request-bringing" : "createacolony:request-fetching", courier.Name);
                 color = 0;
             }
+            // A courier tried and gave up for now (0.200.0): say why, so the player can fix it.
+            else if (RequestHeld(r) is { } held)
+            {
+                status = Lang.Get("createacolony:request-held-" + held);
+                color = 2;
+            }
             else if (inColony > 0 || SpareForRequest(colony, r) != null)
             {
                 status = Lang.Get(haulers ? "createacolony:request-waiting" : "createacolony:request-no-courier");
@@ -77,7 +83,7 @@ public partial class ColonyManager
     /// <summary>One of the things a request asks for, for its icon: one from the warehouse when it has some.</summary>
     ItemStack? RequestSample(string code, List<BlockEntityContainer> warehouse, System.Func<ItemStack, bool> match)
     {
-        if (ParseToolCode(code) is { } tool) return ToolSample(tool.Type);
+        if (ParseToolCode(code) is { } tool) return ToolSample(tool.Type, tool.Tier);
         if (BestStack(warehouse, match, _ => 0) is { } found)
         {
             var one = found.Clone();
@@ -119,10 +125,13 @@ public partial class ColonyManager
     /// Creative mode (0.197.0): puts up to want of what the request asks for into the chests from nothing, as the
     /// Requests tab's give buttons do with carried items in survival. Returns how many went in.
     /// </summary>
-    public int CreativeFill(Colony colony, DeliveryRequest request, List<BlockEntityContainer> dest, int want)
+    public int CreativeFill(Colony colony, DeliveryRequest request, List<BlockEntityContainer> dest, int want) =>
+        CreativeFill(colony, request.ItemCode, dest, want);
+
+    public int CreativeFill(Colony colony, string itemCode, List<BlockEntityContainer> dest, int want)
     {
-        var match = Matcher(request.ItemCode);
-        var sample = RequestSample(request.ItemCode, WarehouseContainers(colony).ToList(), match);
+        var match = Matcher(itemCode);
+        var sample = RequestSample(itemCode, WarehouseContainers(colony).ToList(), match);
         if (sample == null || !match(sample)) return 0;
         int given = 0;
         int max = System.Math.Max(1, sample.Collectible.MaxStackSize);

@@ -129,7 +129,7 @@ public class EntityBehaviorColonyCitizen : EntityBehavior
         }
         if (record.IsDowned) return;
         manager.SnackFromLunch(colony, record, settler);
-        manager.PickUpNearby(colony, record, settler, 1.5f);
+        manager.PickUpNearby(colony, record, settler, manager.Config.PickUpReach);
         manager.DressEntity(record);
     }
 

@@ -252,13 +252,16 @@ public class CreateAColonyModSystem : ModSystem
                 .HandleWith(OnStuck)
             .EndSubCommand()
             .BeginSubCommand("pathdebug")
-                .WithDescription("Show Willpower sparks over stuck settlers and log pathing in the server log (on/off, until restart)")
+                .WithDescription("Show Willpower sparks over stuck settlers and log walking, doors, couriers and requests in the server log (on/off, saved in the config)")
                 .RequiresPrivilege(Privilege.controlserver)
                 .WithArgs(parsers.OptionalBool("on"))
                 .HandleWith(args =>
                 {
                     var manager = sapi!.ModLoader.GetModSystem<ColonyManager>();
                     manager.PathDebug = args.Parsers[0].IsMissing ? !manager.PathDebug : (bool)args[0];
+                    // Kept across restarts and world loads (0.200.0): the overnight test lost it on every load.
+                    manager.Config.PathDebug = manager.PathDebug;
+                    sapi.StoreModConfig(manager.Config, ColonyConfig.FileName);
                     return TextCommandResult.Success(Lang.Get(manager.PathDebug ? "createacolony:pathdebug-on" : "createacolony:pathdebug-off"));
                 })
             .EndSubCommand()

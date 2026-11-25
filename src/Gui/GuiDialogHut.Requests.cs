@@ -20,6 +20,9 @@ public partial class GuiDialogHut
     const int CourierRowsPerPage = 4;
     const double CourierRowHeight = 84;
 
+    /// <summary>In creative the give buttons hand things out for free, and the rows say so (0.200.0).</summary>
+    bool ViewerCreative => capi.World.Player?.WorldData?.CurrentGameMode == EnumGameMode.Creative;
+
     void ComposeRequests(GuiComposer composer)
     {
         var rows = snapshot.Requests;
@@ -66,7 +69,7 @@ public partial class GuiDialogHut
                 + (r.For.Length > 0 ? " " + Lang.Get("createacolony:requests-for", r.For) : "");
             composer.AddStaticText(title, GuiKit.Body(), ElementBounds.Fixed(x, top + 2, textWidth, 20));
             string counts = Lang.Get("createacolony:requests-counts", r.Delivered, r.Quantity, r.InColony)
-                + (r.PlayerHas > 0 ? " " + Lang.Get("createacolony:requests-you-carry", r.PlayerHas) : "");
+                + (r.PlayerHas <= 0 ? "" : " " + (ViewerCreative ? Lang.Get("createacolony:requests-free") : Lang.Get("createacolony:requests-you-carry", r.PlayerHas)));
             composer.AddStaticText(counts, r.PlayerHas > 0 ? GuiKit.Detail().WithColor(GuiKit.GoodColor) : GuiKit.Detail(),
                 ElementBounds.Fixed(x, top + 22, textWidth, 18));
             var color = r.Color == 0 ? GuiKit.GoodColor : r.Color == 1 ? GuiKit.WarnColor : MissingColor;
@@ -76,7 +79,7 @@ public partial class GuiDialogHut
                 string id = r.RequestId.ToString();
                 int amount = Math.Min(Math.Max(1, r.Needed), r.PlayerHas);
                 composer.AddSmallButton("^", () => SendText(ColonyAction.FillRequests, BuildingId, id), ElementBounds.Fixed(Width - 50, top + 16, 40, 28));
-                composer.AddHoverText(Lang.Get("createacolony:requests-give", amount), GuiKit.Detail(), 220, ElementBounds.Fixed(Width - 50, top + 16, 40, 28));
+                composer.AddHoverText(Lang.Get(ViewerCreative ? "createacolony:requests-give-free" : "createacolony:requests-give", amount), GuiKit.Detail(), 220, ElementBounds.Fixed(Width - 50, top + 16, 40, 28));
             }
             top += RequestRowHeight;
         }

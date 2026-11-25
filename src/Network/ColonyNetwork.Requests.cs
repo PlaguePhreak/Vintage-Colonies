@@ -68,24 +68,30 @@ public partial class ColonyNetwork
         if (hut == null) return "createacolony:bad-building";
         var open = Manager.RequestsOf(colony, hut);
         int given = 0, kinds = 0;
+        bool full = false;
         foreach (string part in packet.Text.Split(',', StringSplitOptions.RemoveEmptyEntries).Take(200))
         {
             if (!int.TryParse(part.Trim(), out int id) || open.Find(r => r.RequestId == id) is not { } request) continue;
-            // The chest the request is for; if it is gone, the hut's own storage.
-            var dest = sapi!.World.BlockAccessor.GetBlockEntity(request.DestPos) is BlockEntityContainer chest
-                ? new List<BlockEntityContainer> { chest }
-                : Manager.HutStorage(colony, hut).Cast<BlockEntityContainer>().ToList();
+            // The chest the request is for first, then the rest of that hut's storage: the hut block and every chest
+            // in its building (0.200.0; before, a full hut block stopped every give).
+            var dest = new List<BlockEntityContainer>();
+            if (sapi!.World.BlockAccessor.GetBlockEntity(request.DestPos) is BlockEntityContainer chest) dest.Add(chest);
+            dest.AddRange(Manager.HutStorage(colony, Manager.RequestHut(colony, request) ?? hut).Where(c => !dest.Any(d => d.Pos.Equals(c.Pos))));
             if (dest.Count == 0) continue;
             int want = Math.Min(NeededFor(request), 999);
             // Creative mode (0.197.0): the request is filled from nothing.
-            int moved = Creative(player) ? Manager.CreativeFill(colony, request, dest, want) : Give(player, dest, request.ItemCode, want);
+            bool free = Creative(player);
+            int could = free ? want : Math.Min(want, CarriedCount(player, request.ItemCode));
+            int moved = free ? Manager.CreativeFill(colony, request, dest, want) : Give(player, dest, request.ItemCode, want);
+            if (moved < could) full = true;
             if (moved <= 0) continue;
             Manager.RecordDelivery(colony, request, moved);
             given += moved;
             kinds++;
         }
-        if (given == 0) return "createacolony:give-none";
+        if (given == 0) return full ? "createacolony:give-full" : "createacolony:give-none";
         player.SendMessage(0, Lang.GetL(player.LanguageCode, kinds > 1 ? "createacolony:requests-given-all" : "createacolony:requests-given", given, kinds), EnumChatType.Notification);
+        if (full) player.SendMessage(0, Lang.GetL(player.LanguageCode, "createacolony:give-full-rest"), EnumChatType.Notification);
         return null;
     }
 

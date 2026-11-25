@@ -23,7 +23,7 @@ public class AiTaskSettlerCourier : SettlerTaskBase
     const long IdleRetryMs = 5_000;
     const long BlockedRetryMs = 60_000;
 
-    enum Step { Pickup, Deliver }
+    enum Step { Pickup, Deliver, Sweep }
 
     Step step;
     BlockPos? target;
@@ -47,6 +47,24 @@ public class AiTaskSettlerCourier : SettlerTaskBase
     bool fromHut;
     /// <summary>Where the load being carried was picked up, for the Courier's Station.</summary>
     BlockPos? pickedFrom;
+    /// <summary>
+    /// Deliveries to one place that went wrong in a row, and why ("reach" or "full"). After DeliveryTries the load
+    /// goes back to the warehouse and the requests are set free (0.200.0): in the overnight test a courier held five
+    /// stacks for three game days, trying the same hut every minute, with the status "taking a break".
+    /// </summary>
+    int deliveryFails;
+    BlockPos? failedDest;
+    string? trouble;
+    const int DeliveryTries = 4;
+    /// <summary>Things on the ground this courier walked to and could not reach (0.200.0), and when it may look for more.</summary>
+    readonly System.Collections.Generic.HashSet<long> sweepSkip = new();
+    long sweepItemId;
+    long nextSweepMs;
+    const long SweepEveryMs = 15_000;
+    /// <summary>A worker fetching for his own hut because no courier came (0.200.0), and when he may check again.</summary>
+    bool selfFetch;
+    long nextSelfFetchMs;
+    const long SelfFetchEveryMs = 20_000;
 
     public AiTaskSettlerCourier(EntityAgent entity, JsonObject taskConfig, JsonObject aiConfig) : base(entity, taskConfig, aiConfig) { }
 
@@ -57,7 +75,8 @@ public class AiTaskSettlerCourier : SettlerTaskBase
         var colony = Colony;
         // A settler whose courier job was taken away still puts its last load back first.
         // Builders, foresters and farmers carry their own tools and supplies, so their loads are left to them.
-        if (citizen == null || colony == null || Jobs.CarriesOwnLoad(citizen.JobCode) && !manager.WinterFarmerHelps(colony, citizen) || manager.IsBrokenDown(citizen)) return false;
+        if (citizen == null || colony == null || manager.IsBrokenDown(citizen)) return false;
+        if (Jobs.CarriesOwnLoad(citizen.JobCode) && !manager.WinterFarmerHelps(colony, citizen)) return TrySelfFetch(colony, citizen);
         if (citizen.JobCode != Jobs.Courier && !Helps(citizen) && manager.PackEmpty(citizen))
         {
             carryingSinceMs = -1;
@@ -100,9 +119,52 @@ public class AiTaskSettlerCourier : SettlerTaskBase
         citizen.WorkplacePos != null && manager!.GetBuilding(colony, citizen.WorkplacePos) is { } hut && ColonyManager.HasOwnStorage(hut.Type)
             ? manager.HutStorage(colony, hut).FirstOrDefault()?.Pos : null;
 
+    /// <summary>
+    /// A worker with his own hut (0.200.0): when the hut has waited a game hour for something the warehouse holds and
+    /// no courier is bringing it, he walks to the warehouse and carries it to his hut himself. Only what the request
+    /// asks for is touched; his tools and supplies stay in his pack.
+    /// </summary>
+    bool TrySelfFetch(Colony colony, CitizenRecord citizen)
+    {
+        long nowMs = entity.World.ElapsedMilliseconds;
+        if (nowMs < nextSelfFetchMs) return false;
+        nextSelfFetchMs = nowMs + SelfFetchEveryMs;
+        requestId = 0;
+        toHut = false;
+        shelfTarget = null;
+        coolTarget = null;
+        fromHut = false;
+        pickedFrom = null;
+        selfFetch = false;
+        ReleaseTorch();
+        // A fetch that was cut short (night, a meal): carry on with it.
+        var own = colony.Requests.Find(r => r.LeasedByCitizenId == citizen.CitizenId);
+        if (own != null)
+        {
+            if (manager!.PackCount(citizen, ColonyManager.Matcher(own.ItemCode)) > 0)
+            {
+                requestId = own.RequestId;
+                selfFetch = true;
+                return Go(Step.Deliver, own.DestPos);
+            }
+            manager.ReleaseRequest(colony, own);
+        }
+        if (manager!.OverdueOwnRequest(colony, citizen) is not { } mine) return false;
+        var source = manager.SoonestToSpoil(manager.WarehouseContainers(colony), ColonyManager.Matcher(mine.ItemCode));
+        if (source == null) return false;
+        manager.LeaseAlong(colony, mine, citizen);
+        requestId = mine.RequestId;
+        selfFetch = true;
+        pickupFilter = _ => true;
+        if (manager.PathDebug) manager.Mod.Logger.Notification("[requests] {0}: {1} waited over {2:0.#} h for {3}, the warehouse has it and no courier came, so goes for it",
+            mine.RequestId, citizen.Name, manager.Config.WorkerFetchesAfterHours, mine.ItemCode);
+        return Go(Step.Pickup, source.Pos);
+    }
+
     bool Plan(Colony colony, CitizenRecord citizen)
     {
         requestId = 0;
+        selfFetch = false;
         toHut = false;
         shelfTarget = null;
         coolTarget = null;
@@ -189,6 +251,18 @@ public class AiTaskSettlerCourier : SettlerTaskBase
             shelfWant = 1;
             return Go(Step.Pickup, relight.Source.Pos);
         }
+
+        // Nothing to carry: fetch what lies on the ground inside the colony (0.200.0).
+        long nowMs = entity.World.ElapsedMilliseconds;
+        if (citizen.JobCode == Jobs.Courier && nowMs >= nextSweepMs)
+        {
+            nextSweepMs = nowMs + SweepEveryMs;
+            if (manager.LooseItemInColony(colony, citizen, entity, manager.Config.CourierSweepRange, sweepSkip) is { } loose)
+            {
+                sweepItemId = loose.EntityId;
+                return Go(Step.Sweep, loose.Pos.AsBlockPos);
+            }
+        }
         return false;
     }
 
@@ -209,14 +283,52 @@ public class AiTaskSettlerCourier : SettlerTaskBase
     public override void StartExecute()
     {
         base.StartExecute();
-        WalkTo(target!.ToVec3d().Add(0.5, 0, 0.5), 1.5f);
+        if (step == Step.Sweep) WalkTo(target!.ToVec3d().Add(0.5, 0, 0.5), 1.5f);
+        else WalkTo(StandBy(target!), 1.5f);
+    }
+
+    /// <summary>
+    /// Where to walk to for a chest or hut block: a free spot right beside it, not the block itself (0.200.0),
+    /// so a hut block against a wall is walked to from inside its room.
+    /// </summary>
+    Vec3d StandBy(BlockPos chest) => manager!.FreeSpotNear(entity, chest, 1) ?? chest.ToVec3d().Add(0.5, 0, 0.5);
+
+    /// <summary>A delivery went wrong. True once it has gone wrong often enough: the load goes back and the requests are set free.</summary>
+    bool DeliveryFailed(Colony colony, CitizenRecord citizen, BlockPos dest, string why)
+    {
+        if (failedDest == null || !failedDest.Equals(dest)) deliveryFails = 0;
+        failedDest = dest.Copy();
+        deliveryFails++;
+        trouble = why;
+        if (deliveryFails < DeliveryTries) return false;
+        deliveryFails = 0;
+        foreach (var r in colony.Requests.Where(r => r.LeasedByCitizenId == citizen.CitizenId && r.DestPos.Equals(dest)).ToList())
+        {
+            manager!.HoldRequest(colony, r, why);
+        }
+        manager!.NoteWalk(citizen, entity, "Courier", why == "full" ? "storage full, load taken back" : "no way in, load taken back", dest.ToVec3d());
+        if (manager.PathDebug) manager.Mod.Logger.Notification("[courier] {0} takes its load back: {1} at {2}", citizen.Name, why == "full" ? "the storage is full" : "no way to the hut", dest);
+        requestId = 0;
+        return true;
     }
 
     public override bool ContinueExecute(float dt)
     {
+        if (PathFailed && step == Step.Sweep)
+        {
+            // No way to that thing: leave it, look for another.
+            sweepSkip.Add(sweepItemId);
+            nextSearchMs = entity.World.ElapsedMilliseconds + IdleRetryMs;
+            return false;
+        }
         if (PathFailed)
         {
             nextSearchMs = entity.World.ElapsedMilliseconds + BlockedRetryMs;
+            if (step == Step.Deliver && Colony is { } c && Citizen is { } who && !manager!.PackEmpty(who)
+                && c.Requests.Find(r => r.RequestId == requestId) is { } stuck && DeliveryFailed(c, who, stuck.DestPos, "reach"))
+            {
+                nextSearchMs = 0; // straight back to the warehouse with it
+            }
             return false;
         }
         if (!Arrived)
@@ -230,12 +342,28 @@ public class AiTaskSettlerCourier : SettlerTaskBase
         var citizen = Citizen;
         if (colony == null || citizen == null) return false;
 
+        if (step == Step.Sweep)
+        {
+            if (manager!.PickUpNearby(colony, citizen, entity, 3f) == 0) sweepSkip.Add(sweepItemId);
+            // More lying close by comes along on the same round.
+            if (manager.LooseItemInColony(colony, citizen, entity, 16, sweepSkip) is { } more)
+            {
+                sweepItemId = more.EntityId;
+                target = more.Pos.AsBlockPos;
+                WalkTo(target.ToVec3d().Add(0.5, 0, 0.5), 1.5f);
+                return true;
+            }
+            nextSearchMs = 0; // to the warehouse with it
+            return false;
+        }
+
         if (step == Step.Pickup)
         {
             if (!Pickup(colony, citizen)) return false;
             step = Step.Deliver;
             // A torch may hang high on a wall: near enough to reach up to it.
-            WalkTo(target!.ToVec3d().Add(0.5, 0, 0.5), torchTarget != null ? 2.5f : 1.5f);
+            if (torchTarget != null) WalkTo(target!.ToVec3d().Add(0.5, 0, 0.5), 2.5f);
+            else WalkTo(StandBy(target!), 1.5f);
             return true;
         }
 
@@ -281,6 +409,7 @@ public class AiTaskSettlerCourier : SettlerTaskBase
             return false;
         }
         pickedFrom = target!.Copy();
+        trouble = null;
         var destination = request != null ? request.DestPos : shelfTarget ?? coolTarget ?? torchTarget ?? manager!.WarehouseContainers(colony).FirstOrDefault()?.Pos;
         if (destination == null) return false; // warehouse removed mid-trip; the load waits until one exists
         target = destination.Copy();
@@ -324,21 +453,40 @@ public class AiTaskSettlerCourier : SettlerTaskBase
             if (entity.World.BlockAccessor.GetBlockEntity(request.DestPos) is not BlockEntityContainer dest)
             {
                 // The chest that asked for this is gone: drop the request, the load goes back to the warehouse.
-                manager.CancelRequest(colony, request);
+                manager.CancelRequest(colony, request, "the chest it was for is gone");
                 nextSearchMs = 0;
                 return;
             }
             blocked = false;
+            // The chest that asked first, then the rest of that hut's storage (0.200.0): a full hut block no
+            // longer stops a delivery while the chests beside it have room.
+            var into = new List<BlockEntityContainer> { dest };
+            if (manager.RequestHut(colony, request) is { } destHut) into.AddRange(manager.HutStorage(colony, destHut).Where(c => !c.Pos.Equals(dest.Pos)));
             // This request and any others for the same chest the courier brought along.
             var along = colony.Requests.Where(r => r != request && r.LeasedByCitizenId == citizen.CitizenId && r.DestPos.Equals(request.DestPos)).ToList();
+            var destPos = request.DestPos.Copy();
             foreach (var r in along.Prepend(request))
             {
                 var match = ColonyManager.Matcher(r.ItemCode);
                 int before = manager.PackCount(citizen, match);
-                manager.UnloadPack(colony, citizen, new[] { dest }, match);
+                manager.UnloadPack(colony, citizen, into, match);
                 int moved = before - manager.PackCount(citizen, match);
-                manager.RecordDelivery(colony, r, moved);
-                blocked |= manager.PackCount(citizen, match) > 0;
+                bool left = manager.PackCount(citizen, match) > 0;
+                // Nothing fitted: the request stays this courier's, so the next try (or the way back) knows whose load it is.
+                if (moved > 0 || !left) manager.RecordDelivery(colony, r, moved);
+                blocked |= left;
+            }
+            if (!blocked)
+            {
+                deliveryFails = 0;
+                trouble = null;
+            }
+            else if (DeliveryFailed(colony, citizen, destPos, "full"))
+            {
+                // Often enough: back to the warehouse with what is left.
+                manager.GainHaulXp(colony, citizen, stacksBefore - manager.PackItems(citizen).Count, wasFull);
+                nextSearchMs = 0;
+                return;
             }
         }
         else if (shelfTarget != null)
@@ -428,12 +576,24 @@ public class AiTaskSettlerCourier : SettlerTaskBase
             var sample = manager!.PackItems(citizen).FirstOrDefault(ColonyManager.Matcher(request.ItemCode));
             if (sample != null) what = sample.GetName();
         }
+        if (trouble != null && failedDest != null && !manager!.PackEmpty(citizen))
+        {
+            string hutName = manager.GetBuilding(colony, failedDest) is { } hut ? ColonyManager.BuildingName(hut)
+                : colony.Buildings.FirstOrDefault(b => !b.IsStation && manager.HutStorage(colony, b).Any(c => c.Pos.Equals(failedDest))) is { } owner ? ColonyManager.BuildingName(owner)
+                : Vintagestory.API.Config.Lang.Get("createacolony:activity-courier-a-chest");
+            int stacks = manager.PackItems(citizen).Count;
+            if (request == null) return Vintagestory.API.Config.Lang.Get("createacolony:activity-courier-back", stacks, hutName);
+            return Vintagestory.API.Config.Lang.Get(trouble == "full" ? "createacolony:activity-courier-full" : "createacolony:activity-courier-no-way", stacks, hutName);
+        }
         string key = (request != null, step) switch
         {
+            (true, Step.Pickup) when selfFetch => "activity-self-fetch",
+            (true, Step.Deliver) when selfFetch => "activity-self-deliver",
             (true, Step.Pickup) => "activity-courier-fetch",
             (true, Step.Deliver) => "activity-courier-deliver",
             (false, _) when shelfTarget != null => "activity-courier-shelves",
             (false, _) when coolTarget != null => "activity-courier-cooling",
+            (false, Step.Sweep) => "activity-courier-sweep",
             (false, Step.Pickup) => "activity-courier-collect",
             _ => "activity-courier-store"
         };

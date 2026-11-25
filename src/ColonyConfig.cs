@@ -1517,6 +1517,15 @@ public class ColonyConfig
     public float PickUpDelaySeconds = 5f;
     /// <summary>An idle settler walks to items on the ground within this many blocks. 0: only what it walks over.</summary>
     public int PickUpRange = 10;
+    /// <summary>How near a settler picks up what lies beside it while working or walking past, in blocks (0.200.0; was 1.5).</summary>
+    public float PickUpReach = 3f;
+    /// <summary>Couriers with nothing to carry walk to things lying on the ground inside the colony, this far from them, and take them to the warehouse (0.200.0). 0: off.</summary>
+    public int CourierSweepRange = 64;
+    /// <summary>
+    /// A worker whose hut has waited this many game hours for something the warehouse holds, with no courier
+    /// bringing it, fetches it himself (0.200.0). 0: never.
+    /// </summary>
+    public double WorkerFetchesAfterHours = 1.0;
     /// <summary>
     /// A settler with no job hut keeps what it picks up until its pack is full or it has carried it this many
     /// seconds, then takes it all to the warehouse in one trip (if the colony has one).

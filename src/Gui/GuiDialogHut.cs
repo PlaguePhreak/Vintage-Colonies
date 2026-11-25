@@ -1962,7 +1962,7 @@ public partial class GuiDialogHut : GuiDialog
                 string code = r.Code;
                 int amount = r.Needed - r.Have;
                 composer.AddSmallButton("^", () => SendText(ColonyAction.GiveResource, BuildingId, code + "|" + amount), ElementBounds.Fixed(Width - 50, y + 8, 40, 28));
-                composer.AddHoverText(Lang.Get("createacolony:resources-give", Math.Min(amount, r.PlayerHas)), GuiKit.Detail(), 220, ElementBounds.Fixed(Width - 50, y + 8, 40, 28));
+                composer.AddHoverText(Lang.Get(ViewerCreative ? "createacolony:requests-give-free" : "createacolony:resources-give", Math.Min(amount, r.PlayerHas)), GuiKit.Detail(), 220, ElementBounds.Fixed(Width - 50, y + 8, 40, 28));
             }
             y += ResourceRowHeight;
         }
@@ -1980,11 +1980,11 @@ public partial class GuiDialogHut : GuiDialog
         : r.AnyOf.Length > 0 ? Lang.Get("createacolony:items-any-" + r.AnyOf, stack.GetName()) : WithWood(stack);
 
     /// <summary>"In the hut: 0. You have 100." under the item's name.</summary>
-    static string ResourceCounts(ResourceView r)
+    string ResourceCounts(ResourceView r)
     {
         if (r.Have >= r.Needed) return Lang.Get("createacolony:resources-ready");
         string line = Lang.Get("createacolony:resources-in-hut", r.Have);
-        if (r.PlayerHas > 0) return line + "   " + Lang.Get("createacolony:resources-you-have", r.PlayerHas);
+        if (r.PlayerHas > 0) return line + "   " + (ViewerCreative ? Lang.Get("createacolony:requests-free") : Lang.Get("createacolony:resources-you-have", r.PlayerHas));
         if (r.IsTool) return line;
         // On its way: in the warehouse for a courier, or another hut makes it.
         if (r.InColony > 0) return line + "   " + Lang.Get("createacolony:resources-in-warehouse", r.InColony);

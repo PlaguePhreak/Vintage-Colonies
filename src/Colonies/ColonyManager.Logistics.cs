@@ -80,6 +80,8 @@ public partial class ColonyManager
     /// </summary>
     public ItemStack? TakeItems(IEnumerable<BlockEntityContainer> containers, ItemMatch match, int max)
     {
+        containers = containers.ToList();
+        foreach (var c in containers) SplitOversized(c);
         var found = containers.SelectMany(c => c.Inventory.Where(s => !s.Empty && match(s.Itemstack)).Select(s => (Container: c, Slot: s))).ToList();
         if (found.Any(f => CanSpoil(f.Slot.Itemstack))) found = found.OrderBy(f => HoursUntilSpoiled(f.Slot)).ToList();
 
@@ -101,6 +103,34 @@ public partial class ColonyManager
         }
         foreach (var container in changed) container.MarkDirty(true);
         return taken;
+    }
+
+    /// <summary>
+    /// Stacks bigger than the game allows (items spawned with a command or in creative) are split into normal ones,
+    /// as far as the container has empty slots (0.200.0). In the overnight test such stacks in a trunk and in a hut
+    /// stopped the couriers until Aaron split them by hand.
+    /// </summary>
+    public void SplitOversized(BlockEntityContainer container)
+    {
+        bool changed = false;
+        foreach (var slot in container.Inventory)
+        {
+            if (slot.Empty || slot.Itemstack.Collectible == null) continue;
+            int max = Math.Max(1, slot.Itemstack.Collectible.MaxStackSize);
+            while (slot.StackSize > max)
+            {
+                var free = container.Inventory.FirstOrDefault(s => s.Empty && s.CanHold(slot));
+                if (free == null) break;
+                var part = slot.Itemstack.Clone();
+                part.StackSize = Math.Min(max, slot.StackSize - max);
+                slot.Itemstack.StackSize -= part.StackSize;
+                free.Itemstack = part;
+                free.MarkDirty();
+                slot.MarkDirty();
+                changed = true;
+            }
+        }
+        if (changed) container.MarkDirty(true);
     }
 
     /// <summary>Puts as much of the stack as fits into the container. Returns how many items moved.</summary>
@@ -203,6 +233,7 @@ public partial class ColonyManager
         foreach (var request in colony.Requests.OrderBy(r => r.RequestId))
         {
             if (request.LeasedByCitizenId != 0 && request.LeaseUntilTotalHours > now) continue;
+            if (RequestHeld(request) != null) continue;
             if (CountItems(warehouse, Matcher(request.ItemCode)) <= 0 && SpareForRequest(colony, request) == null) continue;
 
             request.LeasedByCitizenId = courier.CitizenId;
@@ -240,6 +271,55 @@ public partial class ColonyManager
         return Math.Max(wanted, sample.Collectible.MaxStackSize);
     }
 
+    /// <summary>
+    /// Requests a courier could not deliver, until when (game hours) no courier takes them again, and why ("reach",
+    /// "full"). Kept in memory only (0.200.0).
+    /// </summary>
+    readonly Dictionary<int, (double UntilHours, string Why)> heldRequests = new();
+    /// <summary>Game hours a request rests after a courier gave up on it, so the same load is not carried back and forth.</summary>
+    const double RequestHoldHours = 3;
+
+    /// <summary>A courier gives up on a request for now: it is set free and rests for a few hours.</summary>
+    public void HoldRequest(Colony colony, DeliveryRequest request, string why)
+    {
+        heldRequests[request.RequestId] = (sapi.World.Calendar.TotalHours + RequestHoldHours, why);
+        ReleaseRequest(colony, request);
+    }
+
+    /// <summary>Why no courier takes this request right now ("reach": no way to the hut, "full": its storage is full), or null.</summary>
+    public string? RequestHeld(DeliveryRequest request)
+    {
+        if (!heldRequests.TryGetValue(request.RequestId, out var held)) return null;
+        if (held.UntilHours > sapi.World.Calendar.TotalHours) return held.Why;
+        heldRequests.Remove(request.RequestId);
+        return null;
+    }
+
+    /// <summary>
+    /// The hut whose storage a request goes to: the one whose block or chest it names. A builder's requests are
+    /// tagged with the building being built, but go to the Builder's Hut. Null for a player's request to a loose chest.
+    /// </summary>
+    public Building? RequestHut(Colony colony, DeliveryRequest request)
+    {
+        if (GetBuilding(colony, request.DestPos) is { } named) return named;
+        return colony.Buildings.FirstOrDefault(b => !b.IsStation && HasOwnStorage(b.Type) && HutStorage(colony, b).Any(c => c.Pos.Equals(request.DestPos)));
+    }
+
+    /// <summary>
+    /// Counts things a player put into a hut's storage toward the hut's open requests for them (0.200.0), oldest
+    /// first, so couriers stop bringing what is already there.
+    /// </summary>
+    public void CountTowardRequests(Colony colony, Building hut, string itemCode, int amount)
+    {
+        foreach (var request in RequestsOf(colony, hut).Where(r => r.ItemCode == itemCode).ToList())
+        {
+            if (amount <= 0) break;
+            int part = Math.Min(amount, request.Remaining);
+            RecordDelivery(colony, request, part);
+            amount -= part;
+        }
+    }
+
     public void ReleaseRequest(Colony colony, DeliveryRequest request)
     {
         request.LeasedByCitizenId = 0;
@@ -252,13 +332,62 @@ public partial class ColonyManager
         request.Delivered += amount;
         request.LeasedByCitizenId = 0;
         // Once what the hut needs is there, the spare only comes along on the same trip, so nobody waits for it.
-        if (request.Remaining <= 0 || amount > 0 && request.Remaining <= request.Extra) colony.Requests.Remove(request);
+        bool done = request.Remaining <= 0 || amount > 0 && request.Remaining <= request.Extra;
+        if (done) colony.Requests.Remove(request);
+        if (PathDebug) Mod.Logger.Notification("[requests] {0}: {1} x{2} for {3}, {4} more arrived ({5} of {6}){7}", request.RequestId, request.ItemCode,
+            request.Quantity, request.RequestedBy, amount, request.Delivered, request.Quantity, done ? ", closed" : "");
         MarkDirty(colony);
     }
 
-    public void CancelRequest(Colony colony, DeliveryRequest request)
+    public void CancelRequest(Colony colony, DeliveryRequest request, string why = "cancelled")
     {
         colony.Requests.Remove(request);
+        if (PathDebug) Mod.Logger.Notification("[requests] {0}: {1} x{2} for {3} dropped at {4} of {5}: {6}", request.RequestId, request.ItemCode,
+            request.Quantity, request.RequestedBy, request.Delivered, request.Quantity, why);
         MarkDirty(colony);
+    }
+
+    readonly Dictionary<int, double> requestSeen = new();
+
+    /// <summary>
+    /// A request for the worker's own hut that has waited WorkerFetchesAfterHours while the warehouse holds the
+    /// thing and no courier is bringing it (0.200.0); null when there is none. The worker then goes for it himself.
+    /// </summary>
+    public DeliveryRequest? OverdueOwnRequest(Colony colony, CitizenRecord worker)
+    {
+        if (Config.WorkerFetchesAfterHours <= 0 || worker.WorkplacePos == null || colony.WarehousePos == null) return null;
+        if (GetBuilding(colony, worker.WorkplacePos) is not { } hut) return null;
+        double now = sapi.World.Calendar.TotalHours;
+        List<BlockEntityContainer>? warehouse = null;
+        foreach (var request in colony.Requests.OrderBy(r => r.RequestId))
+        {
+            if (request.Remaining <= 0 || !requestSeen.TryGetValue(request.RequestId, out double since) || now - since < Config.WorkerFetchesAfterHours) continue;
+            if (request.LeasedByCitizenId != 0 && request.LeasedByCitizenId != worker.CitizenId && request.LeaseUntilTotalHours > now) continue;
+            if (RequestHeld(request) == "full" || RequestHut(colony, request) != hut) continue;
+            warehouse ??= WarehouseContainers(colony).Cast<BlockEntityContainer>().ToList();
+            if (CountItems(warehouse, Matcher(request.ItemCode)) > 0) return request;
+        }
+        return null;
+    }
+
+    /// <summary>
+    /// Tidies tool requests (0.200.0): one is dropped when the hut that asked already has such a tool in its storage,
+    /// or its only worker carries one. Tools given by hand or picked up left the request open, and a second tool came.
+    /// </summary>
+    void TidyToolRequests(Colony colony)
+    {
+        // When each request was first seen, for workers who fetch for themselves after a wait (OverdueOwnRequest).
+        double hours = sapi.World.Calendar.TotalHours;
+        foreach (var r in colony.Requests) requestSeen.TryAdd(r.RequestId, hours);
+        foreach (var request in colony.Requests.Where(r => r.RequestedBy.StartsWith("building:") && r.LeasedByCitizenId == 0).ToList())
+        {
+            if (ParseToolCode(request.ItemCode) is not { } tool || RequestHut(colony, request) is not { } hut) continue;
+            bool fits(ItemStack s) => ToolFits(s, tool.Type, tool.Tier);
+            var workers = colony.Citizens.Where(c => c.Alive && c.WorkplacePos != null && c.WorkplacePos.Equals(hut.HutPos)).ToList();
+            bool inStorage = CountItems(HutStorage(colony, hut).ToList(), fits) > 0;
+            bool carried = workers.Count == 1 && (PackCount(workers[0], fits) > 0
+                || fits((sapi.World.GetEntityById(workers[0].EntityId) as EntityAgent)?.RightHandItemSlot?.Itemstack!));
+            if (inStorage || carried) CancelRequest(colony, request, inStorage ? "the hut has this tool in its storage" : workers[0].Name + " already carries this tool");
+        }
     }
 }
