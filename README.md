@@ -12,6 +12,31 @@ domain (`assets/createacolony/`, block and item codes like `createacolony:townha
 (`ModConfig/createacolony.json`), the release zips (`createacolony_<version>.zip`) and all save data keys.
 Changing any of those would stop old worlds from loading their colonies, so leave them as they are.
 
+## Fixes after the overnight test, part 1: walking, hauling and the report (0.200.0)
+
+From the fix plan Aaron approved on 25 Nov 2026 (groups A and B, and G2 to G4).
+
+- **Doors and ladders.** A settler who keeps bumping at a door is set down on its far side. A climb that gets nowhere ends at the ladder's other end. Both are logged.
+- **No more trying forever.** A walk that fails 3 times gets a short hop towards the goal, and after 2 hops the settler gives that place up for a game day (2 game hours for its own hut, home, the Town Hall and the Warehouse). Bed, food, fleeing and shelter are never given up. The settler window says where it gave up.
+- **Bed.** A settler who can't walk to bed is carried there however near it is. The rescue never closes a settler's own hut, home or building site. Recall clears all of it.
+- **Water.** Hops never land in water. A settler who swims for 40 seconds is set down on the shore. The gatherer leaves things with no dry ground beside them, and its looking-around spots are on dry land.
+- **Home before dark.** The gatherer only goes as far out as it can walk back from before bedtime, and turns for home in time ("heading home before dark").
+- **Own block.** Idle settlers pick a block nobody stands on, and two standing inside each other step apart.
+- **Fronts.** The Mayor wants ground to walk on in front of a building. The wand warns when there is nowhere dry and level to stand outside the front.
+- **Couriers.** A courier walks to a spot beside the chest. After 4 failed tries at one hut it takes the load back to the warehouse, the requests rest for 3 game hours, and its status and the Requests tab say why ("can't get in", "storage is full"). Deliveries use the hut block and every chest in the building. Oversized stacks (from `/giveitem`) are split when anyone takes from a chest.
+- **Give buttons.** Requests > Give and Give all, and Required resources > ^ and Fulfil all now work the same way: the whole hut storage, "storage is full" when that is the reason, free in creative (the row says so), and what goes in counts toward the hut's open requests. Things put into the chests by hand count too.
+- **Tools.** A tool request is dropped once the hut has that tool. The creative Give hands out the flint tool the Craftsman makes, never a ruined blade.
+- **Spoil.** Blocks a builder clears go into the chests beside the hut first, the hut block last.
+- **Loose items.** Settlers pick up what lies within 3 blocks. Couriers with nothing to carry fetch what lies on the ground inside the colony.
+- **No courier came.** A worker whose hut has waited a game hour for something the warehouse holds fetches it.
+- **Report.** `/colony report` has a "Trouble right now" list with reasons, and per settler: what it is doing, its pack by name, its last walks and why each ended, places given up or off limits. Per hut: workers, every chest's contents (full chests and oversized stacks marked), pit kilns. Requests are one readable line each. The last 60 events are written out. `/colony stuck` prints the same trouble list.
+- **Walking log.** `/colony pathdebug` is now saved, so it stays on after a restart. It also logs doors, couriers and every request that closes.
+- Server config: `WalkFailsBeforeHelp`, `WalkHelpsBeforeGiveUp`, `WalkGiveUpDays`, `WalkFailMemoryHours`, `SwimRescueSeconds`, `HomeWalkBlocksPerSecond`, `HomeMarginHours`, `PickUpReach`, `CourierSweepRange`, `WorkerFetchesAfterHours`.
+
+Not fixed: the "duplicate entityid" warning for a far-away gatherer (no cause found; the game drops the copy), and requests closing when a worker is lent out (no code does this; request closing is logged now).
+
+Not tested in game yet.
+
 ## The Mayor builds the settlement (0.199.0)
 
 - **The Mayor.** On the Town Hall's Citizens tab, give one settler the Mayor job. One per colony. They walk rounds like the bailiff.
