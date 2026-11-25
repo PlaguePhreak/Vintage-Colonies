@@ -296,6 +296,8 @@ public class ColonyReportSystem : ModSystem
                             + (hand.Collectible.GetMaxDurability(hand) > 1 ? $" (durability {hand.Collectible.GetRemainingDurability(hand)} of {hand.Collectible.GetMaxDurability(hand)})" : ""));
                         var task = entity.GetBehavior<EntityBehaviorTaskAI>()?.TaskManager.ActiveTasksBySlot.OfType<SettlerTaskBase>().FirstOrDefault();
                         sb.AppendLine("    Doing: " + (task == null ? "nothing (no task running)" : task.GetType().Name.Replace("AiTaskSettler", "") + ": " + task.Describe(colony, c)));
+                        if (task is null or AiTaskSettlerIdle && manager.IdleReason(colony, c, entity) is { } idleWhy) sb.AppendLine("    Why idle: " + idleWhy);
+                        if (manager.NoteOf(c) is { } note) sb.AppendLine("    Note: " + note);
                         if (entity.Swimming) sb.AppendLine("    In the water");
                         var will = entity.GetBehavior<EntityBehaviorColonyCitizen>()?.Willpower;
                         if (will != null && will.Value > 0) sb.AppendLine($"    STUCK: {will.Reason}{(will.Trapped ? ", trapped" : "")}, Willpower {(int)(will.Fraction * 100)}%");

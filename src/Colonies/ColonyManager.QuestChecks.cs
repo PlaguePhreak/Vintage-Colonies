@@ -148,7 +148,10 @@ public partial class ColonyManager
         if (room == null || room.ExitCount != 0) return false;
         return kind switch
         {
-            "cellar" => room.IsSmallRoom && room.SkylightCount <= room.NonSkylightCount / 2,
+            // Not a room of one of the colony's own buildings (0.203.0: "Build a Cellar" was done by walking into the
+            // finished Builder's Hut), unless it lies under the ground, as a cellar dug below a house does.
+            "cellar" => room.IsSmallRoom && room.SkylightCount <= room.NonSkylightCount / 2
+                && (GetAt(pos) is not { } colony || ZoneAt(colony, pos) == null || pos.Y < sapi.World.BlockAccessor.GetTerrainMapheightAt(pos) - 1),
             "greenhouse" => room.SkylightCount > room.NonSkylightCount,
             _ => true,
         };

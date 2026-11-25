@@ -563,6 +563,21 @@ public class AiTaskSettlerCourier : SettlerTaskBase
         return (pickedFrom, to ?? (toHut ? target : null));
     }
 
+    /// <summary>
+    /// A load it could not deliver, in words: how many stacks, for which hut, and why ("can't get in", "its storage is
+    /// full"). Null when there is no such trouble. Also read while the task rests between tries (ColonyManager.IdleReason).
+    /// </summary>
+    public string? TroubleText(Colony colony, CitizenRecord citizen)
+    {
+        if (trouble == null || failedDest == null || manager == null || manager.PackEmpty(citizen)) return null;
+        string hutName = manager.GetBuilding(colony, failedDest) is { } hut ? ColonyManager.BuildingName(hut)
+            : colony.Buildings.FirstOrDefault(b => !b.IsStation && manager.HutStorage(colony, b).Any(c => c.Pos.Equals(failedDest))) is { } owner ? ColonyManager.BuildingName(owner)
+            : Vintagestory.API.Config.Lang.Get("createacolony:activity-courier-a-chest");
+        int stacks = manager.PackItems(citizen).Count;
+        if (!colony.Requests.Exists(r => r.RequestId == requestId)) return Vintagestory.API.Config.Lang.Get("createacolony:activity-courier-back", stacks, hutName);
+        return Vintagestory.API.Config.Lang.Get(trouble == "full" ? "createacolony:activity-courier-full" : "createacolony:activity-courier-no-way", stacks, hutName);
+    }
+
     public override string Describe(Colony colony, CitizenRecord citizen)
     {
         var request = colony.Requests.Find(r => r.RequestId == requestId);
@@ -576,15 +591,7 @@ public class AiTaskSettlerCourier : SettlerTaskBase
             var sample = manager!.PackItems(citizen).FirstOrDefault(ColonyManager.Matcher(request.ItemCode));
             if (sample != null) what = sample.GetName();
         }
-        if (trouble != null && failedDest != null && !manager!.PackEmpty(citizen))
-        {
-            string hutName = manager.GetBuilding(colony, failedDest) is { } hut ? ColonyManager.BuildingName(hut)
-                : colony.Buildings.FirstOrDefault(b => !b.IsStation && manager.HutStorage(colony, b).Any(c => c.Pos.Equals(failedDest))) is { } owner ? ColonyManager.BuildingName(owner)
-                : Vintagestory.API.Config.Lang.Get("createacolony:activity-courier-a-chest");
-            int stacks = manager.PackItems(citizen).Count;
-            if (request == null) return Vintagestory.API.Config.Lang.Get("createacolony:activity-courier-back", stacks, hutName);
-            return Vintagestory.API.Config.Lang.Get(trouble == "full" ? "createacolony:activity-courier-full" : "createacolony:activity-courier-no-way", stacks, hutName);
-        }
+        if (TroubleText(colony, citizen) is { } stuck) return stuck;
         string key = (request != null, step) switch
         {
             (true, Step.Pickup) when selfFetch => "activity-self-fetch",

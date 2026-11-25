@@ -1661,6 +1661,8 @@ public class ColonyConfig
     public float HappinessPerHour = 2f;
     /// <summary>A settler at or below this happiness downs tools and sulks for a few hours.</summary>
     public float HappinessBreakAt = 15f;
+    /// <summary>Nobody stops work from unhappiness in a colony's first days (0.203.0). 0 for no such grace.</summary>
+    public double NoBreakdownFirstDays = 5;
     /// <summary>In-game hours a breakdown lasts (rolled between the two).</summary>
     public double HappinessBreakHoursMin = 2;
     public double HappinessBreakHoursMax = 4;

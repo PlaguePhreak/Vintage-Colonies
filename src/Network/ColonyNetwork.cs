@@ -988,6 +988,13 @@ public partial class ColonyNetwork : ModSystem
             snapshot.Ores.Add(new OreView { Code = ore.Code, Best = ore.Best, Sites = ore.Sites, MinedOut = ore.MinedOut, Where = ColonyManager.DirectionFrom(colony.TownHallPos, ore.BestPos) });
         }
 
+        // The job panel: which skill each job uses, and below, how each settler stands in every job skill.
+        var jobSkills = config.Skills ? Manager.Skills().Where(s => s.Job.Length > 0).ToList() : new List<SkillDef>();
+        foreach (string job in Jobs.All.Where(j => j.Length > 0))
+        {
+            snapshot.JobSkillJobs.Add(job);
+            snapshot.JobSkillCodes.Add(config.Skills ? Manager.SkillForJob(job)?.Code ?? "" : "");
+        }
         foreach (var c in colony.Citizens)
         {
             string state = !c.Alive ? "dead"
@@ -1015,8 +1022,19 @@ public partial class ColonyNetwork : ModSystem
                 VisitorHoursLeft = c.Visitor ? (int)System.Math.Ceiling(System.Math.Max(0, c.VisitorUntilTotalDays - sapi!.World.Calendar.TotalDays) * sapi.World.Calendar.HoursPerDay) : 0,
                 TraitsText = Manager.TraitsText(c),
                 Weapon = c.Alive && !c.IsChild && !c.Visitor ? Manager.WeaponText(c) : "",
-                GuardRanged = c.GuardRanged
+                GuardRanged = c.GuardRanged,
+                HomeJob = c.HomeJob ?? ""
             });
+            if (!c.Alive || c.IsChild || c.Visitor) continue;
+            var view = snapshot.Citizens[^1];
+            foreach (var skill in jobSkills)
+            {
+                view.SkillCodes.Add(skill.Code);
+                view.SkillLevels.Add(Manager.SkillLevel(c, skill.Code));
+                view.SkillPassions.Add(Manager.Passion(c, skill.Code));
+                view.SkillBlocks.Add(Manager.IncapableOfJob(c, skill.Job) ?? "");
+            }
+            view.JobTraits = Jobs.All.Where(j => j.Length > 0 && Manager.JobTraitFor(c, j).Length > 0).ToList();
         }
 
         // The Town Hall's own upgrade sits on the Actions tab; every other building has its own hut window.
@@ -1190,8 +1208,8 @@ public partial class ColonyNetwork : ModSystem
             var task = entity?.GetBehavior<EntityBehaviorTaskAI>()?.TaskManager.ActiveTasksBySlot.OfType<Settlers.SettlerTaskBase>().FirstOrDefault();
             activity = task?.Describe(colony, citizen)
                 ?? Lang.Get(citizen.Visitor ? "createacolony:activity-visitor-waiting" : "createacolony:activity-idle");
-            // What it lacks or waits for (0.202.0), such as a knife to skin with.
-            activity = Manager.WithNote(citizen, activity);
+            // Why it is idle (0.203.0), and what it lacks or waits for (0.202.0), such as a knife to skin with.
+            activity = Manager.ActivityText(colony, citizen, entity, activity);
             // A settler building Willpower says so, so players can see it is stuck and help before it relocates itself.
             if (config.Willpower && entity?.GetBehavior<Settlers.EntityBehaviorColonyCitizen>()?.Willpower is { Reason: not Settlers.StuckReason.None } will)
             {

@@ -256,7 +256,10 @@ public partial class GuiDialogHut : GuiDialog
             ? Lang.Get("createacolony:placement-style", Lang.Get("createacolony:style-" + BlueprintStyles.Normalize(b.Style)))
             : Lang.Get("createacolony:placement-style-variant", Lang.Get("createacolony:style-" + BlueprintStyles.Normalize(b.Style)), GuiKit.VariantName(b.Variant));
         double levelHeight = GuiKit.TextHeight(capi, GuiKit.Detail(), levelText, Width - 20);
-        double headerHeight = 40 + levelHeight + 22 + (b.TargetLevel > 0 || b.Removing ? 22 : 0) + 6;
+        // The build's status takes the lines it needs (0.203.0: a long one was cut off after two).
+        bool building = b.TargetLevel > 0 || b.Removing;
+        double statusHeight = building ? Math.Max(22, GuiKit.TextHeight(capi, GuiKit.Detail(), StatusText(b), Width - 20) + 4) : 0;
+        double headerHeight = 40 + levelHeight + 22 + statusHeight + 6;
         composer.AddInset(ElementBounds.Fixed(0, y, Width, headerHeight), 3, 0.8f);
         if (renaming)
         {
@@ -278,7 +281,7 @@ public partial class GuiDialogHut : GuiDialog
         composer.AddStaticText(packText, GuiKit.Muted(), ElementBounds.Fixed(10, line, Width - 20, 20));
         if (b.TargetLevel > 0 || b.Removing)
         {
-            composer.AddStaticText(StatusText(b), GuiKit.Detail().WithColor(GuiStyle.ActiveButtonTextColor), ElementBounds.Fixed(10, line + 22, Width - 20, 22));
+            composer.AddStaticText(StatusText(b), GuiKit.Detail().WithColor(GuiStyle.ActiveButtonTextColor), ElementBounds.Fixed(10, line + 22, Width - 20, statusHeight));
         }
         y += headerHeight + 12;
 
@@ -1772,7 +1775,7 @@ public partial class GuiDialogHut : GuiDialog
             string title = number + ". " + OrderTitle(o);
             composer
                 .AddStaticText(title, GuiKit.Body(), ElementBounds.Fixed(10, y + 6, Width - 250, 25))
-                .AddStaticText(StatusText(o), GuiKit.Detail().WithColor(GuiStyle.ActiveButtonTextColor), ElementBounds.Fixed(10, y + 30, Width - 250, 22));
+                .AddStaticText(StatusText(o), GuiKit.Detail().WithColor(GuiStyle.ActiveButtonTextColor), ElementBounds.Fixed(10, y + 28, Width - 250, 32));
             if (ViewerRole >= ColonyRole.Officer)
             {
                 int id = o.TeardownId > 0 ? o.TeardownId : o.BuildingId;
@@ -1954,7 +1957,12 @@ public partial class GuiDialogHut : GuiDialog
             if (!stack.ResolveBlockOrItem(capi.World)) continue;
             bool give = canGive && r.PlayerHas > 0 && r.Have < r.Needed && r.Code.Length > 0;
             composer.AddRichtext(new RichTextComponentBase[] { new ItemstackTextComponent(capi, stack, 34, 6) }, ElementBounds.Fixed(6, y + 2, 44, 40));
-            composer.AddStaticText(ResourceName(stack, r), GuiKit.Body(), ElementBounds.Fixed(52, y + 4, Width - 240, 20));
+            // A long name (0.203.0: "Roof binding: flax fibers, cattail tops, papyrus tops or wild vines") is cut to one
+            // line so it does not run over the line under it; the whole name is on the hover.
+            string fullName = ResourceName(stack, r);
+            var (shownName, nameFont) = OneLine(fullName, Width - 240);
+            composer.AddStaticText(shownName, nameFont, ElementBounds.Fixed(52, y + 4, Width - 240, 20));
+            if (shownName != fullName) composer.AddHoverText(fullName, GuiKit.Detail(), 320, ElementBounds.Fixed(52, y + 2, Width - 240, 22));
             composer.AddStaticText(ResourceCounts(r), CountFont(r), ElementBounds.Fixed(52, y + 24, Width - 240, 18));
             composer.AddStaticText(Lang.Get("createacolony:items-count", Math.Min(r.Have, r.Needed), r.Needed),
                 CountFont(r).Clone().WithFontSize(16).WithOrientation(EnumTextOrientation.Right), ElementBounds.Fixed(Width - 190, y + 12, 130, 22));
@@ -1970,6 +1978,28 @@ public partial class GuiDialogHut : GuiDialog
         y = top + ResourceRowsPerPage * ResourceRowHeight + 16;
         composer.Text(Lang.Get("createacolony:resources-legend"), GuiKit.Muted(), 0, y, Width, 6);
         AddPager(composer, pages, y + 24);
+    }
+
+    /// <summary>
+    /// The text as it fits on one line of this width: as it is, else in the smaller font, else cut short with "...".
+    /// </summary>
+    (string Text, CairoFont Font) OneLine(string text, double width)
+    {
+        foreach (var font in new[] { GuiKit.Body(), GuiKit.Detail() })
+        {
+            double one = GuiKit.TextHeight(capi, font, "Xg", width);
+            if (GuiKit.TextHeight(capi, font, text, width) <= one + 1) return (text, font);
+        }
+        var small = GuiKit.Detail();
+        double line = GuiKit.TextHeight(capi, small, "Xg", width);
+        string cut = text;
+        while (cut.Length > 8)
+        {
+            int space = cut.LastIndexOf(' ');
+            cut = space > 8 ? cut[..space] : cut[..^4];
+            if (GuiKit.TextHeight(capi, small, cut + " ...", width) <= line + 1) break;
+        }
+        return (cut.TrimEnd(',', ' ', ':') + " ...", small);
     }
 
     /// <summary>White when the hut has enough, green when you carry some, red when nobody has it.</summary>

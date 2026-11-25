@@ -12,6 +12,25 @@ domain (`assets/createacolony/`, block and item codes like `createacolony:townha
 (`ModConfig/createacolony.json`), the release zips (`createacolony_<version>.zip`) and all save data keys.
 Changing any of those would stop old worlds from loading their colonies, so leave them as they are.
 
+## Fixes after the overnight test, part 4: jobs, statuses and small faults (0.203.0)
+
+From the fix plan Aaron approved on 25 Nov 2026 (the rest of group G).
+
+- **Job panel.** On the Town Hall's Citizens tab each settler shows its job with an "Assign job" or "Assign new job" button. The button opens a panel with every job A to Z, "No job" first. Each row shows the skill the job uses and the settler's level, whether they like it or have the trait for it, whether a trait rules it out, and how many places are free. One press gives the job.
+- **The real job.** A settler the Bailiff lent out shows its own job with "lent out" under it. Before, it showed "No job".
+- **Jobs list.** The Jobs list on the Information tab is A to Z, "No job" first.
+- **Why idle.** "Taking a break" now says why: "needs clay", "no animals to hunt nearby", "has no job", "no Potter hut has a free place", "carrying 5 stacks for Builder's Hut 2, can't get in", and for the Mayor what it waits for and when it looks again. The settler window, the couriers list and `/colony report` show it.
+- **No strikes at the start.** Nobody stops work from unhappiness in a colony's first 5 days.
+- **Text that was cut off.** A long build status in the hut window and the Town Hall takes the lines it needs. A long material name on Required resources is cut to one line, with the whole name on the hover.
+- **Quests.** "Cook a Full Pot" opens after any one of the five cooking quests. "Build a Cellar" no longer counts a room of one of the colony's own buildings, unless it lies under the ground. (The cooked meat quest has taken charred meat since 0.198.0.) A quest book you saved keeps its old quests: press "Reset to mod's quests" in the quest editor.
+- **Trader houses.** When a trader joins, tool racks (with their tools), lanterns and clay ovens are removed from the house, like what was in the chests.
+- **Corpse warning.** The client no longer logs a warning each time a settler's corpse appears.
+- Server config: `NoBreakdownFirstDays`.
+
+Already fixed in 0.198.0 and not seen again in the 0.199.0 test logs: the missing textures and the 22 paintings without a dye recipe.
+
+Not tested in game yet.
+
 ## Fixes after the overnight test, part 3: fuel, kilns and everyday jobs (0.202.0)
 
 From the fix plan Aaron approved on 25 Nov 2026 (groups E and F).
