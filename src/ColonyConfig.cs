@@ -945,6 +945,17 @@ public class ColonyConfig
     public bool CouriersCarryFullLoads = true;
     /// <summary>Pit kilns use the best fuel the colony has: coal, then charcoal, then peat, then firewood.</summary>
     public bool KilnPrefersBestFuel = true;
+    /// <summary>
+    /// The potter puts one solid block two above each pit kiln before lighting it, so rain can't put it out (0.202.0).
+    /// The block comes from the potter's pack or the hut's storage, is asked for like fuel, and is left in place.
+    /// </summary>
+    public bool KilnCover = true;
+    /// <summary>What may cover a pit kiln, first choice first. The soil the potter digs out of the pit will do when there is nothing better.</summary>
+    public string[] KilnCoverBlocks = { "game:packeddirt", "game:cobblestone-*", "game:soil-*" };
+    /// <summary>A kiln that has waited this many game hours for its cover is lit without one, unless it is raining.</summary>
+    public double KilnCoverWaitHours = 6;
+    /// <summary>A Potter's Hut takes over pit kilns within its work spots' reach that no other Potter's Hut has (0.202.0).</summary>
+    public bool PotterAdoptsKilns = true;
     /// <summary>What huts gather by themselves, by hut type, so the Required resources tab can say which hut brings it in.</summary>
     public System.Collections.Generic.Dictionary<string, string[]> HutGathers = new()
     {

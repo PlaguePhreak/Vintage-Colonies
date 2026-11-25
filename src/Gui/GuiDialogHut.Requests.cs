@@ -39,17 +39,24 @@ public partial class GuiDialogHut
         double y = composer.Text(Lang.Get(canGive ? "createacolony:requests-hint-give" : "createacolony:requests-hint"), GuiKit.Muted(), 0, 30,
             givable.Count > 0 ? Width - 160 : Width, 8);
         if (givable.Count > 0) y = Math.Max(y, 66);
+        // Keep spare fuel (0.202.0): huts that burn fuel keep one more firing in store.
+        int perPage = RequestRowsPerPage;
+        if (snapshot.BurnsFuel)
+        {
+            y = AutoFlagSwitch(composer, "sparefuel", "fuel", "createacolony:hut-keep-spare-fuel", snapshot.KeepSpareFuel, y);
+            perPage--;
+        }
         if (rows.Count == 0)
         {
             composer.Text(Lang.Get("createacolony:requests-none"), GuiKit.Body(), 0, y, Width);
             return;
         }
-        int pages = (rows.Count + RequestRowsPerPage - 1) / RequestRowsPerPage;
+        int pages = (rows.Count + perPage - 1) / perPage;
         page = Math.Clamp(page, 0, pages - 1);
-        int onPage = Math.Min(RequestRowsPerPage, rows.Count - page * RequestRowsPerPage);
+        int onPage = Math.Min(perPage, rows.Count - page * perPage);
         composer.AddInset(ElementBounds.Fixed(0, y, Width, onPage * RequestRowHeight + 8), 3, 0.8f);
         double top = y + 4;
-        foreach (var r in rows.Skip(page * RequestRowsPerPage).Take(RequestRowsPerPage))
+        foreach (var r in rows.Skip(page * perPage).Take(perPage))
         {
             double x = 10;
             bool give = canGive && r.PlayerHas > 0 && r.RequestId > 0;
@@ -83,7 +90,7 @@ public partial class GuiDialogHut
             }
             top += RequestRowHeight;
         }
-        AddPager(composer, pages, y + RequestRowsPerPage * RequestRowHeight + 16);
+        AddPager(composer, pages, y + perPage * RequestRowHeight + 16);
     }
 
     void ComposeCouriers(GuiComposer composer)

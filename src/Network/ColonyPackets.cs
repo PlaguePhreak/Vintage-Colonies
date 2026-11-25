@@ -584,6 +584,9 @@ public class HutSnapshot
     /// <summary>The hut's Take auto hires and Take auto residents switches (0.185.0).</summary>
     [ProtoMember(3700)] public bool TakesAutoHires;
     [ProtoMember(3701)] public bool TakesAutoResidents;
+    /// <summary>Huts that burn fuel have a Keep spare fuel switch on their Requests tab (0.202.0).</summary>
+    [ProtoMember(4910)] public bool BurnsFuel;
+    [ProtoMember(4911)] public bool KeepSpareFuel;
 }
 
 /// <summary>One row of a hut's Requests tab.</summary>

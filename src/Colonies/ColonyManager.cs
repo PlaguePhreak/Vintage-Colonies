@@ -341,6 +341,7 @@ public partial class ColonyManager : ModSystem
             EnsureMinStock(colony);
             TidyToolRequests(colony);
             TrackBuildWaits(colony);
+            TickSpareFuel(colony);
             TickUpkeep(colony);
             TickLostSettlers(colony, now);
 

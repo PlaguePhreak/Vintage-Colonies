@@ -144,11 +144,13 @@ public partial class ColonyManager
     /// </summary>
     public (PotteryKind Kind, ClayFormingRecipe Recipe)? NextPottery(Colony colony, Building hut, CitizenRecord potter, List<ItemStack> clay)
     {
-        foreach (var kind in PotteryKinds().OrderBy(k => PriorityIndex(hut.Priorities, k.Key)))
+        // What another hut has asked for comes first (0.202.0): the colony waited for a crucible while bowls were made.
+        foreach (var kind in PotteryKinds().OrderByDescending(k => PotteryAskedShort(colony, hut, k, potter)).ThenBy(k => PriorityIndex(hut.Priorities, k.Key)))
         {
             int keep = PotteryKeep(hut, kind);
             // Crocks a cook or bowls settlers are short of are made on top of what the tab keeps (ColonyManager.Crocks.cs).
-            if ((keep <= 0 || PotteryStock(colony, hut, kind, potter) >= keep) && !PotteryOrderOpen(colony, hut, kind, potter)) continue;
+            if ((keep <= 0 || PotteryStock(colony, hut, kind, potter) >= keep) && !PotteryOrderOpen(colony, hut, kind, potter)
+                && !PotteryAskedShort(colony, hut, kind, potter)) continue;
             foreach (var recipe in kind.Recipes)
             {
                 int cost = ClayCost(recipe);
@@ -160,7 +162,41 @@ public partial class ColonyManager
 
     /// <summary>True when some kind is short and wants clay, so the potter should ask for some.</summary>
     public bool WantsPottery(Colony colony, Building hut, CitizenRecord potter) =>
-        PotteryKinds().Any(k => PotteryKeep(hut, k) is > 0 and var keep && keep > PotteryStock(colony, hut, k, potter) || PotteryOrderOpen(colony, hut, k, potter));
+        PotteryKinds().Any(k => PotteryKeep(hut, k) is > 0 and var keep && keep > PotteryStock(colony, hut, k, potter) || PotteryOrderOpen(colony, hut, k, potter)
+            || PotteryAskedShort(colony, hut, k, potter));
+
+    readonly Dictionary<string, (long Ms, Dictionary<string, int> Asked)> potteryAsked = new();
+
+    /// <summary>
+    /// How many fired pieces of a kind other huts have asked the couriers for (a crucible for the Smelter, moulds,
+    /// a storage vessel for a build). Looked up every five seconds.
+    /// </summary>
+    public int PotteryAsked(Colony colony, Building hut, PotteryKind kind)
+    {
+        long ms = sapi.World.ElapsedMilliseconds;
+        if (!potteryAsked.TryGetValue(colony.ColonyId, out var book) || ms - book.Ms > 5000)
+        {
+            var asked = new Dictionary<string, int>();
+            var open = colony.Requests.Where(r => r.Remaining > 0 && ParseToolCode(r.ItemCode) == null).ToList();
+            if (open.Count > 0)
+            {
+                foreach (var k in PotteryKinds())
+                {
+                    var fired = k.Fired.Select(code => (CollectibleObject?)sapi.World.GetItem(code) ?? sapi.World.GetBlock(code)).Where(c => c is { Id: > 0 })
+                        .Select(c => new ItemStack(c!)).ToList();
+                    if (fired.Count == 0) continue;
+                    int n = open.Where(r => { var match = Matcher(r.ItemCode); return fired.Any(f => match(f)); }).Sum(r => r.Remaining);
+                    if (n > 0) asked[k.Key] = n;
+                }
+            }
+            potteryAsked[colony.ColonyId] = book = (ms, asked);
+        }
+        return book.Asked.GetValueOrDefault(kind.Key);
+    }
+
+    /// <summary>True when others have asked for more of a kind than the colony has, raw or fired.</summary>
+    public bool PotteryAskedShort(Colony colony, Building hut, PotteryKind kind, CitizenRecord? potter) =>
+        PotteryAsked(colony, hut, kind) is > 0 and var asked && asked > PotteryStock(colony, hut, kind, potter);
 
     public bool SameItem(ItemStack a, ItemStack b) => a.Equals(sapi.World, b, GlobalConstants.IgnoredStackAttributes);
 
@@ -292,9 +328,47 @@ public partial class ColonyManager
     /// </summary>
     public int KilnsAllowed(Building hut) => Math.Max(1, Math.Min(Config.PotterMaxKilns, Math.Max(1, hut.Level) + 1));
 
+    readonly Dictionary<(string Colony, int Hut), long> lastKilnAdopt = new();
+
+    /// <summary>
+    /// Takes over pit kilns near the hut that no Potter's Hut has (0.202.0): a hut that was placed again forgot its old
+    /// pits, dug a new one and left the others standing, lit or full of fired pots. Looked for twice a minute.
+    /// </summary>
+    void AdoptKilns(Colony colony, Building hut)
+    {
+        if (!Config.PotterAdoptsKilns) return;
+        long ms = sapi.World.ElapsedMilliseconds;
+        if (lastKilnAdopt.TryGetValue((colony.ColonyId, hut.BuildingId), out long last) && ms - last < 30_000) return;
+        lastKilnAdopt[(colony.ColonyId, hut.BuildingId)] = ms;
+        var ba = sapi.World.BlockAccessor;
+        var taken = colony.Buildings.Where(b => b.Type == BuildingTypes.Potter).SelectMany(KilnsOf).ToList();
+        int radius = Math.Max(2, Config.PotterSpotRadius) + 1;
+        var pos = new BlockPos(hut.HutPos.dimension);
+        for (int dx = -radius; dx <= radius; dx++)
+        for (int dz = -radius; dz <= radius; dz++)
+        for (int dy = -5; dy <= 3; dy++)
+        {
+            pos.Set(hut.HutPos.X + dx, hut.HutPos.Y + dy, hut.HutPos.Z + dz);
+            var be = ba.GetBlockEntity(pos);
+            bool kiln = be is BlockEntityPitKiln;
+            // A fired kiln is a pile of pottery in a pit.
+            bool pile = !kiln && be is BlockEntityGroundStorage storage && storage.Inventory.Any(s => !s.Empty && PotteryKinds().Any(k => k.IsMine(s.Itemstack)))
+                && KilnWallsOk(pos);
+            if (!kiln && !pile) continue;
+            if (taken.Any(k => k.Equals(pos)) || GetAt(pos) != colony) continue;
+            var found = pos.Copy();
+            if (hut.KilnPos == null) hut.KilnPos = found;
+            else hut.MoreKilns.Add(found);
+            taken.Add(found);
+            LogEvent(colony, "event-kiln-adopted", BuildingName(hut));
+            MarkDirty(colony);
+        }
+    }
+
     /// <summary>Each of the hut's pits and its state. Pits that were filled in or lost their walls are forgotten.</summary>
     public List<(BlockPos Pos, KilnState State)> Kilns(Colony colony, Building hut)
     {
+        AdoptKilns(colony, hut);
         var list = new List<(BlockPos, KilnState)>();
         foreach (var pos in KilnsOf(hut).ToList())
         {
@@ -542,6 +616,115 @@ public partial class ColonyManager
         return false;
     }
 
+    // ---- Fuel for every kiln in one go, and the spare (0.202.0) -------------------------------
+
+    /// <summary>What one firing of one pit kiln takes: every build stage of the game's pit kiln, in the plainest fuel of each (dry grass, sticks, firewood).</summary>
+    public List<ItemStack> KilnFiringFuel()
+    {
+        var fuel = new List<ItemStack>();
+        var kiln = PitKilnBlock;
+        var stages = kiln?.BuildStagesByBlock.GetValueOrDefault("*") ?? kiln?.BuildStagesByBlock.Values.FirstOrDefault();
+        if (stages == null) return fuel;
+        foreach (var stage in stages)
+        {
+            var pick = stage.Materials.Where(m => m?.ItemStack != null).Select(m => m.ItemStack).OrderByDescending(KilnFuelRank).FirstOrDefault();
+            if (pick == null) continue;
+            if (fuel.FirstOrDefault(f => SameItem(f, pick)) is { } same) same.StackSize += pick.StackSize;
+            else fuel.Add(pick.Clone());
+        }
+        return fuel;
+    }
+
+    /// <summary>
+    /// Asks for kiln fuel in one go: dry grass, sticks and firewood for every pit kiln the potter may use, and with
+    /// Keep spare fuel on, one more firing on top. Before, the potter asked for the next layer of one kiln at a time.
+    /// firing: a kiln is waiting for fuel now. Without it only the spare is kept up.
+    /// </summary>
+    public void EnsureKilnFuel(Colony colony, Building hut, CitizenRecord potter, bool firing)
+    {
+        if (!firing && !hut.KeepSpareFuel) return;
+        int kilns = Math.Max(KilnsAllowed(hut), KilnsOf(hut).Count());
+        var storage = HutStorage(colony, hut).ToList();
+        foreach (var fuel in KilnFiringFuel())
+        {
+            int per = fuel.StackSize;
+            int target = per * (kilns + (hut.KeepSpareFuel ? 1 : 0));
+            int have = PackCount(potter, s => SameItem(s, fuel)) + CountItems(storage, s => SameItem(s, fuel));
+            // Less than one firing short: not worth a trip, unless a kiln stands waiting for it.
+            if (have > target - per && !(firing && have < per)) continue;
+            if (target > have) EnsurePotterRequest(colony, hut, fuel.Collectible.Code.ToString(), target - have);
+        }
+    }
+
+    // ---- The cover against rain (0.202.0) -------------------------------------------------------
+
+    public bool IsKilnCover(ItemStack stack) =>
+        stack.Block != null && (Config.KilnCoverBlocks ?? Array.Empty<string>()).Any(p => WildcardUtil.Match(new AssetLocation(p), stack.Collectible.Code));
+
+    /// <summary>The request code for a kiln cover: any of the cover blocks.</summary>
+    public string KilnCoverCode => string.Join("|", Config.KilnCoverBlocks ?? Array.Empty<string>());
+
+    /// <summary>True when rain can't fall on the pit: something that keeps rain out is above it.</summary>
+    public bool KilnCovered(BlockPos pos)
+    {
+        var ba = sapi.World.BlockAccessor;
+        if (ba.GetRainMapHeightAt(pos.X, pos.Z) > pos.Y) return true;
+        for (int dy = 1; dy <= 8; dy++)
+        {
+            var block = ba.GetBlock(pos.UpCopy(dy));
+            if (block.Id != 0 && !block.RainPermeable && block.Replaceable < 6000) return true;
+        }
+        return false;
+    }
+
+    /// <summary>True when a cover block can go two above the pit: the fire keeps the air right above it.</summary>
+    public bool CanCoverKiln(BlockPos pos) => sapi.World.BlockAccessor.GetBlock(pos.UpCopy(2)).Replaceable >= 6000;
+
+    readonly Dictionary<BlockPos, double> kilnCoverWait = new();
+
+    /// <summary>
+    /// True when the potter should hold off lighting this kiln for its cover: covers are on, it has none, one can be
+    /// put there, and the wait (KilnCoverWaitHours) is not over. After the wait it is lit as it is, unless it rains.
+    /// </summary>
+    public bool KilnWaitsForCover(BlockPos pos)
+    {
+        if (!Config.KilnCover || KilnCovered(pos) || !CanCoverKiln(pos))
+        {
+            kilnCoverWait.Remove(pos);
+            return false;
+        }
+        double hours = sapi.World.Calendar.TotalHours;
+        if (!kilnCoverWait.TryGetValue(pos, out double since)) kilnCoverWait[pos.Copy()] = since = hours;
+        if (hours - since < Math.Max(0, Config.KilnCoverWaitHours)) return true;
+        return RainingAt(pos);
+    }
+
+    bool RainingAt(BlockPos pos)
+    {
+        var climate = sapi.World.BlockAccessor.GetClimateAt(pos, EnumGetClimateMode.NowValues);
+        return climate != null && climate.Rainfall > 0.05f;
+    }
+
+    /// <summary>Puts a cover block from the potter's pack two above the pit. It stays there.</summary>
+    public bool CoverKiln(Colony colony, Building hut, CitizenRecord potter, BlockPos pos)
+    {
+        if (!CanCoverKiln(pos) || KilnCovered(pos)) return false;
+        ItemStack? cover = null;
+        // The first choice in the list that the potter carries.
+        foreach (var pattern in Config.KilnCoverBlocks ?? Array.Empty<string>())
+        {
+            var loc = new AssetLocation(pattern);
+            cover = TakeFromPack(colony, potter, s => s.Block != null && WildcardUtil.Match(loc, s.Collectible.Code), 1);
+            if (cover != null) break;
+        }
+        if (cover?.Block == null) return false;
+        var at = pos.UpCopy(2);
+        sapi.World.BlockAccessor.SetBlock(cover.Block.BlockId, at);
+        if (cover.Block.Sounds?.Place != null) sapi.World.PlaySoundAt(cover.Block.Sounds.Place, at, 0);
+        kilnCoverWait.Remove(pos);
+        return true;
+    }
+
     public bool LightKiln(Colony colony, Building hut, CitizenRecord potter, BlockPos pos)
     {
         if (sapi.World.BlockAccessor.GetBlockEntity(pos) is not BlockEntityPitKiln kiln || !kiln.CanIgnite) return false;
@@ -620,7 +803,7 @@ public partial class ColonyManager
     // ---- The hut ----------------------------------------------------------------------------
 
     /// <summary>At a Potter's Hut the clay, the kiln fuel and raw pieces stay; fired pottery and dug soil go to the warehouse.</summary>
-    System.Func<ItemStack, bool> PotterHutJunk() => s => !IsClay(s) && !IsKilnMaterial(s) && !IsRawPottery(s);
+    System.Func<ItemStack, bool> PotterHutJunk() => s => !IsClay(s) && !IsKilnMaterial(s) && !IsRawPottery(s) && !(Config.KilnCover && IsKilnCover(s));
 
     /// <summary>Asks couriers to bring something to the Potter's Hut, once at a time.</summary>
     public void EnsurePotterRequest(Colony colony, Building hut, string code, int quantity)

@@ -281,6 +281,11 @@ public class Building
     [ProtoMember(3700)] public List<CharcoalPit> CharcoalPits = new();
     /// <summary>Auto hiring (ColonyManager.AutoTown.cs): false when this hut's places are filled by hand only.</summary>
     [ProtoMember(3701, IsRequired = true)] public bool TakesAutoHires = true;
+    /// <summary>
+    /// Keep spare fuel (0.202.0): a hut that burns fuel (Potter, Cook, Bakery, Smelter, Blacksmith) keeps one more full
+    /// firing in its storage and asks again when it drops below that. On by default. The hut's Requests tab.
+    /// </summary>
+    [ProtoMember(4910, IsRequired = true)] public bool KeepSpareFuel = true;
     /// <summary>Auto housing: false when this home's beds are given out by hand only.</summary>
     [ProtoMember(3702, IsRequired = true)] public bool TakesAutoResidents = true;
     /// <summary>A Composter's Hut: its compost heap, how much rot and dry grass is on it (ColonyManager.Composting.cs).</summary>

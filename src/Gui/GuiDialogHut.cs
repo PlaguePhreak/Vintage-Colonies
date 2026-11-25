@@ -214,6 +214,7 @@ public partial class GuiDialogHut : GuiDialog
         SingleComposer.GetSwitch("teachany")?.SetValue(teachAnyType);
         SingleComposer.GetSwitch("autohires")?.SetValue(snapshot.TakesAutoHires);
         SingleComposer.GetSwitch("autoresidents")?.SetValue(snapshot.TakesAutoResidents);
+        SingleComposer.GetSwitch("sparefuel")?.SetValue(snapshot.KeepSpareFuel);
         for (int i = 0; SingleComposer.GetSwitch("hostile-" + i) is { } toggle; i++) toggle.SetValue(hostileSwitchStates[i]);
         for (int i = 0; SingleComposer.GetSwitch("collect-" + i) is { } toggle; i++) toggle.SetValue(collectSwitchStates[i]);
         for (int i = 0; SingleComposer.GetSwitch("markers-" + i) is { } toggle; i++) toggle.SetValue(!snapshot.MarkersOff.Contains(snapshot.MarkerGroups[i]));

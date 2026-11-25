@@ -280,6 +280,7 @@ public partial class ColonyNetwork : ModSystem
         bool on = parts[1] == "1";
         if (parts[0] == "hire") building.TakesAutoHires = on;
         else if (parts[0] == "home") building.TakesAutoResidents = on;
+        else if (parts[0] == "fuel") building.KeepSpareFuel = on;
         else return "createacolony:bad-request";
         return null;
     }
@@ -1300,6 +1301,8 @@ public partial class ColonyNetwork : ModSystem
             ViewerRole = (int)ColonyManager.RoleFor(colony, viewerUid, (RankPerm)~0),
             TakesAutoHires = building.TakesAutoHires,
             TakesAutoResidents = building.TakesAutoResidents,
+            BurnsFuel = ColonyManager.BurnsFuel(building.Type),
+            KeepSpareFuel = building.KeepSpareFuel,
             IsBuilderHut = building.Type == BuildingTypes.Builder,
             AnyWoodOrStone = colony.AnyWoodOrStone,
             HasStorage = ColonyManager.HasOwnStorage(building.Type),
