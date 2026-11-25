@@ -147,9 +147,13 @@ public abstract class AiTaskSettlerWorker : SettlerTaskBase
 
         if (NeedsTool && !HasTool(citizen))
         {
-            var toolChest = storage.FirstOrDefault(c => c.Inventory.Any(s => IsToolStack(s.Itemstack)));
+            var toolChest = storage.FirstOrDefault(c => c.Inventory.Any(s => IsToolStack(s.Itemstack)))
+                // Not in the hut: one in the Town Hall's storage or the warehouse is fetched by the worker (0.201.0).
+                ?? manager.SpareToolChest(colony, s => IsToolStack(s));
             if (toolChest != null) return Go(Step.FetchTool, toolChest.Pos);
             if (HasSurplus(citizen)) return Go(Step.Deposit, storage[0].Pos);
+            // The colony's starting kit, handed out once per tool.
+            if (manager.GiveStarterTool(colony, citizen, Tool, 0)) return Wait();
             RequestTool(colony, hut);
             SetStatus(NeedsToolStatus);
             return Wait();

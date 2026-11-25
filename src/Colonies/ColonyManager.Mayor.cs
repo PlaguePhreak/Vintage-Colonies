@@ -530,6 +530,8 @@ public partial class ColonyManager
         var map = ReadGround(colony);
         var th = colony.TownHallPos;
         int? front = Blueprints.Get(style, type, 1, 0, variant)?.Front;
+        // A build whose floor is a step above its yard has its hut block that much above the land (0.201.0).
+        int rise = Blueprints.Get(style, type, 1, 0, variant)?.GroundRise ?? 0;
         int gap = Math.Max(0, Config.MayorGap);
         var others = colony.Buildings.Where(b => !b.IsStation && !b.Removing).Select(b => Grow(Footprint(b), gap)).ToList();
         if (colony.MayorPlan is { BuildingId: 0, Station: false } pending)
@@ -551,13 +553,13 @@ public partial class ColonyManager
             int x = th.X + dx, z = th.Z + dz;
             int ground = map.At(x, z);
             if (ground == int.MinValue || refused.Any(f => Math.Abs(f.Item1 - x) <= 4 && Math.Abs(f.Item2 - z) <= 4)) continue;
-            var pos = new BlockPos(x, ground + 1, z);
+            var pos = new BlockPos(x, ground + 1 + rise, z);
             int facing = FacingTowards(dx, dz);
             int rotation = front is { } f ? GameMath.Mod(f - facing, 4) * 90 : 0;
             if (tried++ > 2500) break;
             var rel = boxes[rotation];
             var box = new Cuboidi(rel.X1 + x, rel.Y1 + pos.Y, rel.Z1 + z, rel.X2 + x, rel.Y2 + pos.Y, rel.Z2 + z);
-            if (SpotProblem(colony, map, type, pos, box, front == null ? null : facing, others) != null) continue;
+            if (SpotProblem(colony, map, type, pos, box, front == null ? null : facing, others, rise) != null) continue;
 
             double score = Math.Sqrt(dx * dx + dz * dz) + LandScore(map, type, x, z, Math.Sqrt(dx * dx + dz * dz), colony.ClaimRadius);
             if (double.IsPositiveInfinity(score)) continue;
@@ -625,7 +627,7 @@ public partial class ColonyManager
     static bool Overlaps2D(Cuboidi a, Cuboidi b) => a.X1 <= b.X2 && b.X1 <= a.X2 && a.Z1 <= b.Z2 && b.Z1 <= a.Z2;
 
     /// <summary>Why a building can't stand at pos (a lang key), or null when it can.</summary>
-    string? SpotProblem(Colony colony, GroundMap map, string type, BlockPos pos, Cuboidi box, int? facing, List<Cuboidi> others)
+    string? SpotProblem(Colony colony, GroundMap map, string type, BlockPos pos, Cuboidi box, int? facing, List<Cuboidi> others, int rise = 0)
     {
         if (others.Any(o => Overlaps2D(o, box))) return "mayor-spot-taken";
         // Room in front of the door.
@@ -642,7 +644,7 @@ public partial class ColonyManager
             // And ground to walk on there (0.200.0): not water, not a cliff, or nobody gets to the door.
             if (c > 0)
             {
-                int bad = 0, cells = 0, level = pos.Y - 1, steep = Math.Max(0, Config.MayorMaxSlope) + 1;
+                int bad = 0, cells = 0, level = pos.Y - 1 - rise, steep = Math.Max(0, Config.MayorMaxSlope) + 1;
                 for (int x = ahead.X1; x <= ahead.X2; x++)
                 for (int z = ahead.Z1; z <= ahead.Z2; z++)
                 {
@@ -660,7 +662,7 @@ public partial class ColonyManager
         }
         // Flat, dry, natural ground under all of it.
         int slope = Math.Max(0, Config.MayorMaxSlope);
-        int floor = pos.Y - 1;
+        int floor = pos.Y - 1 - rise;
         for (int x = box.X1; x <= box.X2; x++)
         for (int z = box.Z1; z <= box.Z2; z++)
         {
@@ -686,7 +688,8 @@ public partial class ColonyManager
         var others = colony.Buildings.Where(b => !b.IsStation && !b.Removing).Select(b => Grow(Footprint(b), gap)).ToList();
         int? front = Blueprints.Get(plan.Style, plan.Type, 1, 0, plan.Variant)?.Front;
         int? facing = front == null ? null : FacingTowards(plan.Pos.X - colony.TownHallPos.X, plan.Pos.Z - colony.TownHallPos.Z);
-        return SpotProblem(colony, map, plan.Type, plan.Pos, PlannedBox(plan.Type, plan.Style, plan.Variant, plan.Pos, plan.Rotation), facing, others) == null;
+        int rise = Blueprints.Get(plan.Style, plan.Type, 1, 0, plan.Variant)?.GroundRise ?? 0;
+        return SpotProblem(colony, map, plan.Type, plan.Pos, PlannedBox(plan.Type, plan.Style, plan.Variant, plan.Pos, plan.Rotation), facing, others, rise) == null;
     }
 
     /// <summary>A free spot beside the Warehouse block for a Courier's Station: air with solid ground under it.</summary>

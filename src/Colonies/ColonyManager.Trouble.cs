@@ -83,13 +83,11 @@ public partial class ColonyManager
         foreach (var b in colony.Buildings)
         {
             if (!b.HasWorkOrder && !b.Removing) continue;
-            string status = BuildStatus.GetValueOrDefault(b.BuildingId, "queued");
+            string status = BuildStatusText(colony, b);
             string name = $"{BuildingName(b)} (id {b.BuildingId}) at {At(b.HutPos)}";
-            if (StuckStep.TryGetValue(b.BuildingId, out var stuckAt))
-            {
-                lines.Add($"Build {name}: stuck at {At(stuckAt)}, the block there is {ba.GetBlock(stuckAt).Code}, status {status}");
-            }
-            else if (status is not ("building" or "queued" or "removing" or "clearing")) lines.Add($"Build {name}: {status}");
+            if (StuckText(b) is { } stuck) lines.Add($"Build {name}: stuck {stuck}");
+            else if (status == "queued") lines.Add($"Build {name}: waiting for a builder");
+            else if (status is not ("building" or "removing" or "clearing")) lines.Add($"Build {name}: {status}");
         }
         return lines;
     }

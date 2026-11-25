@@ -27,6 +27,36 @@ public partial class ColonyManager
     /// <summary>What each work order is waiting on, for the Town Hall window. Not saved: builders refresh it.</summary>
     public readonly Dictionary<int, string> BuildStatus = new();
 
+    /// <summary>
+    /// A work order's status as shown (0.201.0): "stuck" when a block failed twice over, "queued" (waiting for a
+    /// builder) while no living builder has it, else what its builder last said. Before, an order nobody was working
+    /// on kept whatever was last stamped on it, such as "no Builder's Hut".
+    /// </summary>
+    public string BuildStatusText(Colony colony, Building b)
+    {
+        if (!b.HasWorkOrder && !b.Removing) return "";
+        if (IsBuildStuck(b) && !b.Removing) return "stuck";
+        bool taken = b.BuilderCitizenId != 0 && colony.Citizens.Any(c => c.Alive && c.CitizenId == b.BuilderCitizenId && c.JobCode == Jobs.Builder);
+        return taken ? BuildStatus.GetValueOrDefault(b.BuildingId, "queued") : "queued";
+    }
+
+    /// <summary>Why a building's stuck block failed: "reach" (no way to it) or "work" (it would not change).</summary>
+    public readonly Dictionary<int, string> StuckWhy = new();
+
+    /// <summary>
+    /// Where a build is stuck, in words (0.201.0): the spot, the block the blueprint wants there, the block that is
+    /// there, and whether the builder could not get to it or could not change it. Null when it is not stuck.
+    /// </summary>
+    public string? StuckText(Building b)
+    {
+        if (!StuckStep.TryGetValue(b.BuildingId, out var at)) return null;
+        var blueprint = Blueprints.Get(b, b.TargetLevel);
+        var steps = blueprint == null ? new List<BuildStep>() : blueprint.Steps.Where(s => StepPos(b, s).Equals(at)).Take(1).ToList();
+        string wanted = steps.Count == 0 ? "a foundation block" : steps[0].BlockId == 0 ? "nothing (to be cleared)" : sapi.World.GetBlock(steps[0].BlockId)?.Code?.ToString() ?? "?";
+        string why = StuckWhy.GetValueOrDefault(b.BuildingId) == "reach" ? "the builder found no way to it" : "the builder tried and it did not change";
+        return $"at {at.ToLocalPosition(sapi)}: wanted {wanted}, there is {sapi.World.BlockAccessor.GetBlock(at).Code}, {why}";
+    }
+
     // ---- Steps a builder keeps failing (0.198.0) --------------------------------------------
     // Aaron's play test: the only builder stood at one block of the Cook's Hut for six game days. A block the builder
     // tries and fails too often is set aside, the rest of the build goes on, and set-aside blocks get another go at the
@@ -42,7 +72,7 @@ public partial class ColonyManager
     readonly HashSet<int> retryingSteps = new();
 
     /// <summary>Counts a failed try at a block of a work order; enough of them set it aside for later.</summary>
-    public void StepFailed(Building building, BlockPos pos, int weight = 1)
+    public void StepFailed(Building building, BlockPos pos, int weight = 1, string why = "work")
     {
         if (!stepFailures.TryGetValue(building.BuildingId, out var tries)) stepFailures[building.BuildingId] = tries = new();
         int n = tries.GetValueOrDefault(pos) + weight;
@@ -54,8 +84,13 @@ public partial class ColonyManager
         tries.Remove(pos);
         if (!skippedSteps.TryGetValue(building.BuildingId, out var skipped)) skippedSteps[building.BuildingId] = skipped = new();
         skipped.Add(pos.Copy());
-        if (retryingSteps.Contains(building.BuildingId)) StuckStep[building.BuildingId] = pos.Copy();
-        Mod.Logger.Notification("[createacolony] Builder set aside block {0} of {1} {2} after failing at it; it gets another try at the end.", pos, building.Type, building.BuildingId);
+        if (retryingSteps.Contains(building.BuildingId))
+        {
+            StuckStep[building.BuildingId] = pos.Copy();
+            StuckWhy[building.BuildingId] = why;
+        }
+        Mod.Logger.Notification("[createacolony] Builder set aside block {0} of {1} {2} after failing at it ({3}, there: {4}); it gets another try at the end.", pos, building.Type, building.BuildingId,
+            why == "reach" ? "no way to it" : "it did not change", sapi.World.BlockAccessor.GetBlock(pos).Code);
     }
 
     /// <summary>A block was built: forget its failures.</summary>
@@ -72,6 +107,7 @@ public partial class ColonyManager
         skippedSteps.Remove(buildingId);
         retryingSteps.Remove(buildingId);
         StuckStep.Remove(buildingId);
+        StuckWhy.Remove(buildingId);
     }
 
     /// <summary>True when a building's build failed at a block twice over, so builders try other work orders first.</summary>
@@ -539,8 +575,12 @@ public partial class ColonyManager
     public (int Done, int Total) Progress(Colony colony, Building building, Blueprint blueprint) =>
         ForWindow(colony, building, blueprint, "progress", () =>
         {
-            int done = blueprint.Steps.Count(s => IsStepDone(colony, s, StepPos(building, s), building));
-            return (done, blueprint.Steps.Count);
+            // Blocks to place only (0.201.0): clearing is two thirds of the steps, so a build read "70% done" before
+            // a single wall stood. A build that only clears counts its clearing.
+            var placed = blueprint.Steps.Where(s => s.BlockId != 0).ToList();
+            if (placed.Count == 0) placed = blueprint.Steps;
+            int done = placed.Count(s => IsStepDone(colony, s, StepPos(building, s), building));
+            return (done, placed.Count);
         });
 
     /// <summary>What is still needed for an open window: the same as MaterialsNeeded, cached briefly.</summary>

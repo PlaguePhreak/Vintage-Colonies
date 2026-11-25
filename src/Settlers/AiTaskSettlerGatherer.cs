@@ -124,8 +124,8 @@ public class AiTaskSettlerGatherer : AiTaskSettlerWorker
         bool grassFirst = spot == null || ColonyManager.GatherOrder(hut).IndexOf(ColonyManager.GatherRequests) <= rank;
         if (!lookOnly && grassFirst && manager!.GrassShort(colony) > 0 && !knife)
         {
-            // Cutting grass takes a knife: ask for one, and pick other things meanwhile.
-            manager.EnsureToolRequest(colony, hut, hut, new ColonyManager.ToolNeed(EnumTool.Knife, 0));
+            // Cutting grass takes a knife: the colony's starting kit has one (0.201.0), else ask for one, and pick other things meanwhile.
+            if (!manager.GiveStarterTool(colony, citizen, EnumTool.Knife, 0)) manager.EnsureToolRequest(colony, hut, hut, new ColonyManager.ToolNeed(EnumTool.Knife, 0));
             if (spot == null)
             {
                 SetStatus("needs-tool-knife");

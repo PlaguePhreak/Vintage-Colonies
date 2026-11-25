@@ -38,6 +38,16 @@ public class ColonyConfig
     // Sleep
     public float SleepStartHour = 21f;
     /// <summary>
+    /// A colony's starting kit (0.201.0): the first settler who needs one of these tools and finds none is handed a
+    /// flint one from the Town Hall, once per tool and colony. Empty: no kit.
+    /// </summary>
+    public string[] StarterTools = { "axe", "shovel", "hoe", "knife" };
+    /// <summary>
+    /// Until the colony has a pickaxe or a Blacksmith, builders clear stone by hand, this many times slower (0.201.0).
+    /// 0: they wait for a pickaxe as before.
+    /// </summary>
+    public float NoPickaxeSlowdown = 4f;
+    /// <summary>
     /// How fast a settler is taken to get home, in blocks per real second, when working out how far out it may still
     /// go before bedtime (0.200.0). Lower is safer: the gatherer turns for home earlier.
     /// </summary>

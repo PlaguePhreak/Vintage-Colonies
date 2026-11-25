@@ -23,7 +23,10 @@ public partial class ColonyNetwork
     static readonly string[] WandTypes = BuildingCategories.All.SelectMany(c => c.Types).ToArray();
 
     /// <summary>A building being planned; Level is the one previewed (0 = the highest), Variant which of the type's buildings.</summary>
-    record Planned(string Type, BlockPos Pos, int Rotation, string Style, int Level = 0, string Variant = "");
+    record Planned(string Type, BlockPos Pos, int Rotation, string Style, int Level = 0, string Variant = "", int Rise = 0);
+
+    /// <summary>How far above the clicked ground a build's hut block goes: its blueprint's GroundRise (0.201.0).</summary>
+    int RiseOf(string style, string type, string variant) => Manager.Blueprints.Get(Manager.Blueprints.StyleFor(style, type), type, 1, 0, variant)?.GroundRise ?? 0;
 
     readonly Dictionary<string, Planned> planned = new();
     /// <summary>Where a player started planning, while they pick from the list.</summary>
@@ -41,7 +44,7 @@ public partial class ColonyNetwork
                 SendChooser(player);
                 return;
             case ColonyAction.WandChange:
-                if (plan != null) wandSpots[uid] = plan.Pos.Copy();
+                if (plan != null) wandSpots[uid] = plan.Pos.DownCopy(plan.Rise);
                 SendChooser(player);
                 return;
             case ColonyAction.WandPack:
@@ -57,7 +60,8 @@ public partial class ColonyNetwork
                 // Change building keeps the variant when the same type is picked again.
                 string from = Manager.Blueprints.StyleFor(style, type);
                 string variant = Manager.Blueprints.VariantFor(from, type, plan?.Type == type ? plan.Variant : "");
-                plan = new Planned(type, at, plan?.Rotation ?? Manager.RotationFor(player, type, from, variant), style, 0, variant);
+                int rise = RiseOf(style, type, variant);
+                plan = new Planned(type, at.UpCopy(rise), plan?.Rotation ?? Manager.RotationFor(player, type, from, variant), style, 0, variant, rise);
                 planned[uid] = plan;
                 SendPlanned(player, plan, true);
                 return;
@@ -90,6 +94,8 @@ public partial class ColonyNetwork
                 break;
             case ColonyAction.PlacementVariant:
                 plan = plan with { Variant = StepVariant(Manager.Blueprints.StyleFor(plan.Style, plan.Type), plan.Type, plan.Variant, packet.Text), Level = 0 };
+                int newRise = RiseOf(plan.Style, plan.Type, plan.Variant);
+                plan = plan with { Pos = plan.Pos.UpCopy(newRise - plan.Rise), Rise = newRise };
                 break;
             case ColonyAction.PlacementNudge:
                 var moved = new Building { HutPos = plan.Pos.Copy() };

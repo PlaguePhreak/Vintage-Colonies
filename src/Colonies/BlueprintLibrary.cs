@@ -52,6 +52,14 @@ public class Blueprint
     /// builders fill any gap under these down to the ground (ColonyManager.Foundations.cs).
     /// </summary>
     public List<(int Dx, int Dy, int Dz)> Footing = new();
+    /// <summary>
+    /// How many blocks the hut block stands above the ground of the build (0.201.0): the height of the "Ground floor
+    /// marker", else of the "Front of build marker", against the hut block. 1 for a house whose floor is one step up
+    /// from its yard. The wand and the Mayor set the hut block this much above the land, so the yard meets the land.
+    /// </summary>
+    public int GroundRise;
+    /// <summary>Whether the build carries a "Front of build" and a "Ground floor" marker, for the report.</summary>
+    public bool HasFrontMarker, HasGroundMarker;
 }
 
 /// <summary>
@@ -343,6 +351,10 @@ public class BlueprintLibrary
             if (IsWaypoint(b)) waypoints[b.Variant["type"] ?? b.Code.Path] = (x - ax, y - ay, z - az);
         }
         var dugOut = DugOut(waypoints);
+        // The ground of the build: where its "Ground floor marker" stands, else its "Front of build marker" (both
+        // stand on the ground), else the hut block's level as before (0.201.0).
+        int groundY = waypoints.TryGetValue("ground", out var groundMark) ? ay + groundMark.Dy
+            : waypoints.TryGetValue("front", out var frontMark) ? ay + frontMark.Dy : ay;
 
         // Items lying on the ground (ground storage) are left out too: an empty one is nothing, and a full one would come free.
         bool IsMeta(Block b) => b.Id == BlockSchematic.FillerBlockId || b.Id == BlockSchematic.PathwayBlockId
@@ -379,9 +391,9 @@ public class BlueprintLibrary
                 else decor.Add(step);
             }
             else if (dugOut.Contains((dx - ax, dy - ay, dz - az))) continue;
-            else if (dy >= ay || InCellar(dx, dy, dz))
+            else if (dy >= groundY || InCellar(dx, dy, dz))
             {
-                // Empty space at or above the hut's floor is cleared. Below it, only in a cellar or over a sunken
+                // Empty space at or above the build's ground (the hut's floor when it has no marker) is cleared. Below it, only in a cellar or over a sunken
                 // part of the building; elsewhere the ground is left alone.
                 clear.Add(new BuildStep(dx - ax, dy - ay, dz - az, 0));
             }
@@ -389,7 +401,7 @@ public class BlueprintLibrary
 
         // What the building stands on: the lowest solid block of each column, where it is at or below the hut block,
         // except over a mine shaft or a quarry pit.
-        var openColumns = dugOut.Select(d => (d.Item1, d.Item3)).Concat(waypoints.Values.Select(w => (w.Dx, w.Dz))).ToHashSet();
+        var openColumns = dugOut.Select(d => (d.Item1, d.Item3)).Concat(waypoints.Where(w => w.Key is "mine" or "quarry").Select(w => (w.Value.Dx, w.Value.Dz))).ToHashSet();
         var footing = solid
             .Where(s => !openColumns.Contains((s.Dx, s.Dz)))
             .GroupBy(s => (s.Dx, s.Dz))
@@ -400,7 +412,11 @@ public class BlueprintLibrary
 
         // Clear from the top down so nothing is left floating, then walls bottom-up, then torches, doors and the like.
         clear.Reverse();
-        return new Blueprint { Type = type, Level = level, Steps = clear.Concat(solid).Concat(decor).ToList(), Front = front, Waypoints = waypoints, Footing = footing };
+        return new Blueprint
+        {
+            Type = type, Level = level, Steps = clear.Concat(solid).Concat(decor).ToList(), Front = front, Waypoints = waypoints, Footing = footing,
+            GroundRise = ay - groundY, HasFrontMarker = waypoints.ContainsKey("front"), HasGroundMarker = waypoints.ContainsKey("ground")
+        };
     }
 
     // ---- Mineshaft pieces ------------------------------------------------------------------

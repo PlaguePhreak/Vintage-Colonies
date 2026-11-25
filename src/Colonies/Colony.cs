@@ -1033,6 +1033,8 @@ public class Colony
     /// <summary>Hut types skipped with Skip this one, until the next day (type|day).</summary>
     [ProtoMember(4808)] public List<string> MayorSkipToday = new();
     /// <summary>Why the Mayor did nothing at the last look (a lang key and its args), shown on the Mayor tab.</summary>
+    /// <summary>The tools of the colony's starting kit already handed out ("axe", "shovel", "hoe", "knife"), ColonyManager.Tools.cs (0.201.0).</summary>
+    [ProtoMember(4900)] public List<string> StarterToolsGiven = new();
     [ProtoMember(4809)] public string MayorIdle = "";
     [ProtoMember(4810)] public List<string> MayorIdleArgs = new();
     [ProtoMember(3713, IsRequired = true)] public int LastAutoHireDay = -1;
