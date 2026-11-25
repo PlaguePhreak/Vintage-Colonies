@@ -18,6 +18,91 @@ namespace CreateAColony.Colonies;
 /// </summary>
 public partial class ColonyManager
 {
+    /// <summary>
+    /// The Mayor and the Bailiff for the report (0.201.0): who, what the Mayor plans or waits for and why, what was
+    /// passed over on the last look, and who the Bailiff has lent out or is leaving to wait.
+    /// </summary>
+    public List<string> OfficeLines(Colony colony)
+    {
+        var lines = new List<string>();
+        var cal = sapi.World.Calendar;
+        var mayor = MayorOf(colony);
+        if (mayor == null) lines.Add("Mayor: none.");
+        else
+        {
+            string mode = colony.MayorMode == MayorModes.Off ? "Off" : colony.MayorMode == MayorModes.Ask ? "Ask me first" : "Build on their own";
+            double next = Math.Max(0, colony.MayorLastLookHours + Math.Max(0.25, Config.MayorEveryHours) - cal.TotalDays * cal.HoursPerDay);
+            lines.Add($"Mayor: {mayor.Name}, buildings \"{mode}\", next look in {next:0.#} game hours (and at dawn).");
+            if (colony.MayorPlan is { } plan) lines.Add($"  Plan: {PlanName(plan)}{(plan.Approved ? " (approved, waiting to start)" : " (waiting for your answer)")}. {ReasonText(plan)}");
+            else if (MayorIdleText(colony) is { Length: > 0 } idle) lines.Add("  Waiting: " + idle);
+            foreach (var note in MayorNotes(colony)) lines.Add("  " + note);
+            int builders = colony.Citizens.Count(c => c.Alive && !c.Visitor && c.JobCode == Jobs.Builder);
+            var builds = OpenBuilds(colony);
+            lines.Add($"  Builders: {builders}, builds open: {builds.Count} of {Math.Max(1, builders) * Math.Max(1, Config.MayorOrdersPerBuilder)}.");
+            foreach (var b in builds)
+            {
+                string who = colony.Citizens.Find(c => c.Alive && c.CitizenId == b.BuilderCitizenId && c.JobCode == Jobs.Builder)?.Name ?? "no builder";
+                string state = IsBuildStuck(b) ? ", stuck at a block" : IsBuildStarved(colony, b) ? ", waited hours for materials: its builder may work elsewhere" : "";
+                lines.Add($"    {BuildingName(b)}: {Lang.Get("createacolony:buildstatus-" + BuildStatusText(colony, b))} ({who}{state})");
+            }
+        }
+        var bailiff = BailiffOf(colony);
+        if (bailiff == null) lines.Add("Bailiff: none.");
+        else
+        {
+            lines.Add($"Bailiff: {bailiff.Name}{(BailiffOnDuty(colony) == null ? " (not on duty)" : "")}. Gives jobs: {(colony.BailiffGivesJobs ? "yes" : "no")}, moves stuck workers: {(colony.BailiffLendsWorkers ? "yes" : "no")}, waits {BailiffWaitDaysOf(colony)} days for a delivery.");
+            double now = cal.TotalDays;
+            foreach (var c in colony.Citizens.Where(c => c.Alive && !c.Visitor))
+            {
+                if (c.HomeJob != null)
+                {
+                    var home = c.HomeWorkplacePos == null ? null : GetBuilding(colony, c.HomeWorkplacePos);
+                    lines.Add($"  {c.Name}: lent from {(home == null ? c.HomeJob : BuildingName(home))}, back in {Math.Max(0, (c.LentUntilTotalDays - now) * cal.HoursPerDay):0.#} game hours or when that hut can work again.");
+                    continue;
+                }
+                if (c.WorkplacePos == null || !stuckSince.TryGetValue((colony.ColonyId, c.CitizenId), out double since)) continue;
+                var hut = GetBuilding(colony, c.WorkplacePos);
+                string status = WorkerStatus.GetValueOrDefault(c.CitizenId, "");
+                bool waiting = hut != null && WaitsForDelivery(colony, hut, status);
+                double limit = waiting ? BailiffWaitDaysOf(colony) : Math.Max(0, Config.BailiffStuckHours) / 24.0;
+                string why = c.JobSetByPlayer ? "job set by a player, stays" : waiting ? "waits for a delivery" : "can't work";
+                lines.Add($"  {c.Name}: {why} ({status}), {(now - since) * cal.HoursPerDay:0.#} of {limit * cal.HoursPerDay:0.#} game hours before a move.");
+            }
+            foreach (var c in colony.Citizens.Where(c => c.Alive && !c.Visitor && c.JobSetByPlayer && c.JobCode != null))
+                lines.Add($"  {c.Name}: {c.JobCode} set by a player. The Bailiff leaves it.");
+        }
+        return lines;
+    }
+
+    /// <summary>
+    /// This colony's builds that lack a Front of build or a Ground floor marker (0.201.0), one line per building type.
+    /// Without the Ground floor marker the hut block's height is taken as the ground.
+    /// </summary>
+    public List<string> MarkerlessBuilds(Colony colony)
+    {
+        var lines = new List<string>();
+        string style = ColonyStyle(colony);
+        foreach (var type in BuildingCategories.All.SelectMany(c => c.Types).Distinct())
+        {
+            string variant = Blueprints.VariantFor(Blueprints.StyleFor(style, type), type, "");
+            int max = Blueprints.MaxLevel(style, type, variant);
+            var noFront = new List<int>();
+            var noGround = new List<int>();
+            for (int level = 1; level <= max; level++)
+            {
+                if (Blueprints.Get(style, type, level, 0, variant) is not { } bp) continue;
+                if (!bp.HasFrontMarker) noFront.Add(level);
+                if (!bp.HasGroundMarker) noGround.Add(level);
+            }
+            if (noFront.Count == 0 && noGround.Count == 0) continue;
+            var parts = new List<string>();
+            if (noFront.Count > 0) parts.Add("no Front of build marker at level " + string.Join(", ", noFront));
+            if (noGround.Count > 0) parts.Add("no Ground floor marker at level " + string.Join(", ", noGround));
+            lines.Add($"{Lang.Get("createacolony:building-" + type)}: {string.Join("; ", parts)}");
+        }
+        return lines;
+    }
+
     /// <summary>A request older than this many game hours with nobody carrying it counts as trouble.</summary>
     const double RequestTroubleHours = 3;
 

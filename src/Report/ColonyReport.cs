@@ -230,6 +230,19 @@ public class ColonyReportSystem : ModSystem
             foreach (var line in trouble) sb.AppendLine("- " + line);
         });
 
+        Section(sb, "Mayor and Bailiff", () =>
+        {
+            foreach (var line in manager.OfficeLines(colony)) sb.AppendLine(line);
+        });
+
+        Section(sb, "Builds without markers", () =>
+        {
+            var missing = manager.MarkerlessBuilds(colony);
+            if (missing.Count == 0) sb.AppendLine("Every build of this colony's style has a Front of build and a Ground floor marker.");
+            else sb.AppendLine("These builds stand at the hut block's height and face as before. Add the markers and export again to fix height and front.");
+            foreach (var line in missing) sb.AppendLine("- " + line);
+        });
+
         Section(sb, "Huts (" + colony.Buildings.Count + ")", () =>
         {
             foreach (var b in colony.Buildings)

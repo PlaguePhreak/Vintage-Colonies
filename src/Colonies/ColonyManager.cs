@@ -150,6 +150,14 @@ public partial class ColonyManager : ModSystem
             var factions = config.RaidFactions ?? Array.Empty<string>();
             if (!factions.Contains("restless")) config.RaidFactions = factions.Append("restless").ToArray();
         }
+        if (config.ConfigVersion < 11)
+        {
+            // 0.201.0 (Aaron): a second builder from 5 settlers, each builder one build in work and one queued, and
+            // the settlement starts with Gatherer's Hut, Builder's Hut, Primitive Craftsman and Warehouse.
+            if (config.MayorSecondBuilderAt == 8) config.MayorSecondBuilderAt = 5;
+            if (config.MayorOrdersPerBuilder == 1) config.MayorOrdersPerBuilder = 2;
+            if ((config.MayorBuildOrder ?? Array.Empty<string>()).SequenceEqual(ColonyConfig.OldMayorBuildOrder)) config.MayorBuildOrder = ColonyConfig.NewMayorBuildOrder();
+        }
         config.ConfigVersion = ColonyConfig.CurrentConfigVersion;
     }
 
@@ -332,6 +340,7 @@ public partial class ColonyManager : ModSystem
             TickRequests(colony, now);
             EnsureMinStock(colony);
             TidyToolRequests(colony);
+            TrackBuildWaits(colony);
             TickUpkeep(colony);
             TickLostSettlers(colony, now);
 

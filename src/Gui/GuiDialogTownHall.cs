@@ -1161,6 +1161,21 @@ public class GuiDialogTownHall : GuiDialog
         y = composer.Section(Lang.Get("createacolony:bailiff-duties"), y, Width);
         y = BailiffSwitch(composer, "bailiffjobs", "jobs", snapshot.BailiffGivesJobs, "bailiff-jobs", "bailiff-jobs-hint", y);
         y = BailiffSwitch(composer, "bailifflend", "lend", snapshot.BailiffLendsWorkers, "bailiff-lend", "bailiff-lend-hint", y);
+        // How long a worker who only waits for a delivery keeps the job (0.201.0).
+        string[] waits = { "1", "2", "3", "5", "7", "14" };
+        int waitNow = Math.Max(0, Array.IndexOf(waits, snapshot.BailiffWaitDays.ToString()));
+        if (Officer)
+        {
+            composer.AddStaticText(Lang.Get("createacolony:bailiff-wait"), GuiKit.Body(), ElementBounds.Fixed(0, y + 4, 420, 24));
+            composer.AddDropDown(waits, waits.Select(w => Lang.Get("createacolony:bailiff-wait-days", w)).ToArray(), waitNow,
+                (code, on) => SendBailiffRule("wait|" + code), ElementBounds.Fixed(430, y, 130, 28), "bailiffwait");
+            y += 36;
+        }
+        else
+        {
+            y = composer.Text(Lang.Get("createacolony:bailiff-wait") + " " + Lang.Get("createacolony:bailiff-wait-days", snapshot.BailiffWaitDays), GuiKit.Body(), 0, y, Width, 6);
+        }
+        y = composer.Text(Lang.Get("createacolony:bailiff-wait-hint"), GuiKit.Muted(), 0, y, Width, 10);
         composer.Text(Lang.Get("createacolony:bailiff-fields-hint"), GuiKit.Muted(), 0, y, Width, 6);
     }
 

@@ -7,7 +7,7 @@ public class ColonyConfig
 {
     public const string FileName = "createacolony.json";
     /// <summary>Bumped when a default changes in a way old config files should pick up; see ColonyManager.UpgradeConfig.</summary>
-    public const int CurrentConfigVersion = 10;
+    public const int CurrentConfigVersion = 11;
 
     /// <summary>Which defaults this file has been brought up to. Files from before 0.33.0 have none, so read as 0.</summary>
     public int ConfigVersion;
@@ -1131,6 +1131,14 @@ public class ColonyConfig
     public double BailiffStuckHours = 2;
     /// <summary>How long a lent worker stays at the other hut before going back to their own, in in-game days.</summary>
     public double BailiffLendDays = 1;
+    /// <summary>
+    /// A worker whose hut waits for a delivery (open requests, or it needs a tool) keeps the job this many game days
+    /// with nothing delivered and nothing made before the Bailiff moves them (0.201.0, Aaron). Changed per colony on
+    /// the Bailiff tab.
+    /// </summary>
+    public int BailiffWaitDays = 3;
+    /// <summary>The Bailiff does not move the same settler again within this many game days.</summary>
+    public double BailiffMoveAgainDays = 3;
     /// <summary>Mood points every other settler has while a bailiff watches over them (they are not liked).</summary>
     public int BailiffMood = -3;
 
@@ -1776,11 +1784,45 @@ public class ColonyConfig
     /// <summary>The Mayor builds another food hut while there are more than this many settlers for each one (Farmer, Hunter, Fisher).</summary>
     public int MayorSettlersPerFoodHut = 5;
     /// <summary>A second Builder's Hut once the colony has this many settlers.</summary>
-    public int MayorSecondBuilderAt = 8;
+    public int MayorSecondBuilderAt = 5;
     /// <summary>How many huts of one type the Mayor builds to meet a need.</summary>
     public int MayorMaxPerType = 2;
-    /// <summary>The Mayor starts a new building only while there are at most this many work orders for each builder.</summary>
-    public int MayorOrdersPerBuilder = 1;
+    /// <summary>The Mayor keeps this many work orders going for each builder: one in work and one queued (0.201.0).</summary>
+    public int MayorOrdersPerBuilder = 2;
+    /// <summary>
+    /// What every settlement starts with, in this order, before beds and the build order (0.201.0, Aaron): the
+    /// Gatherer's Hut (the first food hut), the Builder's Hut, the Primitive Craftsman and the Warehouse.
+    /// </summary>
+    public string[] MayorStartOrder = { "gatherer", "builder", "craftsman", "warehouse" };
+    /// <summary>
+    /// The hut chain (0.201.0): the huts each hut type depends on. The Mayor orders a hut only when those are built and
+    /// have a worker, and orders the missing one first. Copper goes: nuggets (Gatherer), Smelter, pickaxe, then the Mine.
+    /// </summary>
+    public System.Collections.Generic.Dictionary<string, string[]> MayorHutNeeds = new()
+    {
+        ["potter"] = new[] { "gatherer" },
+        ["charcoalburner"] = new[] { "forester" },
+        ["smelter"] = new[] { "forester", "charcoalburner", "potter" },
+        ["blacksmith"] = new[] { "smelter" },
+        ["miner"] = new[] { "smelter" },
+        ["prospector"] = new[] { "smelter" },
+        ["quarry"] = new[] { "smelter" },
+        ["stonemason"] = new[] { "quarry" },
+        ["bakery"] = new[] { "farmer" },
+        ["tannery"] = new[] { "hunter" },
+        ["fletcher"] = new[] { "forester" }
+    };
+    /// <summary>
+    /// The materials check (0.201.0): before ordering a design the Mayor looks at what it costs. Something made by one
+    /// of MayorMaterialMakers (fired or metal things) that the colony does not store, with that hut not working yet,
+    /// makes the design wait and the hut come first.
+    /// </summary>
+    public bool MayorChecksMaterials = true;
+    public string[] MayorMaterialMakers = { "potter", "smelter", "blacksmith" };
+    /// <summary>The Mayor looks for a spot this close to the Town Hall first, then each wider ring, then anywhere in reach.</summary>
+    public int[] MayorNearRings = { 20, 32, 48 };
+    /// <summary>A build that has waited this many game hours for materials lets its builder go to one that has them.</summary>
+    public double BuildWaitsBeforeNextHours = 2;
     /// <summary>Gap kept between buildings, and clear ground kept in front of a building's front.</summary>
     public int MayorGap = 2;
     public int MayorFrontClear = 3;
@@ -1794,9 +1836,20 @@ public class ColonyConfig
     /// The Mayor's default build order, as stages: each stage starts at a number of settlers ("6:hunter" is built
     /// from 6 settlers on). Changed in game on the Town Hall's Mayor tab.
     /// </summary>
-    public string[] MayorBuildOrder =
+    public string[] MayorBuildOrder = NewMayorBuildOrder();
+
+    /// <summary>The build order of 0.199.0 and 0.200.0, to tell a config nobody changed.</summary>
+    public static readonly string[] OldMayorBuildOrder =
     {
         "0:builder", "0:residence", "0:gatherer", "0:forester", "0:farmer", "0:cook", "0:craftsman", "0:potter", "0:courierstation",
+        "6:hunter", "6:guardtower", "6:charcoalburner", "6:sawmill", "6:healer",
+        "10:prospector", "10:miner", "10:smelter", "10:blacksmith", "10:market", "10:tavern", "10:chickencoop", "10:piggery", "10:shepherd", "10:butcher", "10:tannery",
+        "15:church", "15:graveyard", "15:school", "15:archive", "15:barracks", "15:bakery", "15:fisher", "15:quarry", "15:stonemason", "15:tailor", "15:explorer", "15:composter", "15:fletcher", "15:apiary"
+    };
+
+    public static string[] NewMayorBuildOrder() => new[]
+    {
+        "0:gatherer", "0:builder", "0:craftsman", "0:warehouse", "0:residence", "0:forester", "0:farmer", "0:cook", "0:potter", "0:courierstation",
         "6:hunter", "6:guardtower", "6:charcoalburner", "6:sawmill", "6:healer",
         "10:prospector", "10:miner", "10:smelter", "10:blacksmith", "10:market", "10:tavern", "10:chickencoop", "10:piggery", "10:shepherd", "10:butcher", "10:tannery",
         "15:church", "15:graveyard", "15:school", "15:archive", "15:barracks", "15:bakery", "15:fisher", "15:quarry", "15:stonemason", "15:tailor", "15:explorer", "15:composter", "15:fletcher", "15:apiary"

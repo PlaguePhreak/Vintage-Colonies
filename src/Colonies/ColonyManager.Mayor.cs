@@ -36,9 +36,28 @@ public partial class ColonyManager
     public CitizenRecord? MayorOf(Colony colony) =>
         colony.Citizens.Find(c => c.Alive && !c.Visitor && !c.IsChild && c.JobCode == Jobs.Mayor);
 
-    /// <summary>The Mayor when they are fit to work: not knocked out and not sulking.</summary>
-    public CitizenRecord? MayorOnDuty(Colony colony) =>
-        MayorOf(colony) is { IsDowned: false } m && !IsBrokenDown(m) ? m : null;
+    /// <summary>
+    /// The Mayor whose planning runs. Since 0.201.0 (Aaron) that is any living Mayor: planning carries on while they are
+    /// too unhappy to work, knocked out or stuck somewhere, and only "Off" on the Mayor tab stops it.
+    /// </summary>
+    public CitizenRecord? MayorOnDuty(Colony colony) => MayorOf(colony);
+
+    // ---- What the Mayor thought on the last look (0.201.0), for the report and the server log ----
+
+    readonly Dictionary<string, List<string>> mayorNotes = new();
+    readonly Dictionary<string, string> mayorLastLogged = new();
+
+    /// <summary>The Mayor's notes from the last look: what was passed over and why.</summary>
+    public IReadOnlyList<string> MayorNotes(Colony colony) =>
+        mayorNotes.TryGetValue(colony.ColonyId, out var notes) ? notes : (IReadOnlyList<string>)Array.Empty<string>();
+
+    void MayorNote(Colony colony, string text)
+    {
+        if (!mayorNotes.TryGetValue(colony.ColonyId, out var notes)) mayorNotes[colony.ColonyId] = notes = new List<string>();
+        if (notes.Count < 40 && !notes.Contains(text)) notes.Add(text);
+    }
+
+    static string TypeName(string type) => Lang.Get("createacolony:building-" + type);
 
     /// <summary>The build order: the colony's own (Mayor tab) or config MayorBuildOrder, with each type's settler count.</summary>
     public List<(string Type, int From)> MayorOrder(Colony colony)
@@ -79,11 +98,29 @@ public partial class ColonyManager
     {
         int day = (int)sapi.World.Calendar.TotalDays;
         colony.MayorSkipToday.RemoveAll(s => !s.EndsWith("|" + day));
+        mayorNotes.Remove(colony.ColonyId);
         TrackShortages(colony);
         EnsureBuilderJob(colony, mayor);
         SetMayorIdle(colony, "");
         if (colony.MayorMode == MayorModes.Off) return;
+        MayorThinks(colony, mayor);
+        LogMayorLook(colony, mayor);
+    }
 
+    /// <summary>One line in the server log each time the Mayor's plan or reason for waiting changes (0.201.0).</summary>
+    void LogMayorLook(Colony colony, CitizenRecord mayor)
+    {
+        string now = colony.MayorPlan is { } p
+            ? (p.Approved ? "carrying out " : "asks for ") + PlanName(p) + ". " + ReasonText(p)
+            : "waits: " + (MayorIdleText(colony) is { Length: > 0 } idle ? idle : "nothing to do");
+        if (mayorLastLogged.GetValueOrDefault(colony.ColonyId) == now) return;
+        mayorLastLogged[colony.ColonyId] = now;
+        Mod.Logger.Notification("[mayor] {0}: {1} {2}", colony.Name, mayor.Name, now);
+        foreach (var note in MayorNotes(colony)) Mod.Logger.Notification("[mayor] {0}:   {1}", colony.Name, note);
+    }
+
+    void MayorThinks(Colony colony, CitizenRecord mayor)
+    {
         if (colony.MayorPlan is { } plan)
         {
             // Waiting for a yes, or (approved) for a hut block: try again.
@@ -92,18 +129,24 @@ public partial class ColonyManager
             if (colony.MayorPlan != null) return;
         }
 
-        var next = NextStep(colony, mayor);
-        if (next == null) return;
-        bool ask = colony.MayorMode == MayorModes.Ask || next.Type == BuildingTypes.TownHall;
-        if (ask)
+        // Up to three steps in one look (0.201.0), so each builder gets a build in work and one queued without
+        // waiting for the next look.
+        for (int n = 0; n < 3; n++)
         {
+            var next = NextStep(colony, mayor);
+            if (next == null) return;
+            bool ask = colony.MayorMode == MayorModes.Ask || next.Type == BuildingTypes.TownHall;
+            if (ask)
+            {
+                colony.MayorPlan = next;
+                TellMembers(colony, "createacolony:mayor-asks", mayor.Name, PlanName(next), ReasonText(next));
+                return;
+            }
+            next.Approved = true;
             colony.MayorPlan = next;
-            TellMembers(colony, "createacolony:mayor-asks", mayor.Name, PlanName(next), ReasonText(next));
-            return;
+            CarryOut(colony, mayor, next);
+            if (colony.MayorPlan != null) return;
         }
-        next.Approved = true;
-        colony.MayorPlan = next;
-        CarryOut(colony, mayor, next);
     }
 
     void SetMayorIdle(Colony colony, string key, params string[] args)
@@ -129,6 +172,8 @@ public partial class ColonyManager
         if (pick == null) return;
         pick.JobCode = Jobs.Builder;
         pick.WorkplacePos = null;
+        pick.JobSetByPlayer = false;
+        pick.LastMovedTotalDays = sapi.World.Calendar.TotalDays;
         LogEvent(colony, "event-mayor-builder", mayor.Name, pick.Name);
     }
 
@@ -141,12 +186,148 @@ public partial class ColonyManager
     bool Skipped(Colony colony, string type) =>
         colony.MayorSkip.Contains(type) || colony.MayorSkipToday.Any(s => s.StartsWith(type + "|"));
 
-    /// <summary>True while the builders have room for another job (MayorOrdersPerBuilder each).</summary>
+    /// <summary>True while the builders have room for another job: each has one build in work and one queued (MayorOrdersPerBuilder).</summary>
     bool BuildersHaveRoom(Colony colony)
     {
         int builders = Math.Max(1, colony.Citizens.Count(c => c.Alive && !c.Visitor && c.JobCode == Jobs.Builder));
-        int orders = colony.Buildings.Count(b => b.HasWorkOrder && !b.Upkeep && !b.Repairing);
-        return orders <= builders * Math.Max(1, Config.MayorOrdersPerBuilder);
+        return OpenBuilds(colony).Count < builders * Math.Max(1, Config.MayorOrdersPerBuilder);
+    }
+
+    List<Building> OpenBuilds(Colony colony) => colony.Buildings.Where(b => b.HasWorkOrder && !b.Upkeep && !b.Repairing).OrderBy(b => b.BuildingId).ToList();
+
+    /// <summary>True when a hut of this type is built and has a worker (or needs none).</summary>
+    bool HutWorking(Colony colony, string type) =>
+        colony.Buildings.Any(b => b.Type == type && b.Level >= 1 && !b.Removing && (JobOf(type) == null || WorkersAt(colony, b).Count > 0));
+
+    /// <summary>Every chest the colony keeps things in: the warehouse and each hut's storage.</summary>
+    IEnumerable<BlockEntityContainer> ColonyStores(Colony colony) =>
+        WarehouseContainers(colony).Concat(colony.Buildings.Where(b => !b.Removing).SelectMany(b => HutStorage(colony, b))).Distinct();
+
+    /// <summary>True when the colony has seeds to sow: in a chest or with a settler. A Farmer's Hut waits for them (0.201.0).</summary>
+    bool ColonyHasSeeds(Colony colony)
+    {
+        static bool Seed(ItemStack s) => s.Collectible.Code.Path.StartsWith("seeds-");
+        if (CountItems(ColonyStores(colony), Seed) > 0) return true;
+        return colony.Citizens.Any(c => c.Alive && !c.Visitor && PackCount(c, Seed) > 0);
+    }
+
+    /// <summary>
+    /// The start of a settlement (0.201.0, Aaron): Gatherer's Hut, Builder's Hut, Primitive Craftsman and Warehouse, in
+    /// that order, before beds and everything else. Null once all four are down (or can't be).
+    /// </summary>
+    MayorPlan? StartStep(Colony colony, bool room, ref string? why)
+    {
+        foreach (var type in Config.MayorStartOrder ?? Array.Empty<string>())
+        {
+            if (Skipped(colony, type)) continue;
+            if (!CanMayorBuild(colony, type))
+            {
+                if (CountOf(colony, type) == 0) MayorNote(colony, $"Start: no {TypeName(type)} design in this colony's style, so it is left out.");
+                continue;
+            }
+            if (colony.MayorPlan is { } pending && pending.Type == type) continue;
+            var unbuilt = colony.Buildings.FirstOrDefault(b => b.Type == type && b.Level == 0 && !b.HasWorkOrder && !b.IsStation && !b.Removing);
+            if (unbuilt != null)
+            {
+                if (room) return UpgradePlan(unbuilt, "mayor-why-start", Array.Empty<string>(), 1);
+                continue;
+            }
+            if (CountOf(colony, type) > 0) continue;
+            if (!room)
+            {
+                MayorNote(colony, $"Start: the {TypeName(type)} is next, once a builder is free.");
+                return null;
+            }
+            var plan = NewBuilding(colony, type, "mayor-why-start", Array.Empty<string>());
+            if (plan != null) return plan;
+            why ??= "mayor-idle-nospot|@building-" + type;
+            MayorNote(colony, $"Start: no spot found for the {TypeName(type)}.");
+        }
+        return null;
+    }
+
+    /// <summary>
+    /// The hut chain (0.201.0, config MayorHutNeeds): true when every hut this type depends on is built and has a
+    /// worker. When one is missing, first is what to do about it now (build it, order it, find it a worker), or null
+    /// when that has to wait.
+    /// </summary>
+    bool ChainReady(Colony colony, CitizenRecord mayor, string type, bool room, ref string? why, out MayorPlan? first, int depth = 0)
+    {
+        first = null;
+        if (depth > 6 || Config.MayorHutNeeds == null || !Config.MayorHutNeeds.TryGetValue(type, out var needs)) return true;
+        foreach (var dep in needs)
+        {
+            if (dep == type || HutWorking(colony, dep)) continue;
+            // A hut the colony can never have (no design for it) does not hold the others up.
+            if (!CanMayorBuild(colony, dep) && !colony.Buildings.Any(b => b.Type == dep && !b.Removing)) continue;
+            why ??= "mayor-idle-chain|@building-" + type + "|@building-" + dep;
+            MayorNote(colony, $"Chain: the {TypeName(type)} waits for a working {TypeName(dep)}.");
+            first = ForNeed(colony, mayor, dep, "mayor-why-chain", new[] { "@building-" + type }, room, ref why, depth + 1);
+            return false;
+        }
+        return true;
+    }
+
+    // ---- The materials check (0.201.0) ---------------------------------------------------------
+
+    readonly Dictionary<(string Colony, string Type), (long Ms, Dictionary<string, (ItemStack Sample, int Count)> Costs)> designCosts = new();
+
+    /// <summary>What level 1 of a design costs, counted on empty ground. Kept for ten minutes.</summary>
+    Dictionary<string, (ItemStack Sample, int Count)> DesignCosts(Colony colony, string type)
+    {
+        long ms = sapi.World.ElapsedMilliseconds;
+        if (designCosts.TryGetValue((colony.ColonyId, type), out var known) && ms - known.Ms < 600_000) return known.Costs;
+        var costs = new Dictionary<string, (ItemStack, int)>();
+        string style = ColonyStyle(colony);
+        var probe = new Building { Type = type, Style = style };
+        probe.Variant = Blueprints.VariantFor(Blueprints.StyleFor(probe), type, "");
+        // Counted high in the air over the Town Hall, where nothing stands, so the whole design counts.
+        probe.HutPos = new BlockPos(colony.TownHallPos.X, Math.Max(colony.TownHallPos.Y, sapi.World.BlockAccessor.MapSizeY - 80), colony.TownHallPos.Z);
+        if (Blueprints.Get(probe, 1) is { } blueprint)
+        {
+            foreach (var step in blueprint.Steps)
+            {
+                if (step.BlockId == 0) continue;
+                foreach (var cost in RemainingCost(colony, step, StepPos(probe, step)))
+                {
+                    costs[cost.Code] = costs.TryGetValue(cost.Code, out var n) ? (n.Item1, n.Item2 + cost.Count) : (cost.Sample, cost.Count);
+                }
+            }
+        }
+        designCosts[(colony.ColonyId, type)] = (ms, costs);
+        return costs;
+    }
+
+    /// <summary>
+    /// The materials check: what in a design the colony neither stores nor can make. Maker is the hut type that makes it
+    /// and is not working yet (build that first), or null when no hut makes it at all (someone has to supply it).
+    /// Things the start huts bring (logs, clay, dry grass, stone tools) never count: the Mayor builds those huts when
+    /// a build runs short. Null when the design is fine.
+    /// </summary>
+    (string Thing, string? Maker)? MaterialsProblem(Colony colony, string type)
+    {
+        if (!Config.MayorChecksMaterials || !Config.BuildersNeedMaterials) return null;
+        if ((Config.MayorStartOrder ?? Array.Empty<string>()).Contains(type)) return null;
+        var stores = ColonyStores(colony).ToList();
+        (string, string?)? supply = null;
+        foreach (var (code, (sample, count)) in DesignCosts(colony, type))
+        {
+            if (CountItems(stores, Matcher(code)) >= count) continue;
+            var maker = MakerTypeFor(colony, code);
+            if (maker != null && HutWorking(colony, maker)) continue;
+            bool chained = maker != null && (Config.MayorMaterialMakers ?? Array.Empty<string>()).Contains(maker);
+            // Made by a simple hut (Forester, Gatherer, Sawmill, Quarry), or by nobody: builders and players bring it.
+            if (!chained) continue;
+            string thing = sample?.GetName() ?? ThingName(code);
+            // The design needs what only its own kind makes (a Blacksmith's anvil): someone has to supply it.
+            if (maker == type)
+            {
+                supply ??= (thing, null);
+                continue;
+            }
+            return (thing, maker);
+        }
+        return supply;
     }
 
     /// <summary>The Mayor's next step, most urgent first; null when there is nothing to do (the reason goes on the Mayor tab).</summary>
@@ -154,31 +335,44 @@ public partial class ColonyManager
     {
         var settlers = colony.Citizens.Count(c => c.Alive && !c.Visitor);
         bool room = BuildersHaveRoom(colony);
-        string? why = null;
+        // why: what really holds the next building up. aside: true, but not what the Mayor waits for (0.201.0).
+        string? why = null, aside = null;
 
-        // 1. Food.
-        var foodTypes = new[] { BuildingTypes.Farmer, BuildingTypes.Hunter, BuildingTypes.Fisher };
+        // 0. The start of a settlement: Gatherer's Hut, Builder's Hut, Primitive Craftsman, Warehouse.
+        if (StartStep(colony, room, ref why) is { } start) return start;
+
+        // 1. Food. The Gatherer's Hut is the first food hut; a Farmer's Hut waits until the colony has seeds.
+        var foodTypes = new[] { BuildingTypes.Gatherer, BuildingTypes.Farmer, BuildingTypes.Hunter, BuildingTypes.Fisher };
         int foodHuts = foodTypes.Sum(t => CountOf(colony, t));
+        bool seeds = ColonyHasSeeds(colony);
         if (settlers > foodHuts * Math.Max(1, Config.MayorSettlersPerFoodHut))
         {
-            var type = foodTypes.Where(t => !Skipped(colony, t) && CountOf(colony, t) < Config.MayorMaxPerType + 2)
-                .OrderBy(t => CountOf(colony, t) + (t == BuildingTypes.Farmer ? 0 : t == BuildingTypes.Hunter ? 0.5 : 1)).FirstOrDefault();
+            if (!seeds) MayorNote(colony, "Food: no Farmer's Hut yet, the colony has no seeds.");
+            var type = foodTypes.Where(t => !Skipped(colony, t) && (t != BuildingTypes.Farmer || seeds))
+                .Where(t => CountOf(colony, t) < (t == BuildingTypes.Gatherer ? Math.Max(1, Config.MayorMaxPerType) : Config.MayorMaxPerType + 2))
+                .OrderBy(t => CountOf(colony, t) + (t == BuildingTypes.Gatherer ? 0 : t == BuildingTypes.Farmer ? 0.25 : t == BuildingTypes.Hunter ? 0.5 : 1)).FirstOrDefault();
             if (type != null && ForNeed(colony, mayor, type, "mayor-why-food", new[] { settlers.ToString() }, room, ref why) is { } food) return food;
         }
 
-        // 2. and 4. Things the colony is short of: those holding up a building first.
+        // 2. and 4. Things the colony is short of: tools nobody can make yet first (so the Primitive Craftsman comes
+        // before anything else), then what holds up a building.
         double hours = sapi.World.Calendar.TotalHours;
+        bool craftsmanWorks = HutWorking(colony, BuildingTypes.Craftsman);
+        bool ToolNobodyMakes(DeliveryRequest r) => !craftsmanWorks && ParseToolCode(r.ItemCode) != null && MakerTypeFor(colony, r.ItemCode) == BuildingTypes.Craftsman;
         var shortOf = colony.Requests
-            .Where(r => r.Remaining > 0 && r.RequestedBy != MayorTag && colony.MayorShortSince.TryGetValue(r.RequestId, out double since) && hours - since >= Config.MayorShortHours)
+            .Where(r => r.Remaining > 0 && r.RequestedBy != MayorTag)
+            .Where(r => ToolNobodyMakes(r) || colony.MayorShortSince.TryGetValue(r.RequestId, out double since) && hours - since >= Config.MayorShortHours)
             .Where(r => CountItems(WarehouseContainers(colony), Matcher(r.ItemCode)) < r.Remaining)
-            .OrderByDescending(r => RequestHoldsUpBuild(colony, r))
+            .OrderByDescending(ToolNobodyMakes)
+            .ThenByDescending(r => RequestHoldsUpBuild(colony, r))
             .ThenBy(r => r.RequestId)
             .ToList();
         bool bedsChecked = false;
         foreach (var request in shortOf)
         {
             bool forBuild = RequestHoldsUpBuild(colony, request);
-            if (!forBuild && !bedsChecked)
+            bool tool = ToolNobodyMakes(request);
+            if (!forBuild && !tool && !bedsChecked)
             {
                 bedsChecked = true;
                 if (BedStep(colony, mayor, room, ref why) is { } beds) return beds;
@@ -187,11 +381,12 @@ public partial class ColonyManager
             string thing = ThingName(request.ItemCode);
             if (maker == null)
             {
-                why ??= "mayor-idle-nomaker|" + thing;
+                aside ??= "mayor-idle-nomaker|" + thing;
+                MayorNote(colony, $"Short of {thing} ({RequesterName(colony, request)}), and no hut can make it.");
                 continue;
             }
             string who = RequesterName(colony, request);
-            var step = ForNeed(colony, mayor, maker, forBuild ? "mayor-why-build-short" : "mayor-why-short", new[] { who, thing }, room, ref why);
+            var step = ForNeed(colony, mayor, maker, tool ? "mayor-why-tool" : forBuild ? "mayor-why-build-short" : "mayor-why-short", new[] { who, thing }, room, ref why);
             if (step != null) return step;
         }
 
@@ -200,7 +395,13 @@ public partial class ColonyManager
 
         if (!room)
         {
-            SetIdleFrom(colony, why ?? "mayor-idle-busy");
+            // The real reason (0.201.0): the builders have their hands full. Say with what, and what it waits for.
+            var builds = OpenBuilds(colony);
+            var slow = builds.FirstOrDefault(b => IsBuildStarved(colony, b)) ?? builds.FirstOrDefault(IsBuildStuck) ?? builds.FirstOrDefault();
+            if (slow != null) SetMayorIdle(colony, "mayor-idle-building", BuildingName(slow), "@buildstatus-" + BuildStatusText(colony, slow));
+            else SetMayorIdle(colony, "mayor-idle-busy");
+            if (why != null) MayorNote(colony, "Also: " + IdleText(why));
+            if (aside != null) MayorNote(colony, "Also: " + IdleText(aside));
             return null;
         }
 
@@ -209,6 +410,7 @@ public partial class ColonyManager
             && NewBuilding(colony, BuildingTypes.Builder, "mayor-why-builder", new[] { settlers.ToString() }) is { } builder) return builder;
 
         // 6. The build order.
+        (string Type, string Thing)? lastResort = null;
         foreach (var (type, from) in MayorOrder(colony))
         {
             if (settlers < from || Skipped(colony, type) || !CanMayorBuild(colony, type)) continue;
@@ -218,15 +420,55 @@ public partial class ColonyManager
                 return UpgradePlan(unbuilt, "mayor-why-order", Array.Empty<string>(), 1);
             }
             if (CountOf(colony, type) > 0) continue;
+            if (type == BuildingTypes.Farmer && !seeds)
+            {
+                why ??= "mayor-idle-noseeds";
+                MayorNote(colony, "Build order: the Farmer's Hut waits for seeds.");
+                continue;
+            }
+            // The hut chain: what this hut depends on comes first.
+            if (!ChainReady(colony, mayor, type, room, ref why, out var first))
+            {
+                if (first != null) return first;
+                continue;
+            }
+            // The materials check: a design the colony can't supply waits, and its maker comes first.
+            if (MaterialsProblem(colony, type) is { } problem)
+            {
+                if (problem.Maker == null)
+                {
+                    lastResort ??= (type, problem.Thing);
+                    MayorNote(colony, $"Build order: the {TypeName(type)} needs {problem.Thing}, which no hut here makes. It goes last.");
+                    continue;
+                }
+                why ??= "mayor-idle-materials|@building-" + type + "|" + problem.Thing + "|@building-" + problem.Maker;
+                MayorNote(colony, $"Build order: the {TypeName(type)} needs {problem.Thing}, so a {TypeName(problem.Maker)} comes first.");
+                var makerStep = ForNeed(colony, mayor, problem.Maker, "mayor-why-material", new[] { "@building-" + type, problem.Thing }, room, ref why);
+                if (makerStep != null) return makerStep;
+                continue;
+            }
             var step = NewBuilding(colony, type, "mayor-why-order", Array.Empty<string>());
             if (step != null) return step;
             why ??= "mayor-idle-nospot|@building-" + type;
+            MayorNote(colony, $"Build order: no spot found for the {TypeName(type)}.");
         }
 
         // 7. Upgrades.
         if (UpgradeStep(colony) is { } upgrade) return upgrade;
-        SetIdleFrom(colony, why ?? "mayor-idle-nothing");
+
+        // Last: a design the colony can't fully supply. It is ordered anyway, and says what someone has to bring.
+        if (lastResort is { } last && NewBuilding(colony, last.Type, "mayor-why-order-supply", new[] { last.Thing }) is { } supplied) return supplied;
+
+        SetIdleFrom(colony, why ?? aside ?? "mayor-idle-nothing");
         return null;
+    }
+
+    /// <summary>An idle reason ("key|arg|arg") in words.</summary>
+    string IdleText(string why)
+    {
+        var parts = why.Split('|');
+        var args = parts.Skip(1).Select(a => a.StartsWith('@') ? Lang.Get("createacolony:" + a[1..]) : a).Cast<object>().ToArray();
+        return Lang.Get("createacolony:" + parts[0], args);
     }
 
     void SetIdleFrom(Colony colony, string why)
@@ -255,11 +497,13 @@ public partial class ColonyManager
     /// What to do about a need a hut type meets: build one if there is none, order a waiting hut block built, find
     /// a worker for an empty hut, or upgrade (or add another) when it can't keep up. Null when nothing can be done now.
     /// </summary>
-    MayorPlan? ForNeed(Colony colony, CitizenRecord mayor, string type, string reason, string[] args, bool room, ref string? why)
+    MayorPlan? ForNeed(Colony colony, CitizenRecord mayor, string type, string reason, string[] args, bool room, ref string? why, int depth = 0)
     {
         if (Skipped(colony, type) || !CanMayorBuild(colony, type)) return null;
         var huts = colony.Buildings.Where(b => b.Type == type && !b.Removing).ToList();
         if (colony.MayorPlan is { } pending && pending.Type == type) return null;
+        // The hut chain (0.201.0): no Blacksmith before a working Smelter. What it depends on comes first.
+        if (huts.Count == 0 && !ChainReady(colony, mayor, type, room, ref why, out var first, depth)) return first;
         // On its way: nothing more to do until it is built.
         if (huts.Any(b => b.HasWorkOrder)) return null;
         var waiting = huts.FirstOrDefault(b => b.Level == 0 && !b.IsStation);
@@ -268,7 +512,11 @@ public partial class ColonyManager
         var empty = huts.FirstOrDefault(b => b.Level >= 1 && JobOf(b.Type) is { } job && FreePlaces(colony, b) > 0 && WorkersAt(colony, b).Count == 0);
         if (empty != null)
         {
-            if (!HireFor(colony, mayor, empty)) why ??= "mayor-idle-noworker|" + BuildingName(empty);
+            if (!HireFor(colony, mayor, empty))
+            {
+                why ??= "mayor-idle-noworker|" + BuildingName(empty);
+                MayorNote(colony, $"The {BuildingName(empty)} has no worker, and nobody is free.");
+            }
             return null;
         }
         if (!room) return null;
@@ -288,6 +536,8 @@ public partial class ColonyManager
         if (pick == null) return false;
         pick.JobCode = job;
         pick.WorkplacePos = hut.HutPos.Copy();
+        pick.JobSetByPlayer = false;
+        pick.LastMovedTotalDays = sapi.World.Calendar.TotalDays;
         LogEvent(colony, "event-mayor-hired", mayor.Name, pick.Name, "@job-" + job, BuildingName(hut));
         return true;
     }
@@ -329,11 +579,14 @@ public partial class ColonyManager
     /// <summary>Whether the Mayor may put a hut of this type down at all (as the wand would allow).</summary>
     bool CanMayorBuild(Colony colony, string type)
     {
-        if (type is BuildingTypes.TownHall or BuildingTypes.Warehouse or BuildingTypes.SupplyCamp or BuildingTypes.MineshaftEntrance) return false;
+        if (type is BuildingTypes.TownHall or BuildingTypes.SupplyCamp or BuildingTypes.MineshaftEntrance) return false;
+        // One Warehouse for a colony (0.201.0: the Mayor builds it as part of the start).
+        if (type == BuildingTypes.Warehouse && colony.WarehousePos != null) return false;
         if (type == BuildingTypes.Archive && !ArchiveAllowed(colony)) return false;
         if (type == BuildingTypes.Mint && !CoinageLoaded) return false;
         if (type == BuildingTypes.CourierStation) return colony.WarehousePos != null;
-        if (sapi.World.GetBlock(new AssetLocation(BlueprintLibrary.HutBlockCode(type))) is not BlockColonyHut) return false;
+        var hutBlock = sapi.World.GetBlock(new AssetLocation(BlueprintLibrary.HutBlockCode(type)));
+        if (hutBlock is not BlockColonyHut && !(type == BuildingTypes.Warehouse && hutBlock is BlockWarehouse)) return false;
         // Only buildings that have a blueprint (the player's builds).
         var probe = new Building { Type = type, Style = ColonyStyle(colony) };
         probe.Variant = Blueprints.VariantFor(Blueprints.StyleFor(probe), type, "");
@@ -380,6 +633,10 @@ public partial class ColonyManager
     string? MakerTypeFor(Colony colony, string code)
     {
         var match = Matcher(code);
+        // A tool a stone one will do for is the Primitive Craftsman's work (0.201.0): the list below reaches the
+        // Blacksmith first, and a stone age colony was told to build one for a shovel.
+        if (ParseToolCode(code) != null && (CanMayorBuild(colony, BuildingTypes.Craftsman) || colony.Buildings.Any(b => b.Type == BuildingTypes.Craftsman))
+            && MakerKinds(colony, new Building { Type = BuildingTypes.Craftsman }).Any(k => match(k.Sample))) return BuildingTypes.Craftsman;
         foreach (var (type, patterns) in Config.MayorMakers)
         {
             if (!CanMayorBuild(colony, type) && !colony.Buildings.Any(b => b.Type == type)) continue;
@@ -548,8 +805,20 @@ public partial class ColonyManager
         // The building's space for each turn, around its hut block at 0,0,0.
         var boxes = new Dictionary<int, Cuboidi>();
         foreach (int turn in new[] { 0, 90, 180, 270 }) boxes[turn] = PlannedBox(type, style, variant, new BlockPos(0, 0, 0), turn);
+        // Close to the Town Hall first (0.201.0): the nearest ring that has a spot wins, and the search only widens when
+        // a ring has none. Before, trees far out pulled a Gatherer's Hut 53 blocks from the Town Hall.
+        var nearRings = (Config.MayorNearRings ?? Array.Empty<int>()).Where(n => n > 0).OrderBy(n => n).ToArray();
+        int ring = 0;
         foreach (var (dx, dz) in Rings(r, 2))
         {
+            double out2 = dx * dx + dz * dz;
+            bool done = false;
+            while (ring < nearRings.Length && out2 > (double)nearRings[ring] * nearRings[ring])
+            {
+                if (best != null) done = true;
+                ring++;
+            }
+            if (done) break;
             int x = th.X + dx, z = th.Z + dz;
             int ground = map.At(x, z);
             if (ground == int.MinValue || refused.Any(f => Math.Abs(f.Item1 - x) <= 4 && Math.Abs(f.Item2 - z) <= 4)) continue;
@@ -797,9 +1066,12 @@ public partial class ColonyManager
     Building? PlaceHut(Colony colony, MayorPlan plan)
     {
         var world = sapi.World;
-        if (world.GetBlock(new AssetLocation(BlueprintLibrary.HutBlockCode(plan.Type))) is not BlockColonyHut block) return null;
+        var block = world.GetBlock(new AssetLocation(BlueprintLibrary.HutBlockCode(plan.Type)));
+        bool warehouse = plan.Type == BuildingTypes.Warehouse && block is BlockWarehouse && colony.WarehousePos == null;
+        if (block is not BlockColonyHut && !warehouse) return null;
         if (!world.BlockAccessor.GetBlock(plan.Pos).IsReplacableBy(block)) return null;
-        world.BlockAccessor.SetBlock(block.BlockId, plan.Pos);
+        world.BlockAccessor.SetBlock(block!.BlockId, plan.Pos);
+        if (warehouse) colony.WarehousePos = plan.Pos.Copy();
         var building = AddBuilding(colony, plan.Type, plan.Pos, plan.Rotation);
         building.Style = plan.Style;
         building.Variant = plan.Variant;

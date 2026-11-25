@@ -12,6 +12,48 @@ domain (`assets/createacolony/`, block and item codes like `createacolony:townha
 (`ModConfig/createacolony.json`), the release zips (`createacolony_<version>.zip`) and all save data keys.
 Changing any of those would stop old worlds from loading their colonies, so leave them as they are.
 
+## Fixes after the overnight test, part 2: builds, the Mayor and the Bailiff (0.201.0)
+
+From the fix plan Aaron approved on 25 Nov 2026 (groups C and D).
+
+Builds:
+
+- **Ground floor marker** (`createacolony:waypoint-ground`, blue top). Put it in a build at the height of the ground outside, before exporting. Everything from that height up is cleared, and the hut block stands as far above the land as it does in the build. The Mayor and the wand both use it. A build without one works as before.
+- **Front of build marker** (`createacolony:waypoint-front`, white top). It now goes at the outer end of the path to the front door. Old builds with it by the door still work.
+- `/colony report` lists every build of the colony's style that has no Front of build or no Ground floor marker.
+- **% done** counts blocks that really stand. Clearing shows as "clearing the site".
+- **Materials.** A builder asks for everything a build needs when it starts, and checks again every minute.
+- **Starting tools.** The first settler who needs one gets a flint axe, shovel, hoe or knife from the Town Hall, once each per colony. They are handed over directly: the Town Hall block has no chest. After that, spare tools come from the Town Hall's storage or the Warehouse.
+- **No pickaxe yet.** While the colony has no pickaxe and nobody who can make one, builders clear stone by hand, 4 times slower.
+- **Stuck blocks.** A stuck build says which block, what should be there, what is there, and whether the builder could not reach it or could not change it. A build with no builder says "waiting for a builder".
+- **A build that waits for materials** for 2 game hours lets its builder go to a build that has them. The builder comes back when the materials arrive.
+- The wand's placement window explains the red spots, and says when giving is free in creative.
+
+The Mayor:
+
+- **The start.** Every settlement starts with a Gatherer's Hut, a Builder's Hut, a Primitive Craftsman and a Warehouse, in that order, before beds and everything else. The Mayor can now place the Warehouse.
+- **Food.** The Gatherer's Hut is the first food hut. A Farmer's Hut waits until the colony has seeds.
+- **Tools.** An open tool request that a stone tool will do for sends the Mayor to the Primitive Craftsman at once. It no longer leads to a Blacksmith.
+- **Hut chain.** A hut waits for the huts it depends on, and the missing one is built first. Potter needs Gatherer. Charcoal Burner needs Forester. Smelter needs Forester, Charcoal Burner and Potter. Blacksmith, Miner, Prospector and Quarry need a Smelter.
+- **Materials check.** Before ordering a design from the build order, the Mayor looks at what it costs. If it needs fired or metal parts the colony does not hold, the hut that makes them comes first. A design that needs something no hut makes goes last, and the plan says what to put in the warehouse.
+- **The real reason.** The Mayor tab says what the Mayor is really waiting for, such as which build keeps the builders busy and why.
+- **Builders.** A second Builder's Hut comes at 5 settlers. Each builder has one build in work and one queued. The Mayor takes up to three steps in one look.
+- **Spots.** The Mayor takes the nearest ring around the Town Hall that has a spot (20, 32, then 48 blocks) and only looks further when none fits.
+- **Planning carries on** whatever state the Mayor is in. Only "Off" stops it.
+- The server log has a `[mayor]` line each time the plan or the reason for waiting changes, and `/colony report` has a "Mayor and Bailiff" part with what was passed over and why.
+
+The Bailiff:
+
+- **No worker for an unbuilt hut.** The Bailiff, the Mayor and auto hiring leave a hut alone while its first build is queued or under way. You can still put someone there by hand.
+- **Waiting for a delivery.** A worker whose hut has asked for something keeps the job. Only after 3 game days with nothing delivered and nothing made does the Bailiff move them. The number of days is on the Bailiff tab.
+- **Your jobs stay.** A job you give by hand is left alone until you change it. Nobody is moved twice within 3 game days.
+- **Back early.** A lent worker goes back as soon as something reaches their own hut, or it no longer waits for anything.
+- Server config: `StarterTools`, `NoPickaxeSlowdown`, `BuildWaitsBeforeNextHours`, `MayorStartOrder`, `MayorHutNeeds`, `MayorChecksMaterials`, `MayorMaterialMakers`, `MayorNearRings`, `BailiffWaitDays`, `BailiffMoveAgainDays`. `MayorSecondBuilderAt` is now 5 and `MayorOrdersPerBuilder` 2. An unchanged build order is moved to the new one. A colony that changed its own build order keeps it: press "Reset build order" on the Mayor tab for the new one.
+
+Not changed: "stuck at tall grass" was a builder who could not reach the block (covered by 0.200.0, and now named as such).
+
+Not tested in game yet.
+
 ## Fixes after the overnight test, part 1: walking, hauling and the report (0.200.0)
 
 From the fix plan Aaron approved on 25 Nov 2026 (groups A and B, and G2 to G4).
@@ -50,7 +92,7 @@ Not tested in game yet.
 - **Courier's Station.** The Mayor puts it next to the Warehouse block.
 - **Your builds only.** The Mayor only builds types that have a blueprint in the colony's asset pack.
 - While a Mayor is on duty, auto hiring and auto housing run even if their switches are off. If there is no builder at all, the Mayor makes someone the builder.
-- **Front of build marker** (`createacolony:waypoint-front`, white top). Put it on the ground just outside the front door of a build before exporting. The Mayor and the Builder's Wand use it to turn the front the right way. Without it, the first door is used, as before.
+- **Front of build marker** (`createacolony:waypoint-front`, white top). Put it on the ground at the outer end of the path to the front door before exporting (0.201.0; just outside the door still works). The Mayor and the Builder's Wand use it to turn the front the right way. Without it, the first door is used, as before.
 - Server config: `MayorEveryHours`, `MayorShortHours`, `MayorSettlersPerFoodHut`, `MayorSecondBuilderAt`, `MayorMaxPerType`, `MayorOrdersPerBuilder`, `MayorGap`, `MayorFrontClear`, `MayorMaxSlope`, `MayorSearchRadius`, `MayorHutsUpToTownHall`, `MayorBuildOrder`, `MayorMakers`.
 
 Not tested in game yet.

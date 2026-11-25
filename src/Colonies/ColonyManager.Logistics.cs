@@ -329,6 +329,8 @@ public partial class ColonyManager
     /// <summary>Records a delivery, removing the request once it is complete.</summary>
     public void RecordDelivery(Colony colony, DeliveryRequest request, int amount)
     {
+        // The Bailiff's wait starts again with every delivery to a hut (0.201.0).
+        if (amount > 0 && RequestHut(colony, request) is { } gotIt) lastDelivery[(colony.ColonyId, gotIt.BuildingId)] = sapi.World.Calendar.TotalDays;
         request.Delivered += amount;
         request.LeasedByCitizenId = 0;
         // Once what the hut needs is there, the spare only comes along on the same trip, so nobody waits for it.
@@ -346,6 +348,9 @@ public partial class ColonyManager
             request.Quantity, request.RequestedBy, request.Delivered, request.Quantity, why);
         MarkDirty(colony);
     }
+
+    /// <summary>When (total days) something asked for last reached each hut. Not saved.</summary>
+    readonly Dictionary<(string Colony, int Building), double> lastDelivery = new();
 
     readonly Dictionary<int, double> requestSeen = new();
 

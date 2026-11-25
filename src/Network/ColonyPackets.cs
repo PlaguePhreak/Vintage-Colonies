@@ -840,6 +840,8 @@ public class ColonySnapshot
     [ProtoMember(4811)] public List<string> MayorSkip = new();
     /// <summary>The plan is a new building (so it can be shown), not an upgrade.</summary>
     [ProtoMember(4812)] public bool MayorPlanNew;
+    /// <summary>Game days the Bailiff leaves a worker who waits for a delivery at their hut (0.201.0).</summary>
+    [ProtoMember(4813)] public int BailiffWaitDays;
 }
 
 /// <summary>ColonySnapshot.BailiffState: none, on duty, knocked out, or too unhappy to work.</summary>

@@ -422,6 +422,9 @@ public partial class ColonyNetwork : ModSystem
             case "lend":
                 colony.BailiffLendsWorkers = parts[1] == "1";
                 break;
+            case "wait":
+                if (int.TryParse(parts[1], out int waitDays) && waitDays >= 1 && waitDays <= 30) colony.BailiffWaitDays = waitDays;
+                break;
             case "wages":
                 colony.BailiffPaysWages = parts[1] == "1";
                 break;
@@ -473,6 +476,8 @@ public partial class ColonyNetwork : ModSystem
         if (job == Jobs.Mayor && Manager.MayorOf(colony) is { } mayor && mayor != citizen) return "createacolony:mayor-taken";
         if (citizen.JobCode != (job.Length == 0 ? null : job)) citizen.WorkplacePos = null;
         citizen.JobCode = job.Length == 0 ? null : job;
+        // A job given by hand stays: the Bailiff does not move this settler until a player changes the job (0.201.0).
+        citizen.JobSetByPlayer = job.Length > 0;
         ColonyManager.EndLoan(citizen);
         return null;
     }
@@ -961,6 +966,7 @@ public partial class ColonyNetwork : ModSystem
         snapshot.BailiffGivesJobs = colony.BailiffGivesJobs;
         snapshot.BailiffCollectsRent = colony.BailiffCollectsRent;
         snapshot.BailiffLendsWorkers = colony.BailiffLendsWorkers;
+        snapshot.BailiffWaitDays = Manager.BailiffWaitDaysOf(colony);
         snapshot.BailiffPaysWages = colony.BailiffPaysWages;
         snapshot.TaxPercent = colony.TaxPercent;
         snapshot.HasMint = Manager.HasMint(colony);

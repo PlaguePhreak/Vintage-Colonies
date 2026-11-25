@@ -163,6 +163,12 @@ public class CitizenRecord
     [ProtoMember(110)] public string? HomeJob;
     [ProtoMember(111)] public BlockPos? HomeWorkplacePos;
     [ProtoMember(112)] public double LentUntilTotalDays;
+    /// <summary>True when a player gave this job by hand (0.201.0): the Bailiff leaves it alone until the player changes it.</summary>
+    [ProtoMember(115)] public bool JobSetByPlayer;
+    /// <summary>When the Bailiff or the Mayor last gave this settler a job or lent them out (total days): not again within BailiffMoveAgainDays.</summary>
+    [ProtoMember(116)] public double LastMovedTotalDays;
+    /// <summary>A lent worker whose own hut was waiting for a delivery: they go back as soon as it has come.</summary>
+    [ProtoMember(117)] public bool LentWaiting;
     /// <summary>The settler's coins: wages in, taxes out (ColonyManager.Economy.cs).</summary>
     [ProtoMember(113)] public int Purse;
     /// <summary>True when their last wage could not be paid in full; cleared on the next payday they are paid.</summary>
@@ -1035,6 +1041,8 @@ public class Colony
     /// <summary>Why the Mayor did nothing at the last look (a lang key and its args), shown on the Mayor tab.</summary>
     /// <summary>The tools of the colony's starting kit already handed out ("axe", "shovel", "hoe", "knife"), ColonyManager.Tools.cs (0.201.0).</summary>
     [ProtoMember(4900)] public List<string> StarterToolsGiven = new();
+    /// <summary>Game days the Bailiff leaves a worker who waits for a delivery at their hut (0 = config BailiffWaitDays). Bailiff tab.</summary>
+    [ProtoMember(4811)] public int BailiffWaitDays;
     [ProtoMember(4809)] public string MayorIdle = "";
     [ProtoMember(4810)] public List<string> MayorIdleArgs = new();
     [ProtoMember(3713, IsRequired = true)] public int LastAutoHireDay = -1;

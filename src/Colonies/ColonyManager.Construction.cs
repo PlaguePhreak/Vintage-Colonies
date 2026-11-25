@@ -113,6 +113,37 @@ public partial class ColonyManager
     /// <summary>True when a building's build failed at a block twice over, so builders try other work orders first.</summary>
     public bool IsBuildStuck(Building building) => StuckStep.ContainsKey(building.BuildingId);
 
+    /// <summary>Since when (total hours) each build has been waiting for materials. Not saved.</summary>
+    readonly Dictionary<(string Colony, int Building), double> buildWaitSince = new();
+
+    /// <summary>Part of the colony tick: notes which builds wait for materials, and since when.</summary>
+    void TrackBuildWaits(Colony colony)
+    {
+        double hours = sapi.World.Calendar.TotalHours;
+        foreach (var b in colony.Buildings)
+        {
+            var key = (colony.ColonyId, b.BuildingId);
+            string status = b.HasWorkOrder ? BuildStatus.GetValueOrDefault(b.BuildingId, "") : "";
+            if (status == "waiting-materials")
+            {
+                if (!buildWaitSince.ContainsKey(key)) buildWaitSince[key] = hours;
+            }
+            else if (!b.HasWorkOrder || status is "building" or "clearing") buildWaitSince.Remove(key);
+        }
+    }
+
+    /// <summary>
+    /// True when a build has waited BuildWaitsBeforeNextHours for materials that still have not come (0.201.0). Its
+    /// builder goes to a build that has its materials, and comes back when these arrive.
+    /// </summary>
+    public bool IsBuildStarved(Colony colony, Building b)
+    {
+        if (!b.HasWorkOrder || !buildWaitSince.TryGetValue((colony.ColonyId, b.BuildingId), out double since)) return false;
+        if (sapi.World.Calendar.TotalHours - since < Math.Max(0, Config.BuildWaitsBeforeNextHours)) return false;
+        string tag = RequestTag(b);
+        return colony.Requests.Any(r => r.RequestedBy == tag && r.Remaining > 0);
+    }
+
     // ---- Buildings ------------------------------------------------------------------------
 
     public Building? GetBuilding(Colony colony, BlockPos hutPos) => colony.Buildings.Find(b => b.HutPos.Equals(hutPos));
