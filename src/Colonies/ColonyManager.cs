@@ -158,6 +158,17 @@ public partial class ColonyManager : ModSystem
             if (config.MayorOrdersPerBuilder == 1) config.MayorOrdersPerBuilder = 2;
             if ((config.MayorBuildOrder ?? Array.Empty<string>()).SequenceEqual(ColonyConfig.OldMayorBuildOrder)) config.MayorBuildOrder = ColonyConfig.NewMayorBuildOrder();
         }
+        if (config.ConfigVersion < 12)
+        {
+            // 0.202.0 (Aaron): the Primitive Craftsman makes reed baskets, reed chests, crude doors and torches, the
+            // Forester torches too, and helpers come from 32 blocks.
+            var fresh = new ColonyConfig();
+            config.HutRecipeOutputs ??= new();
+            if (!config.HutRecipeOutputs.ContainsKey("craftsman")) config.HutRecipeOutputs["craftsman"] = fresh.HutRecipeOutputs["craftsman"];
+            if (config.HutRecipeOutputs.TryGetValue("forester", out var forester) && !forester.Contains("torch"))
+                config.HutRecipeOutputs["forester"] = forester.Append("torch").ToArray();
+            if (config.SupportAllyRadius == 16f) config.SupportAllyRadius = fresh.SupportAllyRadius;
+        }
         config.ConfigVersion = ColonyConfig.CurrentConfigVersion;
     }
 
@@ -342,6 +353,7 @@ public partial class ColonyManager : ModSystem
             TidyToolRequests(colony);
             TrackBuildWaits(colony);
             TickSpareFuel(colony);
+            TickSettlerKit(colony);
             TickUpkeep(colony);
             TickLostSettlers(colony, now);
 

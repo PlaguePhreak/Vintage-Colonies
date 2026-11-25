@@ -116,7 +116,13 @@ public class AiTaskSettlerHunter : AiTaskSettlerWorker
             if (prey == null)
             {
                 preyId = 0;
-                SetStatus("hunter-nothing");
+                // Bears, wolves and hyenas are the guards' (0.202.0): say so instead of "no animals".
+                if (m.PredatorLeftToGuards(hut, entity.Pos.XYZ) is { } predator)
+                {
+                    SetStatus("hunter-leaving-predator");
+                    m.SetNote(citizen, Lang.Get("createacolony:note-hunter-leaves", predator.GetName().ToLowerInvariant()));
+                }
+                else SetStatus("hunter-nothing");
                 return false;
             }
             preyId = prey.EntityId;

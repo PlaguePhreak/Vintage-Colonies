@@ -64,7 +64,12 @@ public class AiTaskSettlerChores : SettlerTaskBase
         if (!manager!.Config.JoblessTendHome || manager.IsBrokenDown(citizen)) return false;
         // Halfway through a delivery it is helping with: that comes first.
         if (colony.Requests.Exists(r => r.LeasedByCitizenId == citizen.CitizenId)) return false;
-        if (manager.HomeOf(colony, citizen) is not { } home) return false;
+        if (manager.HomeOf(colony, citizen) is not { } home)
+        {
+            // No home yet (0.202.0): a dead animal on the colony's land is still skinned, and what comes off it goes to the Warehouse.
+            homeId = 0;
+            return PlanSkin(colony, citizen, null);
+        }
         homeId = home.BuildingId;
         // Hands full: put the harvest away first.
         if (manager.PackFull(citizen) && PlanStore(colony, citizen, home)) return true;
@@ -73,7 +78,7 @@ public class AiTaskSettlerChores : SettlerTaskBase
     }
 
     /// <summary>A dead animal on the colony's land to skin, or a knife to fetch for it first.</summary>
-    bool PlanSkin(Colony colony, CitizenRecord citizen, Building home)
+    bool PlanSkin(Colony colony, CitizenRecord citizen, Building? home)
     {
         var m = manager!;
         if (!m.Config.JoblessSkinAnimals || m.CarcassToSkin(colony, entity, IsUnreachable) is not { } carcass) return false;
@@ -81,8 +86,18 @@ public class AiTaskSettlerChores : SettlerTaskBase
         bool hasKnife = ColonyManager.IsKnife(Hand?.Itemstack) || m.PackCount(citizen, s => ColonyManager.IsKnife(s)) > 0;
         if (!skinned && !hasKnife)
         {
-            return m.HomeSupply(colony, home, s => ColonyManager.IsKnife(s)) is { } knife && Fetch(knife.Pos, s => ColonyManager.IsKnife(s), 1);
+            // A knife from home, else from the Town Hall's storage or the Warehouse (0.202.0), else the colony's
+            // starting knife. With none anywhere the settler asks for one and says so.
+            var knife = (home == null ? null : m.HomeSupply(colony, home, s => ColonyManager.IsKnife(s))) ?? m.SpareToolChest(colony, s => ColonyManager.IsKnife(s));
+            if (knife != null && !IsUnreachable(knife.Pos)) return Fetch(knife.Pos, s => ColonyManager.IsKnife(s), 1);
+            if (!m.GiveStarterTool(colony, citizen, EnumTool.Knife, 0))
+            {
+                m.EnsureSkinningKnifeRequest(colony);
+                m.SetNote(citizen, Lang.Get("createacolony:note-needs-skinning-knife"));
+                return false;
+            }
         }
+        m.ClearNote(citizen);
         m.ClaimCarcass(carcass, entity);
         carcassId = carcass.EntityId;
         step = Step.Skin;
@@ -281,7 +296,8 @@ public class AiTaskSettlerChores : SettlerTaskBase
 
         if (Colony is not { } colony || Citizen is not { } citizen) return false;
         var home = colony.Buildings.Find(b => b.BuildingId == homeId);
-        if (home == null) return false;
+        // Without a home only skinning goes on, and fetching the knife for it.
+        if (home == null && step is not (Step.Skin or Step.Fetch)) return false;
 
         switch (step)
         {
@@ -294,7 +310,7 @@ public class AiTaskSettlerChores : SettlerTaskBase
                 }
                 break;
             case Step.Store:
-                manager!.UnloadPack(colony, citizen, manager.HomeChests(home), Gathered);
+                manager!.UnloadPack(colony, citizen, manager.HomeChests(home!), Gathered);
                 gathered.Clear();
                 break;
             case Step.Work:
@@ -311,7 +327,7 @@ public class AiTaskSettlerChores : SettlerTaskBase
                 }
                 workTime += dt;
                 if (workTime < stepSeconds) return true;
-                if (step == Step.Work) DoWork(colony, citizen, home);
+                if (step == Step.Work) DoWork(colony, citizen, home!);
                 else DoHomeWork(colony, citizen);
                 StopWorkAnimation();
                 break;
@@ -360,7 +376,9 @@ public class AiTaskSettlerChores : SettlerTaskBase
                 if (entity.World.GetEntityById(carcassId) is not { } carcass || !ColonyManager.Skinnable(carcass) || Hand is not { } hand) return;
                 bool skinned = carcass.GetBehavior<EntityBehaviorHarvestable>()?.IsHarvested == true;
                 if (!skinned && !ColonyManager.IsKnife(hand.Itemstack)) return;
-                foreach (var code in m.Skin(colony, citizen, entity, carcass, hand)) gathered.Add(code);
+                // Meat, hide and the rest go to the Warehouse when the colony has one (0.202.0); else home, as before.
+                var skinnedOff = m.Skin(colony, citizen, entity, carcass, hand);
+                if (colony.WarehousePos == null && homeId != 0) foreach (var code in skinnedOff) gathered.Add(code);
                 SyncHand(); // a knife that just broke must vanish from the model too
                 m.GainWorkXp(colony, citizen, Jobs.Hunter);
                 break;

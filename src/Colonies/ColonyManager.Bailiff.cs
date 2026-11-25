@@ -36,7 +36,7 @@ public partial class ColonyManager
     static readonly HashSet<string> StuckStatuses = new()
     {
         "no-hut-chest", "hut-chest-full", "no-trees", "no-fields", "growing", "gathered-all", "explored-all", "prospected-all",
-        "hunter-nothing", "mine-no-readings", "mine-no-site", "mine-no-site-ore", "mine-blocked", "mine-shaft-blocked", "mine-shaft-done",
+        "hunter-nothing", "hunter-leaving-predator", "mine-no-readings", "mine-no-site", "mine-no-site-ore", "mine-blocked", "mine-shaft-blocked", "mine-shaft-done",
         "mine-no-shaft-spot", "mineshaft-done", "quarry-done", "quarry-no-room", "no-kiln-spot", "no-form-spot", "no-firepit",
         "firepit-busy", "oven-nofire", "smith-no-forge", "smith-no-anvil", "smith-forge-busy", "smelter-firepit-busy",
         "smelter-no-mold-spot", "tailor-nothing-to-mend", "jeweller-nothing-set"

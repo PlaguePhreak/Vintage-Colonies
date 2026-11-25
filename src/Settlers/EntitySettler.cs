@@ -116,9 +116,11 @@ public class EntitySettler : EntityHumanoid
     {
         if (Api.Side == EnumAppSide.Server && Alive && damageSource.Type != EnumDamageType.Heal)
         {
-            // Test setting (0.196.0): the colony's settlers can't be hurt.
-            if (Api.ModLoader.GetModSystem<Colonies.ColonyManager>().SettlerUnhurt(this)) return false;
-            damage = Api.ModLoader.GetModSystem<Colonies.ColonyManager>().OnSettlerHurt(this, damageSource, damage);
+            var colonies = Api.ModLoader.GetModSystem<Colonies.ColonyManager>();
+            // The blow is felt first: the alarm, running away, fighting back and calling for help all happen as in a real game.
+            damage = colonies.OnSettlerHurt(this, damageSource, damage);
+            // Test setting (0.196.0): the colony's settlers can't be hurt. It only stops the damage (0.202.0).
+            if (colonies.SettlerUnhurt(this)) return false;
         }
         return base.ReceiveDamage(damageSource, damage);
     }

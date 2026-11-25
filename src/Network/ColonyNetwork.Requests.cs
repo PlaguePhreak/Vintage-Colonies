@@ -110,7 +110,7 @@ public partial class ColonyNetwork
             var view = new CourierView { Name = c.Name, Helping = !courier };
             if (courier) snapshot.CourierJobs++;
             if (c.IsDowned) view.Doing = Lang.Get("createacolony:activity-downed");
-            else view.Doing = task?.Describe(colony, c) ?? Lang.Get("createacolony:activity-idle");
+            else view.Doing = Manager.WithNote(c, task?.Describe(colony, c) ?? Lang.Get("createacolony:activity-idle"));
             if (task is Settlers.AiTaskSettlerCourier hauling)
             {
                 var (from, to) = hauling.Route(colony);

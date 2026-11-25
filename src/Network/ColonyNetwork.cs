@@ -1190,6 +1190,8 @@ public partial class ColonyNetwork : ModSystem
             var task = entity?.GetBehavior<EntityBehaviorTaskAI>()?.TaskManager.ActiveTasksBySlot.OfType<Settlers.SettlerTaskBase>().FirstOrDefault();
             activity = task?.Describe(colony, citizen)
                 ?? Lang.Get(citizen.Visitor ? "createacolony:activity-visitor-waiting" : "createacolony:activity-idle");
+            // What it lacks or waits for (0.202.0), such as a knife to skin with.
+            activity = Manager.WithNote(citizen, activity);
             // A settler building Willpower says so, so players can see it is stuck and help before it relocates itself.
             if (config.Willpower && entity?.GetBehavior<Settlers.EntityBehaviorColonyCitizen>()?.Willpower is { Reason: not Settlers.StuckReason.None } will)
             {

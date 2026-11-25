@@ -66,6 +66,20 @@ public partial class ColonyManager
             .FirstOrDefault();
     }
 
+    /// <summary>
+    /// A predator in the hut's work area (a bear, a wolf, a hyena: anything guards fight). Hunters leave those to the
+    /// guards (Aaron, 0.202.0), and their status says so.
+    /// </summary>
+    public Entity? PredatorLeftToGuards(Building hut, Vec3d from)
+    {
+        int r = GatherRadius(hut);
+        var center = hut.HutPos.ToVec3d().Add(0.5, 0, 0.5);
+        return sapi.World.GetEntitiesAround(from, Math.Min(r, 48), 16, e => IsThreat(e) && e is not Settlers.EntityBandit && RaidOf(e) == null)
+            .Where(e => e.Pos.HorDistanceTo(center) <= r)
+            .OrderBy(e => e.Pos.SquareDistanceTo(from))
+            .FirstOrDefault();
+    }
+
     /// <summary>A carcass this hut's hunter killed that still has things on it, nearest first.</summary>
     public Entity? HunterCarcass(Colony colony, Building hut, Vec3d from, System.Func<long, bool> skip) =>
         sapi.World.GetEntitiesAround(from, 40, 16, e => !skip(e.EntityId) && Skinnable(e) && e.WatchedAttributes.GetString(HuntedByAttr) == colony.ColonyId)

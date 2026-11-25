@@ -7,7 +7,7 @@ public class ColonyConfig
 {
     public const string FileName = "createacolony.json";
     /// <summary>Bumped when a default changes in a way old config files should pick up; see ColonyManager.UpgradeConfig.</summary>
-    public const int CurrentConfigVersion = 11;
+    public const int CurrentConfigVersion = 12;
 
     /// <summary>Which defaults this file has been brought up to. Files from before 0.33.0 have none, so read as 0.</summary>
     public int ConfigVersion;
@@ -193,6 +193,8 @@ public class ColonyConfig
     public int FarmerSeedReserve = 32;
     /// <summary>How far from the Farmer's Hut a farmer picks berries and fruit from bushes and fruit trees.</summary>
     public int FarmerOrchardRadius = 16;
+    /// <summary>How far from the hut a farmer goes to fill a watering can (0.202.0: 48, it was the orchard radius, 16).</summary>
+    public int FarmerWaterRadius = 48;
     /// <summary>A farmer with a watering can waters growing crops whose farmland is drier than this (0 dry to 1 soaked), filling it to 100%.</summary>
     public float FarmerWaterBelow = 0.5f;
     /// <summary>A farmer with fertilizer spreads it before sowing when the crop's nutrient is below this (soil shows 0 to 100).</summary>
@@ -589,6 +591,11 @@ public class ColonyConfig
     /// while it works, so it does not freeze out there.
     /// </summary>
     public int FarWorkPlayerDistance = 112;
+    /// <summary>
+    /// Every settler with a job keeps working while no player is near (0.202.0, Aaron): builders, couriers, cooks and
+    /// crafters too, not only the outdoor jobs. The colony's land stays loaded for it, which costs some speed in a big colony.
+    /// </summary>
+    public bool AllJobsWorkFarOut = true;
 
     // Guard
     /// <summary>How far around the settler it protects (or the Town Hall) a guard looks for monsters.</summary>
@@ -734,7 +741,15 @@ public class ColonyConfig
     /// <summary>Default for new colonies' Support allies switch (Colony militia tab): armed settlers help a settler being attacked nearby.</summary>
     public bool SupportAllies = true;
     /// <summary>Armed settlers this close to a settler being attacked come to help, when Support allies is on.</summary>
-    public float SupportAllyRadius = 16f;
+    public float SupportAllyRadius = 32f;
+    /// <summary>Any grown settler without a weapon is handed a spare one from the Warehouse or the Town Hall's storage (0.202.0).</summary>
+    public bool SettlersTakeSpareWeapons = true;
+    /// <summary>How many baskets every grown settler tries to keep, asked for like a tool (0.202.0, Aaron). 0 for none.</summary>
+    public int SettlerBaskets = 4;
+    /// <summary>The slots one basket adds to a settler's inventory (the game gives a player more).</summary>
+    public int BasketPackSlots = 2;
+    /// <summary>Food in a crock counts this much better than other food, so crocks are eaten from first (0.202.0, Aaron).</summary>
+    public float CrockFoodPull = 10f;
 
     // Potter
     /// <summary>Seconds a potter takes to shape one layer of clay on the clay forming block.</summary>
@@ -972,7 +987,9 @@ public class ColonyConfig
     /// </summary>
     public System.Collections.Generic.Dictionary<string, string[]> HutRecipeOutputs = new()
     {
-        ["forester"] = new[] { "firewood", "stick", "debarkedlog" },
+        ["forester"] = new[] { "firewood", "stick", "debarkedlog", "torch" },
+        // Reed baskets, reed chests, crude doors and torches (0.202.0): builds ask for them and no other hut made them.
+        ["craftsman"] = new[] { "basket", "stationarybasket", "door-crude*", "torch" },
         ["farmer"] = new[] { "flaxtwine", "rope", "linen", "hay" },
         // Poultices from the horsetail and reed tops it picks (ColonyManager.Healing.cs).
         ["gatherer"] = new[] { "torch", "basket", "flaxtwine", "poultice" },

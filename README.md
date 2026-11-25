@@ -12,6 +12,39 @@ domain (`assets/createacolony/`, block and item codes like `createacolony:townha
 (`ModConfig/createacolony.json`), the release zips (`createacolony_<version>.zip`) and all save data keys.
 Changing any of those would stop old worlds from loading their colonies, so leave them as they are.
 
+## Fixes after the overnight test, part 3: fuel, kilns and everyday jobs (0.202.0)
+
+From the fix plan Aaron approved on 25 Nov 2026 (groups E and F).
+
+The Potter:
+
+- **Fuel in one go.** The Potter asks for all the dry grass, sticks and firewood for every pit kiln it may use, in one request each, not one layer at a time.
+- **Keep spare fuel.** A switch on the Requests tab of every hut that burns fuel (Potter, Cook, Bakery, Smelter, Blacksmith), on by default. The hut keeps enough for one more full firing and asks again when it drops below that.
+- **Kiln cover.** Before lighting, the Potter puts one solid block two above each pit kiln, so rain can't put it out. The block comes from the hut's storage (packed dirt, cobblestone or soil), is asked for like fuel, and stays for the next firing. A pit that already has a roof needs none. With no block after 6 game hours and dry weather, the kiln is lit anyway.
+- **Old kilns taken over.** A Potter's Hut takes over every pit kiln close to it, also after the hut was placed again. Kilns the rain put out are lit again, and fired pots are taken from every kiln.
+- **Asked for first.** What another hut waits for (a crucible, tool moulds) is made before the hut's own stock list.
+
+The Primitive Craftsman, baskets and torches:
+
+- **Reed baskets, reed chests, crude doors and torches** are on the Primitive Craftsman's Crafting recipes tab. It makes them when a build or a settler asks, from what the Gatherer brings. The Forester can make torches too.
+- **Torches for builds.** A build accepts a torch that is lit or unlit, and the builder lights it as it goes up. So the unlit torches huts make now fill a build's torch requests.
+- **Baskets.** Every grown settler keeps up to 4 baskets, each adding 2 slots (10 to 18). They are handed out from the Warehouse or the Town Hall's storage once a minute, couriers and builders first, and missing ones are asked for on the Requests tab, 4 at a time.
+
+Food, hunting and defence:
+
+- **Skinning.** A settler without a job skins dead animals on the colony's land whether it has a home or not. The knife comes from home, the Town Hall's storage or the Warehouse, or it is the colony's starting knife. With none anywhere it asks for one and its status says so. Meat, hide and the rest go to the Warehouse.
+- **Settlers can't be hurt** only stops the damage. Settlers still raise the alarm, run, fight back and call for help.
+- **Spare weapons.** Any grown settler without a weapon is handed a spare one from the Warehouse or the Town Hall's storage (a spear first, never a knife, never one a hut has asked for). Helpers come from 32 blocks, and sleeping settlers get up for it.
+- **Hunters** leave bears, wolves and hyenas to the guards, and now say so ("leaving the bear to the guards").
+- **Farmers** fill the watering can up to 48 blocks from the hut, and say when the crops are dry and there is no water in range.
+- **Crocks first.** Food in a crock is eaten before other food.
+- **Working while you are away.** Every settler with a job keeps working when no player is near, not only the outdoor jobs. The land around them, the Town Hall and the Warehouse stays loaded for it.
+- Server config: `KilnCover`, `KilnCoverBlocks`, `KilnCoverWaitHours`, `PotterAdoptsKilns`, `FarmerWaterRadius`, `AllJobsWorkFarOut`, `SettlersTakeSpareWeapons`, `SettlerBaskets`, `BasketPackSlots`, `CrockFoodPull`. `SupportAllyRadius` is now 32. `HutRecipeOutputs` gains a `craftsman` entry and `torch` for the forester (added to an existing config file too).
+
+Simpler than the plan: baskets and spare weapons are handed over directly, without a walk to the chest. Torches are made by hut workers and lit when a builder puts them up; settlers do not walk to a fire to light them. Skinning is done by settlers without a job.
+
+Not tested in game yet. The kiln cover follows the game's usual rain rule (a block above keeps rain off); whether pit kilns follow it has to be seen in the game.
+
 ## Fixes after the overnight test, part 2: builds, the Mayor and the Bailiff (0.201.0)
 
 From the fix plan Aaron approved on 25 Nov 2026 (groups C and D).

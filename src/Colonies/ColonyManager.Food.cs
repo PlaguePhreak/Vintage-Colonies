@@ -139,7 +139,7 @@ public partial class ColonyManager
             var placedChoice = EvaluateFood(container, placedSlot, eater);
             if (placedChoice == null) return null;
             placedChoice.Placed = placed;
-            placedChoice.Score = VarietyScore(placedChoice.Props, citizen) * SpoilPull(placedSlot);
+            placedChoice.Score = VarietyScore(placedChoice.Props, citizen) * SpoilPull(placedSlot) * CrockPull(container, mealStack);
             return placedChoice;
         }
 
@@ -154,11 +154,18 @@ public partial class ColonyManager
             var choice = EvaluateFood(container, slot, eater);
             if (choice == null) continue;
             // Food that will spoil soon is eaten first (ColonyManager.Freshness.cs).
-            choice.Score = VarietyScore(choice.Props, citizen) * SpoilPull(slot) * (raw ? RawIngredientScoreMul : 1);
+            choice.Score = VarietyScore(choice.Props, citizen) * SpoilPull(slot) * (raw ? RawIngredientScoreMul : 1) * CrockPull(container, slot.Itemstack);
             if (best == null || choice.Score > best.Score) best = choice;
         }
         return best;
     }
+
+    /// <summary>
+    /// Crocks first (Aaron, 0.202.0): food in a crock, standing in the world or lying in a chest, counts for much more
+    /// than other food, so settlers empty the crocks before they open anything else.
+    /// </summary>
+    float CrockPull(BlockEntityContainer container, ItemStack? stack) =>
+        container is BlockEntityCrock || stack?.Block is BlockCrock ? Math.Max(1f, Config.CrockFoodPull) : 1f;
 
     /// <summary>
     /// Containers settlers may take food from. Ovens, querns, troughs, barrels and buckets are left
