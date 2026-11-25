@@ -93,6 +93,9 @@ public class Willpower
         goalRange = range;
     }
 
+    /// <summary>A walk that already ended in failure: a relocation heads towards its goal.</summary>
+    public void Aim(Vec3d goal) => LastGoal = goal.Clone();
+
     /// <summary>A path search to the current goal failed.</summary>
     public void NoPathFound() => noPath = true;
 

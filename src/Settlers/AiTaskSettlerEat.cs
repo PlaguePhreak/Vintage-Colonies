@@ -45,6 +45,9 @@ public class AiTaskSettlerEat : SettlerTaskBase
     string? eatingName;
     readonly Dictionary<BlockPos, long> unreachable = new();
 
+    /// <summary>Never given up, however often the walk fails (0.200.0).</summary>
+    protected override bool CanGiveUp => false;
+
     public AiTaskSettlerEat(EntityAgent entity, JsonObject taskConfig, JsonObject aiConfig) : base(entity, taskConfig, aiConfig) { }
 
     public override bool ShouldExecute()

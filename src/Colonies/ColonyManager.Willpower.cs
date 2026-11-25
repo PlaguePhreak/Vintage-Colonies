@@ -101,7 +101,16 @@ public partial class ColonyManager
         bool mindMonsters = !reckless && job != Jobs.Guard;
         var goal = willpower.Goal ?? willpower.LastGoal;
         var from = entity.Pos.XYZ;
-        var spot = SafeSpotNear(entity, goal, Math.Max(2, Config.WillpowerRadius), reckless, mindMonsters);
+        // Inside a building and heading out of it: out by the front (0.200.0). Settlers who could not walk out of
+        // the Residence stood in it and went hungry.
+        Vec3d? spot = null;
+        if (goal != null && entity is EntitySettler { ColonyId: { } colonyId } && GetById(colonyId) is { } colony && BuildingAround(colony, from) is { } inside)
+        {
+            var box = Footprint(inside);
+            bool goalInside = goal.X >= box.X1 && goal.X <= box.X2 + 1 && goal.Z >= box.Z1 && goal.Z <= box.Z2 + 1;
+            if (!goalInside) spot = FrontSpot(inside, entity, goal);
+        }
+        spot ??= SafeSpotNear(entity, goal, Math.Max(2, Config.WillpowerRadius), reckless, mindMonsters);
         if (spot == null)
         {
             if (PathDebug) Mod.Logger.Notification("[willpower] {0} at {1} is stuck but found no safe spot within {2} blocks", Name(entity), from.AsBlockPos, Config.WillpowerRadius);
@@ -159,6 +168,8 @@ public partial class ColonyManager
                 if (!CanStandAt(entity, feet, ba)) continue;
                 if (onSurface && feet.Y < ba.GetTerrainMapheightAt(feet)) continue;
                 if (!reckless && Dangerous(ba, feet)) continue;
+                // Never into water (0.200.0): hops towards a goal in a lake carried the gatherer further into it.
+                if (ba.GetBlock(feet, BlockLayersAccess.Fluid).IsLiquid()) continue;
                 var spot = new Vec3d(feet.X + 0.5, feet.Y, feet.Z + 0.5);
                 if (monsters.Any(m => m.SquareDistanceTo(spot) < 8 * 8)) continue;
 

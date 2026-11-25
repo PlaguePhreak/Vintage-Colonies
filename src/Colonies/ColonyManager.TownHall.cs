@@ -28,6 +28,8 @@ public partial class ColonyManager
         if (sapi.World.GetEntityById(citizen.EntityId) is not EntityAgent { Alive: true } entity) return "createacolony:recall-not-loaded";
         var spot = FreeSpotNear(entity, colony.TownHallPos.UpCopy(), 3) ?? Beside(colony.TownHallPos);
         entity.TeleportToDouble(spot.X, spot.Y, spot.Z);
+        // A fresh start: nothing is off limits or given up any more (0.200.0).
+        ForgetWalkTrouble(citizen.CitizenId);
         return null;
     }
 

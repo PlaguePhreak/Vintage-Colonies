@@ -27,6 +27,9 @@ public class AiTaskSettlerFlee : SettlerTaskBase
     bool runningAway;
     bool hiding;
 
+    /// <summary>Never given up, however often the walk fails (0.200.0).</summary>
+    protected override bool CanGiveUp => false;
+
     public AiTaskSettlerFlee(EntityAgent entity, JsonObject taskConfig, JsonObject aiConfig) : base(entity, taskConfig, aiConfig) { }
 
     public override bool ShouldExecute() =>

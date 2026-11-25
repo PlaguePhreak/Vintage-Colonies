@@ -25,9 +25,11 @@ public partial class ColonyManager
     readonly Dictionary<int, (Vec3d At, double Until)> offLimits = new();
 
     /// <summary>True when a walk to this spot would take the settler back where they got lost.</summary>
-    public bool IsOffLimits(CitizenRecord citizen, Vec3d goal)
+    public bool IsOffLimits(Colony? colony, CitizenRecord citizen, Vec3d goal)
     {
         if (!offLimits.TryGetValue(citizen.CitizenId, out var zone)) return false;
+        // Never the settler's own hut, home or build site (0.200.0).
+        if (IsOwnPlace(colony, citizen, goal)) return false;
         if (sapi.World.Calendar.TotalDays > zone.Until)
         {
             offLimits.Remove(citizen.CitizenId);
@@ -36,6 +38,10 @@ public partial class ColonyManager
         double r = Config.LostOffLimitsRadius;
         return zone.At.SquareDistanceTo(goal) < r * r;
     }
+
+    /// <summary>Where a settler may not go for now and until which game day, or null (for the report and the settler window).</summary>
+    public (BlockPos At, double UntilDays)? OffLimitsZone(int citizenId) =>
+        offLimits.TryGetValue(citizenId, out var zone) && zone.Until > sapi.World.Calendar.TotalDays ? (zone.At.AsBlockPos, zone.Until) : null;
 
     /// <summary>Brings home settlers who have been lost for too long. Called from the colony tick.</summary>
     void TickLostSettlers(Colony colony, double now)
@@ -72,8 +78,8 @@ public partial class ColonyManager
         var lostAt = entity.Pos.XYZ.Clone();
         var bed = citizen.HomeBedPos;
         var spot = bed != null ? new Vec3d(bed.X + 0.5, bed.Y + 1, bed.Z + 0.5) : Beside(colony.TownHallPos);
-        // Land near where they got lost is off limits for a while; never their own home, though.
-        if (bed == null || lostAt.SquareDistanceTo(spot) > Config.LostOffLimitsRadius * Config.LostOffLimitsRadius * 4)
+        // Land near where they got lost is off limits for a while; never their own home, hut or build site, though.
+        if ((bed == null || lostAt.SquareDistanceTo(spot) > Config.LostOffLimitsRadius * Config.LostOffLimitsRadius * 4) && !IsOwnPlace(colony, citizen, lostAt))
             offLimits[citizen.CitizenId] = (lostAt, sapi.World.Calendar.TotalDays + Config.LostOffLimitsDays);
         if (stopTasks) entity.GetBehavior<EntityBehaviorTaskAI>()?.TaskManager?.StopTasks();
         entity.TeleportToDouble(spot.X, spot.Y, spot.Z);

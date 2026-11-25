@@ -85,8 +85,70 @@ public partial class ColonyManager
                 cell.Set(x, y + dy, z);
                 if (DoorPathing.ClosedDoorAt(ba, cell) is not { } door) continue;
                 if (DoorPathing.SetOpen(sapi.World, door, true)) doorsOpened[door.Copy()] = (sapi.World.ElapsedMilliseconds, settler.EntityId);
+                else if (PathDebug && doorsLogged.Add(door.Copy()))
+                {
+                    Mod.Logger.Notification("[doors] {0} could not open the door at {1}: {2}", Name(settler), door, DoorPathing.LastError ?? "it did not change");
+                }
             }
         }
+    }
+
+    /// <summary>Doors a settler could not open, so the log names each one once.</summary>
+    readonly HashSet<BlockPos> doorsLogged = new();
+
+    /// <summary>
+    /// A settler that keeps bumping into something right by a door or gate is set down on the far side of it
+    /// (0.200.0). In the overnight test settlers stood in the Residence's inner doorway for days, bumping, and
+    /// two went hungry behind it. Whatever is wrong with that door, a settler that has walked up to a doorway
+    /// gets through it. False when there is no door within a step, or no spot to stand on beyond it.
+    /// </summary>
+    public bool HelpThroughDoor(EntityAgent settler, Vec3d goal)
+    {
+        var ba = sapi.World.BlockAccessor;
+        var pos = settler.Pos;
+        int y = (int)Math.Floor(pos.Y + 0.1);
+        int sx = (int)Math.Floor(pos.X), sz = (int)Math.Floor(pos.Z);
+        var cell = new BlockPos(pos.Dimension);
+        Vec3d? best = null;
+        BlockPos? through = null;
+        double bestDist = double.MaxValue;
+        for (int x = sx - 1; x <= sx + 1; x++)
+        for (int z = sz - 1; z <= sz + 1; z++)
+        for (int dy = 0; dy <= 1; dy++)
+        {
+            cell.Set(x, y + dy, z);
+            if (DoorPathing.DoorAt(ba, cell) is not { } door) continue;
+            double cx = door.X + 0.5, cz = door.Z + 0.5;
+            double fromX = pos.X - cx, fromZ = pos.Z - cz;
+            bool inDoorway = Math.Abs(fromX) < 0.5 && Math.Abs(fromZ) < 0.5;
+            if (!inDoorway && fromX * fromX + fromZ * fromZ > 1.6 * 1.6) continue;
+            foreach (var face in BlockFacing.HORIZONTALS)
+            {
+                // Beyond the door: the side the settler is not on (any side, for one standing in the doorway).
+                if (!inDoorway && face.Normali.X * fromX + face.Normali.Z * fromZ > -0.3) continue;
+                foreach (int step in new[] { 0, -1, 1 })
+                {
+                    var feet = new BlockPos(door.X + face.Normali.X, door.Y + step, door.Z + face.Normali.Z, pos.Dimension);
+                    if (!CanStandAt(settler, feet)) continue;
+                    var spot = new Vec3d(feet.X + 0.5, feet.Y, feet.Z + 0.5);
+                    double dist = spot.SquareDistanceTo(goal);
+                    if (dist < bestDist)
+                    {
+                        bestDist = dist;
+                        best = spot;
+                        through = door.Copy();
+                    }
+                    break;
+                }
+            }
+        }
+        if (best == null || through == null) return false;
+        // Only a step that leads on: not back to where it came from.
+        if (best.SquareDistanceTo(goal) >= pos.XYZ.SquareDistanceTo(goal) && pos.XYZ.SquareDistanceTo(best) < 0.5) return false;
+        if (PathDebug) Mod.Logger.Notification("[doors] {0} kept bumping at the door at {1} and was set down beyond it, at {2}", Name(settler), through, best.AsBlockPos);
+        settler.Pos.Motion.Set(0, 0, 0);
+        settler.TeleportToDouble(best.X, best.Y, best.Z);
+        return true;
     }
 
     /// <summary>
@@ -190,6 +252,23 @@ public static class DoorPathing
         return false;
     }
 
+    /// <summary>Why the last door or gate could not be opened or shut (for the walking log), or null.</summary>
+    public static string? LastError;
+
+    /// <summary>The position of a door or gate at pos, open or closed (a door's lower block), or null.</summary>
+    public static BlockPos? DoorAt(IBlockAccessor ba, BlockPos pos)
+    {
+        var block = ba.GetBlock(pos);
+        var at = pos;
+        if (block is BlockMultiblock part)
+        {
+            at = pos.AddCopy(part.OffsetInv.X, part.OffsetInv.Y, part.OffsetInv.Z);
+            block = ba.GetBlock(at);
+        }
+        if (block is BlockBaseDoor) return at.Copy();
+        return block.GetBehavior<BlockBehaviorDoor>() != null && ba.GetBlockEntity(at)?.GetBehavior<BEBehaviorDoor>() != null ? at.Copy() : null;
+    }
+
     /// <summary>The position of a closed door or gate a settler can open at pos (a door's lower block), or null.</summary>
     public static BlockPos? ClosedDoorAt(IBlockAccessor ba, BlockPos pos)
     {
@@ -209,6 +288,7 @@ public static class DoorPathing
     public static bool SetOpen(IWorldAccessor world, BlockPos pos, bool open)
     {
         var block = world.BlockAccessor.GetBlock(pos);
+        LastError = null;
         try
         {
             if (block is BlockBaseDoor old)
@@ -222,9 +302,10 @@ public static class DoorPathing
             door.ToggleDoorState(null, open);
             return true;
         }
-        catch (Exception)
+        catch (Exception e)
         {
             // A door that can break when used looks for the player who used it; a settler is not one. Leave it shut.
+            LastError = (e.InnerException ?? e).Message;
             return false;
         }
     }

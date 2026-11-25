@@ -54,6 +54,14 @@ public class ColonyConfig
     public double LostOffLimitsRadius = 24;
     /// <summary>Game days a brought-home settler keeps away from where they got lost.</summary>
     public double LostOffLimitsDays = 3;
+    /// <summary>Walks to the same goal that fail for good before the settler is moved a little way towards it (0.200.0).</summary>
+    public int WalkFailsBeforeHelp = 3;
+    /// <summary>Times a settler is helped towards a goal before it gives the goal up.</summary>
+    public int WalkHelpsBeforeGiveUp = 2;
+    /// <summary>Game days a settler leaves a goal alone after giving it up.</summary>
+    public double WalkGiveUpDays = 1.0;
+    /// <summary>Game hours without a failed walk after which a goal's count starts from nothing.</summary>
+    public double WalkFailMemoryHours = 12;
 
     // Construction
     /// <summary>When false, builders conjure blocks without materials. Handy for creative testing.</summary>
