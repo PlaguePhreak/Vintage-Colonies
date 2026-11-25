@@ -37,6 +37,15 @@ public class ColonyConfig
 
     // Sleep
     public float SleepStartHour = 21f;
+    /// <summary>
+    /// How fast a settler is taken to get home, in blocks per real second, when working out how far out it may still
+    /// go before bedtime (0.200.0). Lower is safer: the gatherer turns for home earlier.
+    /// </summary>
+    public double HomeWalkBlocksPerSecond = 1.2;
+    /// <summary>Game hours a far worker wants to be home before bedtime.</summary>
+    public double HomeMarginHours = 1.0;
+    /// <summary>A settler who has been swimming this many seconds is set down on the nearest shore (0.200.0). 0: never.</summary>
+    public int SwimRescueSeconds = 40;
     public float SleepEndHour = 6f;
     /// <summary>A settler that cannot find a path to its bed but is this close (blocks) gets into it anyway, instead of sleeping on the floor.</summary>
     public float BedFindWayRange = 16f;

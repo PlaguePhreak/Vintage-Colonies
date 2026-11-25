@@ -107,9 +107,19 @@ public class AiTaskSettlerGatherer : AiTaskSettlerWorker
             looking = cutting = false;
             return true;
         }
+        // Home before dark (0.200.0): as bedtime nears it only goes as far out as it can still walk back from, and
+        // when it is farther out than that already it turns for home. Near the hut it works until bedtime.
+        double reach = System.Math.Max(24, manager!.HomeReach(colony, citizen));
+        if (HutDistance(hut, entity.Pos.AsBlockPos) > reach && storage.Count > 0)
+        {
+            looking = cutting = false;
+            SetStatus("heading-home");
+            return GoDeposit(storage[0].Pos);
+        }
+        bool Skip(BlockPos p) => IsUnreachable(p) || HutDistance(hut, p) > reach;
         int rank = int.MaxValue;
         bool knife = HasKnife(citizen);
-        var spot = lookOnly ? null : manager!.NextForage(colony, hut, entity.Pos.XYZ, IsUnreachable, knife, out rank);
+        var spot = lookOnly ? null : manager!.NextForage(colony, hut, entity.Pos.XYZ, Skip, knife, out rank, entity);
         // Dry grass the colony is waiting for is one of its requests: it goes where requests are on the collecting order.
         bool grassFirst = spot == null || ColonyManager.GatherOrder(hut).IndexOf(ColonyManager.GatherRequests) <= rank;
         if (!lookOnly && grassFirst && manager!.GrassShort(colony) > 0 && !knife)
@@ -122,7 +132,7 @@ public class AiTaskSettlerGatherer : AiTaskSettlerWorker
                 return false;
             }
         }
-        else if (!lookOnly && grassFirst && manager!.GrassShort(colony) > 0 && manager.NextGrass(colony, hut, entity.Pos.XYZ, IsUnreachable) is { } grass)
+        else if (!lookOnly && grassFirst && manager!.GrassShort(colony) > 0 && manager.NextGrass(colony, hut, entity.Pos.XYZ, Skip) is { } grass)
         {
             looking = false;
             cutting = true;
@@ -138,7 +148,7 @@ public class AiTaskSettlerGatherer : AiTaskSettlerWorker
             SetStatus("gathering");
             return GoWork(spot);
         }
-        spot = manager!.ForageWalk(colony, hut, IsUnreachable);
+        spot = manager!.ForageWalk(colony, hut, Skip);
         if (spot != null)
         {
             looking = true;
@@ -148,6 +158,12 @@ public class AiTaskSettlerGatherer : AiTaskSettlerWorker
         }
         SetStatus("gathered-all");
         return false;
+    }
+
+    static double HutDistance(Building hut, BlockPos p)
+    {
+        double dx = p.X - hut.HutPos.X, dz = p.Z - hut.HutPos.Z;
+        return System.Math.Sqrt(dx * dx + dz * dz);
     }
 
     protected override void DoWork(Colony colony, CitizenRecord citizen, Building hut)

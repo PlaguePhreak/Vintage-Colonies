@@ -1188,6 +1188,15 @@ public partial class ColonyNetwork : ModSystem
             {
                 activity += " " + Lang.Get("createacolony:activity-stuck", (int)(will.Fraction * 100));
             }
+            // Why it is not going somewhere (0.200.0): a place it gave up on, or one it keeps away from.
+            if (Manager.GivenUpGoals(citizen.CitizenId).FirstOrDefault() is { Goal: { } gaveUp })
+            {
+                activity += " " + Lang.Get("createacolony:activity-gave-up", Manager.PlaceLabelLang(colony, gaveUp));
+            }
+            else if (Manager.OffLimitsZone(citizen.CitizenId) is { } zone)
+            {
+                activity += " " + Lang.Get("createacolony:activity-off-limits", Manager.PlaceLabelLang(colony, zone.At));
+            }
         }
 
         var health = entity?.WatchedAttributes.GetTreeAttribute("health");

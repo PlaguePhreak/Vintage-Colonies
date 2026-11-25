@@ -639,6 +639,19 @@ public partial class ColonyManager
                 face == BlockFacing.WEST ? box.X1 - 1 : face == BlockFacing.EAST ? box.X2 + c : box.X2, box.Y2,
                 face == BlockFacing.NORTH ? box.Z1 - 1 : face == BlockFacing.SOUTH ? box.Z2 + c : box.Z2);
             if (others.Any(o => Overlaps2D(o, ahead))) return "mayor-spot-front";
+            // And ground to walk on there (0.200.0): not water, not a cliff, or nobody gets to the door.
+            if (c > 0)
+            {
+                int bad = 0, cells = 0, level = pos.Y - 1, steep = Math.Max(0, Config.MayorMaxSlope) + 1;
+                for (int x = ahead.X1; x <= ahead.X2; x++)
+                for (int z = ahead.Z1; z <= ahead.Z2; z++)
+                {
+                    cells++;
+                    int h = map.At(x, z);
+                    if (h == int.MinValue || Math.Abs(h - level) > steep) bad++;
+                }
+                if (bad * 2 > cells) return "mayor-spot-front";
+            }
         }
         // Inside the border, corners and hut block.
         foreach (var (x, z) in new[] { (box.X1, box.Z1), (box.X2, box.Z1), (box.X1, box.Z2), (box.X2, box.Z2), (pos.X, pos.Z) })

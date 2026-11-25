@@ -131,6 +131,11 @@ public partial class ColonyNetwork
             {
                 player.SendMessage(0, Lang.GetL(player.LanguageCode, note, ColonyManager.BuildingName(building)), EnumChatType.Notification);
             }
+            // Nowhere to stand outside the front (0.200.0): say so now, while moving it is still cheap.
+            if (!Manager.FrontWalkable(building, player.Entity))
+            {
+                player.SendMessage(0, Lang.GetL(player.LanguageCode, "createacolony:wand-front-blocked", ColonyManager.BuildingName(building)), EnumChatType.Notification);
+            }
         }
         if (slot != null && player.WorldData.CurrentGameMode != EnumGameMode.Creative)
         {

@@ -76,7 +76,8 @@ public class AiTaskSettlerIdle : SettlerTaskBase
         int r = far ? 2 : strollRadius;
         var rand = entity.World.Rand;
         var around = home.AddCopy(rand.Next(-r, r + 1), 0, rand.Next(-r, r + 1));
-        spot = manager.FreeSpotNear(entity, around, 2);
+        // A block of its own (0.200.0): not the one another settler already stands on.
+        spot = manager.OwnSpotNear(entity, around, 2) ?? manager.FreeSpotNear(entity, around, 2);
         return spot != null && spot.SquareDistanceTo(entity.Pos.XYZ) > 2 * 2;
     }
 

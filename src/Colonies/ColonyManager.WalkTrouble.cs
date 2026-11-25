@@ -139,7 +139,9 @@ public partial class ColonyManager
         if (mayGiveUp && f.Helps >= Math.Max(0, Config.WalkHelpsBeforeGiveUp))
         {
             f.Helps = 0;
-            f.GivenUpUntilDays = sapi.World.Calendar.TotalDays + Math.Max(0.05, Config.WalkGiveUpDays);
+            // Its own hut, home, the Town Hall or the Warehouse: only a short rest, it has to get there to work at all.
+            bool own = colony != null && IsOwnPlace(colony, citizen, goal);
+            f.GivenUpUntilDays = sapi.World.Calendar.TotalDays + (own ? Math.Min(2.0 / 24, Config.WalkGiveUpDays) : Math.Max(0.05, Config.WalkGiveUpDays));
             if (PathDebug) Mod.Logger.Notification("[pathing] {0} at {1} gives up on {2} until day {3:0.0}", citizen.Name, entity.Pos.AsBlockPos, goal.AsBlockPos, f.GivenUpUntilDays);
             return "gave up";
         }
@@ -183,6 +185,37 @@ public partial class ColonyManager
     {
         if (Blueprints.Get(Blueprints.StyleFor(b), b.Type, 1, 0, b.Variant)?.Front is not { } front) return null;
         return GameMath.Mod(front - b.Rotation / 90, 4);
+    }
+
+    /// <summary>
+    /// False when a building has a front and there is nowhere dry to stand just outside it (0.200.0): the wand warns,
+    /// so a hut is not left with its door against a cliff or in a pond. True when it has no front to check.
+    /// </summary>
+    public bool FrontWalkable(Building b, Entity entity)
+    {
+        if (FrontSide(b) is not { } side) return true;
+        var box = Footprint(b);
+        var face = BlockFacing.HORIZONTALS_ANGLEORDER[side];
+        var ba = sapi.World.BlockAccessor;
+        var p = new BlockPos(entity.Pos.Dimension);
+        // The strip two and three blocks outside the front, along the whole side.
+        for (int outBy = 1; outBy <= 3; outBy++)
+        {
+            bool alongX = face == BlockFacing.NORTH || face == BlockFacing.SOUTH;
+            int from = alongX ? box.X1 : box.Z1, to = alongX ? box.X2 : box.Z2;
+            for (int i = from; i <= to; i++)
+            {
+                int x = alongX ? i : face == BlockFacing.WEST ? box.X1 - outBy : box.X2 + outBy;
+                int z = alongX ? (face == BlockFacing.NORTH ? box.Z1 - outBy : box.Z2 + outBy) : i;
+                for (int dy = -2; dy <= 2; dy++)
+                {
+                    p.Set(x, b.HutPos.Y + dy, z);
+                    if (ba.GetChunkAtBlockPos(p) == null) return true; // can't tell
+                    if (IsDryStand(entity, p)) return true;
+                }
+            }
+        }
+        return false;
     }
 
     /// <summary>
