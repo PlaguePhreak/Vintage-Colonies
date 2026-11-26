@@ -949,8 +949,11 @@ public partial class ColonyManager
         // a ring has none. Before, trees far out pulled a Gatherer's Hut 53 blocks from the Town Hall.
         var nearRings = (Config.MayorNearRings ?? Array.Empty<int>()).Where(n => n > 0).OrderBy(n => n).ToArray();
         int ring = 0;
+        // At most MayorSearchMs of the server's time per look (0.205.0, note 80: one search froze the game for a second).
+        var clock = System.Diagnostics.Stopwatch.StartNew();
         foreach (var (dx, dz) in Rings(r, 2))
         {
+            if ((tried & 31) == 0 && clock.ElapsedMilliseconds > Math.Max(50, Config.MayorSearchMs)) break;
             double out2 = dx * dx + dz * dz;
             bool done = false;
             while (ring < nearRings.Length && out2 > (double)nearRings[ring] * nearRings[ring])

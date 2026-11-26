@@ -43,7 +43,7 @@ public partial class ColonyManager
     };
 
     /// <summary>Statuses that come and go during work and say nothing either way (walking about, fetching tools).</summary>
-    static readonly HashSet<string> PassingStatuses = new() { "starting", "unreachable", "foraging-look", "fetching-tools", "searching", "mine-travelling" };
+    static readonly HashSet<string> PassingStatuses = new() { "starting", "unreachable", "foraging-look", "fetching-tools", "searching", "mine-travelling", "getting-ready", "hunter-far-trip", "forester-further", "herder-catching", "planting-berries" };
 
     static bool IsStuckStatus(string status) =>
         StuckStatuses.Contains(status) || status.StartsWith("needs-") || status.Contains("-needs-") || status.EndsWith("-stocked");

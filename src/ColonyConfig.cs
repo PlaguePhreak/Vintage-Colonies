@@ -1023,7 +1023,7 @@ public class ColonyConfig
         ["potter"] = new[] { "mudbrick", "daubraw" },
         ["farmer"] = new[] { "flaxtwine", "rope", "linen", "hay" },
         // Poultices from the horsetail and reed tops it picks (ColonyManager.Healing.cs).
-        ["gatherer"] = new[] { "torch", "basket", "flaxtwine", "poultice" },
+        ["gatherer"] = new[] { "basket", "flaxtwine", "poultice" },
         ["miner"] = new[] { "cobblestone", "stonebricks", "torch" },
         ["quarry"] = new[] { "cobblestone", "stonebricks", "stonepath" },
         // Every piece of clothing but jewellery, the sewing kit, and armor of leather or linen (never metal).
@@ -1890,6 +1890,8 @@ public class ColonyConfig
     /// first; a design that needs something no hut can make waits. False: the 0.201.0 check (fired and metal things only).
     /// </summary>
     public bool MayorMakersFirst = true;
+    /// <summary>How long, in milliseconds, one look of the Mayor for a building spot may take before it stops with the best spot so far.</summary>
+    public int MayorSearchMs = 250;
     /// <summary>
     /// Huts work at level 0 (0.205.0, Aaron): a food or maker hut the Mayor needs is put down as a hut block and given a
     /// worker straight away, without a build. Its building is ordered later, once the colony can supply it.

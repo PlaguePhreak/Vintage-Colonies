@@ -819,7 +819,7 @@ public class GuiDialogTownHall : GuiDialog
             .AddStaticText(Lang.Get("createacolony:jobpanel-title", c.Name), GuiKit.Heading(), ElementBounds.Fixed(0, 30, W - 110, 26))
             .AddSmallButton(Lang.Get("createacolony:back"), () => Open(CitizensTab), ElementBounds.Fixed(W - 100, 28, 100, 28));
         string now = Lang.Get("createacolony:jobpanel-now", JobName(real));
-        if (lent) now += " " + Lang.Get(c.Job.Length == 0 ? "createacolony:citizens-lent-hauling" : "createacolony:citizens-lent-as", JobName(c.Job));
+        if (lent) now += " " + Lang.Get(c.Job.Length == 0 ? "createacolony:jobpanel-lent-hauling" : "createacolony:jobpanel-lent-as", JobName(c.Job));
         double y = composer.Text(now, GuiKit.Body(), 0, 64, W, 2);
         if (c.TraitsText.Length > 0) y = composer.Text(Lang.Get("createacolony:traits-hover", c.TraitsText), GuiKit.Muted(), 0, y, W, 2);
         y += 8;

@@ -130,7 +130,9 @@ public abstract class AiTaskSettlerWorker : SettlerTaskBase
         var storage = manager.HutStorage(colony, hut).Cast<BlockEntityContainer>().ToList();
         if (storage.Count == 0)
         {
-            SetStatus("no-hut-chest");
+            // Right after the world loads the hut's chests are not loaded yet (note 79): not a fault.
+            bool loading = entity.World.ElapsedMilliseconds < 120_000 || entity.World.BlockAccessor.GetChunkAtBlockPos(hut.HutPos) == null;
+            SetStatus(loading ? "getting-ready" : "no-hut-chest");
             return Wait();
         }
 
