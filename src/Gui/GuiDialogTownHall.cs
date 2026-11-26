@@ -178,6 +178,7 @@ public class GuiDialogTownHall : GuiDialog
         SingleComposer.GetSwitch("telloutsiders")?.SetValue(snapshot.TellOutsiders);
         SingleComposer.GetSwitch("settlersunhurt")?.SetValue(snapshot.SettlersUnhurt);
         SingleComposer.GetSwitch("noenemies")?.SetValue(snapshot.NoEnemies);
+        SingleComposer.GetSwitch("autoreport")?.SetValue(snapshot.AutoReport);
         SingleComposer.GetSwitch("mayorfree")?.SetValue(snapshot.MayorFreeHuts);
         for (int i = 0; i < snapshot.MayorOrder.Count; i++) SingleComposer.GetSwitch("mayororder" + i)?.SetValue(!snapshot.MayorSkip.Contains(snapshot.MayorOrder[i]));
         SingleComposer.GetTextInput("text-enter")?.SetValue(pendingEnter);
@@ -1564,6 +1565,8 @@ public class GuiDialogTownHall : GuiDialog
             on => SendText(ColonyAction.SetTestSafety, "unhurt|" + (on ? "1" : "0")), y);
         y = TownSwitch(composer, "noenemies", "createacolony:noenemies", "createacolony:noenemies-hint", snapshot.NoEnemies,
             on => SendText(ColonyAction.SetTestSafety, "enemies|" + (on ? "1" : "0")), y);
+        y = TownSwitch(composer, "autoreport", "createacolony:autoreport", "createacolony:autoreport-hint", snapshot.AutoReport,
+            on => SendText(ColonyAction.SetTestSafety, "report|" + (on ? "1" : "0")), y);
         y = TownSwitch(composer, "mayorfree", "createacolony:mayorfree", "createacolony:mayorfree-hint", snapshot.MayorFreeHuts,
             on => SendText(ColonyAction.MayorAction, "free|" + (on ? "1" : "0")), y);
 

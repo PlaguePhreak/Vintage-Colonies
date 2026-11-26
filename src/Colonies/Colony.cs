@@ -1024,6 +1024,8 @@ public class Colony
     [ProtoMember(4500)] public bool SettlersUnhurt;
     /// <summary>No hostile creatures spawn anywhere, and no raids come.</summary>
     [ProtoMember(4501)] public bool NoEnemies;
+    /// <summary>Saves a colony report every Config.TimedReportMinutes (0.204.0, ColonyReport.cs), for Odin or a bug report.</summary>
+    [ProtoMember(4502)] public bool AutoReport;
     // 4800-4819: the Mayor (0.199.0, ColonyManager.Mayor.cs).
     /// <summary>What the Mayor does about buildings: MayorModes.Off, Ask (asks first) or OnOwn.</summary>
     [ProtoMember(4800, IsRequired = true)] public int MayorMode = MayorModes.Ask;

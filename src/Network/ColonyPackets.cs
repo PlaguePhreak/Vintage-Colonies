@@ -793,6 +793,7 @@ public class ColonySnapshot
     /// <summary>Test settings (0.196.0).</summary>
     [ProtoMember(4500)] public bool SettlersUnhurt;
     [ProtoMember(4501)] public bool NoEnemies;
+    [ProtoMember(4502)] public bool AutoReport;
     [ProtoMember(3704)] public string EnterText = "";
     [ProtoMember(3705)] public string LeaveText = "";
     [ProtoMember(3706)] public List<RankView> Ranks = new();

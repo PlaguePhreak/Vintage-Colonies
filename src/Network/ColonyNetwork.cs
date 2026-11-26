@@ -1063,6 +1063,7 @@ public partial class ColonyNetwork : ModSystem
         snapshot.TellOutsiders = colony.TellOutsiders;
         snapshot.SettlersUnhurt = colony.SettlersUnhurt;
         snapshot.NoEnemies = colony.NoEnemies;
+        snapshot.AutoReport = colony.AutoReport;
         snapshot.EnterText = colony.EnterText;
         snapshot.LeaveText = colony.LeaveText;
         snapshot.MaxRanks = Manager.Config.MaxRanks;

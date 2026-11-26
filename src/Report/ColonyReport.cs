@@ -49,6 +49,7 @@ public class ColonyReportSystem : ModSystem
     bool writing;
     DateTime lastAutoReport = DateTime.MinValue;
     DateTime lastClientAuto = DateTime.MinValue;
+    DateTime lastTimedReport = DateTime.Now;
 
     public static string ReportFolder => Path.Combine(GamePaths.DataPath, "ModData", "createacolony", "reports");
 
@@ -64,7 +65,7 @@ public class ColonyReportSystem : ModSystem
         sapi = api;
         serverChannel = api.Network.GetChannel(ChannelName);
         // Never write a report from inside the log handler: check for a serious error every few seconds instead.
-        api.Event.RegisterGameTickListener(_ => CheckAutoReport(), 5000);
+        api.Event.RegisterGameTickListener(_ => { CheckAutoReport(); CheckTimedReport(); }, 5000);
     }
 
     public override void StartClientSide(ICoreClientAPI api)
@@ -127,6 +128,43 @@ public class ColonyReportSystem : ModSystem
         {
             writing = true;
             try { sapi.Logger.Warning("[Vintage Colonies report] Auto report failed: {0}", e.Message); } finally { writing = false; }
+        }
+    }
+
+    /// <summary>
+    /// The Town Hall's Auto report switch (0.204.0): while any colony has it on, saves a report of those colonies every
+    /// Config.TimedReportMinutes, named "-timed", with no chat message, and keeps only the newest Config.TimedReportsKept.
+    /// </summary>
+    void CheckTimedReport()
+    {
+        if (writing || sapi == null) return;
+        var manager = sapi.ModLoader.GetModSystem<ColonyManager>();
+        if (manager == null) return;
+        double minutes = Math.Max(1, manager.Config.TimedReportMinutes);
+        if ((DateTime.Now - lastTimedReport).TotalMinutes < minutes) return;
+        var colonies = AllColonies(manager).Where(c => c.AutoReport).ToList();
+        if (colonies.Count == 0) { lastTimedReport = DateTime.Now; return; }
+        lastTimedReport = DateTime.Now;
+        try
+        {
+            WriteServerReport(null, Lang.Get("createacolony:report-timed-note"), colonies, "-timed", out _);
+            TidyTimedReports(Math.Max(1, manager.Config.TimedReportsKept));
+        }
+        catch (Exception e)
+        {
+            writing = true;
+            try { sapi.Logger.Warning("[Vintage Colonies report] Timed report failed: {0}", e.Message); } finally { writing = false; }
+        }
+    }
+
+    /// <summary>Deletes the oldest "-timed" reports above <paramref name="keep"/>. Never touches other reports.</summary>
+    static void TidyTimedReports(int keep)
+    {
+        var timed = new DirectoryInfo(ReportFolder).GetFiles("report-*-timed.txt")
+            .OrderByDescending(f => f.Name, StringComparer.Ordinal).Skip(keep);
+        foreach (var f in timed)
+        {
+            try { f.Delete(); } catch (IOException) { } catch (UnauthorizedAccessException) { }
         }
     }
 

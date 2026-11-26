@@ -24,6 +24,11 @@ public class ColonyConfig
 
     public int MaxConcurrentPathRequestsPerColony = 4;
 
+    /// <summary>The Town Hall's Auto report switch (0.204.0): minutes between timed reports. Set 1 for a quick test.</summary>
+    public double TimedReportMinutes = 30;
+    /// <summary>How many timed reports to keep; older "-timed" reports are deleted. Other reports are never deleted.</summary>
+    public int TimedReportsKept = 48;
+
     // Needs
     /// <summary>Full stomach. A settler starts here and eats when below EatBelowFraction of it.</summary>
     public float SaturationMax = 1200f;
