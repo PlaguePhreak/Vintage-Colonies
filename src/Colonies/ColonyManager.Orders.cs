@@ -113,7 +113,7 @@ public partial class ColonyManager
     public bool HasOrders(Colony colony, Building hut) => Orders(colony).Makers.Contains(hut.BuildingId);
 
     /// <summary>How many of a thing a crafter hut makes: what its tab keeps, plus what other huts are waiting for.</summary>
-    public int CraftWant(Colony colony, Building hut, string key) => CraftKeep(hut, key) + OrderedFor(colony, hut, key);
+    public int CraftWant(Colony colony, Building hut, string key) => System.Math.Max(CraftKeep(hut, key) + OrderedFor(colony, hut, key), SawWant(colony, hut, key));
 
     /// <summary>
     /// How many of a thing a hut's Crafting recipes tab makes: what it keeps, plus what other huts are waiting for.

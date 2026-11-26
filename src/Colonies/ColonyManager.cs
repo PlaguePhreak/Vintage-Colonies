@@ -164,6 +164,8 @@ public partial class ColonyManager : ModSystem
             // Forester torches too, and helpers come from 32 blocks.
             var fresh = new ColonyConfig();
             config.HutRecipeOutputs ??= new();
+            config.PotteryDefaultKeep ??= new();
+            foreach (var (pattern, keep) in fresh.PotteryDefaultKeep) config.PotteryDefaultKeep.TryAdd(pattern, keep);
             // The Gatherer never made torches; the Requests tab said it did (note 94).
             if (config.HutRecipeOutputs.TryGetValue("gatherer", out var gathererMakes)) config.HutRecipeOutputs["gatherer"] = gathererMakes.Where(o => o != "torch").ToArray();
             if (!config.HutRecipeOutputs.ContainsKey("craftsman")) config.HutRecipeOutputs["craftsman"] = fresh.HutRecipeOutputs["craftsman"];

@@ -802,7 +802,13 @@ public class ColonyConfig
     public System.Collections.Generic.Dictionary<string, int> PotteryDefaultKeep = new()
     {
         ["*crucible*"] = 1,
-        ["*ingotmold*"] = 2
+        ["*ingotmold*"] = 2,
+        // A watering can, so settlers can put out the fires kilns start (0.205.0, note 92).
+        ["*wateringcan*"] = 1,
+        // The copper tool chain (0.205.0): molds for the Smelter's first copper pickaxe, hammer and anvil.
+        ["*toolmold*-pickaxe"] = 1,
+        ["*toolmold*-hammer"] = 1,
+        ["*toolmold*-anvil"] = 1
     };
 
     // Cook
@@ -849,6 +855,14 @@ public class ColonyConfig
     public int SmelterMolds = 4;
     /// <summary>The most ingots the smelter melts in one crucible (the crucible holds about 5 ingots of nuggets).</summary>
     public int SmelterIngotsPerBatch = 4;
+    /// <summary>The Smelter casts copper tools in tool molds while the colony has none (0.205.0, the copper tool chain).</summary>
+    public bool SmelterCastsTools = true;
+    /// <summary>What the Smelter casts, first things first: the tool mold types ("pickaxe", "hammer", "anvil", "axe"...).</summary>
+    public string[] SmelterCasts = { "pickaxe", "hammer", "anvil" };
+    /// <summary>A Blacksmith's Hut without an anvil or a forge by it sets one down from storage (works at level 0).</summary>
+    public bool BlacksmithSetsUpStations = true;
+    /// <summary>The Blacksmith smiths a copper saw while the colony has none, so boards can be made.</summary>
+    public bool BlacksmithMakesSaw = true;
     /// <summary>Fuel pieces the smelter puts in the fire pit at once.</summary>
     public int SmelterFuel = 6;
     /// <summary>What the smelter asks couriers for when the warehouse has no fuel hot enough.</summary>
@@ -1964,7 +1978,7 @@ public class ColonyConfig
         ["smelter"] = new[] { "game:ingot-*", "game:metalbit-*" },
         ["blacksmith"] = new[] { "game:*-copper", "game:*-tinbronze", "game:*-iron", "game:nailsandstrips-*" },
         ["potter"] = new[] { "game:bowl-*", "game:crock-*", "game:storagevessel-*", "game:claypot-*", "game:crucible-*", "game:toolmold-*", "game:ingotmold-*", "game:mudbrick-*", "game:daubraw-*" },
-        ["stonemason"] = new[] { "game:cobblestone-*", "game:cobblestonestairs-*", "game:cobblestoneslab-*", "game:stonepath-*" },
+        ["stonemason"] = new[] { "game:cobblestone-*", "game:cobblestonestairs-*", "game:cobblestoneslab-*", "game:stonepath-*", "game:forge" },
         ["charcoalburner"] = new[] { "game:charcoal" },
         ["craftsman"] = new[] { "game:*head-flint", "game:*head-granite", "game:*-flint", "game:knife-*", "game:axe-*", "game:shovel-*", "game:hoe-*", "game:wattle-*", "game:basket*", "game:stationarybasket*", "game:door-crude*" },
         ["farmer"] = new[] { "game:grain-*", "game:vegetable-*", "game:seeds-*", "game:flaxfibers", "game:flaxtwine" },

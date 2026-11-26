@@ -44,12 +44,15 @@ public class AiTaskSettlerBlacksmith : AiTaskSettlerWorker
     {
         var m = manager!;
         var forge = m.SmithForge(hut);
+        // Working from the hut block (0.205.0): it sets a forge and an anvil down beside it when the colony has them.
+        if (forge == null && m.SetUpStation(colony, hut, citizen, false)) forge = m.SmithForge(hut);
         if (forge == null)
         {
             SetStatus("smith-no-forge");
             return false;
         }
         var anvil = m.SmithAnvil(hut);
+        if (anvil == null && m.SetUpStation(colony, hut, citizen, true)) anvil = m.SmithAnvil(hut);
         if (anvil == null)
         {
             SetStatus("smith-no-anvil");
