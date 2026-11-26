@@ -12,6 +12,30 @@ domain (`assets/createacolony/`, block and item codes like `createacolony:townha
 (`ModConfig/createacolony.json`), the release zips (`createacolony_<version>.zip`) and all save data keys.
 Changing any of those would stop old worlds from loading their colonies, so leave them as they are.
 
+## Fixes after the second overnight test: food, homes and huts that work from day one (0.205.0)
+
+From the fix plan Aaron approved on 26 Nov 2026 (https://claude.ai/artifact/Cp7eKrJUy9WdS69MSQEttV). The colony starved and stalled because the Mayor filled both builders with buildings nobody could supply.
+
+- **The Mayor goes food, then homes, then the rest.** It counts the days of food the colony really has (food in its chests and in settlers' bellies). Below 3 days a food hut comes first, even while the builders are busy, and it tries each kind in turn (Gatherer, Farmer, Hunter, Fisher, Chicken Coop). Then one home per family: a couple and their children, or a single settler.
+- **Maker huts first.** Before the Mayor starts a building, every material has to have a hut that makes it. If one is missing, that hut is put down first, as a hut block, and it starts work straight away.
+- **Huts work at level 0.** A hut block with a worker counts as working. Its proper building comes once the colony can supply it.
+- **Huts make what builds need.** The Potter makes mudbrick and daub, the Primitive Craftsman makes wattle (with a knife), the Stonemason makes cobblestone, stairs, slabs, stone paths and the forge. Hut blocks can be made from firewood instead of planks.
+- **Filled in later.** Boards, planks and everything made from them are left out of a build while the colony has no saw, and so is anything nobody makes after the request has waited a while. The building goes up without them and is used. The Mayor sends a builder back to fill the gaps once they can be had. The report lists buildings with blocks left for later.
+- **Food that keeps coming.** The Hunter goes further out (up to 3 times its area) when nothing is left nearby. The Gatherer plants the berry bush cuttings it takes in a berry garden by its hut (up to 12 bushes). Herders with fewer than 4 animals catch wild ones of their kinds and carry them to the pen.
+- **Wood.** The Forester goes further out (up to 64 blocks) when the trees near its hut are gone. A builder waiting for one material puts in other blocks it has the materials for. A block the builder found no way to can be put in from twice as far on its second go.
+- **The copper tool chain, all at level 0.** The Potter keeps a pickaxe, hammer and anvil mold. The Smelter lays its own fire pit from firewood, sets a mold out and casts a copper pickaxe, then (once there is a Blacksmith's Hut) a hammer and an anvil, and puts each head on a stick. The Blacksmith sets the anvil and a forge down beside its hut block and smiths a copper saw while the colony has none.
+- **Lost and stuck settlers.** A settler standing in unloaded land 80 blocks or more from home is brought home after 3 game hours. Children only follow a parent who works within 64 blocks of the Town Hall. Settlers keep their spare spear in their pack, so it is not put away and handed out again. Fighting back gives up after a few tries to reach an attacker. A settler with no knife in hand leaves the carcass alone for a while.
+- **The Bailiff.** It does not lend a worker to hauling when nothing needs carrying, and a worker lent to hauling comes back once nothing does. The report says why a stuck worker was not moved.
+- **Jobs and happiness.** A settler without a job says why: waiting for a home, no Bailiff, or no free place. Children show a normal mood instead of -1.
+- **Pottery.** Kilns take plain firewood first (not aged firewood). The report checks the kiln cover two blocks up. A new Potter's Hut keeps a watering can, for kiln fires.
+- **Small faults.** "Change job" fits its button. The lent-out text is shorter. "Lent out" starts with a capital in the job panel. The Gatherer is no longer listed as making torches. Right after loading, workers say "getting ready" instead of "the hut has no storage". No more map marker warnings for empty drops. One look of the Mayor for a building spot takes at most 250 ms.
+- **Builds.** Aaron's 9 re-exported builds with the Ground floor and Front of build markers: Town Hall 1 to 4, Builder's Hut 1, Cook's Hut 1, Small Residence 1, Guard Tower 2 and 4.
+- Server config (version 13): `MayorMakersFirst`, `MayorHutsStartUnbuilt`, `MayorFoodDaysLow`, `MayorHomePerFamily`, `MayorSearchMs`, `BuildersFillInLater`, `NeedsSawPatterns`, `SawPatterns`, `HunterFarTrips`, `FarTripRangeMult`, `FarTripMaxRadius`, `FarTripMinutes`, `BerryGardenSize`, `BerryGardenRadius`, `HerderCatchUpTo`, `HerderCatchRadius`, `ForesterMaxRadius`, `ChildFollowRange`, `FarOutRescueBlocks`, `FarOutRescueHours`, `SmelterCastsTools`, `SmelterCasts`, `SmelterLaysFirepit`, `FirepitFirewood`, `BlacksmithSetsUpStations`, `BlacksmithMakesSaw`.
+
+Not fixed yet: nobody gathers sand (light mudbrick and daub need it, dark mudbrick does not); clay ovens and lanterns have no maker, so they are left for later; the duplicate settler warning (89); the lost item id 1458 in one build's container (83, 90, harmless); the VTML tag errors (120) come from the game or another mod, not this one.
+
+Not tested in game yet.
+
 ## Fixes after the overnight test, part 4: jobs, statuses and small faults (0.203.0)
 
 From the fix plan Aaron approved on 25 Nov 2026 (the rest of group G).
