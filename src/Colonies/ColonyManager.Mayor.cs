@@ -503,7 +503,7 @@ public partial class ColonyManager
 
         // Huts working from a bare hut block (0.205.0) get their building once the colony can supply it.
         foreach (var bare in colony.Buildings.Where(b => b.Level == 0 && !b.HasWorkOrder && !b.IsStation && !b.Removing && StartsUnbuilt(b.Type)
-                     && WorkersAt(colony, b).Count > 0 && !Skipped(colony, b.Type)).OrderBy(b => b.BuildingId))
+                     && WorkersAt(colony, b).Count > 0 && !Skipped(colony, b.Type) && Blueprints.Get(b, 1) != null).OrderBy(b => b.BuildingId))
         {
             if (Config.MayorMakersFirst && MaterialsProblem(colony, bare.Type) is { } bareProblem)
             {
@@ -723,7 +723,8 @@ public partial class ColonyManager
         // Only buildings that have a blueprint (the player's builds).
         var probe = new Building { Type = type, Style = ColonyStyle(colony) };
         probe.Variant = Blueprints.VariantFor(Blueprints.StyleFor(probe), type, "");
-        return Blueprints.MaxLevel(probe) >= 1;
+        // A hut that works from its bare hut block (0.205.0) needs no design yet: it gets one when Aaron makes it.
+        return Blueprints.MaxLevel(probe) >= 1 || StartsUnbuilt(type);
     }
 
     /// <summary>The asset pack the colony builds in: the Town Hall's, else the one most of its huts use.</summary>

@@ -308,7 +308,7 @@ public class ColonyReportSystem : ModSystem
                     {
                         foreach (var kiln in manager.KilnsOf(b))
                         {
-                            sb.AppendLine($"    Pit kiln at {kiln.ToLocalPosition(api)}: {api.World.BlockAccessor.GetBlock(kiln).Code}, above it {api.World.BlockAccessor.GetBlock(kiln.UpCopy()).Code}");
+                            sb.AppendLine($"    Pit kiln at {kiln.ToLocalPosition(api)}: {api.World.BlockAccessor.GetBlock(kiln).Code}, above it {api.World.BlockAccessor.GetBlock(kiln.UpCopy()).Code}, cover (2 above) {api.World.BlockAccessor.GetBlock(kiln.UpCopy(2)).Code}");
                         }
                     }
                 }

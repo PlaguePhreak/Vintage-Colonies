@@ -627,7 +627,10 @@ public partial class ColonyManager
         if (stages == null) return fuel;
         foreach (var stage in stages)
         {
-            var pick = stage.Materials.Where(m => m?.ItemStack != null).Select(m => m.ItemStack).OrderByDescending(KilnFuelRank).FirstOrDefault();
+            // What couriers are asked for (0.205.0, note 78): plain firewood when the layer takes it, as the Forester makes
+            // it; otherwise the best fuel. Before, the worst came first, and potters asked for aged firewood nobody makes.
+            var pick = stage.Materials.Where(m => m?.ItemStack != null).Select(m => m.ItemStack)
+                .OrderBy(s => s.Collectible.Code.Path == "firewood" ? -1 : KilnFuelRank(s)).FirstOrDefault();
             if (pick == null) continue;
             if (fuel.FirstOrDefault(f => SameItem(f, pick)) is { } same) same.StackSize += pick.StackSize;
             else fuel.Add(pick.Clone());
