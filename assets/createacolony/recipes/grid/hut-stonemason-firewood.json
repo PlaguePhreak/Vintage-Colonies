@@ -1,0 +1,19 @@
+{
+	"ingredientPattern": "PXP,PPP",
+	"ingredients": {
+		"P": {
+			"type": "item",
+			"code": "game:firewood"
+		},
+		"X": {
+			"type": "item",
+			"code": "game:stone-*"
+		}
+	},
+	"width": 3,
+	"height": 2,
+	"output": {
+		"type": "block",
+		"code": "createacolony:hut-stonemason"
+	}
+}

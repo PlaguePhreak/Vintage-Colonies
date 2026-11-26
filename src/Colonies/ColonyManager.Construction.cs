@@ -438,6 +438,12 @@ public partial class ColonyManager
             if (IsStepDone(colony, step, pos, building)) continue;
             // Upkeep only digs out ground that got in; everything else in the building stays as it is.
             if (building.Upkeep && !IsUpkeepStep(step, pos)) continue;
+            // Fill in later (0.205.0): a block the colony can't get yet is left out, and put in once it can.
+            if (!building.Upkeep && IsLaterStep(colony, step, pos))
+            {
+                MarkLater(colony, building);
+                continue;
+            }
             // A block the builder kept failing at waits until the rest is done.
             if (skipped != null && skipped.Contains(pos))
             {
@@ -475,6 +481,7 @@ public partial class ColonyManager
         {
             if (step.BlockId == 0) continue;
             if (IsStepDone(colony, step, pos, building)) continue;
+            if (!building.Upkeep && IsLaterStep(colony, step, pos)) continue;
             foreach (var cost in RemainingCost(colony, step, pos))
             {
                 needs[cost.Code] = needs.TryGetValue(cost.Code, out var n) ? (n.Item1, n.Item2 + cost.Count) : (cost.Sample, cost.Count);

@@ -242,6 +242,8 @@ public class MayorPlan
     [ProtoMember(10)] public int Level;
     /// <summary>Approved (or the Mayor builds on their own): carried out as soon as there is a hut block.</summary>
     [ProtoMember(11)] public bool Approved;
+    /// <summary>Huts work at level 0 (0.205.0): the hut block is put down and given a worker, without a build.</summary>
+    [ProtoMember(12)] public bool Unbuilt;
 }
 
 [ProtoContract]
@@ -441,6 +443,11 @@ public class Building
     [ProtoMember(270)] public bool Upkeep;
     /// <summary>The work order is a repair players asked for: the building is put back as its blueprint has it (ColonyManager.Repair.cs).</summary>
     [ProtoMember(271)] public bool Repairing;
+    /// <summary>
+    /// Fill in later (0.205.0): the last build left out blocks the colony couldn't get yet (boards before a saw, things
+    /// no hut makes). The Mayor sends a builder back to put them in once it can (ColonyManager.FillLater.cs).
+    /// </summary>
+    [ProtoMember(5050)] public bool LaterBlocks;
 
     /// <summary>A Miner's Hut working a Mineshaft Entrance's mine: that entrance. Not saved; see Colony.LinkMines.</summary>
     public Building? Entrance;

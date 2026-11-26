@@ -113,6 +113,16 @@ public partial class ColonyManager
         double days = sapi.World.Calendar.TotalDays, hours = sapi.World.Calendar.TotalHours;
         string At(BlockPos p) => p.ToLocalPosition(sapi).ToString();
 
+        // The two needs that come first (0.205.0, Aaron): food, then homes.
+        double food = FoodDays(colony);
+        int starving = colony.Citizens.Count(c => c.Alive && !c.Visitor && c.Saturation <= 0);
+        if (starving > 0) lines.Add($"STARVING: {starving} settlers have nothing in their bellies. Food left: {food:0.#} days.");
+        else if (food < Config.MayorFoodDaysLow) lines.Add($"Food is low: {food:0.#} days left for everyone.");
+        int homes = HomesNeeded(colony);
+        if (homes > 0) lines.Add($"Homes: {homes} of {Families(colony)} families have no home of their own.");
+        int later = BuildingsWithLaterBlocks(colony);
+        if (later > 0) lines.Add($"{later} buildings have blocks left for later (boards before a saw, things no hut makes).");
+
         foreach (var c in colony.Citizens)
         {
             if (!c.Alive || c.Visitor) continue;

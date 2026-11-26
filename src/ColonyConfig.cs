@@ -7,7 +7,7 @@ public class ColonyConfig
 {
     public const string FileName = "createacolony.json";
     /// <summary>Bumped when a default changes in a way old config files should pick up; see ColonyManager.UpgradeConfig.</summary>
-    public const int CurrentConfigVersion = 12;
+    public const int CurrentConfigVersion = 13;
 
     /// <summary>Which defaults this file has been brought up to. Files from before 0.33.0 have none, so read as 0.</summary>
     public int ConfigVersion;
@@ -994,7 +994,9 @@ public class ColonyConfig
     {
         ["forester"] = new[] { "firewood", "stick", "debarkedlog", "torch" },
         // Reed baskets, reed chests, crude doors and torches (0.202.0): builds ask for them and no other hut made them.
-        ["craftsman"] = new[] { "basket", "stationarybasket", "door-crude*", "torch" },
+        ["craftsman"] = new[] { "basket", "stationarybasket", "door-crude*", "torch", "wattle", "hut" },
+        // Mudbrick and daub for the builds (0.205.0, Aaron): the Potter makes them from clay, dry grass and soil (daub also takes sand).
+        ["potter"] = new[] { "mudbrick", "daubraw" },
         ["farmer"] = new[] { "flaxtwine", "rope", "linen", "hay" },
         // Poultices from the horsetail and reed tops it picks (ColonyManager.Healing.cs).
         ["gatherer"] = new[] { "torch", "basket", "flaxtwine", "poultice" },
@@ -1024,7 +1026,9 @@ public class ColonyConfig
         ["jeweller"] = new[] { "game", "canjewelry", "canjewelryadornments" },
         ["mint"] = new[] { "createacolony" },
         // The Sawmill makes hut blocks for the Mayor (0.199.0).
-        ["sawmill"] = new[] { "createacolony" }
+        ["sawmill"] = new[] { "createacolony" },
+        // The Primitive Craftsman makes stone age hut blocks from firewood (0.205.0).
+        ["craftsman"] = new[] { "game", "createacolony" }
     };
     /// <summary>
     /// Recipes only a player class can make that a hut's worker may make too, by hut type: the Tailor counts as
@@ -1052,7 +1056,9 @@ public class ColonyConfig
         ["healer"] = new[] { "knife", "shears", "scissors" },
         ["mint"] = new[] { "hammer" },
         ["stonemason"] = new[] { "chisel", "saw", "hammer", "pickaxe" },
-        ["fletcher"] = new[] { "knife" }
+        ["fletcher"] = new[] { "knife" },
+        // Wattle takes a knife (0.205.0).
+        ["craftsman"] = new[] { "knife" }
     };
     /// <summary>Seconds a worker takes to craft one recipe at its hut.</summary>
     public float HutRecipeSecondsPerCraft = 4f;
@@ -1751,7 +1757,7 @@ public class ColonyConfig
     /// </summary>
     public System.Collections.Generic.Dictionary<string, string[]> HutRecipeInputParts = new()
     {
-        ["stonemason"] = new[] { "rock", "stone", "cobblestone", "stonebrick", "stonebricks", "polishedrock", "rockpolished", "stonepath", "stoneslab", "stonestairs", "cobblestoneslab", "cobblestonestairs", "polishedrockslab" }
+        ["stonemason"] = new[] { "clay", "soil", "rock", "stone", "cobblestone", "stonebrick", "stonebricks", "polishedrock", "rockpolished", "stonepath", "stoneslab", "stonestairs", "cobblestoneslab", "cobblestonestairs", "polishedrockslab" }
     };
     /// <summary>What a new hut's Crafting recipes tab keeps from the start (code patterns and amounts, the first match wins), by hut type.</summary>
     public System.Collections.Generic.Dictionary<string, System.Collections.Generic.Dictionary<string, int>> HutRecipeStartKeep = new()
@@ -1842,7 +1848,8 @@ public class ColonyConfig
         ["miner"] = new[] { "smelter" },
         ["prospector"] = new[] { "smelter" },
         ["quarry"] = new[] { "smelter" },
-        ["stonemason"] = new[] { "quarry" },
+        // The Stonemason works the loose stones the Gatherer brings (0.205.0): no Quarry needed first.
+        ["stonemason"] = new[] { "gatherer" },
         ["bakery"] = new[] { "farmer" },
         ["tannery"] = new[] { "hunter" },
         ["fletcher"] = new[] { "forester" }
@@ -1853,6 +1860,34 @@ public class ColonyConfig
     /// makes the design wait and the hut come first.
     /// </summary>
     public bool MayorChecksMaterials = true;
+    /// <summary>
+    /// Maker huts first (0.205.0, Aaron): before the Mayor puts a building down, every material in its design (but
+    /// those left for later) must have a hut in the colony that makes or gathers it. A missing maker is put down
+    /// first; a design that needs something no hut can make waits. False: the 0.201.0 check (fired and metal things only).
+    /// </summary>
+    public bool MayorMakersFirst = true;
+    /// <summary>
+    /// Huts work at level 0 (0.205.0, Aaron): a food or maker hut the Mayor needs is put down as a hut block and given a
+    /// worker straight away, without a build. Its building is ordered later, once the colony can supply it.
+    /// </summary>
+    public bool MayorHutsStartUnbuilt = true;
+    /// <summary>Food first (0.205.0): below this many days of food for everyone, the Mayor puts food huts before everything else.</summary>
+    public double MayorFoodDaysLow = 3;
+    /// <summary>Homes per family (0.205.0): a couple with their children, or one grown-up on their own, is one family and needs one home.</summary>
+    public bool MayorHomePerFamily = true;
+    /// <summary>
+    /// Fill in later (0.205.0, Aaron): blocks whose material the colony can't get yet are left out of a build and put
+    /// in once it can: boards and everything made from them until the colony has a saw, and things no hut makes.
+    /// The rest of the building goes up and is used straight away.
+    /// </summary>
+    public bool BuildersFillInLater = true;
+    /// <summary>Code patterns of things that need a saw: left for later until the colony has one.</summary>
+    public string[] NeedsSawPatterns = { "game:plank-*", "game:planks-*", "game:plankslab-*", "game:plankstairs-*", "game:ladder-wood-*",
+        "game:door-solid-*", "game:door-*plank*", "game:trapdoor-*", "game:chest-*", "game:woodenfence-*", "game:woodenfencegate-*", "game:supportbeam-*",
+        "game:table-*", "game:chair-*", "game:shelf-*", "game:barrel", "game:crate*", "game:trunk-*", "w4rd0sfurniture:*", "foodshelves:*",
+        "aculinaryartillery:bottlerack*", "createacolony:hut-*" };
+    /// <summary>Things that count as a saw for the rule above.</summary>
+    public string[] SawPatterns = { "game:saw-*", "game:sawblade-*" };
     public string[] MayorMaterialMakers = { "potter", "smelter", "blacksmith" };
     /// <summary>The Mayor looks for a spot this close to the Town Hall first, then each wider ring, then anywhere in reach.</summary>
     public int[] MayorNearRings = { 20, 32, 48 };
@@ -1902,9 +1937,10 @@ public class ColonyConfig
         ["miner"] = new[] { "game:ore-*", "game:nugget-*" },
         ["smelter"] = new[] { "game:ingot-*", "game:metalbit-*" },
         ["blacksmith"] = new[] { "game:*-copper", "game:*-tinbronze", "game:*-iron", "game:nailsandstrips-*" },
-        ["potter"] = new[] { "game:bowl-*", "game:crock-*", "game:storagevessel-*", "game:claypot-*", "game:crucible-*", "game:toolmold-*", "game:ingotmold-*" },
+        ["potter"] = new[] { "game:bowl-*", "game:crock-*", "game:storagevessel-*", "game:claypot-*", "game:crucible-*", "game:toolmold-*", "game:ingotmold-*", "game:mudbrick-*", "game:daubraw-*" },
+        ["stonemason"] = new[] { "game:cobblestone-*", "game:cobblestonestairs-*", "game:cobblestoneslab-*", "game:stonepath-*" },
         ["charcoalburner"] = new[] { "game:charcoal" },
-        ["craftsman"] = new[] { "game:*head-flint", "game:*head-granite", "game:*-flint", "game:knife-*", "game:axe-*", "game:shovel-*", "game:hoe-*" },
+        ["craftsman"] = new[] { "game:*head-flint", "game:*head-granite", "game:*-flint", "game:knife-*", "game:axe-*", "game:shovel-*", "game:hoe-*", "game:wattle-*", "game:basket*", "game:stationarybasket*", "game:door-crude*" },
         ["farmer"] = new[] { "game:grain-*", "game:vegetable-*", "game:seeds-*", "game:flaxfibers", "game:flaxtwine" },
         ["hunter"] = new[] { "game:redmeat-raw", "game:bushmeat-raw", "game:poultry-raw", "game:hide-*", "game:fat" },
         ["cook"] = new[] { "game:bread-*", "game:redmeat-cooked", "game:bushmeat-cooked", "game:poultry-cooked" },

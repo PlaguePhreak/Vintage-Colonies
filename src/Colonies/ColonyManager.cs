@@ -169,6 +169,34 @@ public partial class ColonyManager : ModSystem
                 config.HutRecipeOutputs["forester"] = forester.Append("torch").ToArray();
             if (config.SupportAllyRadius == 16f) config.SupportAllyRadius = fresh.SupportAllyRadius;
         }
+        if (config.ConfigVersion < 13)
+        {
+            // 0.205.0 (Aaron): huts make what builds need. The Potter makes mudbrick and daub, the Primitive Craftsman
+            // wattle and stone age hut blocks, the Stonemason cobblestone from the Gatherer's stones.
+            var fresh = new ColonyConfig();
+            config.HutRecipeOutputs ??= new();
+            foreach (var type in new[] { "potter", "craftsman" })
+            {
+                var have = config.HutRecipeOutputs.GetValueOrDefault(type) ?? Array.Empty<string>();
+                config.HutRecipeOutputs[type] = have.Union(fresh.HutRecipeOutputs[type]).ToArray();
+            }
+            config.HutRecipeTools ??= new();
+            config.HutRecipeTools.TryAdd("craftsman", fresh.HutRecipeTools["craftsman"]);
+            config.HutRecipeDomains ??= new();
+            config.HutRecipeDomains.TryAdd("craftsman", fresh.HutRecipeDomains["craftsman"]);
+            config.HutRecipeInputParts ??= new();
+            if (config.HutRecipeInputParts.TryGetValue("stonemason", out var parts))
+                config.HutRecipeInputParts["stonemason"] = parts.Union(fresh.HutRecipeInputParts["stonemason"]).ToArray();
+            config.MayorMakers ??= new();
+            foreach (var (type, patterns) in fresh.MayorMakers)
+            {
+                var have = config.MayorMakers.GetValueOrDefault(type) ?? Array.Empty<string>();
+                config.MayorMakers[type] = have.Union(patterns).ToArray();
+            }
+            config.MayorHutNeeds ??= new();
+            if (config.MayorHutNeeds.TryGetValue("stonemason", out var mason) && mason.SequenceEqual(new[] { "quarry" }))
+                config.MayorHutNeeds["stonemason"] = fresh.MayorHutNeeds["stonemason"];
+        }
         config.ConfigVersion = ColonyConfig.CurrentConfigVersion;
     }
 

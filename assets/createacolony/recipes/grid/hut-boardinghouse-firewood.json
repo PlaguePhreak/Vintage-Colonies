@@ -1,0 +1,23 @@
+{
+	"ingredientPattern": "PXP,PXP,PSP",
+	"ingredients": {
+		"P": {
+			"type": "item",
+			"code": "game:firewood"
+		},
+		"X": {
+			"type": "item",
+			"code": "game:drygrass"
+		},
+		"S": {
+			"type": "item",
+			"code": "game:stick"
+		}
+	},
+	"width": 3,
+	"height": 3,
+	"output": {
+		"type": "block",
+		"code": "createacolony:hut-boardinghouse"
+	}
+}
