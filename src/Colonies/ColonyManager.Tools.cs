@@ -17,7 +17,7 @@ public partial class ColonyManager
     public readonly record struct ToolNeed(EnumTool Type, int Tier);
 
     static readonly EnumTool[] BuilderTools = { EnumTool.Shovel, EnumTool.Axe, EnumTool.Pickaxe, EnumTool.Hoe };
-    readonly Dictionary<EnumTool, ItemStack?> toolSamples = new();
+    readonly Dictionary<(EnumTool, int), ItemStack?> toolSamples = new();
 
     public static EnumTool? ToolFor(Block block) => block.BlockMaterial switch
     {
@@ -69,20 +69,83 @@ public partial class ColonyManager
             if (IsStepDone(colony, step, pos, order)) continue;
             if (ToolNeededAt(colony, step, pos) is { } need) needs.Add(need);
         }
+        // Stone is cleared by hand while the colony has no pickaxe and nobody to make one (0.201.0).
+        if (ClearsStoneByHand(colony)) needs.RemoveWhere(n => n.Type == EnumTool.Pickaxe);
         // Keep only the highest tier per tool type.
         return needs.GroupBy(n => n.Type).Select(g => g.OrderByDescending(n => n.Tier).First()).ToHashSet();
     }
 
     /// <summary>An example tool of this type, for showing a picture.</summary>
-    public ItemStack? ToolSample(EnumTool type)
+    public ItemStack? ToolSample(EnumTool type, int minTier = 0)
     {
-        if (!toolSamples.TryGetValue(type, out var sample))
+        if (!toolSamples.TryGetValue((type, minTier), out var sample))
         {
-            var item = sapi.World.Items.Where(i => i?.Code != null && i.Tool == type).OrderBy(i => i.ToolTier).ThenBy(i => i.Code.ToString()).FirstOrDefault();
+            // The tool the Primitive Craftsman makes (flint) when it is good enough, else the lowest tier that is.
+            // Never a ruined blade from the ruins: it counts as a knife and its code sorts first, so the creative
+            // Give button handed those out (play test, 0.199.0).
+            var item = sapi.World.Items
+                .Where(i => i?.Code != null && i.Tool == type && i.ToolTier >= minTier && !UnmakeableTool(i))
+                .OrderBy(i => i.Code.Domain != "game")
+                .ThenBy(i => !i.Code.Path.Contains("flint"))
+                .ThenBy(i => i.ToolTier).ThenBy(i => i.Code.ToString()).FirstOrDefault()
+                ?? sapi.World.Items.Where(i => i?.Code != null && i.Tool == type && !UnmakeableTool(i))
+                    .OrderByDescending(i => i.ToolTier).ThenBy(i => i.Code.ToString()).FirstOrDefault();
             sample = item == null ? null : new ItemStack(item);
-            toolSamples[type] = sample;
+            toolSamples[(type, minTier)] = sample;
         }
         return sample;
+    }
+
+    /// <summary>Tools nobody can make: ruined weapons, and things that only count as a tool to the game.</summary>
+    static bool UnmakeableTool(Item item) =>
+        item.Code.Path.Contains("ruined") || item.Code.Domain == "tailorsdelight" || item.Code.Path.StartsWith("prospectingpick");
+
+    /// <summary>
+    /// The starting kit (0.201.0): hands the settler a flint tool of this type from the Town Hall when the colony has
+    /// not handed that one out yet. A new colony's first build waited for a shovel nobody could make. True when given.
+    /// </summary>
+    public bool GiveStarterTool(Colony colony, CitizenRecord citizen, EnumTool type, int tier)
+    {
+        string name = type.ToString().ToLowerInvariant();
+        if (!Config.StarterTools.Contains(name) || colony.StarterToolsGiven.Contains(name)) return false;
+        if (ToolSample(type, tier) is not { } sample || !sample.Collectible.Code.Path.Contains("flint")) return false;
+        var tool = sample.Clone();
+        tool.StackSize = 1;
+        if (AddToPack(colony, citizen, tool) <= 0) return false;
+        colony.StarterToolsGiven.Add(name);
+        LogEvent(colony, "event-starter-tool", citizen.Name, tool.GetName());
+        return true;
+    }
+
+    /// <summary>
+    /// A chest away from the settler's own hut that holds a tool it needs (0.201.0): the Town Hall's storage first,
+    /// then the warehouse. Workers go and take it instead of waiting for a courier.
+    /// </summary>
+    public BlockEntityContainer? SpareToolChest(Colony colony, System.Func<ItemStack, bool> isTool)
+    {
+        var townHall = GetBuilding(colony, colony.TownHallPos);
+        var chests = (townHall == null ? Enumerable.Empty<BlockEntityContainer>() : HutStorage(colony, townHall)).Concat(WarehouseContainers(colony));
+        return chests.FirstOrDefault(c => c.Inventory.Any(s => !s.Empty && isTool(s.Itemstack)));
+    }
+
+    readonly Dictionary<string, (bool StoneAge, long AtMs)> stoneAge = new();
+
+    /// <summary>
+    /// True while the colony has no pickaxe anywhere and no Blacksmith to make one (0.201.0): builders then clear
+    /// stone by hand, slowly (NoPickaxeSlowdown), instead of waiting for a tool nobody can make.
+    /// </summary>
+    public bool ClearsStoneByHand(Colony colony)
+    {
+        if (Config.NoPickaxeSlowdown <= 0) return false;
+        long now = sapi.World.ElapsedMilliseconds;
+        if (stoneAge.TryGetValue(colony.ColonyId, out var known) && now - known.AtMs < 30_000) return known.StoneAge;
+        static bool pick(ItemStack s) => ToolFits(s, EnumTool.Pickaxe, 0);
+        bool has = colony.Buildings.Any(b => b.Type == BuildingTypes.Blacksmith && b.Level > 0)
+            || CountItems(WarehouseContainers(colony).ToList(), pick) > 0
+            || colony.Buildings.Where(b => HasOwnStorage(b.Type) || b.Type == BuildingTypes.TownHall).Any(b => CountItems(HutStorage(colony, b).ToList(), pick) > 0)
+            || colony.Citizens.Any(c => c.Alive && PackCount(c, pick) > 0);
+        stoneAge[colony.ColonyId] = (!has, now);
+        return !has;
     }
 
     /// <summary>Asks couriers to bring a tool to the builder's hut, once.</summary>

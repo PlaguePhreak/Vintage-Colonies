@@ -232,9 +232,12 @@ public class AiTaskSettlerFarmer : AiTaskSettlerWorker
         }
 
         // The watering can is empty and crops are dry: fill it at the nearest water first.
-        if (thirsty && (best == null || best.Value.Work > FieldWork.Water) && m.FindWater(colony, hut) is { } waterPos && !IsUnreachable(waterPos))
+        bool noWater = false;
+        if (thirsty && (best == null || best.Value.Work > FieldWork.Water))
         {
-            best = (FieldWork.Refill, null, waterPos);
+            if (m.FindWater(colony, hut) is { } waterPos && !IsUnreachable(waterPos)) best = (FieldWork.Refill, null, waterPos);
+            // Dry crops and nowhere to fill the can: say so (0.202.0).
+            else noWater = true;
         }
 
         if (best == null && farFruit.Count > 0)
@@ -244,13 +247,13 @@ public class AiTaskSettlerFarmer : AiTaskSettlerWorker
 
         if (best == null)
         {
-            SetStatus(fields.Count == 0 ? "no-fields" : shortOfSeeds != null ? "needs-seeds" : noSowing != null ? "no-sowing-" + noSowing : "growing");
+            SetStatus(fields.Count == 0 ? "no-fields" : noWater ? "farmer-no-water" : shortOfSeeds != null ? "needs-seeds" : noSowing != null ? "no-sowing-" + noSowing : "growing");
             return false;
         }
         work = best.Value.Work;
         field = best.Value.Field;
         workRange = work is FieldWork.Pick or FieldWork.Refill ? FruitReach : FieldReach;
-        SetStatus(work == FieldWork.Pick ? "picking" : "farming");
+        SetStatus(work == FieldWork.Pick ? "picking" : noWater ? "farmer-no-water" : "farming");
         return GoWork(best.Value.Pos);
     }
 

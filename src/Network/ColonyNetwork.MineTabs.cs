@@ -90,16 +90,27 @@ public partial class ColonyNetwork
         var storage = Manager.HutStorage(colony, hut).Cast<Vintagestory.GameContent.BlockEntityContainer>().ToList();
         if (storage.Count == 0) return "createacolony:give-no-storage";
         int given = 0, kinds = 0;
+        bool full = false;
+        // The same rule as the Requests tab's give buttons (0.200.0): free in creative, all of the hut's storage,
+        // and what goes in counts toward the hut's open requests.
+        bool free = Creative(player);
         foreach (string line in packet.Text.Split('\n', StringSplitOptions.RemoveEmptyEntries).Take(200))
         {
             int bar = line.LastIndexOf('|');
             if (bar <= 0 || !int.TryParse(line[(bar + 1)..], out int want) || want <= 0) continue;
-            int moved = Give(player, storage, line[..bar], Math.Min(want, 999));
+            string code = line[..bar];
+            want = Math.Min(want, 999);
+            int could = free ? want : Math.Min(want, CarriedCount(player, code));
+            int moved = free ? Manager.CreativeFill(colony, code, storage, want) : Give(player, storage, code, want);
+            if (moved < could) full = true;
+            if (moved <= 0) continue;
+            Manager.CountTowardRequests(colony, hut, code, moved);
             given += moved;
-            if (moved > 0) kinds++;
+            kinds++;
         }
-        if (given == 0) return "createacolony:give-none";
+        if (given == 0) return full ? "createacolony:give-full" : "createacolony:give-none";
         player.SendMessage(0, Lang.GetL(player.LanguageCode, kinds > 1 ? "createacolony:give-done-all" : "createacolony:give-done", given, kinds), EnumChatType.Notification);
+        if (full) player.SendMessage(0, Lang.GetL(player.LanguageCode, "createacolony:give-full-rest"), EnumChatType.Notification);
         return null;
     }
 
@@ -225,6 +236,11 @@ public partial class ColonyNetwork
     void AddPlayerHas(HutSnapshot snapshot, string viewerUid)
     {
         if (sapi!.World.PlayerByUid(viewerUid) is not { } viewer) return;
-        foreach (var row in snapshot.Resources.Where(r => !r.IsTool && r.Code.Length > 0)) row.PlayerHas = CarriedCount(viewer, row.Code);
+        // In creative the player can give everything a row still needs, as on the Requests tab.
+        bool free = Creative(viewer);
+        foreach (var row in snapshot.Resources.Where(r => !r.IsTool && r.Code.Length > 0))
+        {
+            row.PlayerHas = free ? Math.Max(0, row.Needed - row.Have) : CarriedCount(viewer, row.Code);
+        }
     }
 }

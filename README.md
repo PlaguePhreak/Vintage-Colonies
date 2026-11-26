@@ -12,6 +12,149 @@ domain (`assets/createacolony/`, block and item codes like `createacolony:townha
 (`ModConfig/createacolony.json`), the release zips (`createacolony_<version>.zip`) and all save data keys.
 Changing any of those would stop old worlds from loading their colonies, so leave them as they are.
 
+## Fixes after the second overnight test: food, homes and huts that work from day one (0.205.0)
+
+From the fix plan Aaron approved on 26 Nov 2026 (https://claude.ai/artifact/Cp7eKrJUy9WdS69MSQEttV). The colony starved and stalled because the Mayor filled both builders with buildings nobody could supply.
+
+- **The Mayor goes food, then homes, then the rest.** It counts the days of food the colony really has (food in its chests and in settlers' bellies). Below 3 days a food hut comes first, even while the builders are busy, and it tries each kind in turn (Gatherer, Farmer, Hunter, Fisher, Chicken Coop). Then one home per family: a couple and their children, or a single settler.
+- **Maker huts first.** Before the Mayor starts a building, every material has to have a hut that makes it. If one is missing, that hut is put down first, as a hut block, and it starts work straight away.
+- **Huts work at level 0.** A hut block with a worker counts as working. Its proper building comes once the colony can supply it.
+- **Huts make what builds need.** The Potter makes mudbrick and daub, the Primitive Craftsman makes wattle (with a knife), the Stonemason makes cobblestone, stairs, slabs, stone paths and the forge. Hut blocks can be made from firewood instead of planks.
+- **Filled in later.** Boards, planks and everything made from them are left out of a build while the colony has no saw, and so is anything nobody makes after the request has waited a while. The building goes up without them and is used. The Mayor sends a builder back to fill the gaps once they can be had. The report lists buildings with blocks left for later.
+- **Food that keeps coming.** The Hunter goes further out (up to 3 times its area) when nothing is left nearby. The Gatherer plants the berry bush cuttings it takes in a berry garden by its hut (up to 12 bushes). Herders with fewer than 4 animals catch wild ones of their kinds and carry them to the pen.
+- **Wood.** The Forester goes further out (up to 64 blocks) when the trees near its hut are gone. A builder waiting for one material puts in other blocks it has the materials for. A block the builder found no way to can be put in from twice as far on its second go.
+- **The copper tool chain, all at level 0.** The Potter keeps a pickaxe, hammer and anvil mold. The Smelter lays its own fire pit from firewood, sets a mold out and casts a copper pickaxe, then (once there is a Blacksmith's Hut) a hammer and an anvil, and puts each head on a stick. The Blacksmith sets the anvil and a forge down beside its hut block and smiths a copper saw while the colony has none.
+- **Lost and stuck settlers.** A settler standing in unloaded land 80 blocks or more from home is brought home after 3 game hours. Children only follow a parent who works within 64 blocks of the Town Hall. Settlers keep their spare spear in their pack, so it is not put away and handed out again. Fighting back gives up after a few tries to reach an attacker. A settler with no knife in hand leaves the carcass alone for a while.
+- **The Bailiff.** It does not lend a worker to hauling when nothing needs carrying, and a worker lent to hauling comes back once nothing does. The report says why a stuck worker was not moved.
+- **Jobs and happiness.** A settler without a job says why: waiting for a home, no Bailiff, or no free place. Children show a normal mood instead of -1.
+- **Pottery.** Kilns take plain firewood first (not aged firewood). The report checks the kiln cover two blocks up. A new Potter's Hut keeps a watering can, for kiln fires.
+- **Small faults.** "Change job" fits its button. The lent-out text is shorter. "Lent out" starts with a capital in the job panel. The Gatherer is no longer listed as making torches. Right after loading, workers say "getting ready" instead of "the hut has no storage". No more map marker warnings for empty drops. One look of the Mayor for a building spot takes at most 250 ms.
+- **Builds.** Aaron's 9 re-exported builds with the Ground floor and Front of build markers: Town Hall 1 to 4, Builder's Hut 1, Cook's Hut 1, Small Residence 1, Guard Tower 2 and 4.
+- Server config (version 13): `MayorMakersFirst`, `MayorHutsStartUnbuilt`, `MayorFoodDaysLow`, `MayorHomePerFamily`, `MayorSearchMs`, `BuildersFillInLater`, `NeedsSawPatterns`, `SawPatterns`, `HunterFarTrips`, `FarTripRangeMult`, `FarTripMaxRadius`, `FarTripMinutes`, `BerryGardenSize`, `BerryGardenRadius`, `HerderCatchUpTo`, `HerderCatchRadius`, `ForesterMaxRadius`, `ChildFollowRange`, `FarOutRescueBlocks`, `FarOutRescueHours`, `SmelterCastsTools`, `SmelterCasts`, `SmelterLaysFirepit`, `FirepitFirewood`, `BlacksmithSetsUpStations`, `BlacksmithMakesSaw`.
+
+Not fixed yet: nobody gathers sand (light mudbrick and daub need it, dark mudbrick does not); clay ovens and lanterns have no maker, so they are left for later; the duplicate settler warning (89); the lost item id 1458 in one build's container (83, 90, harmless); the VTML tag errors (120) come from the game or another mod, not this one.
+
+Not tested in game yet.
+
+## Fixes after the overnight test, part 4: jobs, statuses and small faults (0.203.0)
+
+From the fix plan Aaron approved on 25 Nov 2026 (the rest of group G).
+
+- **Job panel.** On the Town Hall's Citizens tab each settler shows its job with an "Assign job" or "Assign new job" button. The button opens a panel with every job A to Z, "No job" first. Each row shows the skill the job uses and the settler's level, whether they like it or have the trait for it, whether a trait rules it out, and how many places are free. One press gives the job.
+- **The real job.** A settler the Bailiff lent out shows its own job with "lent out" under it. Before, it showed "No job".
+- **Jobs list.** The Jobs list on the Information tab is A to Z, "No job" first.
+- **Why idle.** "Taking a break" now says why: "needs clay", "no animals to hunt nearby", "has no job", "no Potter hut has a free place", "carrying 5 stacks for Builder's Hut 2, can't get in", and for the Mayor what it waits for and when it looks again. The settler window, the couriers list and `/colony report` show it.
+- **No strikes at the start.** Nobody stops work from unhappiness in a colony's first 5 days.
+- **Text that was cut off.** A long build status in the hut window and the Town Hall takes the lines it needs. A long material name on Required resources is cut to one line, with the whole name on the hover.
+- **Quests.** "Cook a Full Pot" opens after any one of the five cooking quests. "Build a Cellar" no longer counts a room of one of the colony's own buildings, unless it lies under the ground. (The cooked meat quest has taken charred meat since 0.198.0.) A quest book you saved keeps its old quests: press "Reset to mod's quests" in the quest editor.
+- **Trader houses.** When a trader joins, tool racks (with their tools), lanterns and clay ovens are removed from the house, like what was in the chests.
+- **Corpse warning.** The client no longer logs a warning each time a settler's corpse appears.
+- Server config: `NoBreakdownFirstDays`.
+
+Already fixed in 0.198.0 and not seen again in the 0.199.0 test logs: the missing textures and the 22 paintings without a dye recipe.
+
+Not tested in game yet.
+
+## Fixes after the overnight test, part 3: fuel, kilns and everyday jobs (0.202.0)
+
+From the fix plan Aaron approved on 25 Nov 2026 (groups E and F).
+
+The Potter:
+
+- **Fuel in one go.** The Potter asks for all the dry grass, sticks and firewood for every pit kiln it may use, in one request each, not one layer at a time.
+- **Keep spare fuel.** A switch on the Requests tab of every hut that burns fuel (Potter, Cook, Bakery, Smelter, Blacksmith), on by default. The hut keeps enough for one more full firing and asks again when it drops below that.
+- **Kiln cover.** Before lighting, the Potter puts one solid block two above each pit kiln, so rain can't put it out. The block comes from the hut's storage (packed dirt, cobblestone or soil), is asked for like fuel, and stays for the next firing. A pit that already has a roof needs none. With no block after 6 game hours and dry weather, the kiln is lit anyway.
+- **Old kilns taken over.** A Potter's Hut takes over every pit kiln close to it, also after the hut was placed again. Kilns the rain put out are lit again, and fired pots are taken from every kiln.
+- **Asked for first.** What another hut waits for (a crucible, tool moulds) is made before the hut's own stock list.
+
+The Primitive Craftsman, baskets and torches:
+
+- **Reed baskets, reed chests, crude doors and torches** are on the Primitive Craftsman's Crafting recipes tab. It makes them when a build or a settler asks, from what the Gatherer brings. The Forester can make torches too.
+- **Torches for builds.** A build accepts a torch that is lit or unlit, and the builder lights it as it goes up. So the unlit torches huts make now fill a build's torch requests.
+- **Baskets.** Every grown settler keeps up to 4 baskets, each adding 2 slots (10 to 18). They are handed out from the Warehouse or the Town Hall's storage once a minute, couriers and builders first, and missing ones are asked for on the Requests tab, 4 at a time.
+
+Food, hunting and defence:
+
+- **Skinning.** A settler without a job skins dead animals on the colony's land whether it has a home or not. The knife comes from home, the Town Hall's storage or the Warehouse, or it is the colony's starting knife. With none anywhere it asks for one and its status says so. Meat, hide and the rest go to the Warehouse.
+- **Settlers can't be hurt** only stops the damage. Settlers still raise the alarm, run, fight back and call for help.
+- **Spare weapons.** Any grown settler without a weapon is handed a spare one from the Warehouse or the Town Hall's storage (a spear first, never a knife, never one a hut has asked for). Helpers come from 32 blocks, and sleeping settlers get up for it.
+- **Hunters** leave bears, wolves and hyenas to the guards, and now say so ("leaving the bear to the guards").
+- **Farmers** fill the watering can up to 48 blocks from the hut, and say when the crops are dry and there is no water in range.
+- **Crocks first.** Food in a crock is eaten before other food.
+- **Working while you are away.** Every settler with a job keeps working when no player is near, not only the outdoor jobs. The land around them, the Town Hall and the Warehouse stays loaded for it.
+- Server config: `KilnCover`, `KilnCoverBlocks`, `KilnCoverWaitHours`, `PotterAdoptsKilns`, `FarmerWaterRadius`, `AllJobsWorkFarOut`, `SettlersTakeSpareWeapons`, `SettlerBaskets`, `BasketPackSlots`, `CrockFoodPull`. `SupportAllyRadius` is now 32. `HutRecipeOutputs` gains a `craftsman` entry and `torch` for the forester (added to an existing config file too).
+
+Simpler than the plan: baskets and spare weapons are handed over directly, without a walk to the chest. Torches are made by hut workers and lit when a builder puts them up; settlers do not walk to a fire to light them. Skinning is done by settlers without a job.
+
+Not tested in game yet. The kiln cover follows the game's usual rain rule (a block above keeps rain off); whether pit kilns follow it has to be seen in the game.
+
+## Fixes after the overnight test, part 2: builds, the Mayor and the Bailiff (0.201.0)
+
+From the fix plan Aaron approved on 25 Nov 2026 (groups C and D).
+
+Builds:
+
+- **Ground floor marker** (`createacolony:waypoint-ground`, blue top). Put it in a build at the height of the ground outside, before exporting. Everything from that height up is cleared, and the hut block stands as far above the land as it does in the build. The Mayor and the wand both use it. A build without one works as before.
+- **Front of build marker** (`createacolony:waypoint-front`, white top). It now goes at the outer end of the path to the front door. Old builds with it by the door still work.
+- `/colony report` lists every build of the colony's style that has no Front of build or no Ground floor marker.
+- **% done** counts blocks that really stand. Clearing shows as "clearing the site".
+- **Materials.** A builder asks for everything a build needs when it starts, and checks again every minute.
+- **Starting tools.** The first settler who needs one gets a flint axe, shovel, hoe or knife from the Town Hall, once each per colony. They are handed over directly: the Town Hall block has no chest. After that, spare tools come from the Town Hall's storage or the Warehouse.
+- **No pickaxe yet.** While the colony has no pickaxe and nobody who can make one, builders clear stone by hand, 4 times slower.
+- **Stuck blocks.** A stuck build says which block, what should be there, what is there, and whether the builder could not reach it or could not change it. A build with no builder says "waiting for a builder".
+- **A build that waits for materials** for 2 game hours lets its builder go to a build that has them. The builder comes back when the materials arrive.
+- The wand's placement window explains the red spots, and says when giving is free in creative.
+
+The Mayor:
+
+- **The start.** Every settlement starts with a Gatherer's Hut, a Builder's Hut, a Primitive Craftsman and a Warehouse, in that order, before beds and everything else. The Mayor can now place the Warehouse.
+- **Food.** The Gatherer's Hut is the first food hut. A Farmer's Hut waits until the colony has seeds.
+- **Tools.** An open tool request that a stone tool will do for sends the Mayor to the Primitive Craftsman at once. It no longer leads to a Blacksmith.
+- **Hut chain.** A hut waits for the huts it depends on, and the missing one is built first. Potter needs Gatherer. Charcoal Burner needs Forester. Smelter needs Forester, Charcoal Burner and Potter. Blacksmith, Miner, Prospector and Quarry need a Smelter.
+- **Materials check.** Before ordering a design from the build order, the Mayor looks at what it costs. If it needs fired or metal parts the colony does not hold, the hut that makes them comes first. A design that needs something no hut makes goes last, and the plan says what to put in the warehouse.
+- **The real reason.** The Mayor tab says what the Mayor is really waiting for, such as which build keeps the builders busy and why.
+- **Builders.** A second Builder's Hut comes at 5 settlers. Each builder has one build in work and one queued. The Mayor takes up to three steps in one look.
+- **Spots.** The Mayor takes the nearest ring around the Town Hall that has a spot (20, 32, then 48 blocks) and only looks further when none fits.
+- **Planning carries on** whatever state the Mayor is in. Only "Off" stops it.
+- The server log has a `[mayor]` line each time the plan or the reason for waiting changes, and `/colony report` has a "Mayor and Bailiff" part with what was passed over and why.
+
+The Bailiff:
+
+- **No worker for an unbuilt hut.** The Bailiff, the Mayor and auto hiring leave a hut alone while its first build is queued or under way. You can still put someone there by hand.
+- **Waiting for a delivery.** A worker whose hut has asked for something keeps the job. Only after 3 game days with nothing delivered and nothing made does the Bailiff move them. The number of days is on the Bailiff tab.
+- **Your jobs stay.** A job you give by hand is left alone until you change it. Nobody is moved twice within 3 game days.
+- **Back early.** A lent worker goes back as soon as something reaches their own hut, or it no longer waits for anything.
+- Server config: `StarterTools`, `NoPickaxeSlowdown`, `BuildWaitsBeforeNextHours`, `MayorStartOrder`, `MayorHutNeeds`, `MayorChecksMaterials`, `MayorMaterialMakers`, `MayorNearRings`, `BailiffWaitDays`, `BailiffMoveAgainDays`. `MayorSecondBuilderAt` is now 5 and `MayorOrdersPerBuilder` 2. An unchanged build order is moved to the new one. A colony that changed its own build order keeps it: press "Reset build order" on the Mayor tab for the new one.
+
+Not changed: "stuck at tall grass" was a builder who could not reach the block (covered by 0.200.0, and now named as such).
+
+Not tested in game yet.
+
+## Fixes after the overnight test, part 1: walking, hauling and the report (0.200.0)
+
+From the fix plan Aaron approved on 25 Nov 2026 (groups A and B, and G2 to G4).
+
+- **Doors and ladders.** A settler who keeps bumping at a door is set down on its far side. A climb that gets nowhere ends at the ladder's other end. Both are logged.
+- **No more trying forever.** A walk that fails 3 times gets a short hop towards the goal, and after 2 hops the settler gives that place up for a game day (2 game hours for its own hut, home, the Town Hall and the Warehouse). Bed, food, fleeing and shelter are never given up. The settler window says where it gave up.
+- **Bed.** A settler who can't walk to bed is carried there however near it is. The rescue never closes a settler's own hut, home or building site. Recall clears all of it.
+- **Water.** Hops never land in water. A settler who swims for 40 seconds is set down on the shore. The gatherer leaves things with no dry ground beside them, and its looking-around spots are on dry land.
+- **Home before dark.** The gatherer only goes as far out as it can walk back from before bedtime, and turns for home in time ("heading home before dark").
+- **Own block.** Idle settlers pick a block nobody stands on, and two standing inside each other step apart.
+- **Fronts.** The Mayor wants ground to walk on in front of a building. The wand warns when there is nowhere dry and level to stand outside the front.
+- **Couriers.** A courier walks to a spot beside the chest. After 4 failed tries at one hut it takes the load back to the warehouse, the requests rest for 3 game hours, and its status and the Requests tab say why ("can't get in", "storage is full"). Deliveries use the hut block and every chest in the building. Oversized stacks (from `/giveitem`) are split when anyone takes from a chest.
+- **Give buttons.** Requests > Give and Give all, and Required resources > ^ and Fulfil all now work the same way: the whole hut storage, "storage is full" when that is the reason, free in creative (the row says so), and what goes in counts toward the hut's open requests. Things put into the chests by hand count too.
+- **Tools.** A tool request is dropped once the hut has that tool. The creative Give hands out the flint tool the Craftsman makes, never a ruined blade.
+- **Spoil.** Blocks a builder clears go into the chests beside the hut first, the hut block last.
+- **Loose items.** Settlers pick up what lies within 3 blocks. Couriers with nothing to carry fetch what lies on the ground inside the colony.
+- **No courier came.** A worker whose hut has waited a game hour for something the warehouse holds fetches it.
+- **Report.** `/colony report` has a "Trouble right now" list with reasons, and per settler: what it is doing, its pack by name, its last walks and why each ended, places given up or off limits. Per hut: workers, every chest's contents (full chests and oversized stacks marked), pit kilns. Requests are one readable line each. The last 60 events are written out. `/colony stuck` prints the same trouble list.
+- **Walking log.** `/colony pathdebug` is now saved, so it stays on after a restart. It also logs doors, couriers and every request that closes.
+- Server config: `WalkFailsBeforeHelp`, `WalkHelpsBeforeGiveUp`, `WalkGiveUpDays`, `WalkFailMemoryHours`, `SwimRescueSeconds`, `HomeWalkBlocksPerSecond`, `HomeMarginHours`, `PickUpReach`, `CourierSweepRange`, `WorkerFetchesAfterHours`.
+
+Not fixed: the "duplicate entityid" warning for a far-away gatherer (no cause found; the game drops the copy), and requests closing when a worker is lent out (no code does this; request closing is logged now).
+
+Not tested in game yet.
+
 ## The Mayor builds the settlement (0.199.0)
 
 - **The Mayor.** On the Town Hall's Citizens tab, give one settler the Mayor job. One per colony. They walk rounds like the bailiff.
@@ -25,7 +168,7 @@ Changing any of those would stop old worlds from loading their colonies, so leav
 - **Courier's Station.** The Mayor puts it next to the Warehouse block.
 - **Your builds only.** The Mayor only builds types that have a blueprint in the colony's asset pack.
 - While a Mayor is on duty, auto hiring and auto housing run even if their switches are off. If there is no builder at all, the Mayor makes someone the builder.
-- **Front of build marker** (`createacolony:waypoint-front`, white top). Put it on the ground just outside the front door of a build before exporting. The Mayor and the Builder's Wand use it to turn the front the right way. Without it, the first door is used, as before.
+- **Front of build marker** (`createacolony:waypoint-front`, white top). Put it on the ground at the outer end of the path to the front door before exporting (0.201.0; just outside the door still works). The Mayor and the Builder's Wand use it to turn the front the right way. Without it, the first door is used, as before.
 - Server config: `MayorEveryHours`, `MayorShortHours`, `MayorSettlersPerFoodHut`, `MayorSecondBuilderAt`, `MayorMaxPerType`, `MayorOrdersPerBuilder`, `MayorGap`, `MayorFrontClear`, `MayorMaxSlope`, `MayorSearchRadius`, `MayorHutsUpToTownHall`, `MayorBuildOrder`, `MayorMakers`.
 
 Not tested in game yet.

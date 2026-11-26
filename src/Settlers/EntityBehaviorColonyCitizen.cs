@@ -129,7 +129,7 @@ public class EntityBehaviorColonyCitizen : EntityBehavior
         }
         if (record.IsDowned) return;
         manager.SnackFromLunch(colony, record, settler);
-        manager.PickUpNearby(colony, record, settler, 1.5f);
+        manager.PickUpNearby(colony, record, settler, manager.Config.PickUpReach);
         manager.DressEntity(record);
     }
 
@@ -298,6 +298,11 @@ public class EntityBehaviorColonyCitizen : EntityBehavior
     /// <summary>Once a second: build or lose Willpower, show it when debugging, relocate when it is full.</summary>
     void TickWillpower(float seconds)
     {
+        if (entity is EntityAgent swimmer)
+        {
+            TickSwimming(swimmer, seconds);
+            StepApart(swimmer);
+        }
         if (!manager!.Config.Willpower || entity is not EntityAgent agent) return;
         bool full = Willpower.Tick(seconds, manager);
         manager.ShowWillpower(entity, Willpower);
@@ -309,6 +314,58 @@ public class EntityBehaviorColonyCitizen : EntityBehavior
         }
         if (!full || agent.MountedOn != null) return;
         manager.Relocate(agent, Willpower, FindRecord());
+    }
+
+    int stillSeconds;
+
+    /// <summary>
+    /// Two settlers standing still inside each other (0.200.0): after a few seconds the one that came later steps
+    /// to a free block beside them. Sleepers, the downed, climbers and anyone on the move are left alone.
+    /// </summary>
+    void StepApart(EntityAgent agent)
+    {
+        var motion = agent.ServerPos.Motion;
+        if (agent.MountedOn != null || agent.Swimming || agent.Controls.IsClimbing || motion.X * motion.X + motion.Z * motion.Z > 0.00001)
+        {
+            stillSeconds = 0;
+            return;
+        }
+        if (++stillSeconds < 6) return;
+        stillSeconds = 0;
+        if (FindRecord() is not { IsDowned: false }) return;
+        var tasks = agent.GetBehavior<EntityBehaviorTaskAI>()?.TaskManager.ActiveTasksBySlot;
+        if (tasks != null && tasks.Any(t => t is AiTaskSettlerSleep)) return;
+        var here = agent.ServerPos.XYZ;
+        bool crowded = entity.World.GetEntitiesAround(here, 0.5f, 1f, e => e is EntitySettler && e.Alive && e.EntityId < entity.EntityId).Length > 0;
+        if (!crowded || manager!.OwnSpotNear(agent, agent.ServerPos.AsBlockPos, 2) is not { } spot) return;
+        agent.TeleportToDouble(spot.X, spot.Y, spot.Z);
+    }
+
+    float swimSeconds;
+
+    /// <summary>
+    /// A settler who has swum for SwimRescueSeconds is set down on the shore (0.200.0), on the side it was heading
+    /// for when one is near. In the overnight test the gatherer circled in a lake for a whole night.
+    /// </summary>
+    void TickSwimming(EntityAgent agent, float seconds)
+    {
+        int limit = manager!.Config.SwimRescueSeconds;
+        if (limit <= 0 || !agent.Swimming || agent.MountedOn != null)
+        {
+            swimSeconds = 0;
+            return;
+        }
+        swimSeconds += seconds;
+        if (swimSeconds < limit) return;
+        swimSeconds = limit * 0.5f; // try again in a while when no shore was found
+        var from = agent.Pos.AsBlockPos;
+        if (manager.ShoreNear(agent, Willpower.LastGoal, 32) is not { } shore) return;
+        agent.TeleportToDouble(shore.X, shore.Y, shore.Z);
+        swimSeconds = 0;
+        var record = FindRecord();
+        if (record != null) manager.NoteWalk(record, agent, "Swimming", "set down on the shore", shore);
+        if (manager.PathDebug) entity.Api.Logger.Notification("[pathing] {0} swam for {1} s at {2} and was set down on the shore at {3}",
+            record?.Name ?? entity.EntityId.ToString(), limit, from, shore.AsBlockPos);
     }
 
     CitizenRecord? FindRecord()

@@ -425,7 +425,9 @@ public partial class ColonyManager
             if (!CanWorkAt(colony, pos) || GetBuilding(colony, pos) != null || ZoneAt(colony, pos) != null) continue;
             var be = ba.GetBlockEntity(pos);
             // Things set down on the ground or piled up are only items: the whole block goes.
-            if (IsClutter(block) || be is BlockEntityGroundStorage or BlockEntityItemPile)
+            // Tool racks hold tools without being chests, and lanterns and clay ovens are worth carrying off (Aaron,
+            // 0.203.0: he got steel tools from a joined trader's racks): those blocks go too, with what is on them.
+            if (IsClutter(block) || be is BlockEntityGroundStorage or BlockEntityItemPile or BlockEntityToolrack or BlockEntityOven || IsLantern(block))
             {
                 ba.SetBlock(0, pos);
                 ba.TriggerNeighbourBlockUpdate(pos);

@@ -25,6 +25,8 @@ public class AiTaskSettlerSmelter : AiTaskSettlerWorker
     Work work;
     ColonyManager.SmeltKind? kind;
     int batch;
+    /// <summary>The tool mold type being set out (the copper tool chain), or null for an ingot mold.</summary>
+    string? placingTool;
 
     public AiTaskSettlerSmelter(EntityAgent entity, JsonObject taskConfig, JsonObject aiConfig) : base(entity, taskConfig, aiConfig) { }
 
@@ -38,7 +40,7 @@ public class AiTaskSettlerSmelter : AiTaskSettlerWorker
 
     /// <summary>It carries fuel, crucibles and molds; ingots and blooms go to the hut.</summary>
     protected override bool AlsoKeeps(ItemStack stack) =>
-        ColonyManager.IsEmptyCrucible(stack) || ColonyManager.IsFullCrucible(stack) || ColonyManager.IsIngotMold(stack)
+        ColonyManager.IsEmptyCrucible(stack) || ColonyManager.IsFullCrucible(stack) || ColonyManager.IsIngotMold(stack) || ColonyManager.IsToolMold(stack)
         || ColonyManager.IsSmeltFuel(stack, manager!.Config.SmelterKeepFuelTemperature) || ColonyManager.IsFirewood(stack);
 
     protected override string WorkAnimation(ItemSlot? hand) => "interactstatic";
@@ -48,6 +50,8 @@ public class AiTaskSettlerSmelter : AiTaskSettlerWorker
         var m = manager!;
         var pit = m.SmelterFirepit(hut);
         var bloomery = m.SmelterBloomery(hut);
+        // Working from the hut block (0.205.0): it lays its own fire pit.
+        if (pit == null && bloomery == null && m.SetUpFirepit(colony, hut, citizen)) pit = m.SmelterFirepit(hut);
         if (pit == null && bloomery == null)
         {
             SetStatus("no-firepit");
@@ -56,6 +60,8 @@ public class AiTaskSettlerSmelter : AiTaskSettlerWorker
 
         // Cooled ingots come out of the molds first, so the molds are free again; then a finished bloom.
         if (!m.PackFull(citizen) && m.MoldWithIngot(hut) is { } done) return Go(Work.Collect, done.Pos, "smelter-collecting");
+        if (!m.PackFull(citizen) && m.CastReady(hut) is { } cast) return Go(Work.Collect, cast.Pos, "smelter-collecting-cast");
+        placingTool = null;
         if (bloomery != null && !m.PackFull(citizen) && ColonyManager.BloomReady(bloomery)) return Go(Work.TakeBloom, bloomery.Pos, "smelter-taking-bloom");
 
         // Why the fire pit cannot take a new crucible right now (null when it can).
@@ -79,7 +85,14 @@ public class AiTaskSettlerSmelter : AiTaskSettlerWorker
             else return PlanFuel(colony, citizen, hut, storage, pit, m.SmelterHeatNeeded(pit));
         }
 
+        // The copper tool chain (0.205.0): a tool mold by the fire for the next tool the colony has none of.
+        if (pit != null && pitBusy == null && m.NextCast(colony) is { } castType
+            && !m.OpenCastMolds(colony, hut).Any(t => ColonyManager.MoldType(t.Block) == castType)
+            && PlanCastMold(colony, citizen, hut, storage, castType) is { } castPlan) return castPlan;
+
         var wanted = m.WantedIngots(colony, hut, citizen);
+        int castIngots = m.CastIngots(colony, hut);
+        if (castIngots > 0 && m.CastMetal() is { } castMetal && !wanted.Contains(castMetal)) wanted.Insert(0, castMetal);
         if (wanted.Count == 0)
         {
             SetStatus(pitBusy ?? "smelter-stocked");
@@ -146,6 +159,8 @@ public class AiTaskSettlerSmelter : AiTaskSettlerWorker
         {
             int shortBy = m.CraftWant(colony, hut, want.Key) - m.SmeltStock(colony, hut, want, citizen);
             int ingots = System.Math.Max(1, System.Math.Min(shortBy, System.Math.Min(free, m.Config.SmelterIngotsPerBatch)));
+            // Enough for the tool molds too (an anvil takes 9 ingots' worth, over several pours).
+            if (castIngots > 0 && want == m.CastMetal()) ingots = System.Math.Max(ingots, System.Math.Min(castIngots, m.Config.SmelterIngotsPerBatch));
             if (want.Alloy != null)
             {
                 if (PlanAlloy(colony, citizen, hut, storage, pit!, want, ingots) is { } alloyPlan) return alloyPlan;
@@ -276,6 +291,31 @@ public class AiTaskSettlerSmelter : AiTaskSettlerWorker
         return null;
     }
 
+    /// <summary>
+    /// Sets a tool mold of this type out by the fire, fetching it from the hut first, or asks couriers for one (the
+    /// Potter keeps one of each). Null when there is none to be had, so the smelter goes on with its ingots.
+    /// </summary>
+    bool? PlanCastMold(Colony colony, CitizenRecord citizen, Building hut, List<BlockEntityContainer> storage, string type)
+    {
+        var m = manager!;
+        bool Fits(ItemStack s) => ColonyManager.IsToolMold(s) && ColonyManager.MoldType(s.Block) == type;
+        if (m.PackItems(citizen).FirstOrDefault(Fits) is { } mold)
+        {
+            var spot = m.FindMoldSpot(colony, hut, mold.Block);
+            if (spot == null) return null;
+            placingTool = type;
+            return Go(Work.PlaceMold, spot, "smelter-placing-toolmold");
+        }
+        var chest = storage.FirstOrDefault(c => c.Inventory.Any(s => !s.Empty && Fits(s.Itemstack)));
+        if (chest != null && !m.PackFull(citizen))
+        {
+            SetStatus("smelter-fetching-molds");
+            return FetchSupplies(chest.Pos, Fits, 1);
+        }
+        if (m.CodeInWarehouse(colony, Fits) is { } code) m.EnsureCraftRequest(colony, hut, code, 1);
+        return null;
+    }
+
     /// <summary>Sets a mold out, fetching one from the hut first, or asks for some. Null when there are none to be had.</summary>
     bool? PlanMolds(Colony colony, CitizenRecord citizen, Building hut, List<BlockEntityContainer> storage, int want)
     {
@@ -341,10 +381,13 @@ public class AiTaskSettlerSmelter : AiTaskSettlerWorker
         switch (work)
         {
             case Work.PlaceMold:
-                m.PlaceMold(colony, citizen, target);
+                if (placingTool != null) m.PlaceToolMold(colony, citizen, target, placingTool);
+                else m.PlaceMold(colony, citizen, target);
+                placingTool = null;
                 break;
             case Work.Collect:
                 if (ba.GetBlockEntity(target) is BlockEntityIngotMold mold) m.TakeIngots(colony, citizen, mold);
+                else if (ba.GetBlockEntity(target) is BlockEntityToolMold toolMold) m.TakeCast(colony, hut, citizen, toolMold);
                 break;
             case Work.Load:
                 if (ba.GetBlockEntity(target) is BlockEntityFirepit loadPit && kind != null) m.LoadCrucible(colony, citizen, loadPit, kind, batch);

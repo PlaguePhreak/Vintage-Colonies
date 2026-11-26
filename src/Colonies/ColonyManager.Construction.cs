@@ -27,6 +27,36 @@ public partial class ColonyManager
     /// <summary>What each work order is waiting on, for the Town Hall window. Not saved: builders refresh it.</summary>
     public readonly Dictionary<int, string> BuildStatus = new();
 
+    /// <summary>
+    /// A work order's status as shown (0.201.0): "stuck" when a block failed twice over, "queued" (waiting for a
+    /// builder) while no living builder has it, else what its builder last said. Before, an order nobody was working
+    /// on kept whatever was last stamped on it, such as "no Builder's Hut".
+    /// </summary>
+    public string BuildStatusText(Colony colony, Building b)
+    {
+        if (!b.HasWorkOrder && !b.Removing) return "";
+        if (IsBuildStuck(b) && !b.Removing) return "stuck";
+        bool taken = b.BuilderCitizenId != 0 && colony.Citizens.Any(c => c.Alive && c.CitizenId == b.BuilderCitizenId && c.JobCode == Jobs.Builder);
+        return taken ? BuildStatus.GetValueOrDefault(b.BuildingId, "queued") : "queued";
+    }
+
+    /// <summary>Why a building's stuck block failed: "reach" (no way to it) or "work" (it would not change).</summary>
+    public readonly Dictionary<int, string> StuckWhy = new();
+
+    /// <summary>
+    /// Where a build is stuck, in words (0.201.0): the spot, the block the blueprint wants there, the block that is
+    /// there, and whether the builder could not get to it or could not change it. Null when it is not stuck.
+    /// </summary>
+    public string? StuckText(Building b)
+    {
+        if (!StuckStep.TryGetValue(b.BuildingId, out var at)) return null;
+        var blueprint = Blueprints.Get(b, b.TargetLevel);
+        var steps = blueprint == null ? new List<BuildStep>() : blueprint.Steps.Where(s => StepPos(b, s).Equals(at)).Take(1).ToList();
+        string wanted = steps.Count == 0 ? "a foundation block" : steps[0].BlockId == 0 ? "nothing (to be cleared)" : sapi.World.GetBlock(steps[0].BlockId)?.Code?.ToString() ?? "?";
+        string why = StuckWhy.GetValueOrDefault(b.BuildingId) == "reach" ? "the builder found no way to it" : "the builder tried and it did not change";
+        return $"at {at.ToLocalPosition(sapi)}: wanted {wanted}, there is {sapi.World.BlockAccessor.GetBlock(at).Code}, {why}";
+    }
+
     // ---- Steps a builder keeps failing (0.198.0) --------------------------------------------
     // Aaron's play test: the only builder stood at one block of the Cook's Hut for six game days. A block the builder
     // tries and fails too often is set aside, the rest of the build goes on, and set-aside blocks get another go at the
@@ -41,8 +71,18 @@ public partial class ColonyManager
     /// <summary>Buildings whose set-aside blocks are having their second go.</summary>
     readonly HashSet<int> retryingSteps = new();
 
+    /// <summary>Blocks set aside because the builder found no way to them (0.205.0, note 98).</summary>
+    readonly Dictionary<int, HashSet<BlockPos>> farSteps = new();
+
+    /// <summary>
+    /// True for a block the builder found no way to, on its second go: the builder may then put it in from further
+    /// off (twice its reach, as with a ladder), so one awkward log does not hold the whole build up.
+    /// </summary>
+    public bool LongReachStep(Building building, BlockPos pos) =>
+        retryingSteps.Contains(building.BuildingId) && farSteps.TryGetValue(building.BuildingId, out var far) && far.Contains(pos);
+
     /// <summary>Counts a failed try at a block of a work order; enough of them set it aside for later.</summary>
-    public void StepFailed(Building building, BlockPos pos, int weight = 1)
+    public void StepFailed(Building building, BlockPos pos, int weight = 1, string why = "work")
     {
         if (!stepFailures.TryGetValue(building.BuildingId, out var tries)) stepFailures[building.BuildingId] = tries = new();
         int n = tries.GetValueOrDefault(pos) + weight;
@@ -52,10 +92,20 @@ public partial class ColonyManager
             return;
         }
         tries.Remove(pos);
+        if (why == "reach")
+        {
+            if (!farSteps.TryGetValue(building.BuildingId, out var far)) farSteps[building.BuildingId] = far = new();
+            far.Add(pos.Copy());
+        }
         if (!skippedSteps.TryGetValue(building.BuildingId, out var skipped)) skippedSteps[building.BuildingId] = skipped = new();
         skipped.Add(pos.Copy());
-        if (retryingSteps.Contains(building.BuildingId)) StuckStep[building.BuildingId] = pos.Copy();
-        Mod.Logger.Notification("[createacolony] Builder set aside block {0} of {1} {2} after failing at it; it gets another try at the end.", pos, building.Type, building.BuildingId);
+        if (retryingSteps.Contains(building.BuildingId))
+        {
+            StuckStep[building.BuildingId] = pos.Copy();
+            StuckWhy[building.BuildingId] = why;
+        }
+        Mod.Logger.Notification("[createacolony] Builder set aside block {0} of {1} {2} after failing at it ({3}, there: {4}); it gets another try at the end.", pos, building.Type, building.BuildingId,
+            why == "reach" ? "no way to it" : "it did not change", sapi.World.BlockAccessor.GetBlock(pos).Code);
     }
 
     /// <summary>A block was built: forget its failures.</summary>
@@ -70,12 +120,45 @@ public partial class ColonyManager
     {
         stepFailures.Remove(buildingId);
         skippedSteps.Remove(buildingId);
+        farSteps.Remove(buildingId);
         retryingSteps.Remove(buildingId);
         StuckStep.Remove(buildingId);
+        StuckWhy.Remove(buildingId);
     }
 
     /// <summary>True when a building's build failed at a block twice over, so builders try other work orders first.</summary>
     public bool IsBuildStuck(Building building) => StuckStep.ContainsKey(building.BuildingId);
+
+    /// <summary>Since when (total hours) each build has been waiting for materials. Not saved.</summary>
+    readonly Dictionary<(string Colony, int Building), double> buildWaitSince = new();
+
+    /// <summary>Part of the colony tick: notes which builds wait for materials, and since when.</summary>
+    void TrackBuildWaits(Colony colony)
+    {
+        double hours = sapi.World.Calendar.TotalHours;
+        foreach (var b in colony.Buildings)
+        {
+            var key = (colony.ColonyId, b.BuildingId);
+            string status = b.HasWorkOrder ? BuildStatus.GetValueOrDefault(b.BuildingId, "") : "";
+            if (status == "waiting-materials")
+            {
+                if (!buildWaitSince.ContainsKey(key)) buildWaitSince[key] = hours;
+            }
+            else if (!b.HasWorkOrder || status is "building" or "clearing") buildWaitSince.Remove(key);
+        }
+    }
+
+    /// <summary>
+    /// True when a build has waited BuildWaitsBeforeNextHours for materials that still have not come (0.201.0). Its
+    /// builder goes to a build that has its materials, and comes back when these arrive.
+    /// </summary>
+    public bool IsBuildStarved(Colony colony, Building b)
+    {
+        if (!b.HasWorkOrder || !buildWaitSince.TryGetValue((colony.ColonyId, b.BuildingId), out double since)) return false;
+        if (sapi.World.Calendar.TotalHours - since < Math.Max(0, Config.BuildWaitsBeforeNextHours)) return false;
+        string tag = RequestTag(b);
+        return colony.Requests.Any(r => r.RequestedBy == tag && r.Remaining > 0);
+    }
 
     // ---- Buildings ------------------------------------------------------------------------
 
@@ -371,6 +454,12 @@ public partial class ColonyManager
             if (IsStepDone(colony, step, pos, building)) continue;
             // Upkeep only digs out ground that got in; everything else in the building stays as it is.
             if (building.Upkeep && !IsUpkeepStep(step, pos)) continue;
+            // Fill in later (0.205.0): a block the colony can't get yet is left out, and put in once it can.
+            if (!building.Upkeep && IsLaterStep(colony, step, pos))
+            {
+                MarkLater(colony, building);
+                continue;
+            }
             // A block the builder kept failing at waits until the rest is done.
             if (skipped != null && skipped.Contains(pos))
             {
@@ -398,6 +487,37 @@ public partial class ColonyManager
         return false;
     }
 
+    /// <summary>
+    /// The next block of the order the builder can put in with what it carries or what its hut holds, for when the
+    /// block it is on waits for something nobody brought yet (0.205.0, notes 96 and 113: builders stood idle with boards
+    /// in their packs). Null when nothing can go in.
+    /// </summary>
+    public (BuildStep Step, BlockPos Pos)? StepWithMaterials(Colony colony, Building building, Blueprint blueprint, CitizenRecord builder, List<BlockEntityContainer> storage)
+    {
+        if (building.Upkeep) return null;
+        var skipped = skippedSteps.GetValueOrDefault(building.BuildingId);
+        var have = new Dictionary<string, bool>();
+        bool Has(MaterialCost cost)
+        {
+            string key = cost.Code + "#" + cost.Count;
+            if (have.TryGetValue(key, out bool known)) return known;
+            var match = Matcher(cost.Code);
+            return have[key] = PackCount(builder, match) + CountItems(storage, match) >= cost.Count;
+        }
+        int count = blueprint.Steps.Count;
+        for (int n = 1; n < count; n++)
+        {
+            var step = blueprint.Steps[(building.Cursor + n) % count];
+            if (step.BlockId == 0) continue;
+            var pos = StepPos(building, step);
+            if (skipped != null && skipped.Contains(pos)) continue;
+            if (IsStepDone(colony, step, pos, building) || IsLaterStep(colony, step, pos)) continue;
+            var costs = NextPlacement(colony, step, pos).Costs;
+            if (costs.Count > 0 && costs.All(Has)) return (step, pos);
+        }
+        return null;
+    }
+
     /// <summary>Materials still needed for the rest of the work order, by item code (a pattern when any wood or stone will do).</summary>
     public Dictionary<string, (ItemStack Sample, int Count)> MaterialsNeeded(Colony colony, Building building, Blueprint blueprint)
     {
@@ -408,6 +528,7 @@ public partial class ColonyManager
         {
             if (step.BlockId == 0) continue;
             if (IsStepDone(colony, step, pos, building)) continue;
+            if (!building.Upkeep && IsLaterStep(colony, step, pos)) continue;
             foreach (var cost in RemainingCost(colony, step, pos))
             {
                 needs[cost.Code] = needs.TryGetValue(cost.Code, out var n) ? (n.Item1, n.Item2 + cost.Count) : (cost.Sample, cost.Count);
@@ -430,9 +551,20 @@ public partial class ColonyManager
         {
             var match = Matcher(code);
             int have = CountItems(storage, match) + PackCount(builder, match);
-            int coming = colony.Requests.Where(r => r.RequestedBy == tag && r.ItemCode == code).Sum(r => r.Remaining);
+            var open = colony.Requests.Where(r => r.RequestedBy == tag && r.ItemCode == code).ToList();
+            int coming = open.Sum(r => r.Remaining);
             int shortfall = count - have - coming;
             if (shortfall > 0) AddRequest(colony, code, shortfall, storage[0].Pos, tag);
+            // Things a player put into the storage by hand count too (0.200.0): requests nobody is carrying for
+            // shrink by what is already there, so couriers don't bring it a second time.
+            int surplus = have + coming - open.Sum(r => System.Math.Min(r.Extra, r.Remaining)) - count;
+            foreach (var request in open.Where(r => r.LeasedByCitizenId == 0))
+            {
+                if (surplus <= 0) break;
+                int part = System.Math.Min(surplus, request.Remaining);
+                RecordDelivery(colony, request, part);
+                surplus -= part;
+            }
         }
         return true;
     }
@@ -490,7 +622,10 @@ public partial class ColonyManager
         var drops = DropsOf(old, pos); // some blocks expect a player when dropping: those drop nothing
         BreakQuietly(pos);
 
+        // Into the chests beside the hut first and the hut block last (0.200.0): dug-up soil filled the hut block's
+        // own slots within minutes, and then nothing could be given or delivered to the hut.
         var storage = HutStorage(colony, builderHut).ToList();
+        if (storage.Count > 1 && storage[0].Pos.Equals(builderHut.HutPos)) storage = storage.Skip(1).Append(storage[0]).ToList();
         foreach (var drop in drops)
         {
             foreach (var container in storage)
@@ -525,8 +660,12 @@ public partial class ColonyManager
     public (int Done, int Total) Progress(Colony colony, Building building, Blueprint blueprint) =>
         ForWindow(colony, building, blueprint, "progress", () =>
         {
-            int done = blueprint.Steps.Count(s => IsStepDone(colony, s, StepPos(building, s), building));
-            return (done, blueprint.Steps.Count);
+            // Blocks to place only (0.201.0): clearing is two thirds of the steps, so a build read "70% done" before
+            // a single wall stood. A build that only clears counts its clearing.
+            var placed = blueprint.Steps.Where(s => s.BlockId != 0).ToList();
+            if (placed.Count == 0) placed = blueprint.Steps;
+            int done = placed.Count(s => IsStepDone(colony, s, StepPos(building, s), building));
+            return (done, placed.Count);
         });
 
     /// <summary>What is still needed for an open window: the same as MaterialsNeeded, cached briefly.</summary>

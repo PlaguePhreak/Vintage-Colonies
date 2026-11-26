@@ -31,6 +31,9 @@ public class AiTaskSettlerHunter : AiTaskSettlerWorker
     /// <summary>Taking carcasses to this Butcher's Hut.</summary>
     int deliverTo;
     long chaseStartMs;
+    /// <summary>Far trip (0.205.0): until then the hunter looks further out; travelling = walking to a far spot.</summary>
+    long farUntilMs;
+    bool travelling;
     readonly Dictionary<long, long> letGo = new();
 
     public AiTaskSettlerHunter(EntityAgent entity, JsonObject taskConfig, JsonObject aiConfig) : base(entity, taskConfig, aiConfig) { }
@@ -46,7 +49,7 @@ public class AiTaskSettlerHunter : AiTaskSettlerWorker
     protected override bool WantsInHand(ItemStack? stack) => skinning && !pickingUp ? ColonyManager.IsKnife(stack) : IsToolStack(stack);
     protected override bool WorkNeedsTool => deliverTo == 0;
 
-    protected override float WorkSeconds => deliverTo != 0 ? 0.5f : pickingUp ? manager!.Config.CarcassPickUpSeconds : skinning
+    protected override float WorkSeconds => travelling || deliverTo != 0 ? 0.5f : pickingUp ? manager!.Config.CarcassPickUpSeconds : skinning
         ? (Hand is { } hand && entity.World.GetEntityById(preyId) is { } carcass ? ColonyManager.SkinSeconds(carcass, hand, entity) : 1f)
         : manager!.Config.HunterSecondsPerHit / (Colony is { } c && Citizen is { } me ? manager.SwingFactor(c, me) : 1f);
 
@@ -66,6 +69,8 @@ public class AiTaskSettlerHunter : AiTaskSettlerWorker
         long now = entity.World.ElapsedMilliseconds;
         pickingUp = false;
         deliverTo = 0;
+        travelling = false;
+        int roam = now < farUntilMs ? m.FarTripRadius(hut) : 0;
         bool knife = HasKnife(citizen);
         bool forButcher = m.Config.HunterBringsCarcasses && m.ButcherWorks(colony);
         int carried = m.PackCount(citizen, ColonyManager.IsCarcass);
@@ -112,11 +117,32 @@ public class AiTaskSettlerHunter : AiTaskSettlerWorker
         var prey = entity.World.GetEntityById(preyId);
         if (prey == null || !(m.IsPrey(colony, hut, prey) || m.IsCropPest(colony, prey)) || LetGo(preyId))
         {
-            prey = m.FindPrey(colony, hut, entity.Pos.XYZ, LetGo);
+            prey = m.FindPrey(colony, hut, entity.Pos.XYZ, LetGo, roam);
+            if (prey == null && roam == 0 && m.Config.HunterFarTrips && m.PredatorLeftToGuards(hut, entity.Pos.XYZ) == null)
+            {
+                // Nothing left near the hut: go further out for a while.
+                farUntilMs = now + (long)(m.Config.FarTripMinutes * 60_000);
+                roam = m.FarTripRadius(hut);
+                prey = m.FindPrey(colony, hut, entity.Pos.XYZ, LetGo, roam);
+            }
+            if (prey == null && roam > 0 && m.FarTripSpot(hut) is { } spot)
+            {
+                preyId = 0;
+                travelling = true;
+                workRange = 4f;
+                SetStatus("hunter-far-trip");
+                return GoWork(spot);
+            }
             if (prey == null)
             {
                 preyId = 0;
-                SetStatus("hunter-nothing");
+                // Bears, wolves and hyenas are the guards' (0.202.0): say so instead of "no animals".
+                if (m.PredatorLeftToGuards(hut, entity.Pos.XYZ) is { } predator)
+                {
+                    SetStatus("hunter-leaving-predator");
+                    m.SetNote(citizen, Lang.Get("createacolony:note-hunter-leaves", predator.GetName().ToLowerInvariant()));
+                }
+                else SetStatus("hunter-nothing");
                 return false;
             }
             preyId = prey.EntityId;
@@ -136,17 +162,23 @@ public class AiTaskSettlerHunter : AiTaskSettlerWorker
     }
 
     /// <summary>The animal moves: walk to where it is now.</summary>
-    protected override Vec3d WalkGoal() => deliverTo == 0 && entity.World.GetEntityById(preyId)?.Pos.XYZ is { } at ? at : target.ToVec3d().Add(0.5, 0, 0.5);
+    protected override Vec3d WalkGoal() => deliverTo == 0 && !travelling && entity.World.GetEntityById(preyId)?.Pos.XYZ is { } at ? at : target.ToVec3d().Add(0.5, 0, 0.5);
 
-    protected override bool CloseEnough() => deliverTo == 0 && entity.World.GetEntityById(preyId) is { } e
+    protected override bool CloseEnough() => deliverTo == 0 && !travelling && entity.World.GetEntityById(preyId) is { } e
         ? entity.Pos.DistanceTo(e.Pos.XYZ) <= workRange + 0.5
         : base.CloseEnough();
 
-    protected override string WorkAnimation(ItemSlot? hand) => deliverTo != 0 || pickingUp ? "interactstatic" : skinning ? "knifecut" : base.WorkAnimation(hand);
+    protected override string WorkAnimation(ItemSlot? hand) => travelling || deliverTo != 0 || pickingUp ? "interactstatic" : skinning ? "knifecut" : base.WorkAnimation(hand);
 
     protected override void DoWork(Colony colony, CitizenRecord citizen, Building hut)
     {
         var m = manager!;
+        if (travelling)
+        {
+            // Got there: the next plan looks for animals round here.
+            travelling = false;
+            return;
+        }
         if (deliverTo != 0)
         {
             if (colony.Buildings.Find(b => b.BuildingId == deliverTo) is { } butcherHut) m.DeliverCarcasses(colony, citizen, butcherHut);
@@ -180,6 +212,6 @@ public class AiTaskSettlerHunter : AiTaskSettlerWorker
         SyncHand();
     }
 
-    protected override string DescribeWork() => Lang.Get(deliverTo != 0 ? "createacolony:activity-hunter-to-butcher" : pickingUp ? "createacolony:activity-hunter-pick-up"
+    protected override string DescribeWork() => Lang.Get(travelling ? "createacolony:activity-hunter-far" : deliverTo != 0 ? "createacolony:activity-hunter-to-butcher" : pickingUp ? "createacolony:activity-hunter-pick-up"
         : skinning ? "createacolony:activity-hunter-skin" : "createacolony:activity-hunter-hunt");
 }

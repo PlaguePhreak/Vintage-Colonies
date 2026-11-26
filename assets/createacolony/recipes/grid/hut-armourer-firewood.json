@@ -1,0 +1,23 @@
+{
+	"ingredientPattern": "PIP,PYP,PPP",
+	"ingredients": {
+		"P": {
+			"type": "item",
+			"code": "game:firewood"
+		},
+		"I": {
+			"type": "item",
+			"code": "game:ingot-*"
+		},
+		"Y": {
+			"type": "item",
+			"code": "game:leather-*"
+		}
+	},
+	"width": 3,
+	"height": 3,
+	"output": {
+		"type": "block",
+		"code": "createacolony:hut-armourer"
+	}
+}

@@ -252,13 +252,16 @@ public class CreateAColonyModSystem : ModSystem
                 .HandleWith(OnStuck)
             .EndSubCommand()
             .BeginSubCommand("pathdebug")
-                .WithDescription("Show Willpower sparks over stuck settlers and log pathing in the server log (on/off, until restart)")
+                .WithDescription("Show Willpower sparks over stuck settlers and log walking, doors, couriers and requests in the server log (on/off, saved in the config)")
                 .RequiresPrivilege(Privilege.controlserver)
                 .WithArgs(parsers.OptionalBool("on"))
                 .HandleWith(args =>
                 {
                     var manager = sapi!.ModLoader.GetModSystem<ColonyManager>();
                     manager.PathDebug = args.Parsers[0].IsMissing ? !manager.PathDebug : (bool)args[0];
+                    // Kept across restarts and world loads (0.200.0): the overnight test lost it on every load.
+                    manager.Config.PathDebug = manager.PathDebug;
+                    sapi.StoreModConfig(manager.Config, ColonyConfig.FileName);
                     return TextCommandResult.Success(Lang.Get(manager.PathDebug ? "createacolony:pathdebug-on" : "createacolony:pathdebug-off"));
                 })
             .EndSubCommand()
@@ -325,15 +328,9 @@ public class CreateAColonyModSystem : ModSystem
         var manager = sapi!.ModLoader.GetModSystem<ColonyManager>();
         var colony = manager.GetAt(args.Caller.Entity.Pos.AsBlockPos);
         if (colony == null) return TextCommandResult.Success(Lang.Get("createacolony:not-in-colony"));
-        var lines = new System.Collections.Generic.List<string>();
-        foreach (var citizen in colony.Citizens)
-        {
-            if (!citizen.Alive || sapi.World.GetEntityById(citizen.EntityId) is not EntitySettler entity) continue;
-            var will = entity.GetBehavior<EntityBehaviorColonyCitizen>()?.Willpower;
-            if (will == null || will.Value <= 0) continue;
-            string why = Lang.Get("createacolony:stuck-reason-" + will.Reason.ToString().ToLowerInvariant()) + (will.Trapped ? ", " + Lang.Get("createacolony:stuck-trapped") : "");
-            lines.Add(Lang.Get("createacolony:stuck-line", citizen.Name, entity.Pos.AsBlockPos.ToLocalPosition(sapi), why, (int)(will.Fraction * 100)));
-        }
+        // The same list as the report's "Trouble right now" (0.200.0): stuck settlers, goals given up, couriers that
+        // can't deliver, requests nobody carries and builds that wait.
+        var lines = manager.TroubleLines(colony);
         return TextCommandResult.Success(lines.Count == 0 ? Lang.Get("createacolony:stuck-none") : string.Join("\n", lines));
     }
 

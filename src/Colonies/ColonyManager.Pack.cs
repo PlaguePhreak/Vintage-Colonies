@@ -46,7 +46,14 @@ public partial class ColonyManager
 
     public List<ItemStack> PackBags(CitizenRecord citizen) => Resolve(citizen.Bags);
 
-    public int PackSlots(CitizenRecord citizen) => (int)Math.Round((PackBaseSlots + PackBags(citizen).Sum(BagSlots)) * TraitMult(citizen, "packSlots")) // Pack Mule
+    /// <summary>A reed hand basket (basket, basket-*), never the reed chest or a basket trap.</summary>
+    public static bool IsBasket(ItemStack stack) => stack.Collectible.Code is { Domain: "game" } code
+        && (code.Path == "basket" || code.Path.StartsWith("basket-")) && BagSlots(stack) > 0;
+
+    /// <summary>The slots a bag adds to a settler: a basket adds config BasketPackSlots (Aaron, 0.202.0), other bags what the game says.</summary>
+    public int SettlerBagSlots(ItemStack bag) => IsBasket(bag) && Config.BasketPackSlots > 0 ? Config.BasketPackSlots : BagSlots(bag);
+
+    public int PackSlots(CitizenRecord citizen) => (int)Math.Round((PackBaseSlots + PackBags(citizen).Sum(SettlerBagSlots)) * TraitMult(citizen, "packSlots")) // Pack Mule
         + (ColonyOf(citizen) is { } colony ? (int)Math.Round(SkillPerk(colony, citizen, "packSlots")) : 0); // Hauling and Strength perks
 
     public bool PackEmpty(CitizenRecord citizen) => citizen.Pack.Count == 0 && citizen.CarriedStack == null;

@@ -68,7 +68,8 @@ public class AiTaskSettlerBuilder : SettlerTaskBase
         var hut = manager!.EnsureBuilderHut(colony, citizen);
         if (hut == null)
         {
-            foreach (var b in colony.Buildings.Where(b => b.HasWorkOrder)) manager.BuildStatus[b.BuildingId] = "no-builder-hut";
+            // Only this builder's own orders: the others are another builder's, or wait for one (0.201.0).
+            foreach (var b in colony.Buildings.Where(b => b.HasWorkOrder && b.BuilderCitizenId == citizen.CitizenId)) manager.BuildStatus[b.BuildingId] = "no-builder-hut";
             return false;
         }
 
@@ -96,6 +97,16 @@ public class AiTaskSettlerBuilder : SettlerTaskBase
             manager.CompleteWorkOrder(colony, order);
             return carrying && StashAt(colony, hut);
         }
+        // The whole list is asked for at the start and kept up to date (0.201.0), not only once the builder runs out:
+        // couriers and the Mayor see what the build needs while the site is still being cleared.
+        long nowMs = entity.World.ElapsedMilliseconds;
+        if (askedOrderId != order.BuildingId || nowMs >= nextAskMs)
+        {
+            askedOrderId = order.BuildingId;
+            nextAskMs = nowMs + AskEveryMs;
+            manager.EnsureMaterialRequests(colony, order, hut, citizen, blueprint);
+        }
+        slowWork = false;
 
         // The right tool first: a builder digs with a shovel and fells with an axe, like a player.
         if (ToolFirst(colony, citizen, hut, order, pos) is { } toolPlan) return toolPlan;
@@ -105,7 +116,7 @@ public class AiTaskSettlerBuilder : SettlerTaskBase
         var missing = costs.Where(c => manager.PackCount(citizen, ColonyManager.Matcher(c.Code)) < c.Count).ToList();
         if (missing.Count == 0)
         {
-            manager.BuildStatus[order.BuildingId] = "building";
+            manager.BuildStatus[order.BuildingId] = buildStep.BlockId == 0 ? "clearing" : "building";
             return Go(Step.Work, pos);
         }
 
@@ -115,6 +126,18 @@ public class AiTaskSettlerBuilder : SettlerTaskBase
         {
             manager.BuildStatus[order.BuildingId] = "building";
             return Go(Step.Fetch, source.Pos);
+        }
+
+        // This block waits for something not brought yet: put in another one it has the materials for meanwhile.
+        var hutStorage = manager.HutStorage(colony, hut).Cast<BlockEntityContainer>().ToList();
+        if (manager.StepWithMaterials(colony, order, blueprint, citizen, hutStorage) is { } other)
+        {
+            buildStep = other.Step;
+            manager.BuildStatus[order.BuildingId] = "building";
+            var otherCosts = manager.NextPlacement(colony, other.Step, other.Pos).Costs;
+            if (otherCosts.All(c => manager.PackCount(citizen, ColonyManager.Matcher(c.Code)) >= c.Count)) return Go(Step.Work, other.Pos);
+            var otherFits = otherCosts.Select(c => ColonyManager.Matcher(c.Code)).ToList();
+            if (hutStorage.FirstOrDefault(c => c.Inventory.Any(s => !s.Empty && otherFits.Any(m => m(s.Itemstack)))) is { } chest) return Go(Step.Fetch, chest.Pos);
         }
 
         // Nothing to build with: ask couriers and wait.
@@ -133,8 +156,18 @@ public class AiTaskSettlerBuilder : SettlerTaskBase
         if (manager!.ToolNeededAt(colony, buildStep, pos) is not { } toolNeed || HasTool(citizen, toolNeed)) return null;
         neededTool = toolNeed;
         var toolChest = manager.HutStorage(colony, hut)
-            .FirstOrDefault(c => c.Inventory.Any(s => ColonyManager.ToolFits(s.Itemstack, toolNeed.Type, toolNeed.Tier)));
+            .FirstOrDefault(c => c.Inventory.Any(s => ColonyManager.ToolFits(s.Itemstack, toolNeed.Type, toolNeed.Tier)))
+            // Not in the hut: one in the Town Hall's storage or the warehouse is fetched by the builder (0.201.0).
+            ?? manager.SpareToolChest(colony, s => ColonyManager.ToolFits(s, toolNeed.Type, toolNeed.Tier));
         if (toolChest != null) return Go(Step.FetchTool, toolChest.Pos);
+        // The colony's starting kit: a flint axe, shovel and hoe, handed out once.
+        if (manager.GiveStarterTool(colony, citizen, toolNeed.Type, toolNeed.Tier)) return null;
+        // No pickaxe in the colony and nobody to make one: stone is cleared by hand, slowly.
+        if (toolNeed.Type == EnumTool.Pickaxe && manager.ClearsStoneByHand(colony))
+        {
+            slowWork = true;
+            return null;
+        }
 
         bool canAsk = manager.EnsureToolRequest(colony, order, hut, toolNeed);
         manager.BuildStatus[order.BuildingId] = canAsk ? "needs-tool-" + toolNeed.Type.ToString().ToLowerInvariant() : "no-hut-chest";
@@ -196,6 +229,13 @@ public class AiTaskSettlerBuilder : SettlerTaskBase
         return Go(Step.Work, spot);
     }
 
+    /// <summary>The order whose materials were last asked for, and when to bring the requests up to date again.</summary>
+    int askedOrderId;
+    long nextAskMs;
+    const long AskEveryMs = 60_000;
+    /// <summary>Clearing stone by hand, without a pickaxe: slower.</summary>
+    bool slowWork;
+
     bool StashAt(Colony colony, Building hut)
     {
         var chest = manager!.HutStorage(colony, hut).FirstOrDefault();
@@ -255,7 +295,8 @@ public class AiTaskSettlerBuilder : SettlerTaskBase
         return manager!.FreeSpotNear(entity, ground, 3, target) ?? target.ToVec3d().Add(0.5, 0, 0.5);
     }
 
-    bool InReach() => entity.Pos.XYZ.DistanceTo(target.ToVec3d().Add(0.5, 0.5, 0.5)) <= manager!.Config.BuilderReach;
+    bool InReach() => entity.Pos.XYZ.DistanceTo(target.ToVec3d().Add(0.5, 0.5, 0.5))
+        <= manager!.Config.BuilderReach * (Colony?.Buildings.Find(b => b.BuildingId == orderId) is { } o && manager.LongReachStep(o, target) ? 2 : 1);
 
     void MarkUnreachable()
     {
@@ -264,7 +305,7 @@ public class AiTaskSettlerBuilder : SettlerTaskBase
         if (o != null && teardownId == 0 && step == Step.Work && !o.Removing)
         {
             // A block it cannot get to counts double: set aside after two goes, the rest of the build carries on.
-            manager!.StepFailed(o, target, 2);
+            manager!.StepFailed(o, target, 2, "reach");
             nextSearchMs = entity.World.ElapsedMilliseconds + IdleRetryMs;
             return;
         }
@@ -341,7 +382,7 @@ public class AiTaskSettlerBuilder : SettlerTaskBase
                     workAnim = PlayShapeAnimation(WorkAnimationCode(colony), "build");
                 }
                 workTime += dt;
-                if (workTime < manager!.Config.BuilderSecondsPerBlock * manager.WorkTimeFactor(colony, citizen)) return true;
+                if (workTime < manager!.Config.BuilderSecondsPerBlock * manager.WorkTimeFactor(colony, citizen) * (slowWork ? System.Math.Max(1f, manager.Config.NoPickaxeSlowdown) : 1f)) return true;
                 int before = entity.World.BlockAccessor.GetBlock(target).Id;
                 Work(colony, citizen);
                 StopWorkAnimation();

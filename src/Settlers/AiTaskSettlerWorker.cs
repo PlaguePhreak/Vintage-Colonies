@@ -130,7 +130,9 @@ public abstract class AiTaskSettlerWorker : SettlerTaskBase
         var storage = manager.HutStorage(colony, hut).Cast<BlockEntityContainer>().ToList();
         if (storage.Count == 0)
         {
-            SetStatus("no-hut-chest");
+            // Right after the world loads the hut's chests are not loaded yet (note 79): not a fault.
+            bool loading = entity.World.ElapsedMilliseconds < 120_000 || entity.World.BlockAccessor.GetChunkAtBlockPos(hut.HutPos) == null;
+            SetStatus(loading ? "getting-ready" : "no-hut-chest");
             return Wait();
         }
 
@@ -147,9 +149,13 @@ public abstract class AiTaskSettlerWorker : SettlerTaskBase
 
         if (NeedsTool && !HasTool(citizen))
         {
-            var toolChest = storage.FirstOrDefault(c => c.Inventory.Any(s => IsToolStack(s.Itemstack)));
+            var toolChest = storage.FirstOrDefault(c => c.Inventory.Any(s => IsToolStack(s.Itemstack)))
+                // Not in the hut: one in the Town Hall's storage or the warehouse is fetched by the worker (0.201.0).
+                ?? manager.SpareToolChest(colony, s => IsToolStack(s));
             if (toolChest != null) return Go(Step.FetchTool, toolChest.Pos);
             if (HasSurplus(citizen)) return Go(Step.Deposit, storage[0].Pos);
+            // The colony's starting kit, handed out once per tool.
+            if (manager.GiveStarterTool(colony, citizen, Tool, 0)) return Wait();
             RequestTool(colony, hut);
             SetStatus(NeedsToolStatus);
             return Wait();
@@ -340,8 +346,15 @@ public abstract class AiTaskSettlerWorker : SettlerTaskBase
     bool HasTool(CitizenRecord citizen) =>
         IsToolStack(Hand?.Itemstack) || manager!.PackCount(citizen, s => IsToolStack(s)) > 0;
 
+    /// <summary>
+    /// The one weapon a worker carries to fight back with stays in its pack (0.205.0, notes 95 and 102: it was put away
+    /// with the harvest, carried off by the courier and handed out again, over and over).
+    /// </summary>
+    bool IsSpareWeapon(ItemStack s) => ColonyManager.IsWeapon(s) && s.Collectible.Tool != EnumTool.Knife && Citizen is { } me
+        && manager!.PackCount(me, w => ColonyManager.IsWeapon(w) && w.Collectible.Tool != EnumTool.Knife) <= 1;
+
     /// <summary>What the job keeps, and what the thing it is crafting for the Crafting recipes tab takes.</summary>
-    bool Keeps(ItemStack s) => AlsoKeeps(s) || craftKind?.IsInput(s) == true
+    bool Keeps(ItemStack s) => AlsoKeeps(s) || IsSpareWeapon(s) || craftKind?.IsInput(s) == true
         || craftKind?.Recipes.Any(r => r.CustomId != 0 && (r.Tool?.SatisfiesAsIngredient(s, false) == true || r.Tool2?.SatisfiesAsIngredient(s, false) == true)) == true;
 
     /// <summary>True when the settler carries anything it does not keep: a harvest, or seeds beyond its stock.</summary>

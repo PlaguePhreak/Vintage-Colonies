@@ -55,12 +55,26 @@ public partial class ColonyManager
         return ZoneAt(colony, e.Pos.AsBlockPos) == null;
     }
 
-    /// <summary>The nearest animal in the hut's work area to hunt, or null.</summary>
-    public Entity? FindPrey(Colony colony, Building hut, Vec3d from, System.Func<long, bool> skip)
+    /// <summary>The nearest animal in the hut's work area (or within range, on a far trip) to hunt, or null.</summary>
+    public Entity? FindPrey(Colony colony, Building hut, Vec3d from, System.Func<long, bool> skip, int range = 0)
+    {
+        int r = range > 0 ? range : GatherRadius(hut);
+        var center = hut.HutPos.ToVec3d().Add(0.5, 0, 0.5);
+        return sapi.World.GetEntitiesAround(from, Math.Min(r, 48), 16, e => !skip(e.EntityId) && IsPrey(colony, hut, e))
+            .Where(e => e.Pos.HorDistanceTo(center) <= r)
+            .OrderBy(e => e.Pos.SquareDistanceTo(from))
+            .FirstOrDefault();
+    }
+
+    /// <summary>
+    /// A predator in the hut's work area (a bear, a wolf, a hyena: anything guards fight). Hunters leave those to the
+    /// guards (Aaron, 0.202.0), and their status says so.
+    /// </summary>
+    public Entity? PredatorLeftToGuards(Building hut, Vec3d from)
     {
         int r = GatherRadius(hut);
         var center = hut.HutPos.ToVec3d().Add(0.5, 0, 0.5);
-        return sapi.World.GetEntitiesAround(from, Math.Min(r, 48), 16, e => !skip(e.EntityId) && IsPrey(colony, hut, e))
+        return sapi.World.GetEntitiesAround(from, Math.Min(r, 48), 16, e => IsThreat(e) && e is not Settlers.EntityBandit && RaidOf(e) == null)
             .Where(e => e.Pos.HorDistanceTo(center) <= r)
             .OrderBy(e => e.Pos.SquareDistanceTo(from))
             .FirstOrDefault();

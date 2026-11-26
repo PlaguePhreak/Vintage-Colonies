@@ -1,0 +1,23 @@
+{
+	"ingredientPattern": "LCL,PPP",
+	"ingredients": {
+		"L": {
+			"type": "item",
+			"code": "game:stick"
+		},
+		"C": {
+			"type": "item",
+			"code": "game:flaxtwine"
+		},
+		"P": {
+			"type": "item",
+			"code": "game:firewood"
+		}
+	},
+	"width": 3,
+	"height": 2,
+	"output": {
+		"type": "block",
+		"code": "createacolony:hut-market"
+	}
+}

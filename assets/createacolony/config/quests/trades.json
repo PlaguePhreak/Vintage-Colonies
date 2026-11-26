@@ -154,6 +154,7 @@
           "x": 4.18,
           "y": 0.0,
           "shape": "square",
+          "requiresAny": true,
           "requires": [
             "kitchen-eggs",
             "kitchen-soup",

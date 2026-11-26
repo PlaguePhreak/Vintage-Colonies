@@ -76,6 +76,46 @@ public partial class ColonyManager
             .ToList();
     }
 
+    /// <summary>
+    /// A wild grown animal of the hut's kinds outside its pen, for the herder to catch (0.205.0: the colony starved
+    /// with no animals of its own). Null while the pen holds HerderCatchUpTo or more, or when there is none.
+    /// </summary>
+    public Entity? WildToCatch(Colony colony, Building hut, List<Entity> herd, Vec3d from, System.Func<long, bool> skip)
+    {
+        if (Config.HerderCatchUpTo <= 0 || herd.Count >= Config.HerderCatchUpTo) return null;
+        var types = HerdTypes(hut.Type, HerdPatterns(hut.Type));
+        if (types.Count == 0) return null;
+        var center = hut.HutPos.ToVec3d().Add(0.5, 0, 0.5);
+        int pen = PenRadius(hut), far = Math.Max(pen + 8, Config.HerderCatchRadius);
+        return sapi.World.GetEntitiesAround(center, far, 16, e => !skip(e.EntityId) && IsHerdAnimal(e, types))
+            .Where(e => e.Pos.HorDistanceTo(center) > pen && e.Pos.HorDistanceTo(center) <= far)
+            .Where(e => !IsLivestock(e) && ZoneAt(colony, e.Pos.AsBlockPos) == null && !IsThreat(e))
+            .OrderBy(e => e.Pos.SquareDistanceTo(from))
+            .FirstOrDefault();
+    }
+
+    /// <summary>The herder carries a caught animal home: it is put down on the ground by the hut.</summary>
+    public bool CatchAnimal(Colony colony, Building hut, Entity animal)
+    {
+        var ba = sapi.World.BlockAccessor;
+        var rand = sapi.World.Rand;
+        for (int tries = 0; tries < 10; tries++)
+        {
+            int x = hut.HutPos.X + rand.Next(-3, 4), z = hut.HutPos.Z + rand.Next(-3, 4);
+            if (Math.Abs(x - hut.HutPos.X) < 2 && Math.Abs(z - hut.HutPos.Z) < 2) continue;
+            var pos = new BlockPos(x, hut.HutPos.Y, z, hut.HutPos.dimension);
+            if (ba.GetChunkAtBlockPos(pos) == null) continue;
+            pos.Y = ba.GetTerrainMapheightAt(pos) + 1;
+            if (ba.GetBlock(pos, BlockLayersAccess.Fluid).Id != 0 || ba.GetBlock(pos).SideSolid[BlockFacing.UP.Index]) continue;
+            if (Math.Abs(pos.Y - hut.HutPos.Y) > 6) continue;
+            animal.TeleportTo(pos.ToVec3d().Add(0.5, 0, 0.5));
+            AddStat(hut, "caught");
+            MarkDirty(colony);
+            return true;
+        }
+        return false;
+    }
+
     /// <summary>How far, in blocks, a herder's pen reaches from its hut (the Work area range).</summary>
     public int PenRadius(Building hut) => hut.WorkRadius > 0 ? hut.WorkRadius : Config.HerdRadius;
 

@@ -180,8 +180,10 @@ public static class MarkerSubjects
         }
         foreach (var (key, drop) in stacks)
         {
-            ItemStack? stack = null;
-            try
+            ItemStack? stack = drop.ResolvedItemstack;
+            // An empty drop warns in the log on every load (note 119): skip it.
+            if (stack == null && (drop.Code == null || string.IsNullOrEmpty(drop.Code.Path))) continue;
+            if (stack == null) try
             {
                 drop.Resolve(world, "colony marker icons", block.Code);
                 stack = drop.ResolvedItemstack;

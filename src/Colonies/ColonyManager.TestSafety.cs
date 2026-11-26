@@ -67,7 +67,7 @@ public partial class ColonyManager
         MarkDirty(colony);
     }
 
-    /// <summary>The Town Hall's test switches: Text "unhurt|1" or "enemies|1", 0 for off.</summary>
+    /// <summary>The Town Hall's test switches: Text "unhurt|1", "enemies|1" or "report|1", 0 for off.</summary>
     public string? SetTestSafety(Colony colony, string? text)
     {
         var parts = (text ?? "").Split('|');
@@ -80,6 +80,7 @@ public partial class ColonyManager
                 colony.NoEnemies = on;
                 if (on) ClearEnemies();
                 break;
+            case "report": colony.AutoReport = on; break;
             default: return "createacolony:bad-request";
         }
         return null;

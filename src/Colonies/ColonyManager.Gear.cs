@@ -325,6 +325,21 @@ public partial class ColonyManager
             .FirstOrDefault();
     }
 
+    /// <summary>
+    /// For a courier with nothing to carry (0.200.0): the nearest thing lying on dry ground inside the colony, within
+    /// range of the courier. Things in skip (walked to before, no way there) are left.
+    /// </summary>
+    public EntityItem? LooseItemInColony(Colony colony, CitizenRecord citizen, EntityAgent settler, float range, ICollection<long> skip)
+    {
+        if (range <= 0 || !CanCollectItems(colony, citizen) || PackFull(citizen)) return null;
+        var ba = sapi.World.BlockAccessor;
+        return sapi.World.GetEntitiesAround(settler.Pos.XYZ, range, 24, e => e is EntityItem).OfType<EntityItem>()
+            .Where(i => !skip.Contains(i.EntityId) && Collectible(i) && GetAt(i.Pos.AsBlockPos) == colony
+                && !ba.GetBlock(i.Pos.AsBlockPos, BlockLayersAccess.Fluid).IsLiquid())
+            .OrderBy(i => i.Pos.SquareDistanceTo(settler.Pos.XYZ))
+            .FirstOrDefault();
+    }
+
     bool CanCollectItems(Colony colony, CitizenRecord citizen) =>
         Config.SettlersPickUpItems && citizen.Alive && !citizen.Visitor && !citizen.IsChild && !citizen.IsDowned;
 

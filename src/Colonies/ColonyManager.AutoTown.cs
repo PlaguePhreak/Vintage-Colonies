@@ -53,7 +53,7 @@ public partial class ColonyManager
         var free = Jobless(colony).ToList();
         if (free.Count == 0) return 0;
         var huts = colony.Buildings
-            .Where(b => Staffable(b) && b.TakesAutoHires && !b.IsStation && JobOf(b.Type) is { } job && job != Jobs.Priest && job != Jobs.Bailiff && job != Jobs.Mayor)
+            .Where(b => AutoStaffable(b) && b.TakesAutoHires && !b.IsStation && JobOf(b.Type) is { } job && job != Jobs.Priest && job != Jobs.Bailiff && job != Jobs.Mayor)
             .OrderBy(b => IsGuardPost(b.Type)) // other huts first, guards after (0.198.0)
             .ThenByDescending(b => IsFoodHut(b.Type))
             .ThenBy(b => WorkersAt(colony, b).Count > 0)
@@ -71,6 +71,8 @@ public partial class ColonyManager
                 free.Remove(pick);
                 pick.JobCode = job;
                 pick.WorkplacePos = hut.HutPos.Copy();
+                pick.JobSetByPlayer = false;
+                pick.LastMovedTotalDays = sapi.World.Calendar.TotalDays;
                 given++;
                 LogEvent(colony, "event-autohire", pick.Name, "@job-" + job, BuildingName(hut));
             }

@@ -49,6 +49,13 @@ public class GuiDialogTownHall : GuiDialog
     const int MapMargin = 16;
     // Opened with the ? button on the Actions tab, with a Back button.
     const int HelpView = 20;
+    /// <summary>The job panel for one settler (0.203.0), opened from the Citizens tab.</summary>
+    const int JobPanelView = 21;
+    /// <summary>The Citizens tab and the job panel are wider than the other tabs: the job needs its name and a button.</summary>
+    const double CitizensWidth = 660;
+    const int JobRowsPerPage = 10;
+    const double JobRowHeight = 30;
+    int jobPanelCitizen;
 
     static readonly (int Id, string Lang)[] Tabs =
     {
@@ -110,7 +117,7 @@ public class GuiDialogTownHall : GuiDialog
             return;
         }
         // Timed progress refreshes would close an open dropdown or take the focus from the name box.
-        if (fresh.Periodic && (renaming || currentTab is CitizensTab or PermissionsTab or BailiffTab or MayorTab or SettingsTab)) return;
+        if (fresh.Periodic && (renaming || currentTab is CitizensTab or JobPanelView or PermissionsTab or BailiffTab or MayorTab or SettingsTab)) return;
         Compose();
     }
 
@@ -123,7 +130,7 @@ public class GuiDialogTownHall : GuiDialog
         var bgBounds = ElementBounds.Fill.WithFixedPadding(GuiStyle.ElementToDialogPadding);
         bgBounds.BothSizing = ElementSizing.FitToChildren;
 
-        int activeTab = currentTab == HelpView ? ActionsTab : currentTab;
+        int activeTab = currentTab == HelpView ? ActionsTab : currentTab == JobPanelView ? CitizensTab : currentTab;
         var tabs = Tabs.Select(t => new GuiTab { Name = Lang.Get("createacolony:" + t.Lang), DataInt = t.Id, Active = t.Id == activeTab }).ToArray();
 
         mapElement = null;
@@ -150,6 +157,7 @@ public class GuiDialogTownHall : GuiDialog
             case PermissionsTab: ComposePermissions(composer); break;
             case SettingsTab: ComposeSettings(composer); break;
             case HelpView: ComposeHelp(composer); break;
+            case JobPanelView: ComposeJobPanel(composer); break;
         }
 
         composer.FitTabs(tabs.Length);
@@ -170,6 +178,7 @@ public class GuiDialogTownHall : GuiDialog
         SingleComposer.GetSwitch("telloutsiders")?.SetValue(snapshot.TellOutsiders);
         SingleComposer.GetSwitch("settlersunhurt")?.SetValue(snapshot.SettlersUnhurt);
         SingleComposer.GetSwitch("noenemies")?.SetValue(snapshot.NoEnemies);
+        SingleComposer.GetSwitch("autoreport")?.SetValue(snapshot.AutoReport);
         SingleComposer.GetSwitch("mayorfree")?.SetValue(snapshot.MayorFreeHuts);
         for (int i = 0; i < snapshot.MayorOrder.Count; i++) SingleComposer.GetSwitch("mayororder" + i)?.SetValue(!snapshot.MayorSkip.Contains(snapshot.MayorOrder[i]));
         SingleComposer.GetTextInput("text-enter")?.SetValue(pendingEnter);
@@ -241,7 +250,8 @@ public class GuiDialogTownHall : GuiDialog
         double y = 30;
 
         // Header: name and level, and the pencil.
-        double headerHeight = hall?.TargetLevel > 0 ? 84 : 60;
+        double hallStatusHeight = hall?.TargetLevel > 0 ? Math.Max(22, GuiKit.TextHeight(capi, GuiKit.Detail(), GuiDialogHut.StatusText(hall), Width - 20) + 4) : 0;
+        double headerHeight = 60 + (hallStatusHeight > 0 ? hallStatusHeight + 2 : 0);
         composer.AddInset(ElementBounds.Fixed(0, y, Width, headerHeight), 3, 0.8f);
         if (renaming)
         {
@@ -267,7 +277,7 @@ public class GuiDialogTownHall : GuiDialog
                     GuiKit.Detail().WithOrientation(EnumTextOrientation.Right), ElementBounds.Fixed(Width / 2, y + 36, Width / 2 - 10, 20));
             if (hall.TargetLevel > 0)
             {
-                composer.AddStaticText(GuiDialogHut.StatusText(hall), GuiKit.Detail().WithColor(GuiStyle.ActiveButtonTextColor), ElementBounds.Fixed(10, y + 58, Width - 20, 22));
+                composer.AddStaticText(GuiDialogHut.StatusText(hall), GuiKit.Detail().WithColor(GuiStyle.ActiveButtonTextColor), ElementBounds.Fixed(10, y + 58, Width - 20, hallStatusHeight));
             }
         }
         y += headerHeight + 8;
@@ -608,7 +618,7 @@ public class GuiDialogTownHall : GuiDialog
             string title = number + ". " + (o.Removing || o.Repairing ? GuiDialogHut.OrderTitle(o) : o.Name + " " + Lang.Get("createacolony:order-level", o.TargetLevel));
             composer
                 .AddStaticText(title, GuiKit.Body(), ElementBounds.Fixed(10, y + 6, Width - 250, 25))
-                .AddStaticText(GuiDialogHut.StatusText(o), GuiKit.Detail().WithColor(GuiStyle.ActiveButtonTextColor), ElementBounds.Fixed(10, y + 30, Width - 250, 22));
+                .AddStaticText(GuiDialogHut.StatusText(o), GuiKit.Detail().WithColor(GuiStyle.ActiveButtonTextColor), ElementBounds.Fixed(10, y + 28, Width - 250, 32));
             if (Officer)
             {
                 int id = o.TeardownId > 0 ? o.TeardownId : o.BuildingId;
@@ -729,13 +739,10 @@ public class GuiDialogTownHall : GuiDialog
             .AddStaticText(Lang.Get("createacolony:col-status"), GuiKit.Muted(), ElementBounds.Fixed(165, top, 170, 20))
             .AddStaticText(Lang.Get("createacolony:col-job"), GuiKit.Muted(), ElementBounds.Fixed(340, top, 150, 20));
 
-        string[] jobCodes = Jobs.All;
-        string[] jobNames = jobCodes.Select(JobName).ToArray();
-
         int pages = (citizens.Count + RowsPerPage - 1) / RowsPerPage;
         page = Math.Clamp(page, 0, pages - 1);
         int shown = Math.Min(RowsPerPage, citizens.Count - page * RowsPerPage);
-        composer.AddInset(ElementBounds.Fixed(0, top + 22, Width, shown * RowHeight + 6), 3, 0.8f);
+        composer.AddInset(ElementBounds.Fixed(0, top + 22, CitizensWidth, shown * RowHeight + 6), 3, 0.8f);
         double y = top + 25;
         foreach (var c in citizens.Skip(page * RowsPerPage).Take(RowsPerPage))
         {
@@ -758,30 +765,130 @@ public class GuiDialogTownHall : GuiDialog
                 if (Officer && c.State != "downed")
                 {
                     int childId = c.CitizenId;
-                    composer.AddSmallButton(Lang.Get("createacolony:townhall-recall"), () => SendCitizen(ColonyAction.RecallCitizen, childId), ElementBounds.Fixed(490, y + 2, 70, 28));
-                }
-            }
-            else if (Officer && c.State != "dead")
-            {
-                int citizenId = c.CitizenId;
-                int selected = Math.Max(0, Array.IndexOf(jobCodes, c.Job == "bishop" ? Jobs.Priest : c.Job));
-                composer.AddDropDown(jobCodes, jobNames, selected, (code, on) => OnSetJob(citizenId, code),
-                    ElementBounds.Fixed(340, y + 2, 145, 28), "job-" + citizenId);
-                if (c.State != "downed")
-                {
-                    composer.AddSmallButton(Lang.Get("createacolony:townhall-recall"), () => SendCitizen(ColonyAction.RecallCitizen, citizenId), ElementBounds.Fixed(490, y + 2, 70, 28));
+                    composer.AddSmallButton(Lang.Get("createacolony:townhall-recall"), () => SendCitizen(ColonyAction.RecallCitizen, childId), ElementBounds.Fixed(CitizensWidth - 70, y + 2, 70, 28));
                 }
             }
             else
             {
-                composer.AddStaticText(JobName(c.Job), GuiKit.Body(), ElementBounds.Fixed(340, y + 6, 180, 25));
+                // The real job (0.203.0): a settler the Bailiff lent out keeps its own job's name, with what it does now under it.
+                bool lent = c.HomeJob.Length > 0;
+                string real = lent ? c.HomeJob : c.Job;
+                composer.AddStaticText(JobName(real), GuiKit.Body(), ElementBounds.Fixed(340, y + (lent ? 0 : 6), 135, 20));
+                if (lent)
+                {
+                    composer.AddStaticText(Lang.Get(c.Job.Length == 0 ? "createacolony:citizens-lent-hauling" : "createacolony:citizens-lent-as", JobName(c.Job)),
+                        GuiKit.Muted(), ElementBounds.Fixed(340, y + 17, 135, 16));
+                }
+                if (Officer && c.State != "dead")
+                {
+                    int citizenId = c.CitizenId;
+                    composer.AddSmallButton(Lang.Get(real.Length == 0 ? "createacolony:jobpanel-assign-job" : "createacolony:jobpanel-assign-new"),
+                        () => { jobPanelCitizen = citizenId; return Open(JobPanelView); }, ElementBounds.Fixed(478, y + 2, 108, 28));
+                    if (c.State != "downed")
+                    {
+                        composer.AddSmallButton(Lang.Get("createacolony:townhall-recall"), () => SendCitizen(ColonyAction.RecallCitizen, citizenId), ElementBounds.Fixed(CitizensWidth - 70, y + 2, 70, 28));
+                    }
+                }
             }
             y += RowHeight;
         }
 
-        composer.Pager(page, pages, y + 14, Width, p => { page = p; Compose(); });
+        composer.Pager(page, pages, y + 14, CitizensWidth, p => { page = p; Compose(); });
         y += pages > 1 ? 54 : 16;
         if (Officer) y = composer.Text(Lang.Get("createacolony:townhall-recall-hint"), GuiKit.Muted(), 0, y, Width, 6);
+    }
+
+    /// <summary>
+    /// The job panel (Aaron, 0.203.0): every job A to Z with "No job" first, and for each one how good this settler is at
+    /// it, whether it likes it, whether a trait rules it out, and how many places are free. One press gives the job.
+    /// </summary>
+    void ComposeJobPanel(GuiComposer composer)
+    {
+        const double W = CitizensWidth;
+        var c = snapshot.Citizens.Find(x => x.CitizenId == jobPanelCitizen);
+        if (c == null || c.State == "dead" || c.Child || c.Visitor || !Officer)
+        {
+            currentTab = CitizensTab;
+            ComposeCitizens(composer);
+            return;
+        }
+        bool lent = c.HomeJob.Length > 0;
+        string real = lent ? c.HomeJob : c.Job;
+        if (real == "bishop") real = Jobs.Priest;
+        composer
+            .AddStaticText(Lang.Get("createacolony:jobpanel-title", c.Name), GuiKit.Heading(), ElementBounds.Fixed(0, 30, W - 110, 26))
+            .AddSmallButton(Lang.Get("createacolony:back"), () => Open(CitizensTab), ElementBounds.Fixed(W - 100, 28, 100, 28));
+        string now = Lang.Get("createacolony:jobpanel-now", JobName(real));
+        if (lent) now += " " + Lang.Get(c.Job.Length == 0 ? "createacolony:jobpanel-lent-hauling" : "createacolony:jobpanel-lent-as", JobName(c.Job));
+        double y = composer.Text(now, GuiKit.Body(), 0, 64, W, 2);
+        if (c.TraitsText.Length > 0) y = composer.Text(Lang.Get("createacolony:traits-hover", c.TraitsText), GuiKit.Muted(), 0, y, W, 2);
+        y += 8;
+
+        // "No job" first, then every job by its name.
+        var jobs = new[] { "" }.Concat(Jobs.All.Where(j => j.Length > 0).OrderBy(JobName, StringComparer.CurrentCultureIgnoreCase)).ToList();
+        composer
+            .AddStaticText(Lang.Get("createacolony:col-job"), GuiKit.Muted(), ElementBounds.Fixed(10, y, 170, 20))
+            .AddStaticText(Lang.Get("createacolony:jobpanel-col-skill"), GuiKit.Muted(), ElementBounds.Fixed(185, y, 125, 20))
+            .AddStaticText(Lang.Get("createacolony:jobpanel-col-likes"), GuiKit.Muted(), ElementBounds.Fixed(315, y, 150, 20))
+            .AddStaticText(Lang.Get("createacolony:jobpanel-col-places"), GuiKit.Muted(), ElementBounds.Fixed(470, y, 100, 20));
+        int pages = (jobs.Count + JobRowsPerPage - 1) / JobRowsPerPage;
+        page = Math.Clamp(page, 0, pages - 1);
+        int shown = Math.Min(JobRowsPerPage, jobs.Count - page * JobRowsPerPage);
+        composer.AddInset(ElementBounds.Fixed(0, y + 22, W, shown * JobRowHeight + 6), 3, 0.8f);
+        y += 25;
+        int citizenId = c.CitizenId;
+        foreach (string job in jobs.Skip(page * JobRowsPerPage).Take(JobRowsPerPage))
+        {
+            bool has = job == real;
+            composer.AddStaticText(JobName(job), has ? GuiKit.Body().WithColor(GuiKit.GoodColor) : GuiKit.Body(), ElementBounds.Fixed(10, y + 5, 172, 22));
+            string blockedBy = "";
+            if (job.Length > 0)
+            {
+                // The skill this job uses, and how the settler stands in it.
+                int at = snapshot.JobSkillJobs.IndexOf(job);
+                string skill = at >= 0 && at < snapshot.JobSkillCodes.Count ? snapshot.JobSkillCodes[at] : "";
+                int s = skill.Length == 0 ? -1 : c.SkillCodes.IndexOf(skill);
+                int level = s >= 0 && s < c.SkillLevels.Count ? c.SkillLevels[s] : 0;
+                int passion = s >= 0 && s < c.SkillPassions.Count ? c.SkillPassions[s] : 0;
+                blockedBy = s >= 0 && s < c.SkillBlocks.Count ? c.SkillBlocks[s] : "";
+                bool trait = c.JobTraits.Contains(job);
+                if (skill.Length > 0)
+                {
+                    composer.AddStaticText(Lang.Get("createacolony:jobpanel-skill", Lang.Get("createacolony:skill-" + skill), level),
+                        level >= 3 ? GuiKit.Detail().WithColor(GuiKit.GoodColor) : GuiKit.Detail(), ElementBounds.Fixed(185, y + 7, 128, 20));
+                }
+                string likes = blockedBy.Length > 0 ? Lang.Get("createacolony:jobpanel-never", Lang.Get("createacolony:trait-" + blockedBy))
+                    : string.Join(", ", new[] { passion > 0 ? Lang.Get("createacolony:jobpanel-passion-" + Math.Min(2, passion)) : "", trait ? Lang.Get("createacolony:jobpanel-trait") : "" }.Where(t => t.Length > 0));
+                if (likes.Length > 0)
+                {
+                    composer.AddStaticText(likes, GuiKit.Detail().WithColor(blockedBy.Length > 0 ? GuiKit.WarnColor : GuiKit.GoodColor), ElementBounds.Fixed(315, y + 7, 153, 20));
+                }
+                var count = snapshot.Jobs.Find(j => j.Job == job);
+                int places = count?.Places ?? 0, free = places - (count?.Workers ?? 0);
+                string placesText = places < 0 ? Lang.Get("createacolony:jobpanel-places-any")
+                    : places == 0 ? Lang.Get("createacolony:jobpanel-places-none")
+                    : free > 0 ? Lang.Get("createacolony:jobpanel-places-free", free, places)
+                    : Lang.Get("createacolony:jobpanel-places-full", places);
+                composer.AddStaticText(placesText, places < 0 || free > 0 ? GuiKit.Detail() : GuiKit.Muted(), ElementBounds.Fixed(470, y + 7, 105, 20));
+            }
+            if (has)
+            {
+                composer.AddStaticText(Lang.Get("createacolony:jobpanel-has"), GuiKit.Muted(), ElementBounds.Fixed(W - 82, y + 7, 80, 20));
+            }
+            else if (blockedBy.Length == 0)
+            {
+                string code = job;
+                composer.AddSmallButton(Lang.Get(job.Length == 0 ? "createacolony:jobpanel-remove" : "createacolony:manage-assign"), () =>
+                {
+                    OnSetJob(citizenId, code);
+                    return Open(CitizensTab);
+                }, ElementBounds.Fixed(W - 82, y + 1, 80, 26));
+            }
+            y += JobRowHeight;
+        }
+        composer.Pager(page, pages, y + 14, W, p => { page = p; Compose(); });
+        y += pages > 1 ? 54 : 16;
+        composer.Text(Lang.Get("createacolony:jobpanel-hint"), GuiKit.Muted(), 0, y, W, 6);
     }
 
     /// <summary>A wanderer's row: who, how long it still waits, and Welcome / Turn away buttons for officers.</summary>
@@ -835,7 +942,8 @@ public class GuiDialogTownHall : GuiDialog
         y = composer.Text(Lang.Get("createacolony:townhall-beds-hint"), GuiKit.Muted(), 0, y, Width, 10);
 
         y = composer.Section(Lang.Get("createacolony:townhall-jobs"), y, Width);
-        var jobs = snapshot.Jobs.Where(j => j.Workers > 0 || j.Places > 0).OrderBy(j => j.Job.Length == 0).ToList();
+        // A to Z, with "No job" first (0.203.0).
+        var jobs = snapshot.Jobs.Where(j => j.Workers > 0 || j.Places > 0).OrderBy(j => j.Job.Length > 0).ThenBy(j => JobName(j.Job), StringComparer.CurrentCultureIgnoreCase).ToList();
         if (jobs.Count == 0)
         {
             composer.Text(Lang.Get("createacolony:no-citizens"), GuiKit.Detail(), 0, y, Width);
@@ -1161,6 +1269,21 @@ public class GuiDialogTownHall : GuiDialog
         y = composer.Section(Lang.Get("createacolony:bailiff-duties"), y, Width);
         y = BailiffSwitch(composer, "bailiffjobs", "jobs", snapshot.BailiffGivesJobs, "bailiff-jobs", "bailiff-jobs-hint", y);
         y = BailiffSwitch(composer, "bailifflend", "lend", snapshot.BailiffLendsWorkers, "bailiff-lend", "bailiff-lend-hint", y);
+        // How long a worker who only waits for a delivery keeps the job (0.201.0).
+        string[] waits = { "1", "2", "3", "5", "7", "14" };
+        int waitNow = Math.Max(0, Array.IndexOf(waits, snapshot.BailiffWaitDays.ToString()));
+        if (Officer)
+        {
+            composer.AddStaticText(Lang.Get("createacolony:bailiff-wait"), GuiKit.Body(), ElementBounds.Fixed(0, y + 4, 420, 24));
+            composer.AddDropDown(waits, waits.Select(w => Lang.Get("createacolony:bailiff-wait-days", w)).ToArray(), waitNow,
+                (code, on) => SendBailiffRule("wait|" + code), ElementBounds.Fixed(430, y, 130, 28), "bailiffwait");
+            y += 36;
+        }
+        else
+        {
+            y = composer.Text(Lang.Get("createacolony:bailiff-wait") + " " + Lang.Get("createacolony:bailiff-wait-days", snapshot.BailiffWaitDays), GuiKit.Body(), 0, y, Width, 6);
+        }
+        y = composer.Text(Lang.Get("createacolony:bailiff-wait-hint"), GuiKit.Muted(), 0, y, Width, 10);
         composer.Text(Lang.Get("createacolony:bailiff-fields-hint"), GuiKit.Muted(), 0, y, Width, 6);
     }
 
@@ -1442,6 +1565,8 @@ public class GuiDialogTownHall : GuiDialog
             on => SendText(ColonyAction.SetTestSafety, "unhurt|" + (on ? "1" : "0")), y);
         y = TownSwitch(composer, "noenemies", "createacolony:noenemies", "createacolony:noenemies-hint", snapshot.NoEnemies,
             on => SendText(ColonyAction.SetTestSafety, "enemies|" + (on ? "1" : "0")), y);
+        y = TownSwitch(composer, "autoreport", "createacolony:autoreport", "createacolony:autoreport-hint", snapshot.AutoReport,
+            on => SendText(ColonyAction.SetTestSafety, "report|" + (on ? "1" : "0")), y);
         y = TownSwitch(composer, "mayorfree", "createacolony:mayorfree", "createacolony:mayorfree-hint", snapshot.MayorFreeHuts,
             on => SendText(ColonyAction.MayorAction, "free|" + (on ? "1" : "0")), y);
 

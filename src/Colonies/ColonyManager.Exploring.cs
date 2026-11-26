@@ -274,7 +274,7 @@ public partial class ColonyManager
     /// The thing the gatherer takes next: the first kind on the hut's collecting order (GatherOrder) there is
     /// any of, and of those the nearest. Null when there is nothing; rank is its place on the order.
     /// </summary>
-    public BlockPos? NextForage(Colony colony, Building hut, Vec3d from, System.Func<BlockPos, bool> skip, bool hasKnife, out int rank)
+    public BlockPos? NextForage(Colony colony, Building hut, Vec3d from, System.Func<BlockPos, bool> skip, bool hasKnife, out int rank, Vintagestory.API.Common.Entities.Entity? walker = null)
     {
         var ba = sapi.World.BlockAccessor;
         var scanner = Scanner(hut, "forage", ScanForage);
@@ -305,6 +305,8 @@ public partial class ColonyManager
             if (spotRank > bestRank || skip(pos) || !CanWorkAt(colony, pos)) continue;
             double dist = pos.DistanceSqTo(from.X, from.Y, from.Z);
             if (spotRank == bestRank && dist >= bestDist) continue;
+            // Nothing to stand on beside it but water (0.200.0): reeds out in a lake are left alone.
+            if (walker != null && ba.GetChunkAtBlockPos(pos) != null && !DryStandNear(walker, pos)) continue;
             best = pos;
             bestDist = dist;
             bestRank = spotRank;
@@ -334,7 +336,9 @@ public partial class ColonyManager
             var pos = new BlockPos((int)(hut.HutPos.X + Math.Cos(angle) * dist), hut.HutPos.Y, (int)(hut.HutPos.Z + Math.Sin(angle) * dist));
             if (ba.GetChunkAtBlockPos(pos) == null) continue;
             pos.Y = ba.GetTerrainMapheightAt(pos) + 1;
-            if (ba.GetBlock(pos.DownCopy(), BlockLayersAccess.Fluid).Id != 0 || skip(pos) || !CanWorkAt(colony, pos)) continue;
+            // Dry ground only: the terrain height is the lake bed, so the spot above it can be water (0.200.0).
+            if (ba.GetBlock(pos, BlockLayersAccess.Fluid).IsLiquid() || ba.GetBlock(pos.DownCopy(), BlockLayersAccess.Fluid).Id != 0) continue;
+            if (skip(pos) || !CanWorkAt(colony, pos)) continue;
             return pos;
         }
         return null;
@@ -413,6 +417,6 @@ public partial class ColonyManager
     string GathererInfo(Colony colony, Building hut)
     {
         int ready = scanners.TryGetValue((hut.BuildingId, "forage"), out var scanner) ? scanner.Found.Count(f => f.Value) : 0;
-        return Lang.Get("createacolony:gatherer-progress", MarkerCount(colony, hut), ready);
+        return Lang.Get("createacolony:gatherer-progress", MarkerCount(colony, hut), ready, hut.StatTotals.GetValueOrDefault("planted"));
     }
 }

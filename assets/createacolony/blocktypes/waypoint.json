@@ -1,6 +1,6 @@
 {
 	"code": "waypoint",
-	"variantgroups": [ { "code": "type", "states": ["mine", "quarry", "front"] } ],
+	"variantgroups": [ { "code": "type", "states": ["mine", "quarry", "front", "ground"] } ],
 	"creativeinventory": { "general": ["*"], "vintagecolonies": ["*"] },
 	"blockmaterial": "Wood",
 	"drawtype": "cube",
@@ -8,10 +8,14 @@
 	// leave it out (the spot is cleared), and the miner or quarrier digs there. Placeholder cube look.
 	// "front" (0.199.0, "Front of build"): put it on the ground just outside the front door of any build. It tells
 	// the mod which side is the front, so the Mayor and the wand turn the building's front the right way.
+	// "ground" (0.201.0, "Ground floor marker"): put it on the ground of the yard or path, anywhere in the build. Its
+	// height is where the ground is: the build is set down so that level meets the land, and builders clear
+	// everything above it inside the outline. Without one, the front marker's height is used, else the hut block's.
 	"texturesByType": {
 		"*-mine": { "all": { "base": "game:block/wood/debarked/aged" }, "up": { "base": "game:block/cloth/linen/black" } },
 		"*-quarry": { "all": { "base": "game:block/wood/debarked/aged" }, "up": { "base": "game:block/cloth/linen/red" } },
-		"*-front": { "all": { "base": "game:block/wood/debarked/aged" }, "up": { "base": "game:block/cloth/linen/white" } }
+		"*-front": { "all": { "base": "game:block/wood/debarked/aged" }, "up": { "base": "game:block/cloth/linen/white" } },
+		"*-ground": { "all": { "base": "game:block/wood/debarked/aged" }, "up": { "base": "game:block/cloth/linen/blue" } }
 	},
 	"resistance": 1,
 	"sounds": { "place": "game:block/planks", "break": "game:block/planks", "hit": "game:block/planks" }

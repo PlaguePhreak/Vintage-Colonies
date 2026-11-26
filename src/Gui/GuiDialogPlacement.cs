@@ -121,8 +121,11 @@ public class GuiDialogPlacement : GuiDialog
 
         if (snapshot.Planned)
         {
-            y = composer.Text(snapshot.Have > 0 ? Lang.Get("createacolony:wand-have", snapshot.Have, name) : Lang.Get("createacolony:wand-need-block", name),
-                GuiKit.Detail().WithColor(snapshot.Have > 0 ? GuiKit.GoodColor : GuiKit.WarnColor), 0, y, Width, 8);
+            // In creative no block is needed, and the window says so (0.201.0).
+            bool creative = capi.World.Player?.WorldData?.CurrentGameMode == Vintagestory.API.Common.EnumGameMode.Creative;
+            y = composer.Text(snapshot.Have > 0 ? Lang.Get("createacolony:wand-have", snapshot.Have, name)
+                : creative ? Lang.Get("createacolony:wand-free-creative", name) : Lang.Get("createacolony:wand-need-block", name),
+                GuiKit.Detail().WithColor(snapshot.Have > 0 || creative ? GuiKit.GoodColor : GuiKit.WarnColor), 0, y, Width, 8);
             composer
                 .AddSmallButton(Lang.Get("createacolony:placement-accept"), () => Finish(ColonyAction.PlacementConfirm), ElementBounds.Fixed(0, y, 160, 28))
                 .AddSmallButton(Lang.Get("createacolony:placement-discard"), () => Finish(ColonyAction.PlacementCancel), ElementBounds.Fixed(170, y, 160, 28));

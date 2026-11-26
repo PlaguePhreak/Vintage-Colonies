@@ -17,6 +17,12 @@ public class AiTaskSettlerSleep : SettlerTaskBase
     Vec3d? spot;
     float? spotYaw;
 
+    /// <summary>Never given up, however often the walk fails (0.200.0).</summary>
+    protected override bool CanGiveUp => false;
+
+    /// <summary>A settler who cannot get to bed is carried there by this task itself.</summary>
+    protected override bool HelpedWhenStuck => false;
+
     public AiTaskSettlerSleep(EntityAgent entity, JsonObject taskConfig, JsonObject aiConfig) : base(entity, taskConfig, aiConfig) { }
 
     /// <summary>Night for most settlers; for a guard on night watch, the day hours it sleeps.</summary>
@@ -52,10 +58,10 @@ public class AiTaskSettlerSleep : SettlerTaskBase
         {
             StopWalking();
             // No way home at bedtime: brought home to bed and reset, so a lost settler is back by morning (0.198.0).
-            if (bedPos != null && !Arrived && !NearBed(bedPos) && entity is EntitySettler lost && Citizen is { } who
-                && entity.Pos.XYZ.DistanceTo(bedPos.ToVec3d()) > manager!.Config.LostOffLimitsRadius)
+            // However near the bed is (0.200.0): between 16 and 24 blocks from it a settler used to sleep on the ground.
+            if (bedPos != null && !Arrived && !NearBed(bedPos) && entity is EntitySettler lost && Citizen is { } who)
             {
-                manager.BringHome(Colony!, who, lost, stopTasks: false);
+                manager!.BringHome(Colony!, who, lost, stopTasks: false);
             }
             if (bedPos != null && (Arrived || NearBed(bedPos)))
             {

@@ -25,7 +25,10 @@ public partial class ColonyNetwork
             case ColonyAction.RenameBuilding:
                 return Manager.RenameBuilding(colony, building, packet.Text);
             case ColonyAction.AssignWorker:
-                return citizen == null ? "createacolony:bad-citizen" : Manager.AssignWorker(colony, building, citizen);
+                if (citizen == null) return "createacolony:bad-citizen";
+                string? assignError = Manager.AssignWorker(colony, building, citizen);
+                if (assignError == null) citizen.JobSetByPlayer = true;
+                return assignError;
             case ColonyAction.UnassignWorker:
                 return citizen == null ? "createacolony:bad-citizen" : Manager.UnassignWorker(colony, building, citizen);
             case ColonyAction.RecallWorkers:

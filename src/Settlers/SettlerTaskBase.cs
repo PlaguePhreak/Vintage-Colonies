@@ -15,6 +15,8 @@ namespace CreateAColony.Settlers;
 public abstract class SettlerTaskBase : AiTaskBase
 {
     const int MaxPathAttempts = 3;
+    /// <summary>How many spots one path search looks at on the first try; later tries look at three times as many.</summary>
+    const int SearchDepth = 2000;
     const long RetryDelayMs = 4000;
     /// <summary>A walking settler that has not moved this far in NoProgressMs plans a new path.</summary>
     const double ProgressDistance = 0.5;
@@ -106,20 +108,33 @@ public abstract class SettlerTaskBase : AiTaskBase
         finalRange = range;
         refreshGoal = refresh;
         arrived = false;
-        // Back where this settler got lost before (0.198.0): no walk there, it counts as no path.
-        if (manager != null && Citizen is { } lost && manager.IsOffLimits(lost, target))
+        failureNoted = false;
+        arrivalNoted = false;
+        WalkRefusal = null;
+        // Back where this settler got lost before (0.198.0), or a goal it has given up for now (0.200.0): no walk
+        // there, it counts as no path.
+        if (manager != null && Citizen is { } lost)
         {
-            failed = true;
-            onLeg = false;
-            attempts = MaxPathAttempts;
-            legDone = false;
-            pathTraverser.Stop();
-            return;
+            if (manager.IsOffLimits(Colony, lost, target)) WalkRefusal = "off limits";
+            else if (CanGiveUp && manager.GaveUpOn(lost, target, out _)) WalkRefusal = "given up";
+            if (WalkRefusal != null)
+            {
+                failed = true;
+                failureNoted = true;
+                onLeg = false;
+                attempts = MaxPathAttempts;
+                legDone = false;
+                pathTraverser.Stop();
+                manager.NoteWalk(lost, entity, TaskName, WalkRefusal, target);
+                if (manager.PathDebug) manager.Mod.Logger.Notification("[pathing] {0} at {1}: walk to {2} refused ({3}, {4})", lost.Name, entity.Pos.AsBlockPos, target.AsBlockPos, WalkRefusal, TaskName);
+                return;
+            }
         }
         legTry = 0;
         EndLadder();
         triedLadders.Clear();
         ladderFalls = 0;
+        doorHelps = 0;
         if (Will is { } will)
         {
             will.Heading(target, range);
@@ -180,7 +195,15 @@ public abstract class SettlerTaskBase : AiTaskBase
         return manager.FreeSpotNear(entity, column, 2);
     }
 
-    protected bool Arrived => arrived || (finalGoal != null && entity.Pos.SquareDistanceTo(finalGoal) <= (finalRange + 0.6f) * (finalRange + 0.6f));
+    protected bool Arrived
+    {
+        get
+        {
+            bool there = arrived || (finalGoal != null && entity.Pos.SquareDistanceTo(finalGoal) <= (finalRange + 0.6f) * (finalRange + 0.6f));
+            if (there) NoteArrival();
+            return there;
+        }
+    }
 
     /// <summary>
     /// For a settler whose walk to its bed failed: true when the bed is close enough (BedFindWayRange) to get into
@@ -196,7 +219,49 @@ public abstract class SettlerTaskBase : AiTaskBase
     protected bool PathFailedOnce => failed;
 
     /// <summary>True once the target could not be reached after several attempts.</summary>
-    protected bool PathFailed => failed && attempts >= MaxPathAttempts && (!onLeg || legTry >= Legs.Length);
+    protected bool PathFailed
+    {
+        get
+        {
+            bool done = failed && attempts >= MaxPathAttempts && (!onLeg || legTry >= Legs.Length);
+            if (done) NoteFailure();
+            return done;
+        }
+    }
+
+    /// <summary>Why the last WalkTo was not even started ("off limits", "given up"), or null. For statuses.</summary>
+    protected string? WalkRefusal { get; private set; }
+
+    /// <summary>False for walks a settler must never give up: to bed, to food, to safety.</summary>
+    protected virtual bool CanGiveUp => true;
+
+    /// <summary>False when the task has its own answer to a walk that fails (the sleep task carries the settler to bed).</summary>
+    protected virtual bool HelpedWhenStuck => true;
+
+    /// <summary>This task's name in the walking history: "Courier", "Sleep".</summary>
+    string TaskName => GetType().Name.Replace("AiTaskSettler", "");
+
+    bool failureNoted;
+    bool arrivalNoted;
+
+    /// <summary>The first time a walk is seen to have failed for good: counted, helped or given up (ColonyManager.WalkTrouble.cs).</summary>
+    void NoteFailure()
+    {
+        if (failureNoted || manager == null || finalGoal == null) return;
+        failureNoted = true;
+        if (!CountsForWillpower || Citizen is not { } citizen) return;
+        string result = HelpedWhenStuck ? manager.WalkFailed(Colony, citizen, entity, finalGoal, CanGiveUp) : "no way";
+        manager.NoteWalk(citizen, entity, TaskName, result, finalGoal);
+    }
+
+    void NoteArrival()
+    {
+        if (arrivalNoted || manager == null || finalGoal == null) return;
+        arrivalNoted = true;
+        if (!CountsForWillpower || Citizen is not { } citizen) return;
+        manager.WalkArrived(citizen, finalGoal);
+        manager.NoteWalk(citizen, entity, TaskName, "arrived", finalGoal);
+    }
 
     /// <summary>The settler's step height as its entity file sets it, before any stair boost.</summary>
     float? baseStepHeight;
@@ -248,6 +313,11 @@ public abstract class SettlerTaskBase : AiTaskBase
         {
             if (!ladder!.Tick(entity, moveSpeed, out bool climbFailed)) return;
             if (climbFailed && (!ladder.Fell || ++ladderFalls > 1)) triedLadders.Add(ladder.Column);
+            if (manager?.PathDebug == true && (climbFailed || ladder.Carried))
+            {
+                manager.Mod.Logger.Notification("[pathing] settler {0} at {1}: the climb at {2} {3}", entity.EntityId, entity.Pos.AsBlockPos, ladder.Column,
+                    ladder.Carried ? "got nowhere, set down at its other end" : ladder.Fell ? "ended in a fall" : "failed");
+            }
             EndLadder();
             legTry = 0;
             StartLeg();
@@ -300,7 +370,9 @@ public abstract class SettlerTaskBase : AiTaskBase
         else if (now - lastProgressMs > NoProgressMs)
         {
             pathTraverser.Stop();
-            if (attempts < MaxPathAttempts) StartPath();
+            stuckReplans = System.Math.Max(stuckReplans, 1);
+            if (ThroughDoor()) StartPath();
+            else if (attempts < MaxPathAttempts) StartPath();
             else failed = true;
         }
     }
@@ -314,7 +386,10 @@ public abstract class SettlerTaskBase : AiTaskBase
         // A search still running would make the traverser ignore this one without a word.
         pathTraverser.Stop();
         // NavigateTo_Async already called OnPathFailed itself when it returns false: do not count that twice.
-        pathTraverser.NavigateTo_Async(goal!, moveSpeed, System.Math.Min(goalRange, WaypointRange), OnArrived, OnStuck, OnPathFailed, 2000, 1);
+        // A second and third try search further (0.200.0): the long way round a fenced yard ran out of search and
+        // counted as "no path" (Builder's Hut 2 in the overnight test).
+        int depth = attempts <= 1 ? SearchDepth : SearchDepth * 3;
+        pathTraverser.NavigateTo_Async(goal!, moveSpeed, System.Math.Min(goalRange, WaypointRange), OnArrived, OnStuck, OnPathFailed, depth, 1);
     }
 
     void OnArrived()
@@ -328,6 +403,12 @@ public abstract class SettlerTaskBase : AiTaskBase
     void OnStuck()
     {
         pathTraverser.Stop();
+        if (ThroughDoor())
+        {
+            attempts = System.Math.Max(0, attempts - 1);
+            StartPath();
+            return;
+        }
         if (ladderPhase != LadderPhase.ToStart && stuckReplans < MaxStuckReplans)
         {
             // Bumped into something on the way: plan again from where it stands, straight away, without
@@ -339,6 +420,20 @@ public abstract class SettlerTaskBase : AiTaskBase
             return;
         }
         OnPathFailed();
+    }
+
+    /// <summary>Times this walk set the settler down beyond a door it kept bumping at (ColonyManager.HelpThroughDoor).</summary>
+    int doorHelps;
+    const int MaxDoorHelps = 3;
+
+    /// <summary>After a second bump by a door: get the settler through it. False when no door is in the way.</summary>
+    bool ThroughDoor()
+    {
+        if (manager == null || goal == null || ladderPhase != LadderPhase.None || stuckReplans < 1 || doorHelps >= MaxDoorHelps) return false;
+        if (!manager.HelpThroughDoor(entity, goal)) return false;
+        doorHelps++;
+        stuckReplans = 0;
+        return true;
     }
 
     void OnPathFailed()

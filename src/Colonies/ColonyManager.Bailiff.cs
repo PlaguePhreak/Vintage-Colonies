@@ -36,14 +36,14 @@ public partial class ColonyManager
     static readonly HashSet<string> StuckStatuses = new()
     {
         "no-hut-chest", "hut-chest-full", "no-trees", "no-fields", "growing", "gathered-all", "explored-all", "prospected-all",
-        "hunter-nothing", "mine-no-readings", "mine-no-site", "mine-no-site-ore", "mine-blocked", "mine-shaft-blocked", "mine-shaft-done",
+        "hunter-nothing", "hunter-leaving-predator", "mine-no-readings", "mine-no-site", "mine-no-site-ore", "mine-blocked", "mine-shaft-blocked", "mine-shaft-done",
         "mine-no-shaft-spot", "mineshaft-done", "quarry-done", "quarry-no-room", "no-kiln-spot", "no-form-spot", "no-firepit",
         "firepit-busy", "oven-nofire", "smith-no-forge", "smith-no-anvil", "smith-forge-busy", "smelter-firepit-busy",
         "smelter-no-mold-spot", "tailor-nothing-to-mend", "jeweller-nothing-set"
     };
 
     /// <summary>Statuses that come and go during work and say nothing either way (walking about, fetching tools).</summary>
-    static readonly HashSet<string> PassingStatuses = new() { "starting", "unreachable", "foraging-look", "fetching-tools", "searching", "mine-travelling" };
+    static readonly HashSet<string> PassingStatuses = new() { "starting", "unreachable", "foraging-look", "fetching-tools", "searching", "mine-travelling", "getting-ready", "hunter-far-trip", "forester-further", "herder-catching", "planting-berries" };
 
     static bool IsStuckStatus(string status) =>
         StuckStatuses.Contains(status) || status.StartsWith("needs-") || status.Contains("-needs-") || status.EndsWith("-stocked");
@@ -54,6 +54,7 @@ public partial class ColonyManager
     /// <summary>A lent worker goes back to normal: they keep whatever job they have now.</summary>
     public static void EndLoan(CitizenRecord c)
     {
+        c.LentWaiting = false;
         c.HomeJob = null;
         c.HomeWorkplacePos = null;
         c.LentUntilTotalDays = 0;
@@ -73,6 +74,20 @@ public partial class ColonyManager
     /// so workers start before the builder gets to it. A hut being taken down never.
     /// </summary>
     public bool Staffable(Building hut) => !hut.Removing && (hut.Level >= 1 || Config.WorkAtUnbuiltHuts);
+
+    /// <summary>
+    /// Huts the Bailiff, the Mayor and auto hiring put workers in (0.201.0): never one whose first build is queued or
+    /// under way. A Cook was given a Cook's Hut that was not there yet, and a Blacksmith asked for a hammer for an
+    /// unbuilt smithy. A player can still put a worker there by hand.
+    /// </summary>
+    public bool AutoStaffable(Building hut) => Staffable(hut) && !(hut.Level < 1 && hut.HasWorkOrder);
+
+    /// <summary>Game days a worker who waits for a delivery keeps the job before the Bailiff moves them: the colony's own, else the config's.</summary>
+    public int BailiffWaitDaysOf(Colony colony) => colony.BailiffWaitDays > 0 ? colony.BailiffWaitDays : Math.Max(1, Config.BailiffWaitDays);
+
+    /// <summary>True when a hut's worker is only waiting for something to be brought: it has open requests, or needs a tool or a material.</summary>
+    bool WaitsForDelivery(Colony colony, Building hut, string status) =>
+        status.StartsWith("needs-") || status.Contains("-needs-") || RequestsOf(colony, hut).Count > 0;
 
     /// <summary>The colony's bailiff, or null.</summary>
     public CitizenRecord? BailiffOf(Colony colony) =>
@@ -161,7 +176,7 @@ public partial class ColonyManager
         if (free.Count == 0) return;
         // Every hut that takes workers, built or not (0.198.0, Aaron: work from the hut block). Guard posts come last,
         // so a free place at any other hut is filled first; built huts before unbuilt ones.
-        var huts = colony.Buildings.Where(b => Staffable(b) && JobOf(b.Type) != null)
+        var huts = colony.Buildings.Where(b => AutoStaffable(b) && JobOf(b.Type) != null)
             .OrderBy(b => IsGuardPost(b.Type)).ThenBy(b => b.Level < 1).ThenBy(b => b.BuildingId).ToList();
         foreach (var job in huts.Select(b => JobOf(b.Type)!).Distinct().ToList())
         {
@@ -178,6 +193,8 @@ public partial class ColonyManager
                 open--;
                 pick.JobCode = job;
                 pick.WorkplacePos = hut.HutPos.Copy();
+                pick.JobSetByPlayer = false;
+                pick.LastMovedTotalDays = sapi.World.Calendar.TotalDays;
                 Today(colony).JobsGiven++;
                 LogEvent(colony, "event-bailiff-job", bailiff.Name, pick.Name, "@job-" + job, BuildingName(hut));
                 TellMembers(colony, "createacolony:bailiff-gave-job", bailiff.Name, pick.Name, Lang.Get("createacolony:job-" + job));
@@ -198,6 +215,12 @@ public partial class ColonyManager
             && !KeepsPost(c.JobCode) && c.WorkplacePos != null).ToList())
         {
             var key = (colony.ColonyId, c.CitizenId);
+            // A job a player gave by hand stays until the player changes it (0.201.0).
+            if (c.JobSetByPlayer)
+            {
+                stuckSince.Remove(key);
+                continue;
+            }
             string status = WorkerStatus.GetValueOrDefault(c.CitizenId, "");
             if (!IsStuckStatus(status))
             {
@@ -209,22 +232,50 @@ public partial class ColonyManager
                 stuckSince[key] = now;
                 continue;
             }
-            if (now - since < need) continue;
-            stuckSince.Remove(key);
             if (GetBuilding(colony, c.WorkplacePos!) is not { } home) continue;
-            Lend(colony, bailiff, c, home, status, now);
+            // A worker who only waits for a delivery keeps the job (0.201.0, Aaron): the Bailiff moves them after
+            // BailiffWaitDays game days with nothing delivered and nothing made. Every delivery starts the wait again.
+            bool waiting = WaitsForDelivery(colony, home, status);
+            if (waiting && lastDelivery.TryGetValue((colony.ColonyId, home.BuildingId), out double delivered) && delivered > since)
+            {
+                stuckSince[key] = since = delivered;
+            }
+            if (now - since < (waiting ? BailiffWaitDaysOf(colony) : need)) continue;
+            // Nobody is moved twice within BailiffMoveAgainDays.
+            if (c.LastMovedTotalDays > 0 && now - c.LastMovedTotalDays < Math.Max(0, Config.BailiffMoveAgainDays)) continue;
+            if (Lend(colony, bailiff, c, home, status, now, waiting)) stuckSince.Remove(key);
         }
     }
 
-    void Lend(Colony colony, CitizenRecord bailiff, CitizenRecord c, Building home, string status, double now)
+    /// <summary>True when something waits to be carried: a hut's spare things, or a request the warehouse can fill.</summary>
+    bool HaulingNeeded(Colony colony)
+    {
+        if (FindHutJunk(colony) != null) return true;
+        var stores = WarehouseContainers(colony).ToList();
+        return colony.Requests.Any(r => r.Remaining > 0 && r.LeasedByCitizenId == 0 && CountItems(stores, Matcher(r.ItemCode)) > 0);
+    }
+
+    /// <summary>Lends a stuck worker to another hut, or to hauling. False when there is nowhere useful to send them (0.205.0, note 107).</summary>
+    bool Lend(Colony colony, CitizenRecord bailiff, CitizenRecord c, Building home, string status, double now, bool waiting = false)
     {
         var target = colony.Buildings
-            .Where(b => Staffable(b) && JobOf(b.Type) is { } job && job != c.JobCode && !KeepsPost(job)
+            .Where(b => AutoStaffable(b) && JobOf(b.Type) is { } job && job != c.JobCode && !KeepsPost(job)
                 && IncapableOfJob(c, job) == null && FreePlaces(colony, b) > 0)
             .OrderByDescending(b => JobScore(c, JobOf(b.Type)!)).ThenBy(b => b.BuildingId).FirstOrDefault();
+        // No hut has a place and nothing waits to be carried: lending them to hauling would only make them idle elsewhere.
+        if (target == null && !HaulingNeeded(colony))
+        {
+            noLendWhy[(colony.ColonyId, c.CitizenId)] = "no hut has a free place and nothing needs carrying";
+            return false;
+        }
+        noLendWhy.Remove((colony.ColonyId, c.CitizenId));
         c.HomeJob = c.JobCode;
         c.HomeWorkplacePos = c.WorkplacePos!.Copy();
         c.LentUntilTotalDays = now + Math.Max(0.05, Config.BailiffLendDays);
+        c.LentWaiting = waiting;
+        c.LastMovedTotalDays = now;
+        Mod.Logger.Notification("[bailiff] {0}: {1} lent {2} from {3} to {4} ({5}{6})", colony.Name, bailiff.Name, c.Name, BuildingName(home),
+            target != null ? BuildingName(target) : "hauling", status, waiting ? ", after waiting " + BailiffWaitDaysOf(colony) + " days for a delivery" : "");
         // No hut has room: they help with hauling, as jobless settlers do.
         c.JobCode = target != null ? JobOf(target.Type) : null;
         c.WorkplacePos = target?.HutPos.Copy();
@@ -232,15 +283,44 @@ public partial class ColonyManager
         if (target != null) LogEvent(colony, "event-bailiff-lent", bailiff.Name, c.Name, BuildingName(home), BuildingName(target), "@workstatus-" + status);
         else LogEvent(colony, "event-bailiff-lent-hauling", bailiff.Name, c.Name, BuildingName(home), "@workstatus-" + status);
         MarkDirty(colony);
+        return true;
+    }
+
+    /// <summary>Why the Bailiff could not move a stuck worker last time it tried, for the report (0.205.0, note 88).</summary>
+    readonly Dictionary<(string, int), string> noLendWhy = new();
+
+    /// <summary>Why a stuck worker has not been moved although the wait is over, or null.</summary>
+    public string? NotMovedWhy(Colony colony, CitizenRecord c, double now)
+    {
+        if (BailiffOnDuty(colony) == null) return "the Bailiff is not on duty";
+        if (!colony.BailiffLendsWorkers) return "moving stuck workers is turned off";
+        if (c.LastMovedTotalDays > 0 && now - c.LastMovedTotalDays < Math.Max(0, Config.BailiffMoveAgainDays))
+            return $"moved {(now - c.LastMovedTotalDays) * sapi.World.Calendar.HoursPerDay:0.#} game hours ago, not again so soon";
+        if (c.IsDowned) return "downed";
+        return noLendWhy.GetValueOrDefault((colony.ColonyId, c.CitizenId));
     }
 
     /// <summary>Lent workers whose time is up go back to their own hut, if their place there is still free; else they stay.</summary>
     void SendLentWorkersBack(Colony colony, CitizenRecord bailiff, double now)
     {
-        foreach (var c in colony.Citizens.Where(c => c.HomeJob != null && now >= c.LentUntilTotalDays).ToList())
+        foreach (var c in colony.Citizens.Where(c => c.HomeJob != null).ToList())
         {
             var home = c.HomeWorkplacePos == null ? null : GetBuilding(colony, c.HomeWorkplacePos);
+            // Back as soon as their own hut can work again (0.201.0): something it asked for has come, or nothing is
+            // asked for any more. Otherwise when the day is up.
+            bool early = false;
+            if (now < c.LentUntilTotalDays)
+            {
+                if (home == null) continue;
+                double lentAt = c.LentUntilTotalDays - Math.Max(0.05, Config.BailiffLendDays);
+                early = lastDelivery.TryGetValue((colony.ColonyId, home.BuildingId), out double delivered) && delivered > lentAt
+                    || c.LentWaiting && RequestsOf(colony, home).Count == 0
+                    // Lent to hauling and nothing needs carrying (0.205.0, note 107).
+                    || c.JobCode == null && !HaulingNeeded(colony);
+                if (!early) continue;
+            }
             string homeJob = c.HomeJob!;
+            if (early) Mod.Logger.Notification("[bailiff] {0}: {1} goes back to {2} early, it can work again", colony.Name, c.Name, BuildingName(home!));
             EndLoan(c);
             MarkDirty(colony);
             if (!c.Alive || home == null || home.Removing || JobOf(home.Type) != homeJob || FreePlaces(colony, home) <= 0) continue;

@@ -29,6 +29,16 @@ public partial class ColonyManager
 
     static bool WorksFarOut(string? job) => job is Jobs.Forester or Jobs.Farmer or Jobs.Guard or Jobs.Prospector or Jobs.Miner or Jobs.Quarrier or Jobs.Explorer or Jobs.Gatherer or Jobs.Hunter;
 
+    /// <summary>
+    /// True for a settler that keeps going while no player is near. The outdoor jobs always do; with config
+    /// AllJobsWorkFarOut (Aaron, 0.202.0, on by default) every grown settler with a job does: builders, couriers, cooks
+    /// and crafters too.
+    /// </summary>
+    bool KeepsWorkingFarOut(Colony colony, CitizenRecord citizen) =>
+        WorksFarOut(citizen.JobCode)
+        || Config.AllJobsWorkFarOut && !string.IsNullOrEmpty(citizen.JobCode) && !citizen.IsChild && !citizen.Visitor
+        || colony.Teardowns.Any(t => t.BuilderCitizenId == citizen.CitizenId);
+
     void OnFarWorkTick(float dt)
     {
         var players = sapi.World.AllOnlinePlayers.Select(p => p.Entity).Where(e => e != null).ToList();
@@ -39,9 +49,16 @@ public partial class ColonyManager
         {
             foreach (var colony in colonies.Values)
             {
+                // With every job working, the Town Hall and the Warehouse stay loaded too while the players are away:
+                // couriers, builders and crafters all go there.
+                if (Config.AllJobsWorkFarOut && colony.Citizens.Any(c => c.Alive && !string.IsNullOrEmpty(c.JobCode) && !c.Visitor))
+                {
+                    if (FarFromPlayers(players, colony.TownHallPos.ToVec3d(), GlobalConstants.DefaultSimulationRange)) KeepAround(want, colony.TownHallPos.ToVec3d(), size);
+                    if (colony.WarehousePos is { } warehouse && FarFromPlayers(players, warehouse.ToVec3d(), GlobalConstants.DefaultSimulationRange)) KeepAround(want, warehouse.ToVec3d(), size);
+                }
                 foreach (var citizen in colony.Citizens)
                 {
-                    if (!citizen.Alive || citizen.IsDowned || !WorksFarOut(citizen.JobCode) && !colony.Teardowns.Any(t => t.BuilderCitizenId == citizen.CitizenId)) continue;
+                    if (!citizen.Alive || citizen.IsDowned || !KeepsWorkingFarOut(colony, citizen)) continue;
                     // The worker plans every trip from its hut and takes what it gathered there, so a hut no player is
                     // near stays loaded too; without it the worker finds no hut storage and stops.
                     if (citizen.WorkplacePos is { } hutPos && FarFromPlayers(players, hutPos.ToVec3d(), GlobalConstants.DefaultSimulationRange))

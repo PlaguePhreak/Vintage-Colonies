@@ -150,6 +150,57 @@ public partial class ColonyManager : ModSystem
             var factions = config.RaidFactions ?? Array.Empty<string>();
             if (!factions.Contains("restless")) config.RaidFactions = factions.Append("restless").ToArray();
         }
+        if (config.ConfigVersion < 11)
+        {
+            // 0.201.0 (Aaron): a second builder from 5 settlers, each builder one build in work and one queued, and
+            // the settlement starts with Gatherer's Hut, Builder's Hut, Primitive Craftsman and Warehouse.
+            if (config.MayorSecondBuilderAt == 8) config.MayorSecondBuilderAt = 5;
+            if (config.MayorOrdersPerBuilder == 1) config.MayorOrdersPerBuilder = 2;
+            if ((config.MayorBuildOrder ?? Array.Empty<string>()).SequenceEqual(ColonyConfig.OldMayorBuildOrder)) config.MayorBuildOrder = ColonyConfig.NewMayorBuildOrder();
+        }
+        if (config.ConfigVersion < 12)
+        {
+            // 0.202.0 (Aaron): the Primitive Craftsman makes reed baskets, reed chests, crude doors and torches, the
+            // Forester torches too, and helpers come from 32 blocks.
+            var fresh = new ColonyConfig();
+            config.HutRecipeOutputs ??= new();
+            config.PotteryDefaultKeep ??= new();
+            foreach (var (pattern, keep) in fresh.PotteryDefaultKeep) config.PotteryDefaultKeep.TryAdd(pattern, keep);
+            // The Gatherer never made torches; the Requests tab said it did (note 94).
+            if (config.HutRecipeOutputs.TryGetValue("gatherer", out var gathererMakes)) config.HutRecipeOutputs["gatherer"] = gathererMakes.Where(o => o != "torch").ToArray();
+            if (!config.HutRecipeOutputs.ContainsKey("craftsman")) config.HutRecipeOutputs["craftsman"] = fresh.HutRecipeOutputs["craftsman"];
+            if (config.HutRecipeOutputs.TryGetValue("forester", out var forester) && !forester.Contains("torch"))
+                config.HutRecipeOutputs["forester"] = forester.Append("torch").ToArray();
+            if (config.SupportAllyRadius == 16f) config.SupportAllyRadius = fresh.SupportAllyRadius;
+        }
+        if (config.ConfigVersion < 13)
+        {
+            // 0.205.0 (Aaron): huts make what builds need. The Potter makes mudbrick and daub, the Primitive Craftsman
+            // wattle and stone age hut blocks, the Stonemason cobblestone from the Gatherer's stones.
+            var fresh = new ColonyConfig();
+            config.HutRecipeOutputs ??= new();
+            foreach (var type in new[] { "potter", "craftsman" })
+            {
+                var have = config.HutRecipeOutputs.GetValueOrDefault(type) ?? Array.Empty<string>();
+                config.HutRecipeOutputs[type] = have.Union(fresh.HutRecipeOutputs[type]).ToArray();
+            }
+            config.HutRecipeTools ??= new();
+            config.HutRecipeTools.TryAdd("craftsman", fresh.HutRecipeTools["craftsman"]);
+            config.HutRecipeDomains ??= new();
+            config.HutRecipeDomains.TryAdd("craftsman", fresh.HutRecipeDomains["craftsman"]);
+            config.HutRecipeInputParts ??= new();
+            if (config.HutRecipeInputParts.TryGetValue("stonemason", out var parts))
+                config.HutRecipeInputParts["stonemason"] = parts.Union(fresh.HutRecipeInputParts["stonemason"]).ToArray();
+            config.MayorMakers ??= new();
+            foreach (var (type, patterns) in fresh.MayorMakers)
+            {
+                var have = config.MayorMakers.GetValueOrDefault(type) ?? Array.Empty<string>();
+                config.MayorMakers[type] = have.Union(patterns).ToArray();
+            }
+            config.MayorHutNeeds ??= new();
+            if (config.MayorHutNeeds.TryGetValue("stonemason", out var mason) && mason.SequenceEqual(new[] { "quarry" }))
+                config.MayorHutNeeds["stonemason"] = fresh.MayorHutNeeds["stonemason"];
+        }
         config.ConfigVersion = ColonyConfig.CurrentConfigVersion;
     }
 
@@ -331,6 +382,10 @@ public partial class ColonyManager : ModSystem
             TickSchool(colony);
             TickRequests(colony, now);
             EnsureMinStock(colony);
+            TidyToolRequests(colony);
+            TrackBuildWaits(colony);
+            TickSpareFuel(colony);
+            TickSettlerKit(colony);
             TickUpkeep(colony);
             TickLostSettlers(colony, now);
 

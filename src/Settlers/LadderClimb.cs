@@ -35,9 +35,21 @@ public class LadderClimb
     /// <summary>Set when the settler fell off the ladder on the way up, so the climb can be tried again.</summary>
     public bool Fell;
 
+    /// <summary>A climb down that has not dropped at all in this long is set over the ladder's hole (0.200.0).</summary>
+    const long NudgeMs = 1200;
+
     bool steppingOff;
+    bool nudged;
     double lastY, highestY;
     long lastProgressMs;
+    long beganMs;
+
+    /// <summary>
+    /// Set when the climb did not work but both ends are sound, so the settler was set down at the far end
+    /// (0.200.0). In the overnight test the Mayor stood on top of the Residence's ladder for days: the push
+    /// towards the ladder never got her off its top edge, and the climb was simply tried again every 40 seconds.
+    /// </summary>
+    public bool Carried;
 
     /// <summary>
     /// The ladder within radius that best gets the settler towards goal's height, with a spot to stand at each
@@ -128,9 +140,11 @@ public class LadderClimb
     public void Begin(EntityAgent entity)
     {
         steppingOff = false;
+        nudged = false;
+        Carried = false;
         lastY = highestY = entity.Pos.Y;
         Fell = false;
-        lastProgressMs = entity.World.ElapsedMilliseconds;
+        lastProgressMs = beganMs = entity.World.ElapsedMilliseconds;
         entity.Pos.Yaw = (float)Math.Atan2(Column.X + 0.5 - entity.Pos.X, Column.Z + 0.5 - entity.Pos.Z);
     }
 
@@ -149,8 +163,14 @@ public class LadderClimb
         if (now - lastProgressMs > NoProgressMs)
         {
             controls.WalkVector.Set(0, 0, 0);
-            failed = true;
+            failed = !CarryToExit(entity);
             return true;
+        }
+        // Going down and still on the ladder's top edge: stand over the hole, so the ladder takes hold.
+        if (!Up && !steppingOff && !nudged && now - beganMs > NudgeMs && Math.Abs(pos.Y - highestY) < 0.2)
+        {
+            nudged = true;
+            entity.TeleportToDouble(Column.X + 0.5, pos.Y, Column.Z + 0.5);
         }
 
         // Fell off on the way up: stop, so the walk is planned again from where it landed.
@@ -181,13 +201,35 @@ public class LadderClimb
         }
         if (steppingOff && now - lastProgressMs > NoProgressMs)
         {
-            failed = true;
+            failed = !CarryToExit(entity);
             return true;
         }
-        double sideways = dist < 0.05 ? 0 : Math.Min(1, dist) * speed / dist;
+        // Never slower than half speed: easing off close to the ladder left a settler creeping on its top edge.
+        double sideways = dist < 0.05 ? 0 : Math.Max(0.5, Math.Min(1, dist)) * speed / dist;
         double vertical = steppingOff ? (Up ? speed * 0.5 : 0) : (Up ? speed : -speed);
         controls.WalkVector.Set(dx * sideways, vertical, dz * sideways);
         if (dist > 0.05) pos.Yaw = (float)Math.Atan2(dx, dz);
         return false;
+    }
+
+    /// <summary>
+    /// The climb got nowhere: when the far end is still a spot to stand on and no more than a short ladder
+    /// away, the settler is set down there, as if it had climbed. False when the far end is no good.
+    /// </summary>
+    bool CarryToExit(EntityAgent entity)
+    {
+        if (Fell || ToPlace != null) return false;
+        if (Math.Abs(Exit.Y - entity.Pos.Y) > 24 || Horizontal(Exit, entity.Pos.XYZ) > 4) return false;
+        var feet = new BlockPos((int)Math.Floor(Exit.X), (int)Math.Floor(Exit.Y + 0.01), (int)Math.Floor(Exit.Z), entity.Pos.Dimension);
+        var ba = entity.World.BlockAccessor;
+        if (entity.World.CollisionTester.IsColliding(ba, entity.CollisionBox, new Vec3d(Exit.X, Exit.Y + 0.01, Exit.Z), false)) return false;
+        var below = feet.DownCopy();
+        var floor = ba.GetBlock(below).GetCollisionBoxes(ba, below);
+        if (floor == null || floor.Length == 0) return false;
+        entity.Controls.WalkVector.Set(0, 0, 0);
+        entity.Pos.Motion.Set(0, 0, 0);
+        entity.TeleportToDouble(Exit.X, Exit.Y + 0.01, Exit.Z);
+        Carried = true;
+        return true;
     }
 }

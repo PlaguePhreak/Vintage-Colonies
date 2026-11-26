@@ -17,7 +17,7 @@ namespace CreateAColony.Settlers;
 /// </summary>
 public class AiTaskSettlerPotter : AiTaskSettlerWorker
 {
-    enum Work { Form, Dig, Load, Fuel, Light, Empty }
+    enum Work { Form, Dig, Load, Fuel, Light, Empty, Cover }
 
     Work work;
 
@@ -32,7 +32,8 @@ public class AiTaskSettlerPotter : AiTaskSettlerWorker
     protected override bool WorkNeedsTool => false;
 
     /// <summary>Raw pieces wait in its inventory for the kiln, and it carries kiln fuel from the hut to the kiln.</summary>
-    protected override bool AlsoKeeps(ItemStack stack) => manager!.IsRawPottery(stack) || manager.IsKilnMaterial(stack);
+    protected override bool AlsoKeeps(ItemStack stack) => manager!.IsRawPottery(stack) || manager.IsKilnMaterial(stack)
+        || manager.Config.KilnCover && manager.IsKilnCover(stack);
 
     protected override string WorkAnimation(ItemSlot? hand) => work == Work.Dig ? "breakhand" : "interactstatic";
 
@@ -45,7 +46,23 @@ public class AiTaskSettlerPotter : AiTaskSettlerWorker
 
         // Fired pottery comes out first, then kilns get lit, then the ones being built get their fuel.
         if (kilns.FirstOrDefault(k => k.State == ColonyManager.KilnState.Fired).Pos is { } fired) return Go(Work.Empty, fired, "kiln-emptying");
-        if (kilns.FirstOrDefault(k => k.State == ColonyManager.KilnState.Ready).Pos is { } ready) return Go(Work.Light, ready, "kiln-lighting");
+        // The spare fuel is kept up whether or not a kiln waits (0.202.0).
+        m.EnsureKilnFuel(colony, hut, citizen, false);
+        // A kiln ready to light (new, or one the rain put out) gets a cover two above it first (0.202.0).
+        foreach (var (ready, _) in kilns.Where(k => k.State == ColonyManager.KilnState.Ready))
+        {
+            if (!m.KilnWaitsForCover(ready)) return Go(Work.Light, ready, "kiln-lighting");
+            if (m.PackCount(citizen, m.IsKilnCover) > 0) return Go(Work.Cover, ready, "kiln-covering");
+            var coverChest = storage.FirstOrDefault(c => c.Inventory.Any(s => !s.Empty && m.IsKilnCover(s.Itemstack)));
+            if (coverChest != null && !m.PackFull(citizen))
+            {
+                SetStatus("kiln-covering");
+                return FetchSupplies(coverChest.Pos, m.IsKilnCover, 1);
+            }
+            int bare = kilns.Count(k => k.State != ColonyManager.KilnState.Lit && !m.KilnCovered(k.Pos) && m.CanCoverKiln(k.Pos));
+            m.EnsurePotterRequest(colony, hut, m.KilnCoverCode, System.Math.Max(1, bare));
+            status ??= "needs-kiln-cover";
+        }
         foreach (var (pos, _) in kilns.Where(k => k.State == ColonyManager.KilnState.Building))
         {
             if (m.NextKilnMaterial(colony, hut, citizen, pos) is not { } fuel) continue;
@@ -57,6 +74,8 @@ public class AiTaskSettlerPotter : AiTaskSettlerWorker
                 SetStatus("kiln-fueling");
                 return FetchSupplies(chest.Pos, s => s.Equals(entity.World, fuel, GlobalConstants.IgnoredStackAttributes), fuel.StackSize - have);
             }
+            // All the fuel for every kiln in one go (0.202.0), then this layer's own fuel if it is something else.
+            m.EnsureKilnFuel(colony, hut, citizen, true);
             m.EnsurePotterRequest(colony, hut, fuel.Collectible.Code.ToString(), fuel.StackSize);
             status ??= "needs-kiln-fuel";
         }
@@ -109,6 +128,7 @@ public class AiTaskSettlerPotter : AiTaskSettlerWorker
                     SetStatus("kiln-fueling");
                     return FetchSupplies(chest.Pos, s => Same(s, f), f.StackSize - m.PackCount(citizen, s => Same(s, f)));
                 }
+                m.EnsureKilnFuel(colony, hut, citizen, true);
                 m.EnsurePotterRequest(colony, hut, first[0].Collectible.Code.ToString(), first[0].StackSize);
                 status ??= "needs-kiln-fuel";
             }
@@ -161,6 +181,9 @@ public class AiTaskSettlerPotter : AiTaskSettlerWorker
                 break;
             case Work.Empty:
                 m.EmptyKiln(colony, hut, citizen, target);
+                break;
+            case Work.Cover:
+                m.CoverKiln(colony, hut, citizen, target);
                 break;
         }
     }

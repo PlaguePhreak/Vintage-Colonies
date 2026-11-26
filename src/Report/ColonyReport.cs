@@ -49,6 +49,7 @@ public class ColonyReportSystem : ModSystem
     bool writing;
     DateTime lastAutoReport = DateTime.MinValue;
     DateTime lastClientAuto = DateTime.MinValue;
+    DateTime lastTimedReport = DateTime.Now;
 
     public static string ReportFolder => Path.Combine(GamePaths.DataPath, "ModData", "createacolony", "reports");
 
@@ -64,7 +65,7 @@ public class ColonyReportSystem : ModSystem
         sapi = api;
         serverChannel = api.Network.GetChannel(ChannelName);
         // Never write a report from inside the log handler: check for a serious error every few seconds instead.
-        api.Event.RegisterGameTickListener(_ => CheckAutoReport(), 5000);
+        api.Event.RegisterGameTickListener(_ => { CheckAutoReport(); CheckTimedReport(); }, 5000);
     }
 
     public override void StartClientSide(ICoreClientAPI api)
@@ -127,6 +128,43 @@ public class ColonyReportSystem : ModSystem
         {
             writing = true;
             try { sapi.Logger.Warning("[Vintage Colonies report] Auto report failed: {0}", e.Message); } finally { writing = false; }
+        }
+    }
+
+    /// <summary>
+    /// The Town Hall's Auto report switch (0.204.0): while any colony has it on, saves a report of those colonies every
+    /// Config.TimedReportMinutes, named "-timed", with no chat message, and keeps only the newest Config.TimedReportsKept.
+    /// </summary>
+    void CheckTimedReport()
+    {
+        if (writing || sapi == null) return;
+        var manager = sapi.ModLoader.GetModSystem<ColonyManager>();
+        if (manager == null) return;
+        double minutes = Math.Max(1, manager.Config.TimedReportMinutes);
+        if ((DateTime.Now - lastTimedReport).TotalMinutes < minutes) return;
+        var colonies = AllColonies(manager).Where(c => c.AutoReport).ToList();
+        if (colonies.Count == 0) { lastTimedReport = DateTime.Now; return; }
+        lastTimedReport = DateTime.Now;
+        try
+        {
+            WriteServerReport(null, Lang.Get("createacolony:report-timed-note"), colonies, "-timed", out _);
+            TidyTimedReports(Math.Max(1, manager.Config.TimedReportsKept));
+        }
+        catch (Exception e)
+        {
+            writing = true;
+            try { sapi.Logger.Warning("[Vintage Colonies report] Timed report failed: {0}", e.Message); } finally { writing = false; }
+        }
+    }
+
+    /// <summary>Deletes the oldest "-timed" reports above <paramref name="keep"/>. Never touches other reports.</summary>
+    static void TidyTimedReports(int keep)
+    {
+        var timed = new DirectoryInfo(ReportFolder).GetFiles("report-*-timed.txt")
+            .OrderByDescending(f => f.Name, StringComparer.Ordinal).Skip(keep);
+        foreach (var f in timed)
+        {
+            try { f.Delete(); } catch (IOException) { } catch (UnauthorizedAccessException) { }
         }
     }
 
@@ -222,14 +260,59 @@ public class ColonyReportSystem : ModSystem
     {
         Section(sb, "Colony " + colony.Name, () => DumpFields(sb, colony, ""));
 
+        // Everything that is not getting on, with the reason, in one place (0.200.0). /colony stuck prints the same list.
+        Section(sb, "Trouble right now", () =>
+        {
+            var trouble = manager.TroubleLines(colony);
+            if (trouble.Count == 0) sb.AppendLine("Nothing found.");
+            foreach (var line in trouble) sb.AppendLine("- " + line);
+        });
+
+        Section(sb, "Mayor and Bailiff", () =>
+        {
+            foreach (var line in manager.OfficeLines(colony)) sb.AppendLine(line);
+        });
+
+        Section(sb, "Builds without markers", () =>
+        {
+            var missing = manager.MarkerlessBuilds(colony);
+            if (missing.Count == 0) sb.AppendLine("Every build of this colony's style has a Front of build and a Ground floor marker.");
+            else sb.AppendLine("These builds stand at the hut block's height and face as before. Add the markers and export again to fix height and front.");
+            foreach (var line in missing) sb.AppendLine("- " + line);
+        });
+
         Section(sb, "Huts (" + colony.Buildings.Count + ")", () =>
         {
             foreach (var b in colony.Buildings)
             {
                 sb.AppendLine($"- {b.Type} level {b.Level} at {b.HutPos.ToLocalPosition(api)} (id {b.BuildingId})");
-                if (b.HasWorkOrder || b.Removing) sb.AppendLine("    Build: " + manager.BuildStatus.GetValueOrDefault(b.BuildingId, "queued"));
-                if (manager.StuckStep.TryGetValue(b.BuildingId, out var stuckAt)) sb.AppendLine($"    Build stuck at {stuckAt.ToLocalPosition(api)}: {api.World.BlockAccessor.GetBlock(stuckAt).Code}");
+                if (b.HasWorkOrder || b.Removing) sb.AppendLine("    Build: " + manager.BuildStatusText(colony, b));
+                if (manager.StuckText(b) is { } stuckText) sb.AppendLine("    Build stuck " + stuckText);
                 if (manager.ShaftBlockedAt.TryGetValue(b.BuildingId, out var shaft)) sb.AppendLine($"    Shaft blocked at {shaft.Pos.ToLocalPosition(api)} by {shaft.Block}");
+                try
+                {
+                    var workers = colony.Citizens.Where(c => c.Alive && c.WorkplacePos != null && c.WorkplacePos.Equals(b.HutPos)).Select(c => c.Name).ToList();
+                    if (workers.Count > 0) sb.AppendLine("    Workers: " + string.Join(", ", workers));
+                    // What is in the hut's storage, chest by chest (0.200.0): a full hut block stopped a courier for days.
+                    if (ColonyManager.HasOwnStorage(b.Type) && !b.IsStation)
+                    {
+                        foreach (var chest in manager.HutStorage(colony, b))
+                        {
+                            int used = chest.Inventory.Count(s => !s.Empty);
+                            string kind = chest.Pos.Equals(b.HutPos) ? "hut block" : chest.Block.Code.Path;
+                            sb.AppendLine($"    Storage, {kind} at {chest.Pos.ToLocalPosition(api)}, {used} of {chest.Inventory.Count} slots{(used >= chest.Inventory.Count ? " FULL" : "")}: "
+                                + ColonyManager.StackList(chest.Inventory.Where(s => !s.Empty).Select(s => s.Itemstack)));
+                        }
+                    }
+                    if (b.Type == BuildingTypes.Potter)
+                    {
+                        foreach (var kiln in manager.KilnsOf(b))
+                        {
+                            sb.AppendLine($"    Pit kiln at {kiln.ToLocalPosition(api)}: {api.World.BlockAccessor.GetBlock(kiln).Code}, above it {api.World.BlockAccessor.GetBlock(kiln.UpCopy()).Code}, cover (2 above) {api.World.BlockAccessor.GetBlock(kiln.UpCopy(2)).Code}");
+                        }
+                    }
+                }
+                catch (Exception e) { sb.AppendLine("    (storage could not be read: " + e.Message + ")"); }
                 DumpFields(sb, b, "    ");
             }
         });
@@ -247,11 +330,26 @@ public class ColonyReportSystem : ModSystem
                         var health = entity.GetBehavior<EntityBehaviorHealth>();
                         sb.AppendLine($"    Loaded at {entity.Pos.AsBlockPos.ToLocalPosition(api)}, health {health?.Health:0.#}/{health?.MaxHealth:0.#}, state {entity.State}");
                         var hand = entity.RightHandItemSlot?.Itemstack;
-                        if (hand != null) sb.AppendLine("    Holding: " + hand.StackSize + "x " + hand.Collectible.Code);
+                        if (hand != null) sb.AppendLine("    Holding: " + hand.StackSize + "x " + hand.Collectible.Code
+                            + (hand.Collectible.GetMaxDurability(hand) > 1 ? $" (durability {hand.Collectible.GetRemainingDurability(hand)} of {hand.Collectible.GetMaxDurability(hand)})" : ""));
+                        var task = entity.GetBehavior<EntityBehaviorTaskAI>()?.TaskManager.ActiveTasksBySlot.OfType<SettlerTaskBase>().FirstOrDefault();
+                        sb.AppendLine("    Doing: " + (task == null ? "nothing (no task running)" : task.GetType().Name.Replace("AiTaskSettler", "") + ": " + task.Describe(colony, c)));
+                        if (task is null or AiTaskSettlerIdle && manager.IdleReason(colony, c, entity) is { } idleWhy) sb.AppendLine("    Why idle: " + idleWhy);
+                        if (manager.NoteOf(c) is { } note) sb.AppendLine("    Note: " + note);
+                        if (entity.Swimming) sb.AppendLine("    In the water");
                         var will = entity.GetBehavior<EntityBehaviorColonyCitizen>()?.Willpower;
                         if (will != null && will.Value > 0) sb.AppendLine($"    STUCK: {will.Reason}{(will.Trapped ? ", trapped" : "")}, Willpower {(int)(will.Fraction * 100)}%");
                     }
                     else sb.AppendLine("    Not loaded");
+                    // The pack by name, the last walks and why each ended, and what the settler keeps away from (0.200.0).
+                    sb.AppendLine("    Pack: " + ColonyManager.StackList(manager.PackItems(c)) + $" ({manager.PackItems(c).Count} of {manager.PackSlots(c)} slots)");
+                    foreach (var note in manager.WalkNotes(c.CitizenId))
+                    {
+                        sb.AppendLine($"    Walk, day {note.Hours / api.World.Calendar.HoursPerDay:0.00}: {note.Task}, {note.Result}"
+                            + $", from {note.At.ToLocalPosition(api)}" + (note.Goal != null ? $" to {note.Goal.ToLocalPosition(api)}" : "") + (note.Times > 1 ? $", {note.Times} times" : ""));
+                    }
+                    foreach (var (goal, until) in manager.GivenUpGoals(c.CitizenId)) sb.AppendLine($"    Gave up on {goal.ToLocalPosition(api)} until day {until:0.0}");
+                    if (manager.OffLimitsZone(c.CitizenId) is { } zone) sb.AppendLine($"    Off limits: around {zone.At.ToLocalPosition(api)} until day {zone.UntilDays:0.0}");
                 }
                 catch (Exception e) { sb.AppendLine("    (live data failed: " + e.Message + ")"); }
                 DumpFields(sb, c, "    ");
@@ -260,7 +358,40 @@ public class ColonyReportSystem : ModSystem
 
         Section(sb, "Courier requests (" + colony.Requests.Count + ")", () =>
         {
-            foreach (var r in colony.Requests) { sb.AppendLine("-"); DumpFields(sb, r, "    "); }
+            double hours = api.World.Calendar.TotalHours;
+            var warehouse = manager.WarehouseContainers(colony).Cast<BlockEntityContainer>().ToList();
+            foreach (var r in colony.Requests)
+            {
+                // One readable line first (0.200.0): what, for whom, who carries it, and why not.
+                string line = $"- {r.RequestId}: {r.Quantity}x {r.ItemCode}, {r.Delivered} brought, for {manager.RequestLabel(colony, r)}";
+                try
+                {
+                    var carrier = r.LeasedByCitizenId == 0 ? null : colony.Citizens.Find(c => c.CitizenId == r.LeasedByCitizenId);
+                    line += carrier == null ? ", nobody carries it"
+                        : $", taken by {carrier.Name} ({(r.LeaseUntilTotalHours > hours ? $"{r.LeaseUntilTotalHours - hours:0.#} h left" : $"hold ran out {hours - r.LeaseUntilTotalHours:0.#} h ago")})";
+                    line += $", warehouse has {manager.CountItems(warehouse, ColonyManager.Matcher(r.ItemCode))}";
+                    if (manager.RequestHeld(r) is { } held) line += held == "full" ? ", RESTING: that hut's storage is full" : ", RESTING: no way in for the courier";
+                }
+                catch (Exception e) { line += " (" + e.Message + ")"; }
+                sb.AppendLine(line);
+                DumpFields(sb, r, "    ");
+            }
+        });
+
+        // The Town Hall's event list, newest last (0.200.0; before, the report only said how many there were).
+        Section(sb, "Events (last 60)", () =>
+        {
+            foreach (var e in colony.Events.Skip(Math.Max(0, colony.Events.Count - 60)))
+            {
+                string text;
+                try
+                {
+                    var args = e.Args.Select(a => a.StartsWith("@") ? Lang.Get("createacolony:" + a.Substring(1)) : a).Cast<object>().ToArray();
+                    text = Lang.Get("createacolony:" + e.Key, args);
+                }
+                catch { text = e.Key + " " + string.Join(", ", e.Args); }
+                sb.AppendLine($"- day {e.TotalDays:0.00}: {text}");
+            }
         });
     }
 

@@ -144,7 +144,8 @@ public partial class ColonyManager
     }
 
     /// <summary>How many ingots the molds set out can take right now.</summary>
-    public int FreeMoldSides(Building hut) => SmelterMolds(hut).Sum(m => FreeSides(m).Count());
+    public int FreeMoldSides(Building hut) => SmelterMolds(hut).Sum(m => FreeSides(m).Count())
+        + (ColonyOfBuilding(hut) is { } colony ? OpenCastMolds(colony, hut).Count : 0);
 
     /// <summary>A mold with a cooled, full ingot in it to take out.</summary>
     public BlockEntityIngotMold? MoldWithIngot(Building hut) => SmelterMolds(hut)
@@ -363,6 +364,8 @@ public partial class ColonyManager
         if (metal == null || units <= 0) return 0;
         float temp = crucible.Collectible.GetTemperature(sapi.World, crucible);
         int poured = 0;
+        // Tool molds first (the copper tool chain, 0.205.0).
+        units = PourIntoToolMolds(colony, hut, metal, units, temp, ref poured);
         foreach (var mold in SmelterMolds(hut))
         {
             foreach (bool right in FreeSides(mold).ToList())

@@ -214,6 +214,7 @@ public partial class GuiDialogHut : GuiDialog
         SingleComposer.GetSwitch("teachany")?.SetValue(teachAnyType);
         SingleComposer.GetSwitch("autohires")?.SetValue(snapshot.TakesAutoHires);
         SingleComposer.GetSwitch("autoresidents")?.SetValue(snapshot.TakesAutoResidents);
+        SingleComposer.GetSwitch("sparefuel")?.SetValue(snapshot.KeepSpareFuel);
         for (int i = 0; SingleComposer.GetSwitch("hostile-" + i) is { } toggle; i++) toggle.SetValue(hostileSwitchStates[i]);
         for (int i = 0; SingleComposer.GetSwitch("collect-" + i) is { } toggle; i++) toggle.SetValue(collectSwitchStates[i]);
         for (int i = 0; SingleComposer.GetSwitch("markers-" + i) is { } toggle; i++) toggle.SetValue(!snapshot.MarkersOff.Contains(snapshot.MarkerGroups[i]));
@@ -255,7 +256,10 @@ public partial class GuiDialogHut : GuiDialog
             ? Lang.Get("createacolony:placement-style", Lang.Get("createacolony:style-" + BlueprintStyles.Normalize(b.Style)))
             : Lang.Get("createacolony:placement-style-variant", Lang.Get("createacolony:style-" + BlueprintStyles.Normalize(b.Style)), GuiKit.VariantName(b.Variant));
         double levelHeight = GuiKit.TextHeight(capi, GuiKit.Detail(), levelText, Width - 20);
-        double headerHeight = 40 + levelHeight + 22 + (b.TargetLevel > 0 || b.Removing ? 22 : 0) + 6;
+        // The build's status takes the lines it needs (0.203.0: a long one was cut off after two).
+        bool building = b.TargetLevel > 0 || b.Removing;
+        double statusHeight = building ? Math.Max(22, GuiKit.TextHeight(capi, GuiKit.Detail(), StatusText(b), Width - 20) + 4) : 0;
+        double headerHeight = 40 + levelHeight + 22 + statusHeight + 6;
         composer.AddInset(ElementBounds.Fixed(0, y, Width, headerHeight), 3, 0.8f);
         if (renaming)
         {
@@ -277,7 +281,7 @@ public partial class GuiDialogHut : GuiDialog
         composer.AddStaticText(packText, GuiKit.Muted(), ElementBounds.Fixed(10, line, Width - 20, 20));
         if (b.TargetLevel > 0 || b.Removing)
         {
-            composer.AddStaticText(StatusText(b), GuiKit.Detail().WithColor(GuiStyle.ActiveButtonTextColor), ElementBounds.Fixed(10, line + 22, Width - 20, 22));
+            composer.AddStaticText(StatusText(b), GuiKit.Detail().WithColor(GuiStyle.ActiveButtonTextColor), ElementBounds.Fixed(10, line + 22, Width - 20, statusHeight));
         }
         y += headerHeight + 12;
 
@@ -1771,7 +1775,7 @@ public partial class GuiDialogHut : GuiDialog
             string title = number + ". " + OrderTitle(o);
             composer
                 .AddStaticText(title, GuiKit.Body(), ElementBounds.Fixed(10, y + 6, Width - 250, 25))
-                .AddStaticText(StatusText(o), GuiKit.Detail().WithColor(GuiStyle.ActiveButtonTextColor), ElementBounds.Fixed(10, y + 30, Width - 250, 22));
+                .AddStaticText(StatusText(o), GuiKit.Detail().WithColor(GuiStyle.ActiveButtonTextColor), ElementBounds.Fixed(10, y + 28, Width - 250, 32));
             if (ViewerRole >= ColonyRole.Officer)
             {
                 int id = o.TeardownId > 0 ? o.TeardownId : o.BuildingId;
@@ -1953,7 +1957,12 @@ public partial class GuiDialogHut : GuiDialog
             if (!stack.ResolveBlockOrItem(capi.World)) continue;
             bool give = canGive && r.PlayerHas > 0 && r.Have < r.Needed && r.Code.Length > 0;
             composer.AddRichtext(new RichTextComponentBase[] { new ItemstackTextComponent(capi, stack, 34, 6) }, ElementBounds.Fixed(6, y + 2, 44, 40));
-            composer.AddStaticText(ResourceName(stack, r), GuiKit.Body(), ElementBounds.Fixed(52, y + 4, Width - 240, 20));
+            // A long name (0.203.0: "Roof binding: flax fibers, cattail tops, papyrus tops or wild vines") is cut to one
+            // line so it does not run over the line under it; the whole name is on the hover.
+            string fullName = ResourceName(stack, r);
+            var (shownName, nameFont) = OneLine(fullName, Width - 240);
+            composer.AddStaticText(shownName, nameFont, ElementBounds.Fixed(52, y + 4, Width - 240, 20));
+            if (shownName != fullName) composer.AddHoverText(fullName, GuiKit.Detail(), 320, ElementBounds.Fixed(52, y + 2, Width - 240, 22));
             composer.AddStaticText(ResourceCounts(r), CountFont(r), ElementBounds.Fixed(52, y + 24, Width - 240, 18));
             composer.AddStaticText(Lang.Get("createacolony:items-count", Math.Min(r.Have, r.Needed), r.Needed),
                 CountFont(r).Clone().WithFontSize(16).WithOrientation(EnumTextOrientation.Right), ElementBounds.Fixed(Width - 190, y + 12, 130, 22));
@@ -1962,13 +1971,35 @@ public partial class GuiDialogHut : GuiDialog
                 string code = r.Code;
                 int amount = r.Needed - r.Have;
                 composer.AddSmallButton("^", () => SendText(ColonyAction.GiveResource, BuildingId, code + "|" + amount), ElementBounds.Fixed(Width - 50, y + 8, 40, 28));
-                composer.AddHoverText(Lang.Get("createacolony:resources-give", Math.Min(amount, r.PlayerHas)), GuiKit.Detail(), 220, ElementBounds.Fixed(Width - 50, y + 8, 40, 28));
+                composer.AddHoverText(Lang.Get(ViewerCreative ? "createacolony:requests-give-free" : "createacolony:resources-give", Math.Min(amount, r.PlayerHas)), GuiKit.Detail(), 220, ElementBounds.Fixed(Width - 50, y + 8, 40, 28));
             }
             y += ResourceRowHeight;
         }
         y = top + ResourceRowsPerPage * ResourceRowHeight + 16;
         composer.Text(Lang.Get("createacolony:resources-legend"), GuiKit.Muted(), 0, y, Width, 6);
         AddPager(composer, pages, y + 24);
+    }
+
+    /// <summary>
+    /// The text as it fits on one line of this width: as it is, else in the smaller font, else cut short with "...".
+    /// </summary>
+    (string Text, CairoFont Font) OneLine(string text, double width)
+    {
+        foreach (var font in new[] { GuiKit.Body(), GuiKit.Detail() })
+        {
+            double one = GuiKit.TextHeight(capi, font, "Xg", width);
+            if (GuiKit.TextHeight(capi, font, text, width) <= one + 1) return (text, font);
+        }
+        var small = GuiKit.Detail();
+        double line = GuiKit.TextHeight(capi, small, "Xg", width);
+        string cut = text;
+        while (cut.Length > 8)
+        {
+            int space = cut.LastIndexOf(' ');
+            cut = space > 8 ? cut[..space] : cut[..^4];
+            if (GuiKit.TextHeight(capi, small, cut + " ...", width) <= line + 1) break;
+        }
+        return (cut.TrimEnd(',', ' ', ':') + " ...", small);
     }
 
     /// <summary>White when the hut has enough, green when you carry some, red when nobody has it.</summary>
@@ -1980,11 +2011,11 @@ public partial class GuiDialogHut : GuiDialog
         : r.AnyOf.Length > 0 ? Lang.Get("createacolony:items-any-" + r.AnyOf, stack.GetName()) : WithWood(stack);
 
     /// <summary>"In the hut: 0. You have 100." under the item's name.</summary>
-    static string ResourceCounts(ResourceView r)
+    string ResourceCounts(ResourceView r)
     {
         if (r.Have >= r.Needed) return Lang.Get("createacolony:resources-ready");
         string line = Lang.Get("createacolony:resources-in-hut", r.Have);
-        if (r.PlayerHas > 0) return line + "   " + Lang.Get("createacolony:resources-you-have", r.PlayerHas);
+        if (r.PlayerHas > 0) return line + "   " + (ViewerCreative ? Lang.Get("createacolony:requests-free") : Lang.Get("createacolony:resources-you-have", r.PlayerHas));
         if (r.IsTool) return line;
         // On its way: in the warehouse for a courier, or another hut makes it.
         if (r.InColony > 0) return line + "   " + Lang.Get("createacolony:resources-in-warehouse", r.InColony);

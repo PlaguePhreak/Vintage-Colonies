@@ -178,6 +178,9 @@ public partial class ColonyManager
         // block keeps its own materials: its shape is copied as saved, so other wood or stone would not show.
         if (Config.BuildersNeedMaterials && SavedCost(step, target) is { } saved)
             return (target, colony.AnyWoodOrStone && target is not BlockMicroBlock ? OpenTypes(saved) : saved);
+        // A torch (0.202.0): one that is lit or has only gone out will do, so the unlit torches huts make count. The
+        // builder lights it as it puts it up.
+        if (IsTorch(target) && !target.Code.Path.Contains("-burnedout-")) return (target, Costs(TorchCost(target)));
         return (target, Costs(PickCost(colony, target, pos)));
     }
 

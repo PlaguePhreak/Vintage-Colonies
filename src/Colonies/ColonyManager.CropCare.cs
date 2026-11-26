@@ -93,7 +93,18 @@ public partial class ColonyManager
     }
 
     /// <summary>The water block nearest the hut with open air above it, where a farmer can fill a can.</summary>
-    public BlockPos? FindWater(Colony colony, Building hut) => FindWaterNear(colony, hut.HutPos, Math.Max(1, Config.FarmerOrchardRadius));
+    public BlockPos? FindWater(Colony colony, Building hut)
+    {
+        // Looked for at most twice a minute per hut: the search goes out 48 blocks (config FarmerWaterRadius, 0.202.0).
+        long now = sapi.World.ElapsedMilliseconds;
+        var key = (colony.ColonyId, hut.BuildingId);
+        if (waterNear.TryGetValue(key, out var known) && now - known.AtMs < 30_000) return known.Pos?.Copy();
+        var pos = FindWaterNear(colony, hut.HutPos, Math.Max(1, Math.Max(Config.FarmerOrchardRadius, Config.FarmerWaterRadius)));
+        waterNear[key] = (pos, now);
+        return pos?.Copy();
+    }
+
+    readonly Dictionary<(string Colony, int Building), (BlockPos? Pos, long AtMs)> waterNear = new();
 
     /// <summary>The surface water block nearest a spot, within radius blocks across, where a settler can fill a can.</summary>
     public BlockPos? FindWaterNear(Colony colony, BlockPos center, int radius)

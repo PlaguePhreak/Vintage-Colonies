@@ -120,6 +120,8 @@ public class AiTaskSettlerChildDay : SettlerTaskBase
     {
         if (!manager!.AfterSchoolTime() || ParentEntity() is not { } p) return false;
         if (manager.FindCitizen(colony.ColonyId, parentId) is not { } parent || parent.IsDowned || manager.RaidOn(colony) != null) return false;
+        // The parent went too far out of town: the child stays behind (0.205.0).
+        if (!manager.NearTown(colony, p.Pos.XYZ) || !manager.NearTown(colony, entity.Pos.XYZ)) return false;
         if (entity.Pos.SquareDistanceTo(p.Pos.XYZ) <= WatchRange * WatchRange)
         {
             if (!there)

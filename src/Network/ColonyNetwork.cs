@@ -280,6 +280,7 @@ public partial class ColonyNetwork : ModSystem
         bool on = parts[1] == "1";
         if (parts[0] == "hire") building.TakesAutoHires = on;
         else if (parts[0] == "home") building.TakesAutoResidents = on;
+        else if (parts[0] == "fuel") building.KeepSpareFuel = on;
         else return "createacolony:bad-request";
         return null;
     }
@@ -422,6 +423,9 @@ public partial class ColonyNetwork : ModSystem
             case "lend":
                 colony.BailiffLendsWorkers = parts[1] == "1";
                 break;
+            case "wait":
+                if (int.TryParse(parts[1], out int waitDays) && waitDays >= 1 && waitDays <= 30) colony.BailiffWaitDays = waitDays;
+                break;
             case "wages":
                 colony.BailiffPaysWages = parts[1] == "1";
                 break;
@@ -473,6 +477,8 @@ public partial class ColonyNetwork : ModSystem
         if (job == Jobs.Mayor && Manager.MayorOf(colony) is { } mayor && mayor != citizen) return "createacolony:mayor-taken";
         if (citizen.JobCode != (job.Length == 0 ? null : job)) citizen.WorkplacePos = null;
         citizen.JobCode = job.Length == 0 ? null : job;
+        // A job given by hand stays: the Bailiff does not move this settler until a player changes the job (0.201.0).
+        citizen.JobSetByPlayer = job.Length > 0;
         ColonyManager.EndLoan(citizen);
         return null;
     }
@@ -961,6 +967,7 @@ public partial class ColonyNetwork : ModSystem
         snapshot.BailiffGivesJobs = colony.BailiffGivesJobs;
         snapshot.BailiffCollectsRent = colony.BailiffCollectsRent;
         snapshot.BailiffLendsWorkers = colony.BailiffLendsWorkers;
+        snapshot.BailiffWaitDays = Manager.BailiffWaitDaysOf(colony);
         snapshot.BailiffPaysWages = colony.BailiffPaysWages;
         snapshot.TaxPercent = colony.TaxPercent;
         snapshot.HasMint = Manager.HasMint(colony);
@@ -981,6 +988,13 @@ public partial class ColonyNetwork : ModSystem
             snapshot.Ores.Add(new OreView { Code = ore.Code, Best = ore.Best, Sites = ore.Sites, MinedOut = ore.MinedOut, Where = ColonyManager.DirectionFrom(colony.TownHallPos, ore.BestPos) });
         }
 
+        // The job panel: which skill each job uses, and below, how each settler stands in every job skill.
+        var jobSkills = config.Skills ? Manager.Skills().Where(s => s.Job.Length > 0).ToList() : new List<SkillDef>();
+        foreach (string job in Jobs.All.Where(j => j.Length > 0))
+        {
+            snapshot.JobSkillJobs.Add(job);
+            snapshot.JobSkillCodes.Add(config.Skills ? Manager.SkillForJob(job)?.Code ?? "" : "");
+        }
         foreach (var c in colony.Citizens)
         {
             string state = !c.Alive ? "dead"
@@ -1008,8 +1022,19 @@ public partial class ColonyNetwork : ModSystem
                 VisitorHoursLeft = c.Visitor ? (int)System.Math.Ceiling(System.Math.Max(0, c.VisitorUntilTotalDays - sapi!.World.Calendar.TotalDays) * sapi.World.Calendar.HoursPerDay) : 0,
                 TraitsText = Manager.TraitsText(c),
                 Weapon = c.Alive && !c.IsChild && !c.Visitor ? Manager.WeaponText(c) : "",
-                GuardRanged = c.GuardRanged
+                GuardRanged = c.GuardRanged,
+                HomeJob = c.HomeJob ?? ""
             });
+            if (!c.Alive || c.IsChild || c.Visitor) continue;
+            var view = snapshot.Citizens[^1];
+            foreach (var skill in jobSkills)
+            {
+                view.SkillCodes.Add(skill.Code);
+                view.SkillLevels.Add(Manager.SkillLevel(c, skill.Code));
+                view.SkillPassions.Add(Manager.Passion(c, skill.Code));
+                view.SkillBlocks.Add(Manager.IncapableOfJob(c, skill.Job) ?? "");
+            }
+            view.JobTraits = Jobs.All.Where(j => j.Length > 0 && Manager.JobTraitFor(c, j).Length > 0).ToList();
         }
 
         // The Town Hall's own upgrade sits on the Actions tab; every other building has its own hut window.
@@ -1038,6 +1063,7 @@ public partial class ColonyNetwork : ModSystem
         snapshot.TellOutsiders = colony.TellOutsiders;
         snapshot.SettlersUnhurt = colony.SettlersUnhurt;
         snapshot.NoEnemies = colony.NoEnemies;
+        snapshot.AutoReport = colony.AutoReport;
         snapshot.EnterText = colony.EnterText;
         snapshot.LeaveText = colony.LeaveText;
         snapshot.MaxRanks = Manager.Config.MaxRanks;
@@ -1115,7 +1141,7 @@ public partial class ColonyNetwork : ModSystem
             Style = BlueprintStyles.Normalize(b.Style),
             Variant = Manager.Blueprints.Variants(Manager.Blueprints.StyleFor(b), b.Type).Count > 1 ? Manager.Blueprints.VariantFor(Manager.Blueprints.StyleFor(b), b.Type, b.Variant) : "",
             Name = ColonyManager.BuildingName(b),
-            Status = b.HasWorkOrder || b.Removing ? (Manager.IsBuildStuck(b) && !b.Removing ? "stuck" : Manager.BuildStatus.GetValueOrDefault(b.BuildingId, "queued")) : "",
+            Status = Manager.BuildStatusText(colony, b),
             Removing = b.Removing,
             Repairing = b.Repairing
         };
@@ -1183,10 +1209,21 @@ public partial class ColonyNetwork : ModSystem
             var task = entity?.GetBehavior<EntityBehaviorTaskAI>()?.TaskManager.ActiveTasksBySlot.OfType<Settlers.SettlerTaskBase>().FirstOrDefault();
             activity = task?.Describe(colony, citizen)
                 ?? Lang.Get(citizen.Visitor ? "createacolony:activity-visitor-waiting" : "createacolony:activity-idle");
+            // Why it is idle (0.203.0), and what it lacks or waits for (0.202.0), such as a knife to skin with.
+            activity = Manager.ActivityText(colony, citizen, entity, activity);
             // A settler building Willpower says so, so players can see it is stuck and help before it relocates itself.
             if (config.Willpower && entity?.GetBehavior<Settlers.EntityBehaviorColonyCitizen>()?.Willpower is { Reason: not Settlers.StuckReason.None } will)
             {
                 activity += " " + Lang.Get("createacolony:activity-stuck", (int)(will.Fraction * 100));
+            }
+            // Why it is not going somewhere (0.200.0): a place it gave up on, or one it keeps away from.
+            if (Manager.GivenUpGoals(citizen.CitizenId).FirstOrDefault() is { Goal: { } gaveUp })
+            {
+                activity += " " + Lang.Get("createacolony:activity-gave-up", Manager.PlaceLabelLang(colony, gaveUp));
+            }
+            else if (Manager.OffLimitsZone(citizen.CitizenId) is { } zone)
+            {
+                activity += " " + Lang.Get("createacolony:activity-off-limits", Manager.PlaceLabelLang(colony, zone.At));
             }
         }
 
@@ -1249,7 +1286,7 @@ public partial class ColonyNetwork : ModSystem
             Faith = citizen.Faith < 0 || !Manager.HasChurch(colony) ? -1 : (int)System.Math.Round(citizen.Faith),
             FaithWord = citizen.Faith < 0 || !Manager.HasChurch(colony) ? "" : Manager.FaithWord(citizen.Faith)
         };
-        if (Manager.Config.Happiness && citizen.Alive && !citizen.IsChild && !citizen.Visitor)
+        if (Manager.Config.Happiness && citizen.Alive && !citizen.Visitor)
         {
             snapshot.Happiness = (int)System.Math.Round(Manager.HappinessOf(citizen));
             snapshot.Mood = Manager.MoodOf(Manager.HappinessOf(citizen));
@@ -1285,6 +1322,8 @@ public partial class ColonyNetwork : ModSystem
             ViewerRole = (int)ColonyManager.RoleFor(colony, viewerUid, (RankPerm)~0),
             TakesAutoHires = building.TakesAutoHires,
             TakesAutoResidents = building.TakesAutoResidents,
+            BurnsFuel = ColonyManager.BurnsFuel(building.Type),
+            KeepSpareFuel = building.KeepSpareFuel,
             IsBuilderHut = building.Type == BuildingTypes.Builder,
             AnyWoodOrStone = colony.AnyWoodOrStone,
             HasStorage = ColonyManager.HasOwnStorage(building.Type),

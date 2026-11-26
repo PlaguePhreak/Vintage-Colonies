@@ -1,0 +1,19 @@
+{
+	"ingredientPattern": "PXP,PXP,PPP",
+	"ingredients": {
+		"P": {
+			"type": "item",
+			"code": "game:firewood"
+		},
+		"X": {
+			"type": "item",
+			"code": "game:flint"
+		}
+	},
+	"width": 3,
+	"height": 3,
+	"output": {
+		"type": "block",
+		"code": "createacolony:hut-craftsman"
+	}
+}

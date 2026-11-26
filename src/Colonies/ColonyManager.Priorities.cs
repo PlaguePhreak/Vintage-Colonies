@@ -46,7 +46,10 @@ public partial class ColonyManager
         bool Busy(int citizenId) => citizenId != builder.CitizenId && colony.Citizens.Find(c => c.CitizenId == citizenId) is { Alive: true, JobCode: Jobs.Builder };
         // A build stuck at a block it failed twice over goes after the others, so one bad block cannot hold up the town.
         var queue = BuilderQueue(colony);
-        queue = queue.Where(e => e.Building == null || !IsBuildStuck(e.Building)).Concat(queue.Where(e => e.Building != null && IsBuildStuck(e.Building))).ToList();
+        // A build that has waited hours for materials comes after those that have theirs (0.201.0): before, one build
+        // nobody could supply kept the only builder while the next one had no builder at all.
+        int Rank((Building? Building, TeardownOrder? Teardown) e) => e.Building == null ? 0 : IsBuildStuck(e.Building) ? 2 : IsBuildStarved(colony, e.Building) ? 1 : 0;
+        queue = queue.Select((e, n) => (e, n)).OrderBy(x => Rank(x.e)).ThenBy(x => x.n).Select(x => x.e).ToList();
         foreach (var (b, t) in queue)
         {
             if (Busy(b?.BuilderCitizenId ?? t!.BuilderCitizenId)) continue;

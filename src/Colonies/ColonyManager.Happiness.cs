@@ -210,7 +210,9 @@ public partial class ColonyManager
             float step = (float)(Math.Max(0, Config.HappinessPerHour) * hours);
             c.Happiness = mood < target ? Math.Min(target, mood + step) : Math.Max(target, mood - step);
 
-            if (c.Happiness <= Config.HappinessBreakAt && c.BreakdownUntilTotalDays <= now)
+            // No strikes in a colony's first days (Aaron, 0.203.0): a builder stopped work on day 2 after seeing a death.
+            bool settlingIn = now - colony.FoundedTotalDays < Config.NoBreakdownFirstDays;
+            if (!settlingIn && c.Happiness <= Config.HappinessBreakAt && c.BreakdownUntilTotalDays <= now)
             {
                 double min = Math.Max(0, Config.HappinessBreakHoursMin);
                 double max = Math.Max(min, Config.HappinessBreakHoursMax);

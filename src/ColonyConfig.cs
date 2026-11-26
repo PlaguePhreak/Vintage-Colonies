@@ -7,7 +7,7 @@ public class ColonyConfig
 {
     public const string FileName = "createacolony.json";
     /// <summary>Bumped when a default changes in a way old config files should pick up; see ColonyManager.UpgradeConfig.</summary>
-    public const int CurrentConfigVersion = 10;
+    public const int CurrentConfigVersion = 13;
 
     /// <summary>Which defaults this file has been brought up to. Files from before 0.33.0 have none, so read as 0.</summary>
     public int ConfigVersion;
@@ -24,6 +24,11 @@ public class ColonyConfig
 
     public int MaxConcurrentPathRequestsPerColony = 4;
 
+    /// <summary>The Town Hall's Auto report switch (0.204.0): minutes between timed reports. Set 1 for a quick test.</summary>
+    public double TimedReportMinutes = 30;
+    /// <summary>How many timed reports to keep; older "-timed" reports are deleted. Other reports are never deleted.</summary>
+    public int TimedReportsKept = 48;
+
     // Needs
     /// <summary>Full stomach. A settler starts here and eats when below EatBelowFraction of it.</summary>
     public float SaturationMax = 1200f;
@@ -37,6 +42,25 @@ public class ColonyConfig
 
     // Sleep
     public float SleepStartHour = 21f;
+    /// <summary>
+    /// A colony's starting kit (0.201.0): the first settler who needs one of these tools and finds none is handed a
+    /// flint one from the Town Hall, once per tool and colony. Empty: no kit.
+    /// </summary>
+    public string[] StarterTools = { "axe", "shovel", "hoe", "knife" };
+    /// <summary>
+    /// Until the colony has a pickaxe or a Blacksmith, builders clear stone by hand, this many times slower (0.201.0).
+    /// 0: they wait for a pickaxe as before.
+    /// </summary>
+    public float NoPickaxeSlowdown = 4f;
+    /// <summary>
+    /// How fast a settler is taken to get home, in blocks per real second, when working out how far out it may still
+    /// go before bedtime (0.200.0). Lower is safer: the gatherer turns for home earlier.
+    /// </summary>
+    public double HomeWalkBlocksPerSecond = 1.2;
+    /// <summary>Game hours a far worker wants to be home before bedtime.</summary>
+    public double HomeMarginHours = 1.0;
+    /// <summary>A settler who has been swimming this many seconds is set down on the nearest shore (0.200.0). 0: never.</summary>
+    public int SwimRescueSeconds = 40;
     public float SleepEndHour = 6f;
     /// <summary>A settler that cannot find a path to its bed but is this close (blocks) gets into it anyway, instead of sleeping on the floor.</summary>
     public float BedFindWayRange = 16f;
@@ -50,10 +74,24 @@ public class ColonyConfig
     public double RespawnMissingAfterDays = 0.5;
     /// <summary>Game days a settler may stay "unreachable" before being brought home to bed (0.198.0).</summary>
     public double LostRescueDays = 1.0;
+    /// <summary>Children only follow a parent working within this many blocks of the Town Hall (0.205.0).</summary>
+    public int ChildFollowRange = 64;
+    /// <summary>A settler whose land is not kept loaded, this far or more from home, is brought home after FarOutRescueHours game hours (0.205.0).</summary>
+    public int FarOutRescueBlocks = 80;
+    /// <summary>Game hours a settler may stand still in unloaded land far from home before being brought home.</summary>
+    public double FarOutRescueHours = 3;
     /// <summary>Blocks around where a settler got lost that they keep away from afterwards.</summary>
     public double LostOffLimitsRadius = 24;
     /// <summary>Game days a brought-home settler keeps away from where they got lost.</summary>
     public double LostOffLimitsDays = 3;
+    /// <summary>Walks to the same goal that fail for good before the settler is moved a little way towards it (0.200.0).</summary>
+    public int WalkFailsBeforeHelp = 3;
+    /// <summary>Times a settler is helped towards a goal before it gives the goal up.</summary>
+    public int WalkHelpsBeforeGiveUp = 2;
+    /// <summary>Game days a settler leaves a goal alone after giving it up.</summary>
+    public double WalkGiveUpDays = 1.0;
+    /// <summary>Game hours without a failed walk after which a goal's count starts from nothing.</summary>
+    public double WalkFailMemoryHours = 12;
 
     // Construction
     /// <summary>When false, builders conjure blocks without materials. Handy for creative testing.</summary>
@@ -141,6 +179,8 @@ public class ColonyConfig
     // Forester
     /// <summary>How far from the Forester's Hut, in blocks, a forester looks for trees.</summary>
     public int ForesterRadius = 16;
+    /// <summary>When the trees near the Forester's Hut are gone, the forester goes further for them, up to this many blocks (0.205.0).</summary>
+    public int ForesterMaxRadius = 64;
     /// <summary>Seconds a forester chops before a tree comes down.</summary>
     public float ForesterSecondsPerTree = 6f;
     /// <summary>Tree seeds or saplings a forester keeps on hand for replanting; the rest go to the warehouse.</summary>
@@ -166,6 +206,8 @@ public class ColonyConfig
     public int FarmerSeedReserve = 32;
     /// <summary>How far from the Farmer's Hut a farmer picks berries and fruit from bushes and fruit trees.</summary>
     public int FarmerOrchardRadius = 16;
+    /// <summary>How far from the hut a farmer goes to fill a watering can (0.202.0: 48, it was the orchard radius, 16).</summary>
+    public int FarmerWaterRadius = 48;
     /// <summary>A farmer with a watering can waters growing crops whose farmland is drier than this (0 dry to 1 soaked), filling it to 100%.</summary>
     public float FarmerWaterBelow = 0.5f;
     /// <summary>A farmer with fertilizer spreads it before sowing when the crop's nutrient is below this (soil shows 0 to 100).</summary>
@@ -224,6 +266,14 @@ public class ColonyConfig
     // Hunter
     /// <summary>How far from the Hunter's Hut, in blocks, the hunter hunts (change it on the Work area tab).</summary>
     public int HunterRadius = 48;
+    /// <summary>A hunter that finds nothing in its work area goes further out for a while (0.205.0).</summary>
+    public bool HunterFarTrips = true;
+    /// <summary>On a far trip a worker may go this many times its work area from its hut.</summary>
+    public float FarTripRangeMult = 3f;
+    /// <summary>The furthest a far trip goes from the hut, in blocks.</summary>
+    public int FarTripMaxRadius = 160;
+    /// <summary>Real minutes a far trip lasts before the worker goes back to its own work area.</summary>
+    public float FarTripMinutes = 6f;
     /// <summary>Seconds between a hunter's strikes.</summary>
     public float HunterSecondsPerHit = 1.2f;
     /// <summary>Seconds a hunter chases one animal before it lets it go for a while.</summary>
@@ -279,6 +329,10 @@ public class ColonyConfig
     public string[] HerdNeverCull = { "tameddeer-*" };
     /// <summary>How far from a herder hut, in blocks, its pen reaches (change it on the Work area tab).</summary>
     public int HerdRadius = 16;
+    /// <summary>A herder with fewer animals than this catches wild ones of its kinds and carries them to its pen (0.205.0; 0 = never).</summary>
+    public int HerderCatchUpTo = 4;
+    /// <summary>How far from its hut, in blocks, a herder goes to catch a wild animal.</summary>
+    public int HerderCatchRadius = 96;
     /// <summary>How many animals a level 1 herder hut keeps before it culls the spare ones.</summary>
     public int HerdSize = 6;
     /// <summary>How many more animals it keeps for each hut level above 1.</summary>
@@ -390,6 +444,10 @@ public class ColonyConfig
     public bool GathererTakesCuttings = true;
     /// <summary>How many cuttings of each bush the colony keeps (hut and warehouse) before the gatherer stops taking them.</summary>
     public int GathererCuttingsKeep = 4;
+    /// <summary>Berry gardens (0.205.0): the gatherer plants the cuttings it took near its hut, up to this many bushes (0 = never).</summary>
+    public int BerryGardenSize = 12;
+    /// <summary>How far from the Gatherer's Hut, in blocks, it plants its berry garden.</summary>
+    public int BerryGardenRadius = 14;
     /// <summary>Food counts as low below this many full bellies (SaturationMax) per settler in the colony's chests.</summary>
     public double GathererRootsFoodDays = 2;
     /// <summary>The gatherer leaves a reed alone unless this many others grow within 4 blocks of it.</summary>
@@ -562,6 +620,11 @@ public class ColonyConfig
     /// while it works, so it does not freeze out there.
     /// </summary>
     public int FarWorkPlayerDistance = 112;
+    /// <summary>
+    /// Every settler with a job keeps working while no player is near (0.202.0, Aaron): builders, couriers, cooks and
+    /// crafters too, not only the outdoor jobs. The colony's land stays loaded for it, which costs some speed in a big colony.
+    /// </summary>
+    public bool AllJobsWorkFarOut = true;
 
     // Guard
     /// <summary>How far around the settler it protects (or the Town Hall) a guard looks for monsters.</summary>
@@ -707,7 +770,15 @@ public class ColonyConfig
     /// <summary>Default for new colonies' Support allies switch (Colony militia tab): armed settlers help a settler being attacked nearby.</summary>
     public bool SupportAllies = true;
     /// <summary>Armed settlers this close to a settler being attacked come to help, when Support allies is on.</summary>
-    public float SupportAllyRadius = 16f;
+    public float SupportAllyRadius = 32f;
+    /// <summary>Any grown settler without a weapon is handed a spare one from the Warehouse or the Town Hall's storage (0.202.0).</summary>
+    public bool SettlersTakeSpareWeapons = true;
+    /// <summary>How many baskets every grown settler tries to keep, asked for like a tool (0.202.0, Aaron). 0 for none.</summary>
+    public int SettlerBaskets = 4;
+    /// <summary>The slots one basket adds to a settler's inventory (the game gives a player more).</summary>
+    public int BasketPackSlots = 2;
+    /// <summary>Food in a crock counts this much better than other food, so crocks are eaten from first (0.202.0, Aaron).</summary>
+    public float CrockFoodPull = 10f;
 
     // Potter
     /// <summary>Seconds a potter takes to shape one layer of clay on the clay forming block.</summary>
@@ -731,7 +802,13 @@ public class ColonyConfig
     public System.Collections.Generic.Dictionary<string, int> PotteryDefaultKeep = new()
     {
         ["*crucible*"] = 1,
-        ["*ingotmold*"] = 2
+        ["*ingotmold*"] = 2,
+        // A watering can, so settlers can put out the fires kilns start (0.205.0, note 92).
+        ["*wateringcan*"] = 1,
+        // The copper tool chain (0.205.0): molds for the Smelter's first copper pickaxe, hammer and anvil.
+        ["*toolmold*-pickaxe"] = 1,
+        ["*toolmold*-hammer"] = 1,
+        ["*toolmold*-anvil"] = 1
     };
 
     // Cook
@@ -778,6 +855,18 @@ public class ColonyConfig
     public int SmelterMolds = 4;
     /// <summary>The most ingots the smelter melts in one crucible (the crucible holds about 5 ingots of nuggets).</summary>
     public int SmelterIngotsPerBatch = 4;
+    /// <summary>The Smelter casts copper tools in tool molds while the colony has none (0.205.0, the copper tool chain).</summary>
+    public bool SmelterCastsTools = true;
+    /// <summary>What the Smelter casts, first things first: the tool mold types ("pickaxe", "hammer", "anvil", "axe"...).</summary>
+    public string[] SmelterCasts = { "pickaxe", "hammer", "anvil" };
+    /// <summary>A Blacksmith's Hut without an anvil or a forge by it sets one down from storage (works at level 0).</summary>
+    public bool BlacksmithSetsUpStations = true;
+    /// <summary>A Smelter's Hut without a fire pit by it lays one from firewood (works at level 0).</summary>
+    public bool SmelterLaysFirepit = true;
+    /// <summary>Firewood a fire pit takes to lay.</summary>
+    public int FirepitFirewood = 4;
+    /// <summary>The Blacksmith smiths a copper saw while the colony has none, so boards can be made.</summary>
+    public bool BlacksmithMakesSaw = true;
     /// <summary>Fuel pieces the smelter puts in the fire pit at once.</summary>
     public int SmelterFuel = 6;
     /// <summary>What the smelter asks couriers for when the warehouse has no fuel hot enough.</summary>
@@ -918,6 +1007,17 @@ public class ColonyConfig
     public bool CouriersCarryFullLoads = true;
     /// <summary>Pit kilns use the best fuel the colony has: coal, then charcoal, then peat, then firewood.</summary>
     public bool KilnPrefersBestFuel = true;
+    /// <summary>
+    /// The potter puts one solid block two above each pit kiln before lighting it, so rain can't put it out (0.202.0).
+    /// The block comes from the potter's pack or the hut's storage, is asked for like fuel, and is left in place.
+    /// </summary>
+    public bool KilnCover = true;
+    /// <summary>What may cover a pit kiln, first choice first. The soil the potter digs out of the pit will do when there is nothing better.</summary>
+    public string[] KilnCoverBlocks = { "game:packeddirt", "game:cobblestone-*", "game:soil-*" };
+    /// <summary>A kiln that has waited this many game hours for its cover is lit without one, unless it is raining.</summary>
+    public double KilnCoverWaitHours = 6;
+    /// <summary>A Potter's Hut takes over pit kilns within its work spots' reach that no other Potter's Hut has (0.202.0).</summary>
+    public bool PotterAdoptsKilns = true;
     /// <summary>What huts gather by themselves, by hut type, so the Required resources tab can say which hut brings it in.</summary>
     public System.Collections.Generic.Dictionary<string, string[]> HutGathers = new()
     {
@@ -934,10 +1034,14 @@ public class ColonyConfig
     /// </summary>
     public System.Collections.Generic.Dictionary<string, string[]> HutRecipeOutputs = new()
     {
-        ["forester"] = new[] { "firewood", "stick", "debarkedlog" },
+        ["forester"] = new[] { "firewood", "stick", "debarkedlog", "torch" },
+        // Reed baskets, reed chests, crude doors and torches (0.202.0): builds ask for them and no other hut made them.
+        ["craftsman"] = new[] { "basket", "stationarybasket", "door-crude*", "torch", "wattle", "hut" },
+        // Mudbrick and daub for the builds (0.205.0, Aaron): the Potter makes them from clay, dry grass and soil (daub also takes sand).
+        ["potter"] = new[] { "mudbrick", "daubraw" },
         ["farmer"] = new[] { "flaxtwine", "rope", "linen", "hay" },
         // Poultices from the horsetail and reed tops it picks (ColonyManager.Healing.cs).
-        ["gatherer"] = new[] { "torch", "basket", "flaxtwine", "poultice" },
+        ["gatherer"] = new[] { "basket", "flaxtwine", "poultice" },
         ["miner"] = new[] { "cobblestone", "stonebricks", "torch" },
         ["quarry"] = new[] { "cobblestone", "stonebricks", "stonepath" },
         // Every piece of clothing but jewellery, the sewing kit, and armor of leather or linen (never metal).
@@ -964,7 +1068,9 @@ public class ColonyConfig
         ["jeweller"] = new[] { "game", "canjewelry", "canjewelryadornments" },
         ["mint"] = new[] { "createacolony" },
         // The Sawmill makes hut blocks for the Mayor (0.199.0).
-        ["sawmill"] = new[] { "createacolony" }
+        ["sawmill"] = new[] { "createacolony" },
+        // The Primitive Craftsman makes stone age hut blocks from firewood (0.205.0).
+        ["craftsman"] = new[] { "game", "createacolony" }
     };
     /// <summary>
     /// Recipes only a player class can make that a hut's worker may make too, by hut type: the Tailor counts as
@@ -992,7 +1098,9 @@ public class ColonyConfig
         ["healer"] = new[] { "knife", "shears", "scissors" },
         ["mint"] = new[] { "hammer" },
         ["stonemason"] = new[] { "chisel", "saw", "hammer", "pickaxe" },
-        ["fletcher"] = new[] { "knife" }
+        ["fletcher"] = new[] { "knife" },
+        // Wattle takes a knife (0.205.0).
+        ["craftsman"] = new[] { "knife" }
     };
     /// <summary>Seconds a worker takes to craft one recipe at its hut.</summary>
     public float HutRecipeSecondsPerCraft = 4f;
@@ -1104,6 +1212,14 @@ public class ColonyConfig
     public double BailiffStuckHours = 2;
     /// <summary>How long a lent worker stays at the other hut before going back to their own, in in-game days.</summary>
     public double BailiffLendDays = 1;
+    /// <summary>
+    /// A worker whose hut waits for a delivery (open requests, or it needs a tool) keeps the job this many game days
+    /// with nothing delivered and nothing made before the Bailiff moves them (0.201.0, Aaron). Changed per colony on
+    /// the Bailiff tab.
+    /// </summary>
+    public int BailiffWaitDays = 3;
+    /// <summary>The Bailiff does not move the same settler again within this many game days.</summary>
+    public double BailiffMoveAgainDays = 3;
     /// <summary>Mood points every other settler has while a bailiff watches over them (they are not liked).</summary>
     public int BailiffMood = -3;
 
@@ -1509,6 +1625,15 @@ public class ColonyConfig
     public float PickUpDelaySeconds = 5f;
     /// <summary>An idle settler walks to items on the ground within this many blocks. 0: only what it walks over.</summary>
     public int PickUpRange = 10;
+    /// <summary>How near a settler picks up what lies beside it while working or walking past, in blocks (0.200.0; was 1.5).</summary>
+    public float PickUpReach = 3f;
+    /// <summary>Couriers with nothing to carry walk to things lying on the ground inside the colony, this far from them, and take them to the warehouse (0.200.0). 0: off.</summary>
+    public int CourierSweepRange = 64;
+    /// <summary>
+    /// A worker whose hut has waited this many game hours for something the warehouse holds, with no courier
+    /// bringing it, fetches it himself (0.200.0). 0: never.
+    /// </summary>
+    public double WorkerFetchesAfterHours = 1.0;
     /// <summary>
     /// A settler with no job hut keeps what it picks up until its pack is full or it has carried it this many
     /// seconds, then takes it all to the warehouse in one trip (if the colony has one).
@@ -1589,6 +1714,8 @@ public class ColonyConfig
     public float HappinessPerHour = 2f;
     /// <summary>A settler at or below this happiness downs tools and sulks for a few hours.</summary>
     public float HappinessBreakAt = 15f;
+    /// <summary>Nobody stops work from unhappiness in a colony's first days (0.203.0). 0 for no such grace.</summary>
+    public double NoBreakdownFirstDays = 5;
     /// <summary>In-game hours a breakdown lasts (rolled between the two).</summary>
     public double HappinessBreakHoursMin = 2;
     public double HappinessBreakHoursMax = 4;
@@ -1672,7 +1799,7 @@ public class ColonyConfig
     /// </summary>
     public System.Collections.Generic.Dictionary<string, string[]> HutRecipeInputParts = new()
     {
-        ["stonemason"] = new[] { "rock", "stone", "cobblestone", "stonebrick", "stonebricks", "polishedrock", "rockpolished", "stonepath", "stoneslab", "stonestairs", "cobblestoneslab", "cobblestonestairs", "polishedrockslab" }
+        ["stonemason"] = new[] { "clay", "soil", "rock", "stone", "cobblestone", "stonebrick", "stonebricks", "polishedrock", "rockpolished", "stonepath", "stoneslab", "stonestairs", "cobblestoneslab", "cobblestonestairs", "polishedrockslab" }
     };
     /// <summary>What a new hut's Crafting recipes tab keeps from the start (code patterns and amounts, the first match wins), by hut type.</summary>
     public System.Collections.Generic.Dictionary<string, System.Collections.Generic.Dictionary<string, int>> HutRecipeStartKeep = new()
@@ -1740,11 +1867,76 @@ public class ColonyConfig
     /// <summary>The Mayor builds another food hut while there are more than this many settlers for each one (Farmer, Hunter, Fisher).</summary>
     public int MayorSettlersPerFoodHut = 5;
     /// <summary>A second Builder's Hut once the colony has this many settlers.</summary>
-    public int MayorSecondBuilderAt = 8;
+    public int MayorSecondBuilderAt = 5;
     /// <summary>How many huts of one type the Mayor builds to meet a need.</summary>
     public int MayorMaxPerType = 2;
-    /// <summary>The Mayor starts a new building only while there are at most this many work orders for each builder.</summary>
-    public int MayorOrdersPerBuilder = 1;
+    /// <summary>The Mayor keeps this many work orders going for each builder: one in work and one queued (0.201.0).</summary>
+    public int MayorOrdersPerBuilder = 2;
+    /// <summary>
+    /// What every settlement starts with, in this order, before beds and the build order (0.201.0, Aaron): the
+    /// Gatherer's Hut (the first food hut), the Builder's Hut, the Primitive Craftsman and the Warehouse.
+    /// </summary>
+    public string[] MayorStartOrder = { "gatherer", "builder", "craftsman", "warehouse" };
+    /// <summary>
+    /// The hut chain (0.201.0): the huts each hut type depends on. The Mayor orders a hut only when those are built and
+    /// have a worker, and orders the missing one first. Copper goes: nuggets (Gatherer), Smelter, pickaxe, then the Mine.
+    /// </summary>
+    public System.Collections.Generic.Dictionary<string, string[]> MayorHutNeeds = new()
+    {
+        ["potter"] = new[] { "gatherer" },
+        ["charcoalburner"] = new[] { "forester" },
+        ["smelter"] = new[] { "forester", "charcoalburner", "potter" },
+        ["blacksmith"] = new[] { "smelter" },
+        ["miner"] = new[] { "smelter" },
+        ["prospector"] = new[] { "smelter" },
+        ["quarry"] = new[] { "smelter" },
+        // The Stonemason works the loose stones the Gatherer brings (0.205.0): no Quarry needed first.
+        ["stonemason"] = new[] { "gatherer" },
+        ["bakery"] = new[] { "farmer" },
+        ["tannery"] = new[] { "hunter" },
+        ["fletcher"] = new[] { "forester" }
+    };
+    /// <summary>
+    /// The materials check (0.201.0): before ordering a design the Mayor looks at what it costs. Something made by one
+    /// of MayorMaterialMakers (fired or metal things) that the colony does not store, with that hut not working yet,
+    /// makes the design wait and the hut come first.
+    /// </summary>
+    public bool MayorChecksMaterials = true;
+    /// <summary>
+    /// Maker huts first (0.205.0, Aaron): before the Mayor puts a building down, every material in its design (but
+    /// those left for later) must have a hut in the colony that makes or gathers it. A missing maker is put down
+    /// first; a design that needs something no hut can make waits. False: the 0.201.0 check (fired and metal things only).
+    /// </summary>
+    public bool MayorMakersFirst = true;
+    /// <summary>How long, in milliseconds, one look of the Mayor for a building spot may take before it stops with the best spot so far.</summary>
+    public int MayorSearchMs = 250;
+    /// <summary>
+    /// Huts work at level 0 (0.205.0, Aaron): a food or maker hut the Mayor needs is put down as a hut block and given a
+    /// worker straight away, without a build. Its building is ordered later, once the colony can supply it.
+    /// </summary>
+    public bool MayorHutsStartUnbuilt = true;
+    /// <summary>Food first (0.205.0): below this many days of food for everyone, the Mayor puts food huts before everything else.</summary>
+    public double MayorFoodDaysLow = 3;
+    /// <summary>Homes per family (0.205.0): a couple with their children, or one grown-up on their own, is one family and needs one home.</summary>
+    public bool MayorHomePerFamily = true;
+    /// <summary>
+    /// Fill in later (0.205.0, Aaron): blocks whose material the colony can't get yet are left out of a build and put
+    /// in once it can: boards and everything made from them until the colony has a saw, and things no hut makes.
+    /// The rest of the building goes up and is used straight away.
+    /// </summary>
+    public bool BuildersFillInLater = true;
+    /// <summary>Code patterns of things that need a saw: left for later until the colony has one.</summary>
+    public string[] NeedsSawPatterns = { "game:plank-*", "game:planks-*", "game:plankslab-*", "game:plankstairs-*", "game:ladder-wood-*",
+        "game:door-solid-*", "game:door-*plank*", "game:trapdoor-*", "game:chest-*", "game:woodenfence-*", "game:woodenfencegate-*", "game:supportbeam-*",
+        "game:table-*", "game:chair-*", "game:shelf-*", "game:barrel", "game:crate*", "game:trunk-*", "w4rd0sfurniture:*", "foodshelves:*",
+        "aculinaryartillery:bottlerack*", "createacolony:hut-*" };
+    /// <summary>Things that count as a saw for the rule above.</summary>
+    public string[] SawPatterns = { "game:saw-*", "game:sawblade-*" };
+    public string[] MayorMaterialMakers = { "potter", "smelter", "blacksmith" };
+    /// <summary>The Mayor looks for a spot this close to the Town Hall first, then each wider ring, then anywhere in reach.</summary>
+    public int[] MayorNearRings = { 20, 32, 48 };
+    /// <summary>A build that has waited this many game hours for materials lets its builder go to one that has them.</summary>
+    public double BuildWaitsBeforeNextHours = 2;
     /// <summary>Gap kept between buildings, and clear ground kept in front of a building's front.</summary>
     public int MayorGap = 2;
     public int MayorFrontClear = 3;
@@ -1758,9 +1950,20 @@ public class ColonyConfig
     /// The Mayor's default build order, as stages: each stage starts at a number of settlers ("6:hunter" is built
     /// from 6 settlers on). Changed in game on the Town Hall's Mayor tab.
     /// </summary>
-    public string[] MayorBuildOrder =
+    public string[] MayorBuildOrder = NewMayorBuildOrder();
+
+    /// <summary>The build order of 0.199.0 and 0.200.0, to tell a config nobody changed.</summary>
+    public static readonly string[] OldMayorBuildOrder =
     {
         "0:builder", "0:residence", "0:gatherer", "0:forester", "0:farmer", "0:cook", "0:craftsman", "0:potter", "0:courierstation",
+        "6:hunter", "6:guardtower", "6:charcoalburner", "6:sawmill", "6:healer",
+        "10:prospector", "10:miner", "10:smelter", "10:blacksmith", "10:market", "10:tavern", "10:chickencoop", "10:piggery", "10:shepherd", "10:butcher", "10:tannery",
+        "15:church", "15:graveyard", "15:school", "15:archive", "15:barracks", "15:bakery", "15:fisher", "15:quarry", "15:stonemason", "15:tailor", "15:explorer", "15:composter", "15:fletcher", "15:apiary"
+    };
+
+    public static string[] NewMayorBuildOrder() => new[]
+    {
+        "0:gatherer", "0:builder", "0:craftsman", "0:warehouse", "0:residence", "0:forester", "0:farmer", "0:cook", "0:potter", "0:courierstation",
         "6:hunter", "6:guardtower", "6:charcoalburner", "6:sawmill", "6:healer",
         "10:prospector", "10:miner", "10:smelter", "10:blacksmith", "10:market", "10:tavern", "10:chickencoop", "10:piggery", "10:shepherd", "10:butcher", "10:tannery",
         "15:church", "15:graveyard", "15:school", "15:archive", "15:barracks", "15:bakery", "15:fisher", "15:quarry", "15:stonemason", "15:tailor", "15:explorer", "15:composter", "15:fletcher", "15:apiary"
@@ -1778,9 +1981,10 @@ public class ColonyConfig
         ["miner"] = new[] { "game:ore-*", "game:nugget-*" },
         ["smelter"] = new[] { "game:ingot-*", "game:metalbit-*" },
         ["blacksmith"] = new[] { "game:*-copper", "game:*-tinbronze", "game:*-iron", "game:nailsandstrips-*" },
-        ["potter"] = new[] { "game:bowl-*", "game:crock-*", "game:storagevessel-*", "game:claypot-*", "game:crucible-*", "game:toolmold-*", "game:ingotmold-*" },
+        ["potter"] = new[] { "game:bowl-*", "game:crock-*", "game:storagevessel-*", "game:claypot-*", "game:crucible-*", "game:toolmold-*", "game:ingotmold-*", "game:mudbrick-*", "game:daubraw-*" },
+        ["stonemason"] = new[] { "game:cobblestone-*", "game:cobblestonestairs-*", "game:cobblestoneslab-*", "game:stonepath-*", "game:forge" },
         ["charcoalburner"] = new[] { "game:charcoal" },
-        ["craftsman"] = new[] { "game:*head-flint", "game:*head-granite", "game:*-flint", "game:knife-*", "game:axe-*", "game:shovel-*", "game:hoe-*" },
+        ["craftsman"] = new[] { "game:*head-flint", "game:*head-granite", "game:*-flint", "game:knife-*", "game:axe-*", "game:shovel-*", "game:hoe-*", "game:wattle-*", "game:basket*", "game:stationarybasket*", "game:door-crude*" },
         ["farmer"] = new[] { "game:grain-*", "game:vegetable-*", "game:seeds-*", "game:flaxfibers", "game:flaxtwine" },
         ["hunter"] = new[] { "game:redmeat-raw", "game:bushmeat-raw", "game:poultry-raw", "game:hide-*", "game:fat" },
         ["cook"] = new[] { "game:bread-*", "game:redmeat-cooked", "game:bushmeat-cooked", "game:poultry-cooked" },

@@ -163,6 +163,12 @@ public class CitizenRecord
     [ProtoMember(110)] public string? HomeJob;
     [ProtoMember(111)] public BlockPos? HomeWorkplacePos;
     [ProtoMember(112)] public double LentUntilTotalDays;
+    /// <summary>True when a player gave this job by hand (0.201.0): the Bailiff leaves it alone until the player changes it.</summary>
+    [ProtoMember(115)] public bool JobSetByPlayer;
+    /// <summary>When the Bailiff or the Mayor last gave this settler a job or lent them out (total days): not again within BailiffMoveAgainDays.</summary>
+    [ProtoMember(116)] public double LastMovedTotalDays;
+    /// <summary>A lent worker whose own hut was waiting for a delivery: they go back as soon as it has come.</summary>
+    [ProtoMember(117)] public bool LentWaiting;
     /// <summary>The settler's coins: wages in, taxes out (ColonyManager.Economy.cs).</summary>
     [ProtoMember(113)] public int Purse;
     /// <summary>True when their last wage could not be paid in full; cleared on the next payday they are paid.</summary>
@@ -236,6 +242,8 @@ public class MayorPlan
     [ProtoMember(10)] public int Level;
     /// <summary>Approved (or the Mayor builds on their own): carried out as soon as there is a hut block.</summary>
     [ProtoMember(11)] public bool Approved;
+    /// <summary>Huts work at level 0 (0.205.0): the hut block is put down and given a worker, without a build.</summary>
+    [ProtoMember(12)] public bool Unbuilt;
 }
 
 [ProtoContract]
@@ -275,6 +283,11 @@ public class Building
     [ProtoMember(3700)] public List<CharcoalPit> CharcoalPits = new();
     /// <summary>Auto hiring (ColonyManager.AutoTown.cs): false when this hut's places are filled by hand only.</summary>
     [ProtoMember(3701, IsRequired = true)] public bool TakesAutoHires = true;
+    /// <summary>
+    /// Keep spare fuel (0.202.0): a hut that burns fuel (Potter, Cook, Bakery, Smelter, Blacksmith) keeps one more full
+    /// firing in its storage and asks again when it drops below that. On by default. The hut's Requests tab.
+    /// </summary>
+    [ProtoMember(4910, IsRequired = true)] public bool KeepSpareFuel = true;
     /// <summary>Auto housing: false when this home's beds are given out by hand only.</summary>
     [ProtoMember(3702, IsRequired = true)] public bool TakesAutoResidents = true;
     /// <summary>A Composter's Hut: its compost heap, how much rot and dry grass is on it (ColonyManager.Composting.cs).</summary>
@@ -430,6 +443,11 @@ public class Building
     [ProtoMember(270)] public bool Upkeep;
     /// <summary>The work order is a repair players asked for: the building is put back as its blueprint has it (ColonyManager.Repair.cs).</summary>
     [ProtoMember(271)] public bool Repairing;
+    /// <summary>
+    /// Fill in later (0.205.0): the last build left out blocks the colony couldn't get yet (boards before a saw, things
+    /// no hut makes). The Mayor sends a builder back to put them in once it can (ColonyManager.FillLater.cs).
+    /// </summary>
+    [ProtoMember(5050)] public bool LaterBlocks;
 
     /// <summary>A Miner's Hut working a Mineshaft Entrance's mine: that entrance. Not saved; see Colony.LinkMines.</summary>
     public Building? Entrance;
@@ -1013,6 +1031,8 @@ public class Colony
     [ProtoMember(4500)] public bool SettlersUnhurt;
     /// <summary>No hostile creatures spawn anywhere, and no raids come.</summary>
     [ProtoMember(4501)] public bool NoEnemies;
+    /// <summary>Saves a colony report every Config.TimedReportMinutes (0.204.0, ColonyReport.cs), for Odin or a bug report.</summary>
+    [ProtoMember(4502)] public bool AutoReport;
     // 4800-4819: the Mayor (0.199.0, ColonyManager.Mayor.cs).
     /// <summary>What the Mayor does about buildings: MayorModes.Off, Ask (asks first) or OnOwn.</summary>
     [ProtoMember(4800, IsRequired = true)] public int MayorMode = MayorModes.Ask;
@@ -1033,6 +1053,10 @@ public class Colony
     /// <summary>Hut types skipped with Skip this one, until the next day (type|day).</summary>
     [ProtoMember(4808)] public List<string> MayorSkipToday = new();
     /// <summary>Why the Mayor did nothing at the last look (a lang key and its args), shown on the Mayor tab.</summary>
+    /// <summary>The tools of the colony's starting kit already handed out ("axe", "shovel", "hoe", "knife"), ColonyManager.Tools.cs (0.201.0).</summary>
+    [ProtoMember(4900)] public List<string> StarterToolsGiven = new();
+    /// <summary>Game days the Bailiff leaves a worker who waits for a delivery at their hut (0 = config BailiffWaitDays). Bailiff tab.</summary>
+    [ProtoMember(4811)] public int BailiffWaitDays;
     [ProtoMember(4809)] public string MayorIdle = "";
     [ProtoMember(4810)] public List<string> MayorIdleArgs = new();
     [ProtoMember(3713, IsRequired = true)] public int LastAutoHireDay = -1;

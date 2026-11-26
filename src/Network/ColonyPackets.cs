@@ -51,6 +51,18 @@ public class CitizenView
     [ProtoMember(30)] public string Weapon = "";
     /// <summary>Colony militia tab: a guard set to fight with a bow or sling.</summary>
     [ProtoMember(32)] public bool GuardRanged;
+    /// <summary>The job the settler really has while the Bailiff has lent it out (0.203.0), else empty; Job is what it does now.</summary>
+    [ProtoMember(40)] public string HomeJob = "";
+    /// <summary>
+    /// Town Hall job panel (0.203.0): for every job skill, the settler's level, its passion (0-2) and the trait that
+    /// rules the skill out ("" for none), as lists side by side. Only for grown colony members.
+    /// </summary>
+    [ProtoMember(41)] public List<string> SkillCodes = new();
+    [ProtoMember(42)] public List<int> SkillLevels = new();
+    [ProtoMember(43)] public List<int> SkillPassions = new();
+    [ProtoMember(44)] public List<string> SkillBlocks = new();
+    /// <summary>Jobs the settler has the job trait for.</summary>
+    [ProtoMember(45)] public List<string> JobTraits = new();
 }
 
 /// <summary>One person in a family list: who, how they are related, and what they do.</summary>
@@ -584,6 +596,9 @@ public class HutSnapshot
     /// <summary>The hut's Take auto hires and Take auto residents switches (0.185.0).</summary>
     [ProtoMember(3700)] public bool TakesAutoHires;
     [ProtoMember(3701)] public bool TakesAutoResidents;
+    /// <summary>Huts that burn fuel have a Keep spare fuel switch on their Requests tab (0.202.0).</summary>
+    [ProtoMember(4910)] public bool BurnsFuel;
+    [ProtoMember(4911)] public bool KeepSpareFuel;
 }
 
 /// <summary>One row of a hut's Requests tab.</summary>
@@ -778,6 +793,7 @@ public class ColonySnapshot
     /// <summary>Test settings (0.196.0).</summary>
     [ProtoMember(4500)] public bool SettlersUnhurt;
     [ProtoMember(4501)] public bool NoEnemies;
+    [ProtoMember(4502)] public bool AutoReport;
     [ProtoMember(3704)] public string EnterText = "";
     [ProtoMember(3705)] public string LeaveText = "";
     [ProtoMember(3706)] public List<RankView> Ranks = new();
@@ -840,6 +856,11 @@ public class ColonySnapshot
     [ProtoMember(4811)] public List<string> MayorSkip = new();
     /// <summary>The plan is a new building (so it can be shown), not an upgrade.</summary>
     [ProtoMember(4812)] public bool MayorPlanNew;
+    /// <summary>Game days the Bailiff leaves a worker who waits for a delivery at their hut (0.201.0).</summary>
+    [ProtoMember(4813)] public int BailiffWaitDays;
+    /// <summary>Town Hall job panel (0.203.0): each job and the skill it uses ("" for none), side by side.</summary>
+    [ProtoMember(4820)] public List<string> JobSkillJobs = new();
+    [ProtoMember(4821)] public List<string> JobSkillCodes = new();
 }
 
 /// <summary>ColonySnapshot.BailiffState: none, on duty, knocked out, or too unhappy to work.</summary>

@@ -26,6 +26,9 @@ public class AiTaskSettlerDefend : SettlerTaskBase
     float swingLeft;
     string? swingAnim;
     long nextAimMs;
+    /// <summary>Walks after the attacker that found no way or got no closer, in a row (0.205.0, note 112).</summary>
+    int fruitlessWalks;
+    double lastGap = double.MaxValue;
     readonly RangedShooter shooter = new();
     /// <summary>Whether the last look found a clear shot, looked again twice a second.</summary>
     bool clearShot;
@@ -54,6 +57,8 @@ public class AiTaskSettlerDefend : SettlerTaskBase
         attacker = manager!.FleeingFrom(entity);
         cooldown = 0;
         nextAimMs = 0;
+        fruitlessWalks = 0;
+        lastGap = double.MaxValue;
         if (Colony is { } colony && Citizen is { } citizen) HoldBestWeapon(colony, citizen);
     }
 
@@ -121,6 +126,16 @@ public class AiTaskSettlerDefend : SettlerTaskBase
         }
         if (entity.World.ElapsedMilliseconds >= nextAimMs || PathFailed || Arrived)
         {
+            // It can't get at the attacker (a wall, water, a drop): after a few tries it stops stepping to and fro.
+            double gap = entity.Pos.DistanceTo(attacker.Pos.XYZ);
+            if (PathFailed || gap > lastGap - 0.5) fruitlessWalks++;
+            else fruitlessWalks = 0;
+            lastGap = Math.Min(lastGap, gap);
+            if (fruitlessWalks >= 6)
+            {
+                m.StopFleeing(entity);
+                return false;
+            }
             nextAimMs = entity.World.ElapsedMilliseconds + AimMs;
             WalkTo(attacker.Pos.XYZ, Reach - 0.4f);
         }
