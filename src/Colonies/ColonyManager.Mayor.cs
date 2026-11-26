@@ -424,7 +424,7 @@ public partial class ColonyManager
         if (StartStep(colony, room, ref why) is { } start) return start;
 
         // 1. Food. The Gatherer's Hut is the first food hut; a Farmer's Hut waits until the colony has seeds.
-        var foodTypes = new[] { BuildingTypes.Gatherer, BuildingTypes.Farmer, BuildingTypes.Hunter, BuildingTypes.Fisher };
+        var foodTypes = new[] { BuildingTypes.Gatherer, BuildingTypes.Farmer, BuildingTypes.Hunter, BuildingTypes.Fisher, BuildingTypes.ChickenCoop };
         int foodHuts = foodTypes.Sum(t => CountOf(colony, t));
         bool seeds = ColonyHasSeeds(colony);
         // Food first, by real food (0.205.0): below MayorFoodDaysLow days of food, a food hut comes before anything else.
@@ -434,10 +434,16 @@ public partial class ColonyManager
         if (hungry || settlers > foodHuts * Math.Max(1, Config.MayorSettlersPerFoodHut))
         {
             if (!seeds) MayorNote(colony, "Food: no Farmer's Hut yet, the colony has no seeds.");
-            var type = foodTypes.Where(t => !Skipped(colony, t) && (t != BuildingTypes.Farmer || seeds))
+            // Each kind in turn (0.205.0): a Fisher's Hut with no water near, say, should not stop the next kind.
+            var types = foodTypes.Where(t => !Skipped(colony, t) && (t != BuildingTypes.Farmer || seeds))
                 .Where(t => CountOf(colony, t) < (t == BuildingTypes.Gatherer ? Math.Max(1, Config.MayorMaxPerType) : Config.MayorMaxPerType + 2))
-                .OrderBy(t => CountOf(colony, t) + (t == BuildingTypes.Gatherer ? 0 : t == BuildingTypes.Farmer ? 0.25 : t == BuildingTypes.Hunter ? 0.5 : 1)).FirstOrDefault();
-            if (type != null && ForNeed(colony, mayor, type, "mayor-why-food", new[] { settlers.ToString() }, room, ref why) is { } food) return food;
+                .OrderBy(t => CountOf(colony, t) + (t == BuildingTypes.Gatherer ? 0 : t == BuildingTypes.Farmer ? 0.25 : t == BuildingTypes.Hunter ? 0.5 : t == BuildingTypes.Fisher ? 1 : 1.25)).ToList();
+            // Short of food but with enough food huts for its people: one of each kind, not more of the same.
+            if (settlers <= foodHuts * Math.Max(1, Config.MayorSettlersPerFoodHut)) types = types.Where(t => CountOf(colony, t) == 0).ToList();
+            foreach (var type in types)
+            {
+                if (ForNeed(colony, mayor, type, "mayor-why-food", new[] { settlers.ToString() }, room, ref why) is { } food) return food;
+            }
         }
 
         // Homes second (0.205.0, Aaron): one house per family.

@@ -55,10 +55,10 @@ public partial class ColonyManager
         return ZoneAt(colony, e.Pos.AsBlockPos) == null;
     }
 
-    /// <summary>The nearest animal in the hut's work area to hunt, or null.</summary>
-    public Entity? FindPrey(Colony colony, Building hut, Vec3d from, System.Func<long, bool> skip)
+    /// <summary>The nearest animal in the hut's work area (or within range, on a far trip) to hunt, or null.</summary>
+    public Entity? FindPrey(Colony colony, Building hut, Vec3d from, System.Func<long, bool> skip, int range = 0)
     {
-        int r = GatherRadius(hut);
+        int r = range > 0 ? range : GatherRadius(hut);
         var center = hut.HutPos.ToVec3d().Add(0.5, 0, 0.5);
         return sapi.World.GetEntitiesAround(from, Math.Min(r, 48), 16, e => !skip(e.EntityId) && IsPrey(colony, hut, e))
             .Where(e => e.Pos.HorDistanceTo(center) <= r)

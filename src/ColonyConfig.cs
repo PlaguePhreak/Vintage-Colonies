@@ -258,6 +258,14 @@ public class ColonyConfig
     // Hunter
     /// <summary>How far from the Hunter's Hut, in blocks, the hunter hunts (change it on the Work area tab).</summary>
     public int HunterRadius = 48;
+    /// <summary>A hunter that finds nothing in its work area goes further out for a while (0.205.0).</summary>
+    public bool HunterFarTrips = true;
+    /// <summary>On a far trip a worker may go this many times its work area from its hut.</summary>
+    public float FarTripRangeMult = 3f;
+    /// <summary>The furthest a far trip goes from the hut, in blocks.</summary>
+    public int FarTripMaxRadius = 160;
+    /// <summary>Real minutes a far trip lasts before the worker goes back to its own work area.</summary>
+    public float FarTripMinutes = 6f;
     /// <summary>Seconds between a hunter's strikes.</summary>
     public float HunterSecondsPerHit = 1.2f;
     /// <summary>Seconds a hunter chases one animal before it lets it go for a while.</summary>
@@ -313,6 +321,10 @@ public class ColonyConfig
     public string[] HerdNeverCull = { "tameddeer-*" };
     /// <summary>How far from a herder hut, in blocks, its pen reaches (change it on the Work area tab).</summary>
     public int HerdRadius = 16;
+    /// <summary>A herder with fewer animals than this catches wild ones of its kinds and carries them to its pen (0.205.0; 0 = never).</summary>
+    public int HerderCatchUpTo = 4;
+    /// <summary>How far from its hut, in blocks, a herder goes to catch a wild animal.</summary>
+    public int HerderCatchRadius = 96;
     /// <summary>How many animals a level 1 herder hut keeps before it culls the spare ones.</summary>
     public int HerdSize = 6;
     /// <summary>How many more animals it keeps for each hut level above 1.</summary>
@@ -424,6 +436,10 @@ public class ColonyConfig
     public bool GathererTakesCuttings = true;
     /// <summary>How many cuttings of each bush the colony keeps (hut and warehouse) before the gatherer stops taking them.</summary>
     public int GathererCuttingsKeep = 4;
+    /// <summary>Berry gardens (0.205.0): the gatherer plants the cuttings it took near its hut, up to this many bushes (0 = never).</summary>
+    public int BerryGardenSize = 12;
+    /// <summary>How far from the Gatherer's Hut, in blocks, it plants its berry garden.</summary>
+    public int BerryGardenRadius = 14;
     /// <summary>Food counts as low below this many full bellies (SaturationMax) per settler in the colony's chests.</summary>
     public double GathererRootsFoodDays = 2;
     /// <summary>The gatherer leaves a reed alone unless this many others grow within 4 blocks of it.</summary>

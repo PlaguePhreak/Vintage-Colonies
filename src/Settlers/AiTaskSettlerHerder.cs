@@ -20,7 +20,7 @@ namespace CreateAColony.Settlers;
 /// </summary>
 public abstract class AiTaskSettlerHerder : AiTaskSettlerWorker
 {
-    enum Work { None, Feed, Eggs, Milk, Cull, Skin }
+    enum Work { None, Feed, Eggs, Milk, Cull, Skin, Catch }
 
     const long LetGoMs = 300_000;
 
@@ -178,16 +178,40 @@ public abstract class AiTaskSettlerHerder : AiTaskSettlerWorker
             }
         }
 
+        // Too few animals: catch a wild one and carry it home (0.205.0).
+        {
+            long now = entity.World.ElapsedMilliseconds;
+            var wild = entity.World.GetEntityById(animalId) is { } chased && chased.Alive && work == Work.None && !herd.Contains(chased) && !LetGo(animalId)
+                && chased.Pos.HorDistanceTo(hut.HutPos.ToVec3d()) > r ? chased : m.WildToCatch(colony, hut, herd, here, LetGo);
+            if (wild != null)
+            {
+                if (wild.EntityId != animalId) chaseStartMs = now;
+                if (now - chaseStartMs > m.Config.HunterChaseSeconds * 2000)
+                {
+                    letGo[wild.EntityId] = now + LetGoMs;
+                    animalId = 0;
+                }
+                else
+                {
+                    work = Work.Catch;
+                    animalId = wild.EntityId;
+                    workRange = 2f;
+                    SetStatus("herder-catching");
+                    return GoWork(wild.Pos.AsBlockPos);
+                }
+            }
+        }
+
         animalId = 0;
         SetStatus(herd.Count == 0 ? "herder-no-animals" : troughs.Count == 0 ? "herder-no-trough" : "herder-tending");
         return false;
     }
 
     /// <summary>An animal moves: walk to where it is now.</summary>
-    protected override Vec3d WalkGoal() => work is Work.Cull or Work.Milk or Work.Skin && entity.World.GetEntityById(animalId) is { } e
+    protected override Vec3d WalkGoal() => work is Work.Cull or Work.Milk or Work.Skin or Work.Catch && entity.World.GetEntityById(animalId) is { } e
         ? e.Pos.XYZ : base.WalkGoal();
 
-    protected override bool CloseEnough() => work is Work.Cull or Work.Milk or Work.Skin && entity.World.GetEntityById(animalId) is { } e
+    protected override bool CloseEnough() => work is Work.Cull or Work.Milk or Work.Skin or Work.Catch && entity.World.GetEntityById(animalId) is { } e
         ? entity.Pos.DistanceTo(e.Pos.XYZ) <= workRange + 0.5
         : base.CloseEnough();
 
@@ -226,6 +250,15 @@ public abstract class AiTaskSettlerHerder : AiTaskSettlerWorker
                 if (!done && !ColonyManager.IsKnife(hand.Itemstack)) return;
                 m.Skin(colony, citizen, entity, carcass, hand);
                 SyncHand();
+                break;
+            case Work.Catch:
+                if (entity.World.GetEntityById(animalId) is { } caught && caught.Alive && entity.Pos.DistanceTo(caught.Pos.XYZ) <= workRange + 1.5
+                    && m.CatchAnimal(colony, hut, caught))
+                {
+                    // It carries the animal home: the herder goes back to the hut too.
+                    entity.TeleportTo(caught.Pos.XYZ.AddCopy(1, 0, 0));
+                }
+                animalId = 0;
                 break;
             case Work.Cull:
                 if (entity.World.GetEntityById(animalId) is not { } prey || !prey.Alive || entity.Pos.DistanceTo(prey.Pos.XYZ) > workRange + 1) return;

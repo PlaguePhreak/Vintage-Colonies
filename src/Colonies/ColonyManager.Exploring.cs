@@ -417,6 +417,6 @@ public partial class ColonyManager
     string GathererInfo(Colony colony, Building hut)
     {
         int ready = scanners.TryGetValue((hut.BuildingId, "forage"), out var scanner) ? scanner.Found.Count(f => f.Value) : 0;
-        return Lang.Get("createacolony:gatherer-progress", MarkerCount(colony, hut), ready);
+        return Lang.Get("createacolony:gatherer-progress", MarkerCount(colony, hut), ready, hut.StatTotals.GetValueOrDefault("planted"));
     }
 }

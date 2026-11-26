@@ -22,6 +22,8 @@ public class AiTaskSettlerGatherer : AiTaskSettlerWorker
     bool looking;
     /// <summary>True while going to cut tall grass because the colony needs dry grass.</summary>
     bool cutting;
+    /// <summary>Berry garden (0.205.0): walking to plant a cutting; keepCuttings = it holds on to its cuttings to plant them.</summary>
+    bool planting, keepCuttings;
     /// <summary>Where it last looked around on the move, and when (ms), so it marks what it passes.</summary>
     Vec3d? lastLookPos;
     long lastLookMs;
@@ -41,7 +43,8 @@ public class AiTaskSettlerGatherer : AiTaskSettlerWorker
     /// low the roots and firewood it is taking to the fire.
     /// </summary>
     protected override bool AlsoKeeps(ItemStack stack) => IsRecipeTool(stack)
-        || (roasting && (manager!.IsCookableRoot(stack) || ColonyManager.IsFirewood(stack)));
+        || (roasting && (manager!.IsCookableRoot(stack) || ColonyManager.IsFirewood(stack)))
+        || (keepCuttings && manager!.IsCutting(stack));
 
     /// <summary>A knife in its hand or pack: for cutting grass and taking bush cuttings.</summary>
     bool HasKnife(CitizenRecord citizen) => ColonyManager.IsKnife(Hand?.Itemstack) || manager!.PackItems(citizen).Any(ColonyManager.IsKnife);
@@ -141,6 +144,24 @@ public class AiTaskSettlerGatherer : AiTaskSettlerWorker
             return GoWork(grass);
         }
         cutting = false;
+        planting = false;
+        // Berry garden: cuttings it took go in the ground near the hut, so the colony has berries close by every year.
+        keepCuttings = !lookOnly && manager!.GardenHasRoom(hut)
+            && (manager.PackCount(citizen, manager.IsCutting) > 0 || storage.Any(c => c.Inventory.Any(sl => !sl.Empty && manager.IsCutting(sl.Itemstack))));
+        if (keepCuttings && manager!.GardenSpot(colony, hut) is { } bed)
+        {
+            looking = false;
+            if (manager.PackCount(citizen, manager.IsCutting) == 0
+                && storage.FirstOrDefault(c => c.Inventory.Any(sl => !sl.Empty && manager.IsCutting(sl.Itemstack))) is { } chest)
+            {
+                return FetchSupplies(chest.Pos, manager.IsCutting, 4);
+            }
+            planting = true;
+            workRange = 2.5f;
+            SetStatus("planting-berries");
+            return GoWork(bed);
+        }
+        keepCuttings = false;
         if (spot != null)
         {
             looking = false;
@@ -182,6 +203,12 @@ public class AiTaskSettlerGatherer : AiTaskSettlerWorker
             }
             return;
         }
+        if (planting)
+        {
+            planting = false;
+            if (!m.PlantCutting(colony, hut, citizen, target)) MarkUnreachable(target);
+            return;
+        }
         if (cutting)
         {
             if (!manager!.CutGrass(colony, hut, citizen, target)) MarkUnreachable(target);
@@ -216,6 +243,6 @@ public class AiTaskSettlerGatherer : AiTaskSettlerWorker
     /// <summary>Set to only look around, it looks farther.</summary>
     int LookRadius(Building hut) => System.Math.Max(2, manager!.Config.GathererLookRadius) * (hut.GatherMode == GatherModes.Look ? 2 : 1);
 
-    protected override string DescribeWork() => Lang.Get(cutting ? "createacolony:activity-gatherer-grass"
+    protected override string DescribeWork() => Lang.Get(planting ? "createacolony:activity-gatherer-plant" : cutting ? "createacolony:activity-gatherer-grass"
         : looking ? "createacolony:activity-gatherer-look" : "createacolony:activity-gatherer-pick");
 }
