@@ -373,9 +373,14 @@ public class AiTaskSettlerChores : SettlerTaskBase
         switch (step)
         {
             case Step.Skin:
-                if (entity.World.GetEntityById(carcassId) is not { } carcass || !ColonyManager.Skinnable(carcass) || Hand is not { } hand) return;
+                if (entity.World.GetEntityById(carcassId) is not { } carcass || !ColonyManager.Skinnable(carcass)) return;
                 bool skinned = carcass.GetBehavior<EntityBehaviorHarvestable>()?.IsHarvested == true;
-                if (!skinned && !ColonyManager.IsKnife(hand.Itemstack)) return;
+                if (Hand is not { } hand || !skinned && !ColonyManager.IsKnife(hand.Itemstack))
+                {
+                    // No knife in hand after all: leave this one for a while instead of standing over it (0.205.0, note 109).
+                    unreachable[carcass.Pos.AsBlockPos] = entity.World.ElapsedMilliseconds + 120_000;
+                    return;
+                }
                 // Meat, hide and the rest go to the Warehouse when the colony has one (0.202.0); else home, as before.
                 var skinnedOff = m.Skin(colony, citizen, entity, carcass, hand);
                 if (colony.WarehousePos == null && homeId != 0) foreach (var code in skinnedOff) gathered.Add(code);

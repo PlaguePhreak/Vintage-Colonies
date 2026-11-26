@@ -66,7 +66,8 @@ public partial class ColonyManager
                 bool waiting = hut != null && WaitsForDelivery(colony, hut, status);
                 double limit = waiting ? BailiffWaitDaysOf(colony) : Math.Max(0, Config.BailiffStuckHours) / 24.0;
                 string why = c.JobSetByPlayer ? "job set by a player, stays" : waiting ? "waits for a delivery" : "can't work";
-                lines.Add($"  {c.Name}: {why} ({status}), {(now - since) * cal.HoursPerDay:0.#} of {limit * cal.HoursPerDay:0.#} game hours before a move.");
+                string late = now - since >= limit && !c.JobSetByPlayer && NotMovedWhy(colony, c, now) is { } notMoved ? $" Not moved: {notMoved}." : "";
+                lines.Add($"  {c.Name}: {why} ({status}), {(now - since) * cal.HoursPerDay:0.#} of {limit * cal.HoursPerDay:0.#} game hours before a move.{late}");
             }
             foreach (var c in colony.Citizens.Where(c => c.Alive && !c.Visitor && c.JobSetByPlayer && c.JobCode != null))
                 lines.Add($"  {c.Name}: {c.JobCode} set by a player. The Bailiff leaves it.");

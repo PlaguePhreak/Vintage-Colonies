@@ -136,9 +136,19 @@ public partial class ColonyManager
         var unsafeJobs = Config.ChildNoFollowJobs ?? Array.Empty<string>();
         return ParentsOf(colony, child)
             .Where(p => p.Alive && !p.IsChild && !p.IsDowned && !string.IsNullOrEmpty(p.JobCode) && !unsafeJobs.Contains(p.JobCode) && SkillForJob(p.JobCode) != null)
-            .Where(p => sapi.World.GetEntityById(p.EntityId) is { Alive: true })
+            .Where(p => sapi.World.GetEntityById(p.EntityId) is { Alive: true } pe && NearTown(colony, pe.Pos.XYZ))
             .OrderBy(p => p.CitizenId)
             .FirstOrDefault();
+    }
+
+    /// <summary>
+    /// True for a spot within ChildFollowRange blocks of the Town Hall: children only follow a parent working near
+    /// town, never out on a far trip (0.205.0, notes 97 and 101: a child stood alone 120 blocks out for a day).
+    /// </summary>
+    public bool NearTown(Colony colony, Vintagestory.API.MathTools.Vec3d at)
+    {
+        double r = Math.Max(16, Config.ChildFollowRange);
+        return at.HorizontalSquareDistanceTo(colony.TownHallPos.X + 0.5, colony.TownHallPos.Z + 0.5) <= r * r;
     }
 
     /// <summary>A child watched a parent work long enough: WatchXp of the parent's job skill, once a day.</summary>

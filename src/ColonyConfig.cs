@@ -74,6 +74,12 @@ public class ColonyConfig
     public double RespawnMissingAfterDays = 0.5;
     /// <summary>Game days a settler may stay "unreachable" before being brought home to bed (0.198.0).</summary>
     public double LostRescueDays = 1.0;
+    /// <summary>Children only follow a parent working within this many blocks of the Town Hall (0.205.0).</summary>
+    public int ChildFollowRange = 64;
+    /// <summary>A settler whose land is not kept loaded, this far or more from home, is brought home after FarOutRescueHours game hours (0.205.0).</summary>
+    public int FarOutRescueBlocks = 80;
+    /// <summary>Game hours a settler may stand still in unloaded land far from home before being brought home.</summary>
+    public double FarOutRescueHours = 3;
     /// <summary>Blocks around where a settler got lost that they keep away from afterwards.</summary>
     public double LostOffLimitsRadius = 24;
     /// <summary>Game days a brought-home settler keeps away from where they got lost.</summary>

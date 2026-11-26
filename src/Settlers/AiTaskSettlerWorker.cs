@@ -344,8 +344,15 @@ public abstract class AiTaskSettlerWorker : SettlerTaskBase
     bool HasTool(CitizenRecord citizen) =>
         IsToolStack(Hand?.Itemstack) || manager!.PackCount(citizen, s => IsToolStack(s)) > 0;
 
+    /// <summary>
+    /// The one weapon a worker carries to fight back with stays in its pack (0.205.0, notes 95 and 102: it was put away
+    /// with the harvest, carried off by the courier and handed out again, over and over).
+    /// </summary>
+    bool IsSpareWeapon(ItemStack s) => ColonyManager.IsWeapon(s) && s.Collectible.Tool != EnumTool.Knife && Citizen is { } me
+        && manager!.PackCount(me, w => ColonyManager.IsWeapon(w) && w.Collectible.Tool != EnumTool.Knife) <= 1;
+
     /// <summary>What the job keeps, and what the thing it is crafting for the Crafting recipes tab takes.</summary>
-    bool Keeps(ItemStack s) => AlsoKeeps(s) || craftKind?.IsInput(s) == true
+    bool Keeps(ItemStack s) => AlsoKeeps(s) || IsSpareWeapon(s) || craftKind?.IsInput(s) == true
         || craftKind?.Recipes.Any(r => r.CustomId != 0 && (r.Tool?.SatisfiesAsIngredient(s, false) == true || r.Tool2?.SatisfiesAsIngredient(s, false) == true)) == true;
 
     /// <summary>True when the settler carries anything it does not keep: a harvest, or seeds beyond its stock.</summary>

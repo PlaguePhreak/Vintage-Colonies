@@ -21,6 +21,8 @@ public partial class ColonyManager
     /// from home is lost; one that wanders off again is not.
     /// </summary>
     readonly Dictionary<int, (Vec3d At, double Since, bool Unreachable)> lostWatch = new();
+    /// <summary>Since when (game days) each settler has stood in unloaded land far from home.</summary>
+    readonly Dictionary<int, double> farOutSince = new();
     /// <summary>Where each settler got lost and until when (game days) they keep away from it.</summary>
     readonly Dictionary<int, (Vec3d At, double Until)> offLimits = new();
 
@@ -56,6 +58,19 @@ public partial class ColonyManager
             }
             var here = entity.Pos.XYZ;
             var home = citizen.HomeBedPos?.ToVec3d() ?? colony.TownHallPos.ToVec3d();
+            // Far out in land nobody keeps loaded, a settler stands still for ever (0.205.0, notes 97, 99, 101).
+            double farOut = Config.FarOutRescueBlocks;
+            if (entity.State != EnumEntityState.Active && here.HorizontalSquareDistanceTo(home.X, home.Z) > farOut * farOut)
+            {
+                if (!farOutSince.TryGetValue(citizen.CitizenId, out double since)) farOutSince[citizen.CitizenId] = since = now;
+                if ((now - since) * 24 >= Config.FarOutRescueHours)
+                {
+                    farOutSince.Remove(citizen.CitizenId);
+                    BringHome(colony, citizen, entity);
+                }
+                continue;
+            }
+            farOutSince.Remove(citizen.CitizenId);
             bool unreachable = WorkerStatus.GetValueOrDefault(citizen.CitizenId) == "unreachable";
             double near = Config.LostOffLimitsRadius;
             if (here.SquareDistanceTo(home) < near * near * 4

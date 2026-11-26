@@ -243,17 +243,32 @@ public partial class ColonyManager
             if (now - since < (waiting ? BailiffWaitDaysOf(colony) : need)) continue;
             // Nobody is moved twice within BailiffMoveAgainDays.
             if (c.LastMovedTotalDays > 0 && now - c.LastMovedTotalDays < Math.Max(0, Config.BailiffMoveAgainDays)) continue;
-            stuckSince.Remove(key);
-            Lend(colony, bailiff, c, home, status, now, waiting);
+            if (Lend(colony, bailiff, c, home, status, now, waiting)) stuckSince.Remove(key);
         }
     }
 
-    void Lend(Colony colony, CitizenRecord bailiff, CitizenRecord c, Building home, string status, double now, bool waiting = false)
+    /// <summary>True when something waits to be carried: a hut's spare things, or a request the warehouse can fill.</summary>
+    bool HaulingNeeded(Colony colony)
+    {
+        if (FindHutJunk(colony) != null) return true;
+        var stores = WarehouseContainers(colony).ToList();
+        return colony.Requests.Any(r => r.Remaining > 0 && r.LeasedByCitizenId == 0 && CountItems(stores, Matcher(r.ItemCode)) > 0);
+    }
+
+    /// <summary>Lends a stuck worker to another hut, or to hauling. False when there is nowhere useful to send them (0.205.0, note 107).</summary>
+    bool Lend(Colony colony, CitizenRecord bailiff, CitizenRecord c, Building home, string status, double now, bool waiting = false)
     {
         var target = colony.Buildings
             .Where(b => AutoStaffable(b) && JobOf(b.Type) is { } job && job != c.JobCode && !KeepsPost(job)
                 && IncapableOfJob(c, job) == null && FreePlaces(colony, b) > 0)
             .OrderByDescending(b => JobScore(c, JobOf(b.Type)!)).ThenBy(b => b.BuildingId).FirstOrDefault();
+        // No hut has a place and nothing waits to be carried: lending them to hauling would only make them idle elsewhere.
+        if (target == null && !HaulingNeeded(colony))
+        {
+            noLendWhy[(colony.ColonyId, c.CitizenId)] = "no hut has a free place and nothing needs carrying";
+            return false;
+        }
+        noLendWhy.Remove((colony.ColonyId, c.CitizenId));
         c.HomeJob = c.JobCode;
         c.HomeWorkplacePos = c.WorkplacePos!.Copy();
         c.LentUntilTotalDays = now + Math.Max(0.05, Config.BailiffLendDays);
@@ -268,6 +283,21 @@ public partial class ColonyManager
         if (target != null) LogEvent(colony, "event-bailiff-lent", bailiff.Name, c.Name, BuildingName(home), BuildingName(target), "@workstatus-" + status);
         else LogEvent(colony, "event-bailiff-lent-hauling", bailiff.Name, c.Name, BuildingName(home), "@workstatus-" + status);
         MarkDirty(colony);
+        return true;
+    }
+
+    /// <summary>Why the Bailiff could not move a stuck worker last time it tried, for the report (0.205.0, note 88).</summary>
+    readonly Dictionary<(string, int), string> noLendWhy = new();
+
+    /// <summary>Why a stuck worker has not been moved although the wait is over, or null.</summary>
+    public string? NotMovedWhy(Colony colony, CitizenRecord c, double now)
+    {
+        if (BailiffOnDuty(colony) == null) return "the Bailiff is not on duty";
+        if (!colony.BailiffLendsWorkers) return "moving stuck workers is turned off";
+        if (c.LastMovedTotalDays > 0 && now - c.LastMovedTotalDays < Math.Max(0, Config.BailiffMoveAgainDays))
+            return $"moved {(now - c.LastMovedTotalDays) * sapi.World.Calendar.HoursPerDay:0.#} game hours ago, not again so soon";
+        if (c.IsDowned) return "downed";
+        return noLendWhy.GetValueOrDefault((colony.ColonyId, c.CitizenId));
     }
 
     /// <summary>Lent workers whose time is up go back to their own hut, if their place there is still free; else they stay.</summary>
@@ -284,7 +314,9 @@ public partial class ColonyManager
                 if (home == null) continue;
                 double lentAt = c.LentUntilTotalDays - Math.Max(0.05, Config.BailiffLendDays);
                 early = lastDelivery.TryGetValue((colony.ColonyId, home.BuildingId), out double delivered) && delivered > lentAt
-                    || c.LentWaiting && RequestsOf(colony, home).Count == 0;
+                    || c.LentWaiting && RequestsOf(colony, home).Count == 0
+                    // Lent to hauling and nothing needs carrying (0.205.0, note 107).
+                    || c.JobCode == null && !HaulingNeeded(colony);
                 if (!early) continue;
             }
             string homeJob = c.HomeJob!;
