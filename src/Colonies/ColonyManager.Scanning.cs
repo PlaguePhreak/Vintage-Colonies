@@ -40,7 +40,7 @@ public partial class ColonyManager
         if (hut.WorkRadius > 0) return hut.WorkRadius;
         return hut.Type switch
         {
-            BuildingTypes.Forester => Config.ForesterRadius,
+            BuildingTypes.Forester => Math.Max(Config.ForesterRadius, foresterReach.GetValueOrDefault(hut.BuildingId)),
             BuildingTypes.Prospector => Config.ProspectorRadius,
             BuildingTypes.Miner => Config.MinerRadius,
             BuildingTypes.Explorer => (int)(Config.ExplorerRadius * ResearchMult(ColonyOfBuilding(hut), "explorerRange")), // Field Notes

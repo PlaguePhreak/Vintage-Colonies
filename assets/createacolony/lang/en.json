@@ -337,6 +337,7 @@
 	"workstatus-needs-tool-hoe": "needs a hoe (put one in the hut storage or the warehouse)",
 	"workstatus-searching": "searching the work area for trees",
 	"workstatus-no-trees": "no trees left in reach, waiting for saplings to grow",
+	"workstatus-forester-further": "the trees near the hut are gone, looking further out",
 	"workstatus-no-fields": "no fields. Place a Field marker in the colony.",
 	"workstatus-needs-seeds": "needs seeds (put some in the hut storage or the warehouse)",
 	"workstatus-growing": "waiting for the crops to grow",

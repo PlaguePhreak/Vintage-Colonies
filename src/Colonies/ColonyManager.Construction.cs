@@ -71,6 +71,16 @@ public partial class ColonyManager
     /// <summary>Buildings whose set-aside blocks are having their second go.</summary>
     readonly HashSet<int> retryingSteps = new();
 
+    /// <summary>Blocks set aside because the builder found no way to them (0.205.0, note 98).</summary>
+    readonly Dictionary<int, HashSet<BlockPos>> farSteps = new();
+
+    /// <summary>
+    /// True for a block the builder found no way to, on its second go: the builder may then put it in from further
+    /// off (twice its reach, as with a ladder), so one awkward log does not hold the whole build up.
+    /// </summary>
+    public bool LongReachStep(Building building, BlockPos pos) =>
+        retryingSteps.Contains(building.BuildingId) && farSteps.TryGetValue(building.BuildingId, out var far) && far.Contains(pos);
+
     /// <summary>Counts a failed try at a block of a work order; enough of them set it aside for later.</summary>
     public void StepFailed(Building building, BlockPos pos, int weight = 1, string why = "work")
     {
@@ -82,6 +92,11 @@ public partial class ColonyManager
             return;
         }
         tries.Remove(pos);
+        if (why == "reach")
+        {
+            if (!farSteps.TryGetValue(building.BuildingId, out var far)) farSteps[building.BuildingId] = far = new();
+            far.Add(pos.Copy());
+        }
         if (!skippedSteps.TryGetValue(building.BuildingId, out var skipped)) skippedSteps[building.BuildingId] = skipped = new();
         skipped.Add(pos.Copy());
         if (retryingSteps.Contains(building.BuildingId))
@@ -105,6 +120,7 @@ public partial class ColonyManager
     {
         stepFailures.Remove(buildingId);
         skippedSteps.Remove(buildingId);
+        farSteps.Remove(buildingId);
         retryingSteps.Remove(buildingId);
         StuckStep.Remove(buildingId);
         StuckWhy.Remove(buildingId);
@@ -469,6 +485,37 @@ public partial class ColonyManager
         step = default;
         pos = building.HutPos;
         return false;
+    }
+
+    /// <summary>
+    /// The next block of the order the builder can put in with what it carries or what its hut holds, for when the
+    /// block it is on waits for something nobody brought yet (0.205.0, notes 96 and 113: builders stood idle with boards
+    /// in their packs). Null when nothing can go in.
+    /// </summary>
+    public (BuildStep Step, BlockPos Pos)? StepWithMaterials(Colony colony, Building building, Blueprint blueprint, CitizenRecord builder, List<BlockEntityContainer> storage)
+    {
+        if (building.Upkeep) return null;
+        var skipped = skippedSteps.GetValueOrDefault(building.BuildingId);
+        var have = new Dictionary<string, bool>();
+        bool Has(MaterialCost cost)
+        {
+            string key = cost.Code + "#" + cost.Count;
+            if (have.TryGetValue(key, out bool known)) return known;
+            var match = Matcher(cost.Code);
+            return have[key] = PackCount(builder, match) + CountItems(storage, match) >= cost.Count;
+        }
+        int count = blueprint.Steps.Count;
+        for (int n = 1; n < count; n++)
+        {
+            var step = blueprint.Steps[(building.Cursor + n) % count];
+            if (step.BlockId == 0) continue;
+            var pos = StepPos(building, step);
+            if (skipped != null && skipped.Contains(pos)) continue;
+            if (IsStepDone(colony, step, pos, building) || IsLaterStep(colony, step, pos)) continue;
+            var costs = NextPlacement(colony, step, pos).Costs;
+            if (costs.Count > 0 && costs.All(Has)) return (step, pos);
+        }
+        return null;
     }
 
     /// <summary>Materials still needed for the rest of the work order, by item code (a pattern when any wood or stone will do).</summary>

@@ -40,4 +40,20 @@ public partial class ColonyManager
         }
         return null;
     }
+
+    /// <summary>How far each Forester's Hut's forester now goes for trees, once the trees near the hut are gone (0.205.0, note 114).</summary>
+    readonly System.Collections.Generic.Dictionary<long, int> foresterReach = new();
+
+    /// <summary>
+    /// The forester found no trees in its area: it goes further, up to ForesterMaxRadius, instead of standing idle while
+    /// builds wait for logs. False when it already goes as far as it may (or the player set the hut's Work area).
+    /// </summary>
+    public bool ForesterGoFurther(Building hut)
+    {
+        if (hut.WorkRadius > 0) return false;
+        int now = GatherRadius(hut);
+        if (now >= Config.ForesterMaxRadius) return false;
+        foresterReach[hut.BuildingId] = Math.Min(Config.ForesterMaxRadius, now + Math.Max(8, Config.ForesterRadius));
+        return true;
+    }
 }

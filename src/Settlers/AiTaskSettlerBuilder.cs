@@ -128,6 +128,18 @@ public class AiTaskSettlerBuilder : SettlerTaskBase
             return Go(Step.Fetch, source.Pos);
         }
 
+        // This block waits for something not brought yet: put in another one it has the materials for meanwhile.
+        var hutStorage = manager.HutStorage(colony, hut).Cast<BlockEntityContainer>().ToList();
+        if (manager.StepWithMaterials(colony, order, blueprint, citizen, hutStorage) is { } other)
+        {
+            buildStep = other.Step;
+            manager.BuildStatus[order.BuildingId] = "building";
+            var otherCosts = manager.NextPlacement(colony, other.Step, other.Pos).Costs;
+            if (otherCosts.All(c => manager.PackCount(citizen, ColonyManager.Matcher(c.Code)) >= c.Count)) return Go(Step.Work, other.Pos);
+            var otherFits = otherCosts.Select(c => ColonyManager.Matcher(c.Code)).ToList();
+            if (hutStorage.FirstOrDefault(c => c.Inventory.Any(s => !s.Empty && otherFits.Any(m => m(s.Itemstack)))) is { } chest) return Go(Step.Fetch, chest.Pos);
+        }
+
         // Nothing to build with: ask couriers and wait.
         bool hasStorage = manager.EnsureMaterialRequests(colony, order, hut, citizen, blueprint);
         manager.BuildStatus[order.BuildingId] = hasStorage ? "waiting-materials" : "no-hut-chest";
@@ -283,7 +295,8 @@ public class AiTaskSettlerBuilder : SettlerTaskBase
         return manager!.FreeSpotNear(entity, ground, 3, target) ?? target.ToVec3d().Add(0.5, 0, 0.5);
     }
 
-    bool InReach() => entity.Pos.XYZ.DistanceTo(target.ToVec3d().Add(0.5, 0.5, 0.5)) <= manager!.Config.BuilderReach;
+    bool InReach() => entity.Pos.XYZ.DistanceTo(target.ToVec3d().Add(0.5, 0.5, 0.5))
+        <= manager!.Config.BuilderReach * (Colony?.Buildings.Find(b => b.BuildingId == orderId) is { } o && manager.LongReachStep(o, target) ? 2 : 1);
 
     void MarkUnreachable()
     {

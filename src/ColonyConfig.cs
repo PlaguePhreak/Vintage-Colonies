@@ -173,6 +173,8 @@ public class ColonyConfig
     // Forester
     /// <summary>How far from the Forester's Hut, in blocks, a forester looks for trees.</summary>
     public int ForesterRadius = 16;
+    /// <summary>When the trees near the Forester's Hut are gone, the forester goes further for them, up to this many blocks (0.205.0).</summary>
+    public int ForesterMaxRadius = 64;
     /// <summary>Seconds a forester chops before a tree comes down.</summary>
     public float ForesterSecondsPerTree = 6f;
     /// <summary>Tree seeds or saplings a forester keeps on hand for replanting; the rest go to the warehouse.</summary>

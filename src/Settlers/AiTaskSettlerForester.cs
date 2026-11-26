@@ -38,6 +38,12 @@ public class AiTaskSettlerForester : AiTaskSettlerWorker
             SetStatus("clearing-bushes");
             return GoWork(bush);
         }
+        if (tree == null && !manager.StillSearching(hut, "trees") && manager.ForesterGoFurther(hut))
+        {
+            // The trees near the hut are gone: it looks further out (note 114).
+            SetStatus("forester-further");
+            return false;
+        }
         if (tree == null)
         {
             SetStatus(manager.StillSearching(hut, "trees") || manager.StillSearching(hut, "bushes") ? "searching" : "no-trees");
