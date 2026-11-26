@@ -1286,7 +1286,7 @@ public partial class ColonyNetwork : ModSystem
             Faith = citizen.Faith < 0 || !Manager.HasChurch(colony) ? -1 : (int)System.Math.Round(citizen.Faith),
             FaithWord = citizen.Faith < 0 || !Manager.HasChurch(colony) ? "" : Manager.FaithWord(citizen.Faith)
         };
-        if (Manager.Config.Happiness && citizen.Alive && !citizen.IsChild && !citizen.Visitor)
+        if (Manager.Config.Happiness && citizen.Alive && !citizen.Visitor)
         {
             snapshot.Happiness = (int)System.Math.Round(Manager.HappinessOf(citizen));
             snapshot.Mood = Manager.MoodOf(Manager.HappinessOf(citizen));

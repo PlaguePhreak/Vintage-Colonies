@@ -24,6 +24,7 @@ public partial class ColonyManager
         if (tasks?.GetTask<AiTaskSettlerCourier>()?.TroubleText(colony, c) is { } trouble) return trouble;
         if (c.JobCode == Jobs.Mayor) return MayorIdleReason(colony);
         if (c.JobCode == Jobs.Bailiff) return null;
+        if (string.IsNullOrEmpty(c.JobCode) && c.HomeJob == null && PackEmpty(c) && NoJobWhy(colony, c) is { } why) return why;
         if (string.IsNullOrEmpty(c.JobCode))
         {
             return Lang.Get(c.HomeJob != null ? "createacolony:idle-why-lent" : PackEmpty(c) ? "createacolony:idle-why-nojob" : "createacolony:idle-why-nojob-carrying", PackItems(c).Count);
@@ -40,6 +41,16 @@ public partial class ColonyManager
             return Lang.Get("createacolony:workstatus-" + status);
         }
         return null;
+    }
+
+    /// <summary>Why a grown settler has no job yet (0.205.0, note 110), or null when the Bailiff should give one soon.</summary>
+    public string? NoJobWhy(Colony colony, CitizenRecord c)
+    {
+        if (c.WaitingForRoom) return Lang.Get("createacolony:idle-why-nojob-home");
+        if (BailiffOf(colony) == null) return Lang.Get("createacolony:idle-why-nojob-nobailiff");
+        if (!colony.BailiffGivesJobs) return Lang.Get("createacolony:idle-why-nojob-off");
+        bool anyPlace = colony.Buildings.Any(b => AutoStaffable(b) && JobOf(b.Type) is { } job && FreePlaces(colony, b) > 0 && IncapableOfJob(c, job) == null);
+        return anyPlace ? null : Lang.Get("createacolony:idle-why-nojob-noplace");
     }
 
     /// <summary>What the Mayor waits for, and when it looks again.</summary>
