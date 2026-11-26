@@ -50,6 +50,8 @@ public class AiTaskSettlerSmelter : AiTaskSettlerWorker
         var m = manager!;
         var pit = m.SmelterFirepit(hut);
         var bloomery = m.SmelterBloomery(hut);
+        // Working from the hut block (0.205.0): it lays its own fire pit.
+        if (pit == null && bloomery == null && m.SetUpFirepit(colony, hut, citizen)) pit = m.SmelterFirepit(hut);
         if (pit == null && bloomery == null)
         {
             SetStatus("no-firepit");

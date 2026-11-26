@@ -861,6 +861,10 @@ public class ColonyConfig
     public string[] SmelterCasts = { "pickaxe", "hammer", "anvil" };
     /// <summary>A Blacksmith's Hut without an anvil or a forge by it sets one down from storage (works at level 0).</summary>
     public bool BlacksmithSetsUpStations = true;
+    /// <summary>A Smelter's Hut without a fire pit by it lays one from firewood (works at level 0).</summary>
+    public bool SmelterLaysFirepit = true;
+    /// <summary>Firewood a fire pit takes to lay.</summary>
+    public int FirepitFirewood = 4;
     /// <summary>The Blacksmith smiths a copper saw while the colony has none, so boards can be made.</summary>
     public bool BlacksmithMakesSaw = true;
     /// <summary>Fuel pieces the smelter puts in the fire pit at once.</summary>

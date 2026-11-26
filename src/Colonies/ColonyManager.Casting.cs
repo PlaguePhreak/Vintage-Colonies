@@ -250,6 +250,38 @@ public partial class ColonyManager
         return true;
     }
 
+    /// <summary>
+    /// A level 0 Smelter lays its own fire pit beside the hut block from firewood (FirepitFirewood pieces, as a player
+    /// builds one up), so it can smelt before its building is up. False when there is no firewood or no spot.
+    /// </summary>
+    public bool SetUpFirepit(Colony colony, Building hut, CitizenRecord smelter)
+    {
+        if (!Config.SmelterLaysFirepit) return false;
+        var block = sapi.World.GetBlock(new AssetLocation("game:firepit-cold"));
+        if (block == null || block.Id == 0) return false;
+        int need = Math.Max(1, Config.FirepitFirewood);
+        var spot = StationSpot(colony, hut, block);
+        if (spot == null) return false;
+        var hutStores = HutStorage(colony, hut).Cast<BlockEntityContainer>().ToList();
+        var warehouse = WarehouseContainers(colony).Cast<BlockEntityContainer>().ToList();
+        if (PackCount(smelter, IsFirewood) + CountItems(hutStores, IsFirewood) + CountItems(warehouse, IsFirewood) < need)
+        {
+            EnsureCraftRequest(colony, hut, "game:firewood", need);
+            return false;
+        }
+        int left = need;
+        while (left > 0 && (TakeFromPack(colony, smelter, IsFirewood, left) ?? TakeItems(hutStores, IsFirewood, left) ?? TakeItems(warehouse, IsFirewood, left)) is { } part)
+        {
+            left -= part.StackSize;
+        }
+        var ba = sapi.World.BlockAccessor;
+        ba.SetBlock(block.BlockId, spot);
+        ba.MarkBlockDirty(spot);
+        LogEvent(colony, "event-smith-station", smelter.Name, block.GetPlacedBlockName(sapi.World, spot), BuildingName(hut));
+        MarkDirty(colony);
+        return true;
+    }
+
     /// <summary>One saw is wanted at the Blacksmith's Hut while the colony has none (Aaron: the saw opens up boards).</summary>
     public int SawWant(Colony colony, Building hut, string key) =>
         Config.BlacksmithMakesSaw && hut.Type == BuildingTypes.Blacksmith && key == "game:saw-copper" && !ColonyHasSaw(colony) ? 1 : 0;
